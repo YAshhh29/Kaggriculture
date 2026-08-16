@@ -1,0 +1,72 @@
+{
+  "simulator_version": "1.32.7",
+  "control": "main.py",
+  "candidate": "experimental_ridge_agent.py",
+  "traces": [
+    {
+      "seed": 48,
+      "control_score": 7208.0,
+      "candidate_score": 7183.0,
+      "coin_delta": -25.0,
+      "differences": [
+        {
+          "record_index": 549,
+          "day": 22,
+          "hour": 20,
+          "wheat_price": 34,
+          "shed_wheat": 32,
+          "money": 4659.0,
+          "control_sales": [],
+          "candidate_sales": [
+            [
+              "SELL",
+              "WHEAT",
+              32
+            ]
+          ],
+          "predicted_sell_advantage": 14.492807
+        },
+        {
+          "record_index": 570,
+          "day": 23,
+          "hour": 17,
+          "wheat_price": 33,
+          "shed_wheat": 8,
+          "money": 5683.0,
+          "control_sales": [
+            [
+              "SELL",
+              "WHEAT",
+              40
+            ]
+          ],
+          "candidate_sales": [],
+          "predicted_sell_advantage": -7.683739
+        },
+        {
+          "record_index": 601,
+          "day": 25,
+          "hour": 0,
+          "wheat_price": 34,
+          "shed_wheat": 20,
+          "money": 5673.0,
+          "control_sales": [
+            [
+              "SELL",
+              "WHEAT",
+              12
+            ]
+          ],
+          "candidate_sales": [
+            [
+              "SELL",
+              "WHEAT",
+              20
+            ]
+          ],
+          "predicted_sell_advantage": -2.417253
+        }
+      ]
+    }
+  ]
+}

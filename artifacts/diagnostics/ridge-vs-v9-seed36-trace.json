@@ -1,0 +1,168 @@
+{
+  "simulator_version": "1.32.7",
+  "control": "main.py",
+  "candidate": "experimental_ridge_agent.py",
+  "traces": [
+    {
+      "seed": 36,
+      "control_score": 7542.0,
+      "candidate_score": 7539.0,
+      "coin_delta": -3.0,
+      "differences": [
+        {
+          "record_index": 331,
+          "day": 13,
+          "hour": 18,
+          "wheat_price": 34,
+          "shed_wheat": 52,
+          "money": 2790.0,
+          "control_sales": [],
+          "candidate_sales": [
+            [
+              "SELL",
+              "WHEAT",
+              52
+            ]
+          ],
+          "predicted_sell_advantage": 2.541213
+        },
+        {
+          "record_index": 361,
+          "day": 15,
+          "hour": 0,
+          "wheat_price": 31,
+          "shed_wheat": 20,
+          "money": 4426.0,
+          "control_sales": [
+            [
+              "SELL",
+              "WHEAT",
+              72
+            ]
+          ],
+          "candidate_sales": [],
+          "predicted_sell_advantage": -47.428642
+        },
+        {
+          "record_index": 453,
+          "day": 18,
+          "hour": 20,
+          "wheat_price": 33,
+          "shed_wheat": 28,
+          "money": 4386.0,
+          "control_sales": [],
+          "candidate_sales": [
+            [
+              "SELL",
+              "WHEAT",
+              28
+            ]
+          ],
+          "predicted_sell_advantage": 5.419496
+        },
+        {
+          "record_index": 523,
+          "day": 21,
+          "hour": 18,
+          "wheat_price": 34,
+          "shed_wheat": 20,
+          "money": 5250.0,
+          "control_sales": [],
+          "candidate_sales": [
+            [
+              "SELL",
+              "WHEAT",
+              20
+            ]
+          ],
+          "predicted_sell_advantage": 1.215616
+        },
+        {
+          "record_index": 530,
+          "day": 22,
+          "hour": 1,
+          "wheat_price": 33,
+          "shed_wheat": 4,
+          "money": 5916.0,
+          "control_sales": [
+            [
+              "SELL",
+              "WHEAT",
+              32
+            ]
+          ],
+          "candidate_sales": [],
+          "predicted_sell_advantage": -15.631228
+        },
+        {
+          "record_index": 549,
+          "day": 22,
+          "hour": 20,
+          "wheat_price": 33,
+          "shed_wheat": 4,
+          "money": 5896.0,
+          "control_sales": [],
+          "candidate_sales": [
+            [
+              "SELL",
+              "WHEAT",
+              4
+            ]
+          ],
+          "predicted_sell_advantage": 2.024265
+        },
+        {
+          "record_index": 571,
+          "day": 23,
+          "hour": 18,
+          "wheat_price": 34,
+          "shed_wheat": 8,
+          "money": 6008.0,
+          "control_sales": [],
+          "candidate_sales": [
+            [
+              "SELL",
+              "WHEAT",
+              8
+            ]
+          ],
+          "predicted_sell_advantage": 7.398857
+        },
+        {
+          "record_index": 586,
+          "day": 24,
+          "hour": 9,
+          "wheat_price": 34,
+          "shed_wheat": 8,
+          "money": 6280.0,
+          "control_sales": [
+            [
+              "SELL",
+              "WHEAT",
+              16
+            ]
+          ],
+          "candidate_sales": [],
+          "predicted_sell_advantage": -7.223277
+        },
+        {
+          "record_index": 596,
+          "day": 24,
+          "hour": 19,
+          "wheat_price": 34,
+          "shed_wheat": 8,
+          "money": 6270.0,
+          "control_sales": [],
+          "candidate_sales": [
+            [
+              "SELL",
+              "WHEAT",
+              8
+            ]
+          ],
+          "predicted_sell_advantage": 1.781657
+        }
+      ]
+    }
+  ]
+}

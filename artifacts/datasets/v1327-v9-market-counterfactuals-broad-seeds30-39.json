@@ -1,0 +1,4874 @@
+{
+  "created_at": "2026-08-16T22:43:58.836262+00:00",
+  "simulator_version": "1.32.7",
+  "agent_file": "C:\\Users\\Oyash\\Desktop\\Kaggriculture\\main.py",
+  "agent_sha256": "eee28ea012df8880c834e59d761a2551d0e9dd26f2ac55535fd1585586eba38a",
+  "opponent": "starter",
+  "episode_steps": 720,
+  "seed_start": 30,
+  "seed_count": 10,
+  "positions": [
+    0
+  ],
+  "max_branches_per_episode": 14,
+  "sampling": "first state per requested (price, pre/liquidation phase, baseline choice), up to max branches per episode",
+  "sample_prices": [
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40
+  ],
+  "intervention": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+  "episodes": [
+    {
+      "episode_id": "starter-seed-30-player-0",
+      "seed": 30,
+      "agent_player": 0,
+      "baseline": {
+        "terminal_money": 8308.0,
+        "opponent_terminal_money": 3659.0,
+        "terminal_margin": 4649.0,
+        "status": "DONE",
+        "result": "win"
+      },
+      "rows": [
+        {
+          "episode_id": "starter-seed-30-player-0",
+          "seed": 30,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 120,
+            "day": 5,
+            "hour": 0,
+            "money": 2880.0,
+            "wheat_seeds": 5,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 1,
+            "wheat_market_price": 29,
+            "wheat_market_inventory": 9983
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8308.0,
+              "opponent_terminal_money": 3659.0,
+              "terminal_margin": 4649.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8171.0,
+              "opponent_terminal_money": 3659.0,
+              "terminal_margin": 4512.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -137.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-30-player-0",
+          "seed": 30,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 129,
+            "day": 5,
+            "hour": 9,
+            "money": 2880.0,
+            "wheat_seeds": 2,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 4,
+            "wheat_market_price": 30,
+            "wheat_market_inventory": 9979
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8308.0,
+              "opponent_terminal_money": 3659.0,
+              "terminal_margin": 4649.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8193.0,
+              "opponent_terminal_money": 3659.0,
+              "terminal_margin": 4534.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -115.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-30-player-0",
+          "seed": 30,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 153,
+            "day": 6,
+            "hour": 9,
+            "money": 2880.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 31,
+            "wheat_market_inventory": 9969
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8308.0,
+              "opponent_terminal_money": 3659.0,
+              "terminal_margin": 4649.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8233.0,
+              "opponent_terminal_money": 3659.0,
+              "terminal_margin": 4574.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -75.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-30-player-0",
+          "seed": 30,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 177,
+            "day": 7,
+            "hour": 9,
+            "money": 2880.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 32,
+            "wheat_market_inventory": 9956
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8308.0,
+              "opponent_terminal_money": 3659.0,
+              "terminal_margin": 4649.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8266.0,
+              "opponent_terminal_money": 3659.0,
+              "terminal_margin": 4607.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -42.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-30-player-0",
+          "seed": 30,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 201,
+            "day": 8,
+            "hour": 9,
+            "money": 2880.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 33,
+            "wheat_market_inventory": 9943
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8308.0,
+              "opponent_terminal_money": 3659.0,
+              "terminal_margin": 4649.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8290.0,
+              "opponent_terminal_money": 3659.0,
+              "terminal_margin": 4631.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -18.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-30-player-0",
+          "seed": 30,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 225,
+            "day": 9,
+            "hour": 9,
+            "money": 2870.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 28,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 34,
+            "wheat_market_inventory": 9927
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8308.0,
+              "opponent_terminal_money": 3659.0,
+              "terminal_margin": 4649.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8310.0,
+              "opponent_terminal_money": 3659.0,
+              "terminal_margin": 4651.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 2.0,
+            "preferred_choice": "SELL"
+          }
+        },
+        {
+          "episode_id": "starter-seed-30-player-0",
+          "seed": 30,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 249,
+            "day": 10,
+            "hour": 9,
+            "money": 2810.0,
+            "wheat_seeds": 2,
+            "shed_wheat": 48,
+            "carried_wheat": 0,
+            "planted_wheat": 4,
+            "wheat_market_price": 35,
+            "wheat_market_inventory": 9908
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8308.0,
+              "opponent_terminal_money": 3659.0,
+              "terminal_margin": 4649.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8308.0,
+              "opponent_terminal_money": 3659.0,
+              "terminal_margin": 4649.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        },
+        {
+          "episode_id": "starter-seed-30-player-0",
+          "seed": 30,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 360,
+            "day": 15,
+            "hour": 0,
+            "money": 4621.0,
+            "wheat_seeds": 2,
+            "shed_wheat": 16,
+            "carried_wheat": 0,
+            "planted_wheat": 4,
+            "wheat_market_price": 36,
+            "wheat_market_inventory": 9879
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8313.0,
+              "opponent_terminal_money": 3659.0,
+              "terminal_margin": 4654.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8308.0,
+              "opponent_terminal_money": 3659.0,
+              "terminal_margin": 4649.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -5.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-30-player-0",
+          "seed": 30,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 408,
+            "day": 17,
+            "hour": 0,
+            "money": 5182.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 4,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 37,
+            "wheat_market_inventory": 9845
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8312.0,
+              "opponent_terminal_money": 3659.0,
+              "terminal_margin": 4653.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8308.0,
+              "opponent_terminal_money": 3659.0,
+              "terminal_margin": 4649.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -4.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-30-player-0",
+          "seed": 30,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 432,
+            "day": 18,
+            "hour": 0,
+            "money": 5320.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 4,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 38,
+            "wheat_market_inventory": 9824
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8308.0,
+              "opponent_terminal_money": 3659.0,
+              "terminal_margin": 4649.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8308.0,
+              "opponent_terminal_money": 3659.0,
+              "terminal_margin": 4649.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        },
+        {
+          "episode_id": "starter-seed-30-player-0",
+          "seed": 30,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 456,
+            "day": 19,
+            "hour": 0,
+            "money": 5452.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 8,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 39,
+            "wheat_market_inventory": 9797
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8308.0,
+              "opponent_terminal_money": 3659.0,
+              "terminal_margin": 4649.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8308.0,
+              "opponent_terminal_money": 3659.0,
+              "terminal_margin": 4649.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        },
+        {
+          "episode_id": "starter-seed-30-player-0",
+          "seed": 30,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 480,
+            "day": 20,
+            "hour": 0,
+            "money": 5744.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 8,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 40,
+            "wheat_market_inventory": 9774
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8308.0,
+              "opponent_terminal_money": 3659.0,
+              "terminal_margin": 4649.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8308.0,
+              "opponent_terminal_money": 3659.0,
+              "terminal_margin": 4649.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        }
+      ],
+      "agent_sha256": "eee28ea012df8880c834e59d761a2551d0e9dd26f2ac55535fd1585586eba38a"
+    },
+    {
+      "episode_id": "starter-seed-31-player-0",
+      "seed": 31,
+      "agent_player": 0,
+      "baseline": {
+        "terminal_money": 8005.0,
+        "opponent_terminal_money": 3592.0,
+        "terminal_margin": 4413.0,
+        "status": "DONE",
+        "result": "win"
+      },
+      "rows": [
+        {
+          "episode_id": "starter-seed-31-player-0",
+          "seed": 31,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 120,
+            "day": 5,
+            "hour": 0,
+            "money": 2880.0,
+            "wheat_seeds": 5,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 1,
+            "wheat_market_price": 29,
+            "wheat_market_inventory": 9983
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8005.0,
+              "opponent_terminal_money": 3592.0,
+              "terminal_margin": 4413.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 7863.0,
+              "opponent_terminal_money": 3592.0,
+              "terminal_margin": 4271.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -142.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-31-player-0",
+          "seed": 31,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 129,
+            "day": 5,
+            "hour": 9,
+            "money": 2880.0,
+            "wheat_seeds": 2,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 4,
+            "wheat_market_price": 30,
+            "wheat_market_inventory": 9979
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8005.0,
+              "opponent_terminal_money": 3592.0,
+              "terminal_margin": 4413.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 7885.0,
+              "opponent_terminal_money": 3592.0,
+              "terminal_margin": 4293.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -120.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-31-player-0",
+          "seed": 31,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 165,
+            "day": 6,
+            "hour": 21,
+            "money": 2880.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 31,
+            "wheat_market_inventory": 9969
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8005.0,
+              "opponent_terminal_money": 3592.0,
+              "terminal_margin": 4413.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 7925.0,
+              "opponent_terminal_money": 3592.0,
+              "terminal_margin": 4333.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -80.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-31-player-0",
+          "seed": 31,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 205,
+            "day": 8,
+            "hour": 13,
+            "money": 2880.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 32,
+            "wheat_market_inventory": 9957
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8005.0,
+              "opponent_terminal_money": 3592.0,
+              "terminal_margin": 4413.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 7955.0,
+              "opponent_terminal_money": 3592.0,
+              "terminal_margin": 4363.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -50.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-31-player-0",
+          "seed": 31,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 237,
+            "day": 9,
+            "hour": 21,
+            "money": 2820.0,
+            "wheat_seeds": 4,
+            "shed_wheat": 28,
+            "carried_wheat": 20,
+            "planted_wheat": 2,
+            "wheat_market_price": 33,
+            "wheat_market_inventory": 9942
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8005.0,
+              "opponent_terminal_money": 3592.0,
+              "terminal_margin": 4413.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 7974.0,
+              "opponent_terminal_money": 3592.0,
+              "terminal_margin": 4382.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -31.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-31-player-0",
+          "seed": 31,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 265,
+            "day": 11,
+            "hour": 1,
+            "money": 2810.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 48,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 34,
+            "wheat_market_inventory": 9926
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8005.0,
+              "opponent_terminal_money": 3592.0,
+              "terminal_margin": 4413.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 7950.0,
+              "opponent_terminal_money": 3592.0,
+              "terminal_margin": 4358.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -55.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-31-player-0",
+          "seed": 31,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 293,
+            "day": 12,
+            "hour": 5,
+            "money": 2810.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 48,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 35,
+            "wheat_market_inventory": 9909
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8005.0,
+              "opponent_terminal_money": 3592.0,
+              "terminal_margin": 4413.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8005.0,
+              "opponent_terminal_money": 3592.0,
+              "terminal_margin": 4413.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        },
+        {
+          "episode_id": "starter-seed-31-player-0",
+          "seed": 31,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 432,
+            "day": 18,
+            "hour": 0,
+            "money": 5282.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 4,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 36,
+            "wheat_market_inventory": 9878
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8005.0,
+              "opponent_terminal_money": 3592.0,
+              "terminal_margin": 4413.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8005.0,
+              "opponent_terminal_money": 3592.0,
+              "terminal_margin": 4413.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        },
+        {
+          "episode_id": "starter-seed-31-player-0",
+          "seed": 31,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 456,
+            "day": 19,
+            "hour": 0,
+            "money": 5406.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 8,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 37,
+            "wheat_market_inventory": 9863
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8008.0,
+              "opponent_terminal_money": 3592.0,
+              "terminal_margin": 4416.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8005.0,
+              "opponent_terminal_money": 3592.0,
+              "terminal_margin": 4413.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -3.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-31-player-0",
+          "seed": 31,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 504,
+            "day": 21,
+            "hour": 0,
+            "money": 5965.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 4,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 38,
+            "wheat_market_inventory": 9841
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8006.0,
+              "opponent_terminal_money": 3592.0,
+              "terminal_margin": 4414.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8005.0,
+              "opponent_terminal_money": 3592.0,
+              "terminal_margin": 4413.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -1.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-31-player-0",
+          "seed": 31,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 552,
+            "day": 23,
+            "hour": 0,
+            "money": 6238.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 8,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 39,
+            "wheat_market_inventory": 9799
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8005.0,
+              "opponent_terminal_money": 3592.0,
+              "terminal_margin": 4413.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8005.0,
+              "opponent_terminal_money": 3592.0,
+              "terminal_margin": 4413.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        },
+        {
+          "episode_id": "starter-seed-31-player-0",
+          "seed": 31,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 576,
+            "day": 24,
+            "hour": 0,
+            "money": 6530.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 8,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 40,
+            "wheat_market_inventory": 9782
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8005.0,
+              "opponent_terminal_money": 3592.0,
+              "terminal_margin": 4413.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8005.0,
+              "opponent_terminal_money": 3592.0,
+              "terminal_margin": 4413.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        },
+        {
+          "episode_id": "starter-seed-31-player-0",
+          "seed": 31,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 600,
+            "day": 25,
+            "hour": 0,
+            "money": 6840.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 4,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 40,
+            "wheat_market_inventory": 9765
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8005.0,
+              "opponent_terminal_money": 3592.0,
+              "terminal_margin": 4413.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8005.0,
+              "opponent_terminal_money": 3592.0,
+              "terminal_margin": 4413.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        }
+      ],
+      "agent_sha256": "eee28ea012df8880c834e59d761a2551d0e9dd26f2ac55535fd1585586eba38a"
+    },
+    {
+      "episode_id": "starter-seed-32-player-0",
+      "seed": 32,
+      "agent_player": 0,
+      "baseline": {
+        "terminal_money": 8195.0,
+        "opponent_terminal_money": 3516.0,
+        "terminal_margin": 4679.0,
+        "status": "DONE",
+        "result": "win"
+      },
+      "rows": [
+        {
+          "episode_id": "starter-seed-32-player-0",
+          "seed": 32,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 120,
+            "day": 5,
+            "hour": 0,
+            "money": 2880.0,
+            "wheat_seeds": 5,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 1,
+            "wheat_market_price": 29,
+            "wheat_market_inventory": 9983
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8195.0,
+              "opponent_terminal_money": 3516.0,
+              "terminal_margin": 4679.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8058.0,
+              "opponent_terminal_money": 3516.0,
+              "terminal_margin": 4542.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -137.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-32-player-0",
+          "seed": 32,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 129,
+            "day": 5,
+            "hour": 9,
+            "money": 2880.0,
+            "wheat_seeds": 2,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 4,
+            "wheat_market_price": 30,
+            "wheat_market_inventory": 9979
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8195.0,
+              "opponent_terminal_money": 3516.0,
+              "terminal_margin": 4679.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8080.0,
+              "opponent_terminal_money": 3516.0,
+              "terminal_margin": 4564.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -115.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-32-player-0",
+          "seed": 32,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 153,
+            "day": 6,
+            "hour": 9,
+            "money": 2880.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 31,
+            "wheat_market_inventory": 9969
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8195.0,
+              "opponent_terminal_money": 3516.0,
+              "terminal_margin": 4679.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8120.0,
+              "opponent_terminal_money": 3516.0,
+              "terminal_margin": 4604.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -75.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-32-player-0",
+          "seed": 32,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 177,
+            "day": 7,
+            "hour": 9,
+            "money": 2880.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 32,
+            "wheat_market_inventory": 9956
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8195.0,
+              "opponent_terminal_money": 3516.0,
+              "terminal_margin": 4679.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8153.0,
+              "opponent_terminal_money": 3516.0,
+              "terminal_margin": 4637.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -42.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-32-player-0",
+          "seed": 32,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 201,
+            "day": 8,
+            "hour": 9,
+            "money": 2880.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 33,
+            "wheat_market_inventory": 9943
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8195.0,
+              "opponent_terminal_money": 3516.0,
+              "terminal_margin": 4679.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8177.0,
+              "opponent_terminal_money": 3516.0,
+              "terminal_margin": 4661.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -18.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-32-player-0",
+          "seed": 32,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 225,
+            "day": 9,
+            "hour": 9,
+            "money": 2870.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 28,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 34,
+            "wheat_market_inventory": 9927
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8195.0,
+              "opponent_terminal_money": 3516.0,
+              "terminal_margin": 4679.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8197.0,
+              "opponent_terminal_money": 3516.0,
+              "terminal_margin": 4681.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 2.0,
+            "preferred_choice": "SELL"
+          }
+        },
+        {
+          "episode_id": "starter-seed-32-player-0",
+          "seed": 32,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 249,
+            "day": 10,
+            "hour": 9,
+            "money": 2810.0,
+            "wheat_seeds": 2,
+            "shed_wheat": 48,
+            "carried_wheat": 0,
+            "planted_wheat": 4,
+            "wheat_market_price": 35,
+            "wheat_market_inventory": 9908
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8195.0,
+              "opponent_terminal_money": 3516.0,
+              "terminal_margin": 4679.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8195.0,
+              "opponent_terminal_money": 3516.0,
+              "terminal_margin": 4679.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        },
+        {
+          "episode_id": "starter-seed-32-player-0",
+          "seed": 32,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 360,
+            "day": 15,
+            "hour": 0,
+            "money": 4621.0,
+            "wheat_seeds": 2,
+            "shed_wheat": 16,
+            "carried_wheat": 0,
+            "planted_wheat": 4,
+            "wheat_market_price": 36,
+            "wheat_market_inventory": 9879
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8199.0,
+              "opponent_terminal_money": 3516.0,
+              "terminal_margin": 4683.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8195.0,
+              "opponent_terminal_money": 3516.0,
+              "terminal_margin": 4679.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -4.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-32-player-0",
+          "seed": 32,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 408,
+            "day": 17,
+            "hour": 0,
+            "money": 5182.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 4,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 37,
+            "wheat_market_inventory": 9857
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8195.0,
+              "opponent_terminal_money": 3516.0,
+              "terminal_margin": 4679.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8195.0,
+              "opponent_terminal_money": 3516.0,
+              "terminal_margin": 4679.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        },
+        {
+          "episode_id": "starter-seed-32-player-0",
+          "seed": 32,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 432,
+            "day": 18,
+            "hour": 0,
+            "money": 5320.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 4,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 38,
+            "wheat_market_inventory": 9842
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8197.0,
+              "opponent_terminal_money": 3516.0,
+              "terminal_margin": 4681.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8195.0,
+              "opponent_terminal_money": 3516.0,
+              "terminal_margin": 4679.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -2.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-32-player-0",
+          "seed": 32,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 480,
+            "day": 20,
+            "hour": 0,
+            "money": 5734.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 8,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 39,
+            "wheat_market_inventory": 9804
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8195.0,
+              "opponent_terminal_money": 3516.0,
+              "terminal_margin": 4679.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8195.0,
+              "opponent_terminal_money": 3516.0,
+              "terminal_margin": 4679.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        },
+        {
+          "episode_id": "starter-seed-32-player-0",
+          "seed": 32,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 504,
+            "day": 21,
+            "hour": 0,
+            "money": 6036.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 4,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 40,
+            "wheat_market_inventory": 9787
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8196.0,
+              "opponent_terminal_money": 3516.0,
+              "terminal_margin": 4680.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8195.0,
+              "opponent_terminal_money": 3516.0,
+              "terminal_margin": 4679.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -1.0,
+            "preferred_choice": "HOLD"
+          }
+        }
+      ],
+      "agent_sha256": "eee28ea012df8880c834e59d761a2551d0e9dd26f2ac55535fd1585586eba38a"
+    },
+    {
+      "episode_id": "starter-seed-33-player-0",
+      "seed": 33,
+      "agent_player": 0,
+      "baseline": {
+        "terminal_money": 8211.0,
+        "opponent_terminal_money": 3431.0,
+        "terminal_margin": 4780.0,
+        "status": "DONE",
+        "result": "win"
+      },
+      "rows": [
+        {
+          "episode_id": "starter-seed-33-player-0",
+          "seed": 33,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 120,
+            "day": 5,
+            "hour": 0,
+            "money": 2880.0,
+            "wheat_seeds": 5,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 1,
+            "wheat_market_price": 29,
+            "wheat_market_inventory": 9983
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8211.0,
+              "opponent_terminal_money": 3431.0,
+              "terminal_margin": 4780.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8070.0,
+              "opponent_terminal_money": 3431.0,
+              "terminal_margin": 4639.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -141.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-33-player-0",
+          "seed": 33,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 129,
+            "day": 5,
+            "hour": 9,
+            "money": 2880.0,
+            "wheat_seeds": 2,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 4,
+            "wheat_market_price": 30,
+            "wheat_market_inventory": 9979
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8211.0,
+              "opponent_terminal_money": 3431.0,
+              "terminal_margin": 4780.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8092.0,
+              "opponent_terminal_money": 3431.0,
+              "terminal_margin": 4661.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -119.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-33-player-0",
+          "seed": 33,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 153,
+            "day": 6,
+            "hour": 9,
+            "money": 2880.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 31,
+            "wheat_market_inventory": 9969
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8211.0,
+              "opponent_terminal_money": 3431.0,
+              "terminal_margin": 4780.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8132.0,
+              "opponent_terminal_money": 3431.0,
+              "terminal_margin": 4701.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -79.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-33-player-0",
+          "seed": 33,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 177,
+            "day": 7,
+            "hour": 9,
+            "money": 2880.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 32,
+            "wheat_market_inventory": 9956
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8211.0,
+              "opponent_terminal_money": 3431.0,
+              "terminal_margin": 4780.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8165.0,
+              "opponent_terminal_money": 3431.0,
+              "terminal_margin": 4734.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -46.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-33-player-0",
+          "seed": 33,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 201,
+            "day": 8,
+            "hour": 9,
+            "money": 2880.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 33,
+            "wheat_market_inventory": 9943
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8211.0,
+              "opponent_terminal_money": 3431.0,
+              "terminal_margin": 4780.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8189.0,
+              "opponent_terminal_money": 3431.0,
+              "terminal_margin": 4758.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -22.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-33-player-0",
+          "seed": 33,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 233,
+            "day": 9,
+            "hour": 17,
+            "money": 2840.0,
+            "wheat_seeds": 3,
+            "shed_wheat": 28,
+            "carried_wheat": 12,
+            "planted_wheat": 3,
+            "wheat_market_price": 34,
+            "wheat_market_inventory": 9926
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8211.0,
+              "opponent_terminal_money": 3431.0,
+              "terminal_margin": 4780.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8216.0,
+              "opponent_terminal_money": 3431.0,
+              "terminal_margin": 4785.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 5.0,
+            "preferred_choice": "SELL"
+          }
+        },
+        {
+          "episode_id": "starter-seed-33-player-0",
+          "seed": 33,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 265,
+            "day": 11,
+            "hour": 1,
+            "money": 2810.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 48,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 35,
+            "wheat_market_inventory": 9908
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8211.0,
+              "opponent_terminal_money": 3431.0,
+              "terminal_margin": 4780.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8211.0,
+              "opponent_terminal_money": 3431.0,
+              "terminal_margin": 4780.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        },
+        {
+          "episode_id": "starter-seed-33-player-0",
+          "seed": 33,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 408,
+            "day": 17,
+            "hour": 0,
+            "money": 5167.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 4,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 37,
+            "wheat_market_inventory": 9863
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8211.0,
+              "opponent_terminal_money": 3431.0,
+              "terminal_margin": 4780.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8211.0,
+              "opponent_terminal_money": 3431.0,
+              "terminal_margin": 4780.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        },
+        {
+          "episode_id": "starter-seed-33-player-0",
+          "seed": 33,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 432,
+            "day": 18,
+            "hour": 0,
+            "money": 5305.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 4,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 38,
+            "wheat_market_inventory": 9842
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8213.0,
+              "opponent_terminal_money": 3431.0,
+              "terminal_margin": 4782.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8211.0,
+              "opponent_terminal_money": 3431.0,
+              "terminal_margin": 4780.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -2.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-33-player-0",
+          "seed": 33,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 456,
+            "day": 19,
+            "hour": 0,
+            "money": 5435.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 8,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 39,
+            "wheat_market_inventory": 9815
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8216.0,
+              "opponent_terminal_money": 3431.0,
+              "terminal_margin": 4785.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8211.0,
+              "opponent_terminal_money": 3431.0,
+              "terminal_margin": 4780.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -5.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-33-player-0",
+          "seed": 33,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 504,
+            "day": 21,
+            "hour": 0,
+            "money": 6024.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 4,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 40,
+            "wheat_market_inventory": 9769
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8211.0,
+              "opponent_terminal_money": 3431.0,
+              "terminal_margin": 4780.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8211.0,
+              "opponent_terminal_money": 3431.0,
+              "terminal_margin": 4780.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        }
+      ],
+      "agent_sha256": "eee28ea012df8880c834e59d761a2551d0e9dd26f2ac55535fd1585586eba38a"
+    },
+    {
+      "episode_id": "starter-seed-34-player-0",
+      "seed": 34,
+      "agent_player": 0,
+      "baseline": {
+        "terminal_money": 8248.0,
+        "opponent_terminal_money": 3528.0,
+        "terminal_margin": 4720.0,
+        "status": "DONE",
+        "result": "win"
+      },
+      "rows": [
+        {
+          "episode_id": "starter-seed-34-player-0",
+          "seed": 34,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 120,
+            "day": 5,
+            "hour": 0,
+            "money": 2880.0,
+            "wheat_seeds": 5,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 1,
+            "wheat_market_price": 29,
+            "wheat_market_inventory": 9983
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8248.0,
+              "opponent_terminal_money": 3528.0,
+              "terminal_margin": 4720.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8111.0,
+              "opponent_terminal_money": 3528.0,
+              "terminal_margin": 4583.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -137.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-34-player-0",
+          "seed": 34,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 129,
+            "day": 5,
+            "hour": 9,
+            "money": 2880.0,
+            "wheat_seeds": 2,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 4,
+            "wheat_market_price": 30,
+            "wheat_market_inventory": 9979
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8248.0,
+              "opponent_terminal_money": 3528.0,
+              "terminal_margin": 4720.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8133.0,
+              "opponent_terminal_money": 3528.0,
+              "terminal_margin": 4605.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -115.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-34-player-0",
+          "seed": 34,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 153,
+            "day": 6,
+            "hour": 9,
+            "money": 2880.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 31,
+            "wheat_market_inventory": 9969
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8248.0,
+              "opponent_terminal_money": 3528.0,
+              "terminal_margin": 4720.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8173.0,
+              "opponent_terminal_money": 3528.0,
+              "terminal_margin": 4645.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -75.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-34-player-0",
+          "seed": 34,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 177,
+            "day": 7,
+            "hour": 9,
+            "money": 2880.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 32,
+            "wheat_market_inventory": 9956
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8248.0,
+              "opponent_terminal_money": 3528.0,
+              "terminal_margin": 4720.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8206.0,
+              "opponent_terminal_money": 3528.0,
+              "terminal_margin": 4678.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -42.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-34-player-0",
+          "seed": 34,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 201,
+            "day": 8,
+            "hour": 9,
+            "money": 2880.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 33,
+            "wheat_market_inventory": 9943
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8248.0,
+              "opponent_terminal_money": 3528.0,
+              "terminal_margin": 4720.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8230.0,
+              "opponent_terminal_money": 3528.0,
+              "terminal_margin": 4702.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -18.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-34-player-0",
+          "seed": 34,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 225,
+            "day": 9,
+            "hour": 9,
+            "money": 2870.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 28,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 34,
+            "wheat_market_inventory": 9927
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8248.0,
+              "opponent_terminal_money": 3528.0,
+              "terminal_margin": 4720.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8250.0,
+              "opponent_terminal_money": 3528.0,
+              "terminal_margin": 4722.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 2.0,
+            "preferred_choice": "SELL"
+          }
+        },
+        {
+          "episode_id": "starter-seed-34-player-0",
+          "seed": 34,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 249,
+            "day": 10,
+            "hour": 9,
+            "money": 2810.0,
+            "wheat_seeds": 2,
+            "shed_wheat": 48,
+            "carried_wheat": 0,
+            "planted_wheat": 4,
+            "wheat_market_price": 35,
+            "wheat_market_inventory": 9908
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8248.0,
+              "opponent_terminal_money": 3528.0,
+              "terminal_margin": 4720.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8248.0,
+              "opponent_terminal_money": 3528.0,
+              "terminal_margin": 4720.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        },
+        {
+          "episode_id": "starter-seed-34-player-0",
+          "seed": 34,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 360,
+            "day": 15,
+            "hour": 0,
+            "money": 4621.0,
+            "wheat_seeds": 2,
+            "shed_wheat": 16,
+            "carried_wheat": 0,
+            "planted_wheat": 4,
+            "wheat_market_price": 36,
+            "wheat_market_inventory": 9879
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8253.0,
+              "opponent_terminal_money": 3528.0,
+              "terminal_margin": 4725.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8248.0,
+              "opponent_terminal_money": 3528.0,
+              "terminal_margin": 4720.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -5.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-34-player-0",
+          "seed": 34,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 408,
+            "day": 17,
+            "hour": 0,
+            "money": 5182.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 4,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 37,
+            "wheat_market_inventory": 9845
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8252.0,
+              "opponent_terminal_money": 3528.0,
+              "terminal_margin": 4724.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8248.0,
+              "opponent_terminal_money": 3528.0,
+              "terminal_margin": 4720.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -4.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-34-player-0",
+          "seed": 34,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 432,
+            "day": 18,
+            "hour": 0,
+            "money": 5320.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 4,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 38,
+            "wheat_market_inventory": 9824
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8248.0,
+              "opponent_terminal_money": 3528.0,
+              "terminal_margin": 4720.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8248.0,
+              "opponent_terminal_money": 3528.0,
+              "terminal_margin": 4720.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        },
+        {
+          "episode_id": "starter-seed-34-player-0",
+          "seed": 34,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 456,
+            "day": 19,
+            "hour": 0,
+            "money": 5452.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 8,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 39,
+            "wheat_market_inventory": 9803
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8248.0,
+              "opponent_terminal_money": 3528.0,
+              "terminal_margin": 4720.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8248.0,
+              "opponent_terminal_money": 3528.0,
+              "terminal_margin": 4720.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        },
+        {
+          "episode_id": "starter-seed-34-player-0",
+          "seed": 34,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 480,
+            "day": 20,
+            "hour": 0,
+            "money": 5744.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 8,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 40,
+            "wheat_market_inventory": 9786
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8252.0,
+              "opponent_terminal_money": 3528.0,
+              "terminal_margin": 4724.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8248.0,
+              "opponent_terminal_money": 3528.0,
+              "terminal_margin": 4720.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -4.0,
+            "preferred_choice": "HOLD"
+          }
+        }
+      ],
+      "agent_sha256": "eee28ea012df8880c834e59d761a2551d0e9dd26f2ac55535fd1585586eba38a"
+    },
+    {
+      "episode_id": "starter-seed-35-player-0",
+      "seed": 35,
+      "agent_player": 0,
+      "baseline": {
+        "terminal_money": 7347.0,
+        "opponent_terminal_money": 3461.0,
+        "terminal_margin": 3886.0,
+        "status": "DONE",
+        "result": "win"
+      },
+      "rows": [
+        {
+          "episode_id": "starter-seed-35-player-0",
+          "seed": 35,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 145,
+            "day": 6,
+            "hour": 1,
+            "money": 2880.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 28,
+            "wheat_market_inventory": 9993
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 7347.0,
+              "opponent_terminal_money": 3461.0,
+              "terminal_margin": 3886.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 7476.0,
+              "opponent_terminal_money": 3461.0,
+              "terminal_margin": 4015.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 129.0,
+            "preferred_choice": "SELL"
+          }
+        },
+        {
+          "episode_id": "starter-seed-35-player-0",
+          "seed": 35,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 225,
+            "day": 9,
+            "hour": 9,
+            "money": 2870.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 28,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 29,
+            "wheat_market_inventory": 9987
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 7347.0,
+              "opponent_terminal_money": 3461.0,
+              "terminal_margin": 3886.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 7473.0,
+              "opponent_terminal_money": 3461.0,
+              "terminal_margin": 4012.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 126.0,
+            "preferred_choice": "SELL"
+          }
+        },
+        {
+          "episode_id": "starter-seed-35-player-0",
+          "seed": 35,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 253,
+            "day": 10,
+            "hour": 13,
+            "money": 2810.0,
+            "wheat_seeds": 1,
+            "shed_wheat": 48,
+            "carried_wheat": 0,
+            "planted_wheat": 5,
+            "wheat_market_price": 30,
+            "wheat_market_inventory": 9979
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 7347.0,
+              "opponent_terminal_money": 3461.0,
+              "terminal_margin": 3886.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 7336.0,
+              "opponent_terminal_money": 3461.0,
+              "terminal_margin": 3875.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -11.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-35-player-0",
+          "seed": 35,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 289,
+            "day": 12,
+            "hour": 1,
+            "money": 2810.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 48,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 31,
+            "wheat_market_inventory": 9968
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 7347.0,
+              "opponent_terminal_money": 3461.0,
+              "terminal_margin": 3886.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 7422.0,
+              "opponent_terminal_money": 3461.0,
+              "terminal_margin": 3961.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 75.0,
+            "preferred_choice": "SELL"
+          }
+        },
+        {
+          "episode_id": "starter-seed-35-player-0",
+          "seed": 35,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 329,
+            "day": 13,
+            "hour": 17,
+            "money": 2790.0,
+            "wheat_seeds": 1,
+            "shed_wheat": 52,
+            "carried_wheat": 4,
+            "planted_wheat": 5,
+            "wheat_market_price": 32,
+            "wheat_market_inventory": 9957
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 7347.0,
+              "opponent_terminal_money": 3461.0,
+              "terminal_margin": 3886.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 7472.0,
+              "opponent_terminal_money": 3461.0,
+              "terminal_margin": 4011.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 125.0,
+            "preferred_choice": "SELL"
+          }
+        },
+        {
+          "episode_id": "starter-seed-35-player-0",
+          "seed": 35,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 360,
+            "day": 15,
+            "hour": 0,
+            "money": 2750.0,
+            "wheat_seeds": 2,
+            "shed_wheat": 72,
+            "carried_wheat": 0,
+            "planted_wheat": 4,
+            "wheat_market_price": 32,
+            "wheat_market_inventory": 9949
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 7375.0,
+              "opponent_terminal_money": 3461.0,
+              "terminal_margin": 3914.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 7347.0,
+              "opponent_terminal_money": 3461.0,
+              "terminal_margin": 3886.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -28.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-35-player-0",
+          "seed": 35,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 481,
+            "day": 20,
+            "hour": 1,
+            "money": 4699.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 33,
+            "wheat_market_inventory": 9940
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 7347.0,
+              "opponent_terminal_money": 3461.0,
+              "terminal_margin": 3886.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 7303.0,
+              "opponent_terminal_money": 3461.0,
+              "terminal_margin": 3842.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -44.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-35-player-0",
+          "seed": 35,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 501,
+            "day": 20,
+            "hour": 21,
+            "money": 4689.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 24,
+            "carried_wheat": 4,
+            "planted_wheat": 6,
+            "wheat_market_price": 34,
+            "wheat_market_inventory": 9925
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 7347.0,
+              "opponent_terminal_money": 3461.0,
+              "terminal_margin": 3886.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 7327.0,
+              "opponent_terminal_money": 3461.0,
+              "terminal_margin": 3866.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -20.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-35-player-0",
+          "seed": 35,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 517,
+            "day": 21,
+            "hour": 13,
+            "money": 4689.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 28,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 35,
+            "wheat_market_inventory": 9908
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 7347.0,
+              "opponent_terminal_money": 3461.0,
+              "terminal_margin": 3886.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 7347.0,
+              "opponent_terminal_money": 3461.0,
+              "terminal_margin": 3886.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        },
+        {
+          "episode_id": "starter-seed-35-player-0",
+          "seed": 35,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 600,
+            "day": 25,
+            "hour": 0,
+            "money": 6269.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 4,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 37,
+            "wheat_market_inventory": 9867
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 7350.0,
+              "opponent_terminal_money": 3461.0,
+              "terminal_margin": 3889.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 7347.0,
+              "opponent_terminal_money": 3461.0,
+              "terminal_margin": 3886.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -3.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-35-player-0",
+          "seed": 35,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 624,
+            "day": 26,
+            "hour": 0,
+            "money": 6414.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 4,
+            "carried_wheat": 0,
+            "planted_wheat": 5,
+            "wheat_market_price": 38,
+            "wheat_market_inventory": 9840
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 7347.0,
+              "opponent_terminal_money": 3461.0,
+              "terminal_margin": 3886.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 7347.0,
+              "opponent_terminal_money": 3461.0,
+              "terminal_margin": 3886.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        },
+        {
+          "episode_id": "starter-seed-35-player-0",
+          "seed": 35,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 648,
+            "day": 27,
+            "hour": 0,
+            "money": 6566.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 8,
+            "carried_wheat": 0,
+            "planted_wheat": 3,
+            "wheat_market_price": 39,
+            "wheat_market_inventory": 9813
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 7350.0,
+              "opponent_terminal_money": 3461.0,
+              "terminal_margin": 3889.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 7347.0,
+              "opponent_terminal_money": 3461.0,
+              "terminal_margin": 3886.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -3.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-35-player-0",
+          "seed": 35,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 696,
+            "day": 29,
+            "hour": 0,
+            "money": 7187.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 4,
+            "carried_wheat": 0,
+            "planted_wheat": 0,
+            "wheat_market_price": 40,
+            "wheat_market_inventory": 9767
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 7347.0,
+              "opponent_terminal_money": 3461.0,
+              "terminal_margin": 3886.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 7347.0,
+              "opponent_terminal_money": 3461.0,
+              "terminal_margin": 3886.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        }
+      ],
+      "agent_sha256": "eee28ea012df8880c834e59d761a2551d0e9dd26f2ac55535fd1585586eba38a"
+    },
+    {
+      "episode_id": "starter-seed-36-player-0",
+      "seed": 36,
+      "agent_player": 0,
+      "baseline": {
+        "terminal_money": 7542.0,
+        "opponent_terminal_money": 3702.0,
+        "terminal_margin": 3840.0,
+        "status": "DONE",
+        "result": "win"
+      },
+      "rows": [
+        {
+          "episode_id": "starter-seed-36-player-0",
+          "seed": 36,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 120,
+            "day": 5,
+            "hour": 0,
+            "money": 2880.0,
+            "wheat_seeds": 5,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 1,
+            "wheat_market_price": 29,
+            "wheat_market_inventory": 9983
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 7542.0,
+              "opponent_terminal_money": 3702.0,
+              "terminal_margin": 3840.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 7456.0,
+              "opponent_terminal_money": 3702.0,
+              "terminal_margin": 3754.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -86.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-36-player-0",
+          "seed": 36,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 129,
+            "day": 5,
+            "hour": 9,
+            "money": 2880.0,
+            "wheat_seeds": 2,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 4,
+            "wheat_market_price": 30,
+            "wheat_market_inventory": 9979
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 7542.0,
+              "opponent_terminal_money": 3702.0,
+              "terminal_margin": 3840.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 7478.0,
+              "opponent_terminal_money": 3702.0,
+              "terminal_margin": 3776.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -64.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-36-player-0",
+          "seed": 36,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 165,
+            "day": 6,
+            "hour": 21,
+            "money": 2880.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 31,
+            "wheat_market_inventory": 9969
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 7542.0,
+              "opponent_terminal_money": 3702.0,
+              "terminal_margin": 3840.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 7518.0,
+              "opponent_terminal_money": 3702.0,
+              "terminal_margin": 3816.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -24.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-36-player-0",
+          "seed": 36,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 205,
+            "day": 8,
+            "hour": 13,
+            "money": 2880.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 32,
+            "wheat_market_inventory": 9957
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 7542.0,
+              "opponent_terminal_money": 3702.0,
+              "terminal_margin": 3840.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 7548.0,
+              "opponent_terminal_money": 3702.0,
+              "terminal_margin": 3846.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 6.0,
+            "preferred_choice": "SELL"
+          }
+        },
+        {
+          "episode_id": "starter-seed-36-player-0",
+          "seed": 36,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 253,
+            "day": 10,
+            "hour": 13,
+            "money": 2810.0,
+            "wheat_seeds": 1,
+            "shed_wheat": 48,
+            "carried_wheat": 0,
+            "planted_wheat": 5,
+            "wheat_market_price": 33,
+            "wheat_market_inventory": 9943
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 7542.0,
+              "opponent_terminal_money": 3702.0,
+              "terminal_margin": 3840.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 7495.0,
+              "opponent_terminal_money": 3702.0,
+              "terminal_margin": 3793.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -47.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-36-player-0",
+          "seed": 36,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 309,
+            "day": 12,
+            "hour": 21,
+            "money": 2800.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 48,
+            "carried_wheat": 4,
+            "planted_wheat": 6,
+            "wheat_market_price": 34,
+            "wheat_market_inventory": 9927
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 7542.0,
+              "opponent_terminal_money": 3702.0,
+              "terminal_margin": 3840.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 7558.0,
+              "opponent_terminal_money": 3702.0,
+              "terminal_margin": 3856.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 16.0,
+            "preferred_choice": "SELL"
+          }
+        },
+        {
+          "episode_id": "starter-seed-36-player-0",
+          "seed": 36,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 360,
+            "day": 15,
+            "hour": 0,
+            "money": 2750.0,
+            "wheat_seeds": 2,
+            "shed_wheat": 72,
+            "carried_wheat": 0,
+            "planted_wheat": 4,
+            "wheat_market_price": 34,
+            "wheat_market_inventory": 9913
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 7552.0,
+              "opponent_terminal_money": 3702.0,
+              "terminal_margin": 3850.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 7542.0,
+              "opponent_terminal_money": 3702.0,
+              "terminal_margin": 3840.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -10.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-36-player-0",
+          "seed": 36,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 529,
+            "day": 22,
+            "hour": 1,
+            "money": 4973.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 32,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 35,
+            "wheat_market_inventory": 9909
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 7542.0,
+              "opponent_terminal_money": 3702.0,
+              "terminal_margin": 3840.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 7542.0,
+              "opponent_terminal_money": 3702.0,
+              "terminal_margin": 3840.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        },
+        {
+          "episode_id": "starter-seed-36-player-0",
+          "seed": 36,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 600,
+            "day": 25,
+            "hour": 0,
+            "money": 6545.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 4,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 34,
+            "wheat_market_inventory": 9915
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 7542.0,
+              "opponent_terminal_money": 3702.0,
+              "terminal_margin": 3840.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 7542.0,
+              "opponent_terminal_money": 3702.0,
+              "terminal_margin": 3840.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        },
+        {
+          "episode_id": "starter-seed-36-player-0",
+          "seed": 36,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 624,
+            "day": 26,
+            "hour": 0,
+            "money": 6681.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 4,
+            "carried_wheat": 0,
+            "planted_wheat": 5,
+            "wheat_market_price": 35,
+            "wheat_market_inventory": 9900
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 7542.0,
+              "opponent_terminal_money": 3702.0,
+              "terminal_margin": 3840.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 7542.0,
+              "opponent_terminal_money": 3702.0,
+              "terminal_margin": 3840.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        },
+        {
+          "episode_id": "starter-seed-36-player-0",
+          "seed": 36,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 648,
+            "day": 27,
+            "hour": 0,
+            "money": 6821.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 8,
+            "carried_wheat": 0,
+            "planted_wheat": 3,
+            "wheat_market_price": 36,
+            "wheat_market_inventory": 9885
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 7545.0,
+              "opponent_terminal_money": 3702.0,
+              "terminal_margin": 3843.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 7542.0,
+              "opponent_terminal_money": 3702.0,
+              "terminal_margin": 3840.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -3.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-36-player-0",
+          "seed": 36,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 696,
+            "day": 29,
+            "hour": 0,
+            "money": 7394.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 4,
+            "carried_wheat": 0,
+            "planted_wheat": 0,
+            "wheat_market_price": 37,
+            "wheat_market_inventory": 9863
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 7542.0,
+              "opponent_terminal_money": 3702.0,
+              "terminal_margin": 3840.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 7542.0,
+              "opponent_terminal_money": 3702.0,
+              "terminal_margin": 3840.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        }
+      ],
+      "agent_sha256": "eee28ea012df8880c834e59d761a2551d0e9dd26f2ac55535fd1585586eba38a"
+    },
+    {
+      "episode_id": "starter-seed-37-player-0",
+      "seed": 37,
+      "agent_player": 0,
+      "baseline": {
+        "terminal_money": 8328.0,
+        "opponent_terminal_money": 3625.0,
+        "terminal_margin": 4703.0,
+        "status": "DONE",
+        "result": "win"
+      },
+      "rows": [
+        {
+          "episode_id": "starter-seed-37-player-0",
+          "seed": 37,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 120,
+            "day": 5,
+            "hour": 0,
+            "money": 2880.0,
+            "wheat_seeds": 5,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 1,
+            "wheat_market_price": 29,
+            "wheat_market_inventory": 9983
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8328.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4703.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8191.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4566.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -137.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-37-player-0",
+          "seed": 37,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 129,
+            "day": 5,
+            "hour": 9,
+            "money": 2880.0,
+            "wheat_seeds": 2,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 4,
+            "wheat_market_price": 30,
+            "wheat_market_inventory": 9979
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8328.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4703.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8213.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4588.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -115.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-37-player-0",
+          "seed": 37,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 153,
+            "day": 6,
+            "hour": 9,
+            "money": 2880.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 31,
+            "wheat_market_inventory": 9969
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8328.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4703.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8253.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4628.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -75.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-37-player-0",
+          "seed": 37,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 177,
+            "day": 7,
+            "hour": 9,
+            "money": 2880.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 32,
+            "wheat_market_inventory": 9956
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8328.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4703.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8286.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4661.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -42.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-37-player-0",
+          "seed": 37,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 201,
+            "day": 8,
+            "hour": 9,
+            "money": 2880.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 33,
+            "wheat_market_inventory": 9943
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8328.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4703.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8310.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4685.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -18.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-37-player-0",
+          "seed": 37,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 225,
+            "day": 9,
+            "hour": 9,
+            "money": 2870.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 28,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 34,
+            "wheat_market_inventory": 9927
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8328.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4703.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8330.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4705.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 2.0,
+            "preferred_choice": "SELL"
+          }
+        },
+        {
+          "episode_id": "starter-seed-37-player-0",
+          "seed": 37,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 249,
+            "day": 10,
+            "hour": 9,
+            "money": 2810.0,
+            "wheat_seeds": 2,
+            "shed_wheat": 48,
+            "carried_wheat": 0,
+            "planted_wheat": 4,
+            "wheat_market_price": 35,
+            "wheat_market_inventory": 9908
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8328.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4703.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8328.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4703.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        },
+        {
+          "episode_id": "starter-seed-37-player-0",
+          "seed": 37,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 336,
+            "day": 14,
+            "hour": 0,
+            "money": 4524.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 4,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 36,
+            "wheat_market_inventory": 9882
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8328.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4703.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8328.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4703.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        },
+        {
+          "episode_id": "starter-seed-37-player-0",
+          "seed": 37,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 360,
+            "day": 15,
+            "hour": 0,
+            "money": 4628.0,
+            "wheat_seeds": 2,
+            "shed_wheat": 16,
+            "carried_wheat": 0,
+            "planted_wheat": 4,
+            "wheat_market_price": 37,
+            "wheat_market_inventory": 9861
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8333.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4708.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8328.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4703.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -5.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-37-player-0",
+          "seed": 37,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 408,
+            "day": 17,
+            "hour": 0,
+            "money": 5201.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 4,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 38,
+            "wheat_market_inventory": 9827
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8328.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4703.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8328.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4703.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        },
+        {
+          "episode_id": "starter-seed-37-player-0",
+          "seed": 37,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 432,
+            "day": 18,
+            "hour": 0,
+            "money": 5343.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 4,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 39,
+            "wheat_market_inventory": 9806
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8328.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4703.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8328.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4703.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        },
+        {
+          "episode_id": "starter-seed-37-player-0",
+          "seed": 37,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 456,
+            "day": 19,
+            "hour": 0,
+            "money": 5479.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 8,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 40,
+            "wheat_market_inventory": 9779
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8328.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4703.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8328.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4703.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        }
+      ],
+      "agent_sha256": "eee28ea012df8880c834e59d761a2551d0e9dd26f2ac55535fd1585586eba38a"
+    },
+    {
+      "episode_id": "starter-seed-38-player-0",
+      "seed": 38,
+      "agent_player": 0,
+      "baseline": {
+        "terminal_money": 8446.0,
+        "opponent_terminal_money": 3421.0,
+        "terminal_margin": 5025.0,
+        "status": "DONE",
+        "result": "win"
+      },
+      "rows": [
+        {
+          "episode_id": "starter-seed-38-player-0",
+          "seed": 38,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 120,
+            "day": 5,
+            "hour": 0,
+            "money": 2880.0,
+            "wheat_seeds": 5,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 1,
+            "wheat_market_price": 29,
+            "wheat_market_inventory": 9983
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8446.0,
+              "opponent_terminal_money": 3421.0,
+              "terminal_margin": 5025.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8309.0,
+              "opponent_terminal_money": 3421.0,
+              "terminal_margin": 4888.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -137.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-38-player-0",
+          "seed": 38,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 129,
+            "day": 5,
+            "hour": 9,
+            "money": 2880.0,
+            "wheat_seeds": 2,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 4,
+            "wheat_market_price": 30,
+            "wheat_market_inventory": 9979
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8446.0,
+              "opponent_terminal_money": 3421.0,
+              "terminal_margin": 5025.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8331.0,
+              "opponent_terminal_money": 3421.0,
+              "terminal_margin": 4910.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -115.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-38-player-0",
+          "seed": 38,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 153,
+            "day": 6,
+            "hour": 9,
+            "money": 2880.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 31,
+            "wheat_market_inventory": 9969
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8446.0,
+              "opponent_terminal_money": 3421.0,
+              "terminal_margin": 5025.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8371.0,
+              "opponent_terminal_money": 3421.0,
+              "terminal_margin": 4950.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -75.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-38-player-0",
+          "seed": 38,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 177,
+            "day": 7,
+            "hour": 9,
+            "money": 2880.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 32,
+            "wheat_market_inventory": 9956
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8446.0,
+              "opponent_terminal_money": 3421.0,
+              "terminal_margin": 5025.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8404.0,
+              "opponent_terminal_money": 3421.0,
+              "terminal_margin": 4983.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -42.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-38-player-0",
+          "seed": 38,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 201,
+            "day": 8,
+            "hour": 9,
+            "money": 2880.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 33,
+            "wheat_market_inventory": 9943
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8446.0,
+              "opponent_terminal_money": 3421.0,
+              "terminal_margin": 5025.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8428.0,
+              "opponent_terminal_money": 3421.0,
+              "terminal_margin": 5007.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -18.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-38-player-0",
+          "seed": 38,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 225,
+            "day": 9,
+            "hour": 9,
+            "money": 2870.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 28,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 34,
+            "wheat_market_inventory": 9927
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8446.0,
+              "opponent_terminal_money": 3421.0,
+              "terminal_margin": 5025.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8448.0,
+              "opponent_terminal_money": 3421.0,
+              "terminal_margin": 5027.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 2.0,
+            "preferred_choice": "SELL"
+          }
+        },
+        {
+          "episode_id": "starter-seed-38-player-0",
+          "seed": 38,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 249,
+            "day": 10,
+            "hour": 9,
+            "money": 2810.0,
+            "wheat_seeds": 2,
+            "shed_wheat": 48,
+            "carried_wheat": 0,
+            "planted_wheat": 4,
+            "wheat_market_price": 35,
+            "wheat_market_inventory": 9908
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8446.0,
+              "opponent_terminal_money": 3421.0,
+              "terminal_margin": 5025.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8446.0,
+              "opponent_terminal_money": 3421.0,
+              "terminal_margin": 5025.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        },
+        {
+          "episode_id": "starter-seed-38-player-0",
+          "seed": 38,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 336,
+            "day": 14,
+            "hour": 0,
+            "money": 4524.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 4,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 36,
+            "wheat_market_inventory": 9882
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8446.0,
+              "opponent_terminal_money": 3421.0,
+              "terminal_margin": 5025.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8446.0,
+              "opponent_terminal_money": 3421.0,
+              "terminal_margin": 5025.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        },
+        {
+          "episode_id": "starter-seed-38-player-0",
+          "seed": 38,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 360,
+            "day": 15,
+            "hour": 0,
+            "money": 4628.0,
+            "wheat_seeds": 2,
+            "shed_wheat": 16,
+            "carried_wheat": 0,
+            "planted_wheat": 4,
+            "wheat_market_price": 37,
+            "wheat_market_inventory": 9861
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8452.0,
+              "opponent_terminal_money": 3421.0,
+              "terminal_margin": 5031.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8446.0,
+              "opponent_terminal_money": 3421.0,
+              "terminal_margin": 5025.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -6.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-38-player-0",
+          "seed": 38,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 408,
+            "day": 17,
+            "hour": 0,
+            "money": 5201.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 4,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 39,
+            "wheat_market_inventory": 9815
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8447.0,
+              "opponent_terminal_money": 3421.0,
+              "terminal_margin": 5026.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8446.0,
+              "opponent_terminal_money": 3421.0,
+              "terminal_margin": 5025.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -1.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-38-player-0",
+          "seed": 38,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 432,
+            "day": 18,
+            "hour": 0,
+            "money": 5346.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 4,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 40,
+            "wheat_market_inventory": 9788
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8448.0,
+              "opponent_terminal_money": 3421.0,
+              "terminal_margin": 5027.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8446.0,
+              "opponent_terminal_money": 3421.0,
+              "terminal_margin": 5025.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -2.0,
+            "preferred_choice": "HOLD"
+          }
+        }
+      ],
+      "agent_sha256": "eee28ea012df8880c834e59d761a2551d0e9dd26f2ac55535fd1585586eba38a"
+    },
+    {
+      "episode_id": "starter-seed-39-player-0",
+      "seed": 39,
+      "agent_player": 0,
+      "baseline": {
+        "terminal_money": 8308.0,
+        "opponent_terminal_money": 3625.0,
+        "terminal_margin": 4683.0,
+        "status": "DONE",
+        "result": "win"
+      },
+      "rows": [
+        {
+          "episode_id": "starter-seed-39-player-0",
+          "seed": 39,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 120,
+            "day": 5,
+            "hour": 0,
+            "money": 2880.0,
+            "wheat_seeds": 5,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 1,
+            "wheat_market_price": 29,
+            "wheat_market_inventory": 9983
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8308.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4683.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8171.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4546.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -137.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-39-player-0",
+          "seed": 39,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 129,
+            "day": 5,
+            "hour": 9,
+            "money": 2880.0,
+            "wheat_seeds": 2,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 4,
+            "wheat_market_price": 30,
+            "wheat_market_inventory": 9979
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8308.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4683.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8193.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4568.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -115.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-39-player-0",
+          "seed": 39,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 153,
+            "day": 6,
+            "hour": 9,
+            "money": 2880.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 31,
+            "wheat_market_inventory": 9969
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8308.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4683.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8233.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4608.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -75.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-39-player-0",
+          "seed": 39,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 177,
+            "day": 7,
+            "hour": 9,
+            "money": 2880.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 32,
+            "wheat_market_inventory": 9956
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8308.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4683.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8266.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4641.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -42.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-39-player-0",
+          "seed": 39,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 201,
+            "day": 8,
+            "hour": 9,
+            "money": 2880.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 24,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 33,
+            "wheat_market_inventory": 9943
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8308.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4683.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8290.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4665.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -18.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-39-player-0",
+          "seed": 39,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 225,
+            "day": 9,
+            "hour": 9,
+            "money": 2870.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 28,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 34,
+            "wheat_market_inventory": 9927
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "HOLD"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8308.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4683.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8310.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4685.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 2.0,
+            "preferred_choice": "SELL"
+          }
+        },
+        {
+          "episode_id": "starter-seed-39-player-0",
+          "seed": 39,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 249,
+            "day": 10,
+            "hour": 9,
+            "money": 2810.0,
+            "wheat_seeds": 2,
+            "shed_wheat": 48,
+            "carried_wheat": 0,
+            "planted_wheat": 4,
+            "wheat_market_price": 35,
+            "wheat_market_inventory": 9908
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8308.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4683.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8308.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4683.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        },
+        {
+          "episode_id": "starter-seed-39-player-0",
+          "seed": 39,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 360,
+            "day": 15,
+            "hour": 0,
+            "money": 4621.0,
+            "wheat_seeds": 2,
+            "shed_wheat": 16,
+            "carried_wheat": 0,
+            "planted_wheat": 4,
+            "wheat_market_price": 36,
+            "wheat_market_inventory": 9879
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8313.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4688.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8308.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4683.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -5.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-39-player-0",
+          "seed": 39,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 408,
+            "day": 17,
+            "hour": 0,
+            "money": 5182.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 4,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 37,
+            "wheat_market_inventory": 9845
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8312.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4687.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8308.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4683.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": -4.0,
+            "preferred_choice": "HOLD"
+          }
+        },
+        {
+          "episode_id": "starter-seed-39-player-0",
+          "seed": 39,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 432,
+            "day": 18,
+            "hour": 0,
+            "money": 5320.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 4,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 38,
+            "wheat_market_inventory": 9824
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8308.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4683.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8308.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4683.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        },
+        {
+          "episode_id": "starter-seed-39-player-0",
+          "seed": 39,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 456,
+            "day": 19,
+            "hour": 0,
+            "money": 5452.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 8,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 39,
+            "wheat_market_inventory": 9797
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8308.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4683.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8308.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4683.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        },
+        {
+          "episode_id": "starter-seed-39-player-0",
+          "seed": 39,
+          "agent_player": 0,
+          "features": {
+            "decision_observation_step": 480,
+            "day": 20,
+            "hour": 0,
+            "money": 5744.0,
+            "wheat_seeds": 0,
+            "shed_wheat": 8,
+            "carried_wheat": 0,
+            "planted_wheat": 6,
+            "wheat_market_price": 40,
+            "wheat_market_inventory": 9774
+          },
+          "intervention": {
+            "definition": "force one HOLD or SELL WHEAT order, preserve all other actions, then return to frozen policy",
+            "baseline_choice": "SELL"
+          },
+          "outcomes": {
+            "hold": {
+              "terminal_money": 8308.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4683.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell": {
+              "terminal_money": 8308.0,
+              "opponent_terminal_money": 3625.0,
+              "terminal_margin": 4683.0,
+              "status": "DONE",
+              "result": "win"
+            },
+            "sell_minus_hold_terminal_coins": 0.0,
+            "preferred_choice": "TIE"
+          }
+        }
+      ],
+      "agent_sha256": "eee28ea012df8880c834e59d761a2551d0e9dd26f2ac55535fd1585586eba38a"
+    }
+  ],
+  "summary": {
+    "episodes": 10,
+    "counterfactual_states": 120,
+    "preferred_choices": {
+      "HOLD": 71,
+      "SELL": 13,
+      "TIE": 36
+    },
+    "mean_sell_minus_hold_terminal_coins": -25.9917
+  },
+  "complete": true
+}
