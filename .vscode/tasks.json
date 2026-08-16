@@ -30,6 +30,13 @@
 			"command": "C:\\Progra~1\\Git\\cmd\\git.exe add .vscode/tasks.json; C:\\Progra~1\\Git\\cmd\\git.exe commit -m 'chore: add validation and publish tasks'; C:\\Progra~1\\Git\\cmd\\git.exe push origin main",
 			"isBackground": false,
 			"problemMatcher": []
+		},
+		{
+			"label": "Publish Linguist fix",
+			"type": "shell",
+			"command": "C:\\Progra~1\\Git\\cmd\\git.exe add .gitattributes .vscode/tasks.json; C:\\Progra~1\\Git\\cmd\\git.exe commit -m 'chore: exclude generated evidence from language stats'; C:\\Progra~1\\Git\\cmd\\git.exe push origin main",
+			"isBackground": false,
+			"problemMatcher": []
 		}
 	]
 }
