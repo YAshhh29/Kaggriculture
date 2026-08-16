@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Captioned Kaggriculture Replay</title>
+  <style>
+    :root { color-scheme: dark; font-family: Segoe UI, sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #101412; color: #edf2ed; }
+    main { display: grid; grid-template-columns: minmax(0, 1fr) 360px; height: 100vh; }
+    iframe { width: 100%; height: 100%; border: 0; background: #182019; }
+    aside { padding: 18px; overflow: auto; border-left: 1px solid #3d493f; background: #151a17; }
+    h1 { margin: 0 0 6px; font-size: 20px; }
+    h2 { margin: 20px 0 8px; font-size: 13px; color: #aab6ac; text-transform: uppercase; }
+    p { margin: 7px 0; line-height: 1.4; }
+    .step { color: #8fd29b; font-weight: 700; }
+    .action { font-size: 18px; font-weight: 700; }
+    .market { color: #f0c879; }
+    .money { font-variant-numeric: tabular-nums; }
+    .muted { color: #9ba59d; }
+    .pill { display: inline-block; padding: 3px 7px; border: 1px solid #58645a; border-radius: 4px; margin: 2px 3px 2px 0; font-size: 12px; }
+    code { color: #d9e8db; }
+    @media (max-width: 900px) {
+      main { grid-template-columns: 1fr; grid-template-rows: 60vh auto; height: auto; min-height: 100vh; }
+      aside { border-left: 0; border-top: 1px solid #3d493f; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <iframe id="replay" title="Official Kaggriculture visualizer"></iframe>
+    <aside>
+      <h1>What the farmer is doing</h1>
+      <p class="muted">Captions follow the official visualizer slider.</p>
+      <p id="step" class="step">Loading audit...</p>
+      <p id="action" class="action"></p>
+      <p id="reason"></p>
+      <p id="position"></p>
+      <h2>Market</h2>
+      <p id="market" class="market"></p>
+      <h2>Money and inventory</h2>
+      <p id="money" class="money"></p>
+      <p id="inventory"></p>
+      <h2>Resulting changes</h2>
+      <p id="changes"></p>
+      <h2>Legend</h2>
+      <p><span class="pill">Move</span><span class="pill">Plant</span><span class="pill">Water</span><span class="pill">Harvest</span><span class="pill">Sell/Buy</span></p>
+    </aside>
+  </main>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const replayUrl = params.get('replay') || 'artifacts/v1327-agent-v9-vs-starter-seed11-720.html';
+    const auditUrl = params.get('audit') || 'artifacts/v1327-agent-v9-vs-starter-seed11-720-audit.json';
+    const frame = document.getElementById('replay');
+    frame.src = replayUrl;
+    let audit;
+
+    const reasons = {
+      NORTH: 'Move one tile north toward the next selected farm task.',
+      SOUTH: 'Move one tile south toward the next selected farm task.',
+      EAST: 'Move one tile east toward the next selected farm task.',
+      WEST: 'Move one tile west toward the next selected farm task.',
+      PLANT: 'Use a purchased seed to start a new crop on this empty tile.',
+      WATER: 'Water this crop for today; fresh crops must be watered before day end.',
+      HARVEST: 'Collect the crop yield into the farmer inventory.',
+      PASS: 'No higher-priority farm task is currently available.',
+      FERTILIZE: 'Apply one carried fertilizer unit to increase future yield.',
+      DIG: 'Clear the current tile.',
+      FEED: 'Feed the animal using carried wheat.',
+      CARE: 'Care for the animal to bank a future yield bonus.',
+      COLLECT_FERTILIZER: 'Collect the animal fertilizer available today.'
+    };
+
+    function text(id, value) { document.getElementById(id).textContent = value; }
+    function formatOrders(orders) {
+      if (!orders || !orders.length) return 'No market order this step.';
+      return orders.map(order => order.join(' ')).join(' | ');
+    }
+    function formatChanges(changes) {
+      const parts = [];
+      if (changes.created_plants.length) parts.push(`Planted at ${changes.created_plants.map(x => `(${x.tile.join(',')})`).join(', ')}`);
+      if (changes.removed_plants.length) parts.push(`Plant removed at ${changes.removed_plants.map(x => `(${x.tile.join(',')})`).join(', ')}`);
+      if (changes.created_weeds.length) parts.push(`Weed appeared at ${changes.created_weeds.map(x => `(${x.tile.join(',')})`).join(', ')}`);
+      return parts.join(' | ') || 'No tile-type change.';
+    }
+    function render(index) {
+      if (!audit) return;
+      const record = audit.records[Math.max(0, Math.min(index, audit.records.length - 1))];
+      if (record.record_type === 'initialized_state') {
+        text('step', 'Record 1 / 720 — initialized farm');
+        text('action', 'Initial state');
+        text('reason', 'The environment has initialized both farms; no agent transition has executed yet.');
+        text('position', `Farmer at (${record.state.farmer.join(', ')})`);
+        text('market', 'No market order.');
+        text('money', `Bank: ${record.state.money}`);
+        text('inventory', `Seeds ${record.state.wheat_seeds} | Shed wheat ${record.state.shed_wheat} | Carried wheat ${record.state.carried_wheat}`);
+        text('changes', 'Empty starting farm.');
+        return;
+      }
+      const op = record.farmer_operation;
+      const target = record.next_observed_task;
+      const movementReason = target ? `${reasons[op]} Next observed task: ${target.operation} at (${target.position.join(', ')}).` : reasons[op];
+      text('step', `Record ${record.record_index + 1} / 720 — day ${record.day + 1}, hour ${record.hour + 1}`);
+      text('action', record.farmer_action.join(' '));
+      text('reason', movementReason || 'Execute the selected action.');
+      text('position', `Position (${record.position_before.join(', ')}) → (${record.position_after.join(', ')})`);
+      text('market', formatOrders(record.market_orders));
+      const cash = record.cash_flow;
+      text('money', `Bank ${cash.money_before} → ${cash.money_after} (${cash.net_money_delta >= 0 ? '+' : ''}${cash.net_money_delta})`);
+      const after = record.state_after;
+      text('inventory', `Seeds ${after.wheat_seeds} | Planted wheat ${after.planted_wheat} | Shed wheat ${after.shed_wheat} | Carried wheat ${after.carried_wheat} | Market price ${after.wheat_market_price}`);
+      text('changes', formatChanges(record.board_changes));
+    }
+
+    fetch(auditUrl).then(response => {
+      if (!response.ok) throw new Error(`Audit fetch failed: ${response.status}`);
+      return response.json();
+    }).then(data => {
+      audit = data;
+      render(0);
+      const timer = setInterval(() => {
+        const slider = frame.contentDocument?.querySelector('input[type="range"]');
+        if (slider) render(Number(slider.value));
+      }, 100);
+      addEventListener('beforeunload', () => clearInterval(timer));
+    }).catch(error => {
+      text('step', 'Could not load audit');
+      text('reason', error.message);
+    });
+  </script>
+</body>
+</html>
