@@ -189,6 +189,74 @@
     "model_report": "artifacts/models/v1327-market-value-tree-depth2-seeds30-39.json",
     "grid_report": "artifacts/models/v1327-market-value-tree-grid-seeds30-39.json"
   },
+  "second_overnight_run": {
+    "repository": "https://github.com/YAshhh29/Kaggriculture",
+    "initial_push_commits": 14,
+    "broad_counterfactual_dataset": {
+      "development_seeds": "30-39",
+      "sampled_prices": "28-40",
+      "states": 120,
+      "preferred_hold": 71,
+      "preferred_sell": 13,
+      "ties": 36,
+      "checkpointed": true,
+      "dataset": "artifacts/datasets/v1327-v9-market-counterfactuals-broad-seeds30-39.json"
+    },
+    "selected_experimental_policy": {
+      "status": "research only; not promoted",
+      "model": "standardized ridge regression",
+      "alpha": 100,
+      "minimum_predicted_sell_advantage": 8,
+      "trained_price_range": [
+        28,
+        40
+      ],
+      "hard_safety_rules": [
+        "sell at 72 shed wheat",
+        "liquidate from day 25",
+        "fall back to v9 outside prices 28-40",
+        "preserve all farmer and seed decisions"
+      ],
+      "agent": "experimental_ridge_agent.py"
+    },
+    "development_rollout": {
+      "seeds": "30-39",
+      "positions": [
+        0,
+        1
+      ],
+      "wins": 20,
+      "v9_mean_coins": 8093.8,
+      "candidate_mean_coins": 8250.2,
+      "mean_gain": 156.4,
+      "improved_seeds": 10,
+      "worse_seeds": 0,
+      "production_preserved": true,
+      "report": "artifacts/benchmarks/v1327-experimental-ridge-threshold8-vs-v9-dev-paired.json"
+    },
+    "fresh_holdout": {
+      "seeds": "40-49",
+      "positions": [
+        0,
+        1
+      ],
+      "wins": 20,
+      "v9_mean_coins": 7972.4,
+      "candidate_mean_coins": 8088.4,
+      "mean_gain": 116,
+      "improved_seeds": 9,
+      "worse_seeds": 1,
+      "worst_seed": 48,
+      "worst_delta": -25,
+      "one_sided_seed_sign_test_p_value": 0.0107421875,
+      "production_preserved": true,
+      "all_harvested_wheat_sold": true,
+      "report": "artifacts/benchmarks/v1327-experimental-ridge-threshold8-vs-v9-fresh-holdout-paired.json"
+    },
+    "decision": "keep v9; the learned candidate improved average cash and 9 of 10 fresh seeds but failed the every-seed consistency gate",
+    "spent_holdout_seeds": "40-49",
+    "next_untouched_holdout_seeds": "50-59"
+  },
   "threshold_refinement": {
     "tuning_seeds": "30-39",
     "fixed_safety_rules": {
@@ -237,13 +305,13 @@
       "sample broader prices, days, and stock levels with policy-hash and seed provenance",
       "group train and validation splits by seed so both player positions never cross splits",
       "require a state-dependent model to beat v9 leave-one-seed-out regret before any full policy rollout",
-      "reserve seeds 40-49 as the next untouched promotion holdout"
+      "reserve seeds 50-59 as the next untouched promotion holdout"
     ],
     "gate": {
       "simulator_version": "1.32.7",
       "opponent": "starter",
       "development_seeds": "30-39",
-      "next_untouched_holdout_seeds": "40-49",
+      "next_untouched_holdout_seeds": "50-59",
       "positions": [
         0,
         1

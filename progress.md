@@ -9,8 +9,8 @@ approach.
 
 ## Current Objective
 
-Collect counterfactual outcomes for alternative legal hold/sell decisions while
-keeping promoted v9 frozen as the deterministic submission control.
+Explain and reduce the learned policy's rare timing regressions while keeping
+promoted v9 frozen as the deterministic submission control.
 
 Status: simulator 1.32.7 is installed in the existing project-local `.conda`.
 V9 passed a new generalization check against immediate sale, a checkpointed
@@ -18,6 +18,97 @@ V9 passed a new generalization check against immediate sale, a checkpointed
 and 36 were evaluated with separate tuning and holdout seeds. Threshold 36 was
 promising but did not satisfy the predeclared every-seed holdout gate, so
 `main.py` correctly remains unchanged at threshold 35.
+
+### Second Overnight Run: Broader Labels And Full Learned Rollouts
+
+The repository was initialized and pushed to
+`https://github.com/YAshhh29/Kaggriculture` as 14 logical commits before this
+run. Local environments and caches remain excluded; source, tests, reports,
+datasets, audits, replays, and visual evidence are tracked.
+
+The counterfactual collector was then made resumable. Its checkpoint records
+the simulator version, agent hash, seed range, positions, sampled prices, and
+branch limit. It refuses to append incompatible data and writes after every
+completed seed, so interrupted state-branch runs no longer lose finished work.
+
+We expanded development-only counterfactual coverage from prices 34-36 to
+28-40 on seeds 30-39. The resulting dataset has 120 states:
+
+| Counterfactual label | States |
+| --- | ---: |
+| HOLD preferred | 71 |
+| SELL preferred | 13 |
+| Tie | 36 |
+| Total | 120 |
+
+Dataset:
+`artifacts/datasets/v1327-v9-market-counterfactuals-broad-seeds30-39.json`.
+
+Model evaluation now reports total and worst-seed one-step regret. A grid of
+20 shallow trees and 5 standardized ridge models was evaluated by leaving one
+entire seed out at a time. V9 had 604 total regret and 489 worst-seed regret.
+Several numerical winners were actually constant HOLD policies, so the model
+gate was tightened to require both HOLD and SELL predictions.
+
+The selected genuinely state-dependent family was ridge regression with
+`alpha=100`. It initially made 21 SELL predictions and reduced total regret to
+541 and worst-seed regret to 458. A development-only confidence grid selected
+an 8-coin minimum predicted SELL advantage; that reduced SELL predictions to 3
+and regret to 494 total / 455 worst seed.
+
+We embedded those fixed coefficients in `experimental_ridge_agent.py`, not in
+the submission. The wrapper preserves v9's farmer, seed, 72-unit inventory cap,
+day-25 liquidation, and out-of-training-range fallback. It changes only wheat
+HOLD/SELL within prices 28-40 when predicted advantage exceeds 8 coins.
+
+Full policy rollout on development seeds 30-39:
+
+| Metric | V9 | Guarded ridge | Difference |
+| --- | ---: | ---: | ---: |
+| Wins | 20 | 20 | Preserved |
+| Mean coins | 8,093.8 | 8,250.2 | +156.4 |
+| Improved independent seeds | - | 10 / 10 | Passed |
+| Harvested and sold wheat | 2,960 | 2,960 | 0 |
+
+This passed the development gate, so the fully frozen candidate was evaluated
+once on untouched seeds 40-49. No further tuning occurred before that run.
+
+Fresh holdout result:
+
+| Metric | V9 | Guarded ridge | Difference |
+| --- | ---: | ---: | ---: |
+| Wins | 20 | 20 | Preserved |
+| Mean coins | 7,972.4 | 8,088.4 | +116.0 |
+| Minimum coins | 7,208 | 7,183 | -25 |
+| Maximum coins | 8,450 | 8,647 | +197 |
+| Improved independent seeds | - | 9 / 10 | One regression |
+| Harvested and sold wheat | 2,960 | 2,960 | 0 |
+
+The seed-level one-sided sign-test probability is 0.0107421875. The candidate
+improved nine fresh seeds by 34-197 coins but lost seed 48 by 25 coins. A trace
+showed only three differing sale moments; the first was a day-22 sale of 32
+wheat at price 34 with a predicted +14.49 advantage. That intervention changed
+later inventory timing and ultimately reduced terminal cash.
+
+Decision: do not promote. The learned policy is a strong research candidate,
+but it failed the predeclared every-seed consistency gate. `main.py` remains v9
+threshold 35. Seeds 40-49 are now spent holdout data and cannot be used to tune
+another candidate. The next untouched range begins at seed 50.
+
+Key second-run artifacts:
+
+- broad labels:
+  `artifacts/datasets/v1327-v9-market-counterfactuals-broad-seeds30-39.json`;
+- model grid:
+  `artifacts/models/v1327-market-model-grid-broad-seeds30-39.json`;
+- confidence grid:
+  `artifacts/models/v1327-market-ridge-alpha100-threshold-grid.json`;
+- development paired report:
+  `artifacts/benchmarks/v1327-experimental-ridge-threshold8-vs-v9-dev-paired.json`;
+- fresh holdout paired report:
+  `artifacts/benchmarks/v1327-experimental-ridge-threshold8-vs-v9-fresh-holdout-paired.json`;
+- seed-48 failure trace:
+  `artifacts/diagnostics/ridge-threshold8-vs-v9-seed48-trace.json`.
 
 Current baseline report:
 
@@ -89,7 +180,8 @@ consistent timing difference.
 
 Decision: reject threshold 36 under the predeclared every-seed promotion gate
 and keep v9 threshold 35. Seeds 20-29 are now spent holdout data and must not be
-used to select another candidate. The next untouched holdout is 40-49.
+used to select another candidate. At that point, 40-49 became the next untouched
+holdout; the later guarded-ridge experiment below has now spent it.
 
 New tooling:
 
@@ -956,14 +1048,15 @@ candidate was rejected.
 ## What Comes Next
 
 1. Keep v9 threshold 35 frozen; do not retune against spent seeds 20-29.
-2. Broaden counterfactual states beyond prices 34-36 and cover more days and
-  inventory levels on development seeds.
+2. Investigate sequence-aware market labels: one-step interventions can change
+  future inventory and make individually good-looking sales interact badly.
 3. Keep model validation grouped by seed, never by individual row or player
   position.
-4. Require a state-dependent model to beat v9's leave-one-seed-out regret before
-  any full policy rollout.
+4. Require the next candidate to beat v9 on seed-grouped regret and on every
+  development seed before any full policy rollout.
 5. Retain deterministic legality, capacity, liquidation, and v9 fallback rules.
-6. Spend fresh seeds 40-49 only once on the final selected learned candidate.
+6. Treat seeds 40-49 as spent; reserve seeds 50-59 for the next truly frozen
+  candidate only.
 
 ## Experiment Log
 
@@ -998,3 +1091,6 @@ candidate was rejected.
 | Counterfactual dataset | Seeds 30-39, one position | 28 states: 7 HOLD, 8 SELL, 13 ties | Development evidence |
 | Depth-2 value tree | Leave-one-seed-out | Regret 91 vs v9 62 | Rejected |
 | Depth-0 value baseline | Leave-one-seed-out | Regret 33 vs v9 62 | Research baseline only; not conditional |
+| Broad counterfactual data | Seeds 30-39, prices 28-40 | 120 states: 71 HOLD, 13 SELL, 36 ties | Development evidence |
+| Guarded ridge rollout | Seeds 30-39, both positions | Mean 8,250.2; +156.4; 10/10 seeds improved | Development passed |
+| Guarded ridge rollout | Fresh seeds 40-49, both positions | Mean 8,088.4; +116.0; 9/10 seeds improved | Not promoted |

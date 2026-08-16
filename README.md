@@ -241,10 +241,17 @@ v9 rather than prove a better choice. Deterministic state branching has now
 produced 28 true one-step counterfactual labels across prices 34-36: 7 prefer
 HOLD, 8 prefer SELL, and 13 tie. A shallow value tree was evaluated by leaving
 one seed out at a time, but its 91-coin regret was worse than v9's 62, so it was
-not promoted. The next step is broader counterfactual coverage before another
-model fit; fresh seeds 40-49 remain reserved for one final selected candidate.
-Offline RL or self-play remains later work, after a state-dependent value model
-can first beat v9 under seed-grouped validation.
+not promoted. That led to broader counterfactual coverage and the guarded ridge
+experiment described next. Offline RL or self-play remains later work, after a
+state-dependent value model can pass the full consistency gate.
+
+The next research run broadened true counterfactual coverage to 120 states over
+prices 28-40 and produced a guarded ridge policy. It improved every development
+seed by 156.4 coins on average. On fresh seeds 40-49 it preserved all 20 wins,
+all production, and gained 116 coins on average, but seed 48 lost 25 coins.
+Therefore the learned policy remains in `experimental_ridge_agent.py`; the
+submission in `main.py` is still v9. Seeds 40-49 are spent, and 50-59 are the
+next untouched holdout.
 
 Before submitting, accept the competition rules in the browser. API credentials
 are useful later for automation but are not needed to understand or test the
