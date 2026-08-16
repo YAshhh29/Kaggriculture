@@ -1,0 +1,756 @@
+{
+  "created_at": "2026-08-15T07:24:46.322839+00:00",
+  "agent": "C:\\Users\\Oyash\\Desktop\\Kaggriculture\\main.py",
+  "agent_sha256": "1e55b930d8aab64e50f5db0c5542ba9da431f91fb76c1e0be6d8a14272151f94",
+  "opponent": "starter",
+  "episode_steps": 720,
+  "seed_start": 0,
+  "seed_count": 10,
+  "positions": [
+    0,
+    1
+  ],
+  "parameters": {
+    "last_planting_day": 24
+  },
+  "simulator_version": "1.32.3",
+  "complete": true,
+  "summary": {
+    "games": 20,
+    "completed": 20,
+    "wins": 20,
+    "losses": 0,
+    "ties": 0,
+    "errors": 0,
+    "win_rate": 1.0,
+    "score_rate": 1.0,
+    "agent_actions": {
+      "farmer": {
+        "EAST": 232,
+        "HARVEST": 740,
+        "NORTH": 2361,
+        "PASS": 4960,
+        "PLANT": 760,
+        "SOUTH": 1068,
+        "WATER": 3700,
+        "WEST": 579
+      },
+      "market": {
+        "BUY_SEED": 660,
+        "SELL": 380
+      },
+      "market_units": {
+        "BUY_SEED:WHEAT": 760,
+        "SELL:WHEAT": 2960
+      }
+    },
+    "final_inventory_totals": {
+      "shed": {},
+      "carried": {},
+      "seeds": {}
+    },
+    "by_player": {
+      "0": {
+        "games": 10,
+        "wins": 10,
+        "losses": 0,
+        "ties": 0,
+        "errors": 0
+      },
+      "1": {
+        "games": 10,
+        "wins": 10,
+        "losses": 0,
+        "ties": 0,
+        "errors": 0
+      }
+    },
+    "mean_agent_coins": 7894.1,
+    "min_agent_coins": 7473.0,
+    "max_agent_coins": 8367.0,
+    "mean_opponent_coins": 3503.2,
+    "mean_margin": 4390.9
+  },
+  "games": [
+    {
+      "seed": 0,
+      "agent_player": 0,
+      "agent_reward": 8181.0,
+      "opponent_reward": 3499.0,
+      "agent_status": "DONE",
+      "opponent_status": "DONE",
+      "result": "win",
+      "agent_actions": {
+        "farmer": {
+          "EAST": 11,
+          "HARVEST": 37,
+          "NORTH": 119,
+          "PASS": 248,
+          "PLANT": 38,
+          "SOUTH": 54,
+          "WATER": 185,
+          "WEST": 28
+        },
+        "market": {
+          "BUY_SEED": 33,
+          "SELL": 19
+        },
+        "market_units": {
+          "BUY_SEED:WHEAT": 38,
+          "SELL:WHEAT": 148
+        }
+      },
+      "final_inventory": {
+        "shed": {},
+        "carried": {},
+        "seeds": {}
+      }
+    },
+    {
+      "seed": 0,
+      "agent_player": 1,
+      "agent_reward": 8181.0,
+      "opponent_reward": 3499.0,
+      "agent_status": "DONE",
+      "opponent_status": "DONE",
+      "result": "win",
+      "agent_actions": {
+        "farmer": {
+          "EAST": 11,
+          "HARVEST": 37,
+          "NORTH": 119,
+          "PASS": 248,
+          "PLANT": 38,
+          "SOUTH": 54,
+          "WATER": 185,
+          "WEST": 28
+        },
+        "market": {
+          "BUY_SEED": 33,
+          "SELL": 19
+        },
+        "market_units": {
+          "BUY_SEED:WHEAT": 38,
+          "SELL:WHEAT": 148
+        }
+      },
+      "final_inventory": {
+        "shed": {},
+        "carried": {},
+        "seeds": {}
+      }
+    },
+    {
+      "seed": 1,
+      "agent_player": 0,
+      "agent_reward": 7586.0,
+      "opponent_reward": 3514.0,
+      "agent_status": "DONE",
+      "opponent_status": "DONE",
+      "result": "win",
+      "agent_actions": {
+        "farmer": {
+          "EAST": 11,
+          "HARVEST": 37,
+          "NORTH": 119,
+          "PASS": 248,
+          "PLANT": 38,
+          "SOUTH": 54,
+          "WATER": 185,
+          "WEST": 28
+        },
+        "market": {
+          "BUY_SEED": 33,
+          "SELL": 19
+        },
+        "market_units": {
+          "BUY_SEED:WHEAT": 38,
+          "SELL:WHEAT": 148
+        }
+      },
+      "final_inventory": {
+        "shed": {},
+        "carried": {},
+        "seeds": {}
+      }
+    },
+    {
+      "seed": 1,
+      "agent_player": 1,
+      "agent_reward": 7586.0,
+      "opponent_reward": 3514.0,
+      "agent_status": "DONE",
+      "opponent_status": "DONE",
+      "result": "win",
+      "agent_actions": {
+        "farmer": {
+          "EAST": 11,
+          "HARVEST": 37,
+          "NORTH": 119,
+          "PASS": 248,
+          "PLANT": 38,
+          "SOUTH": 54,
+          "WATER": 185,
+          "WEST": 28
+        },
+        "market": {
+          "BUY_SEED": 33,
+          "SELL": 19
+        },
+        "market_units": {
+          "BUY_SEED:WHEAT": 38,
+          "SELL:WHEAT": 148
+        }
+      },
+      "final_inventory": {
+        "shed": {},
+        "carried": {},
+        "seeds": {}
+      }
+    },
+    {
+      "seed": 2,
+      "agent_player": 0,
+      "agent_reward": 7473.0,
+      "opponent_reward": 3514.0,
+      "agent_status": "DONE",
+      "opponent_status": "DONE",
+      "result": "win",
+      "agent_actions": {
+        "farmer": {
+          "EAST": 11,
+          "HARVEST": 37,
+          "NORTH": 119,
+          "PASS": 248,
+          "PLANT": 38,
+          "SOUTH": 54,
+          "WATER": 185,
+          "WEST": 28
+        },
+        "market": {
+          "BUY_SEED": 33,
+          "SELL": 19
+        },
+        "market_units": {
+          "BUY_SEED:WHEAT": 38,
+          "SELL:WHEAT": 148
+        }
+      },
+      "final_inventory": {
+        "shed": {},
+        "carried": {},
+        "seeds": {}
+      }
+    },
+    {
+      "seed": 2,
+      "agent_player": 1,
+      "agent_reward": 7473.0,
+      "opponent_reward": 3514.0,
+      "agent_status": "DONE",
+      "opponent_status": "DONE",
+      "result": "win",
+      "agent_actions": {
+        "farmer": {
+          "EAST": 11,
+          "HARVEST": 37,
+          "NORTH": 119,
+          "PASS": 248,
+          "PLANT": 38,
+          "SOUTH": 54,
+          "WATER": 185,
+          "WEST": 28
+        },
+        "market": {
+          "BUY_SEED": 33,
+          "SELL": 19
+        },
+        "market_units": {
+          "BUY_SEED:WHEAT": 38,
+          "SELL:WHEAT": 148
+        }
+      },
+      "final_inventory": {
+        "shed": {},
+        "carried": {},
+        "seeds": {}
+      }
+    },
+    {
+      "seed": 3,
+      "agent_player": 0,
+      "agent_reward": 8367.0,
+      "opponent_reward": 3496.0,
+      "agent_status": "DONE",
+      "opponent_status": "DONE",
+      "result": "win",
+      "agent_actions": {
+        "farmer": {
+          "EAST": 11,
+          "HARVEST": 37,
+          "NORTH": 119,
+          "PASS": 248,
+          "PLANT": 38,
+          "SOUTH": 54,
+          "WATER": 185,
+          "WEST": 28
+        },
+        "market": {
+          "BUY_SEED": 33,
+          "SELL": 19
+        },
+        "market_units": {
+          "BUY_SEED:WHEAT": 38,
+          "SELL:WHEAT": 148
+        }
+      },
+      "final_inventory": {
+        "shed": {},
+        "carried": {},
+        "seeds": {}
+      }
+    },
+    {
+      "seed": 3,
+      "agent_player": 1,
+      "agent_reward": 8367.0,
+      "opponent_reward": 3496.0,
+      "agent_status": "DONE",
+      "opponent_status": "DONE",
+      "result": "win",
+      "agent_actions": {
+        "farmer": {
+          "EAST": 11,
+          "HARVEST": 37,
+          "NORTH": 119,
+          "PASS": 248,
+          "PLANT": 38,
+          "SOUTH": 54,
+          "WATER": 185,
+          "WEST": 28
+        },
+        "market": {
+          "BUY_SEED": 33,
+          "SELL": 19
+        },
+        "market_units": {
+          "BUY_SEED:WHEAT": 38,
+          "SELL:WHEAT": 148
+        }
+      },
+      "final_inventory": {
+        "shed": {},
+        "carried": {},
+        "seeds": {}
+      }
+    },
+    {
+      "seed": 4,
+      "agent_player": 0,
+      "agent_reward": 7626.0,
+      "opponent_reward": 3514.0,
+      "agent_status": "DONE",
+      "opponent_status": "DONE",
+      "result": "win",
+      "agent_actions": {
+        "farmer": {
+          "EAST": 11,
+          "HARVEST": 37,
+          "NORTH": 119,
+          "PASS": 248,
+          "PLANT": 38,
+          "SOUTH": 54,
+          "WATER": 185,
+          "WEST": 28
+        },
+        "market": {
+          "BUY_SEED": 33,
+          "SELL": 19
+        },
+        "market_units": {
+          "BUY_SEED:WHEAT": 38,
+          "SELL:WHEAT": 148
+        }
+      },
+      "final_inventory": {
+        "shed": {},
+        "carried": {},
+        "seeds": {}
+      }
+    },
+    {
+      "seed": 4,
+      "agent_player": 1,
+      "agent_reward": 7626.0,
+      "opponent_reward": 3514.0,
+      "agent_status": "DONE",
+      "opponent_status": "DONE",
+      "result": "win",
+      "agent_actions": {
+        "farmer": {
+          "EAST": 11,
+          "HARVEST": 37,
+          "NORTH": 119,
+          "PASS": 248,
+          "PLANT": 38,
+          "SOUTH": 54,
+          "WATER": 185,
+          "WEST": 28
+        },
+        "market": {
+          "BUY_SEED": 33,
+          "SELL": 19
+        },
+        "market_units": {
+          "BUY_SEED:WHEAT": 38,
+          "SELL:WHEAT": 148
+        }
+      },
+      "final_inventory": {
+        "shed": {},
+        "carried": {},
+        "seeds": {}
+      }
+    },
+    {
+      "seed": 5,
+      "agent_player": 0,
+      "agent_reward": 7923.0,
+      "opponent_reward": 3491.0,
+      "agent_status": "DONE",
+      "opponent_status": "DONE",
+      "result": "win",
+      "agent_actions": {
+        "farmer": {
+          "EAST": 11,
+          "HARVEST": 37,
+          "NORTH": 119,
+          "PASS": 248,
+          "PLANT": 38,
+          "SOUTH": 54,
+          "WATER": 185,
+          "WEST": 28
+        },
+        "market": {
+          "BUY_SEED": 33,
+          "SELL": 19
+        },
+        "market_units": {
+          "BUY_SEED:WHEAT": 38,
+          "SELL:WHEAT": 148
+        }
+      },
+      "final_inventory": {
+        "shed": {},
+        "carried": {},
+        "seeds": {}
+      }
+    },
+    {
+      "seed": 5,
+      "agent_player": 1,
+      "agent_reward": 7923.0,
+      "opponent_reward": 3491.0,
+      "agent_status": "DONE",
+      "opponent_status": "DONE",
+      "result": "win",
+      "agent_actions": {
+        "farmer": {
+          "EAST": 11,
+          "HARVEST": 37,
+          "NORTH": 119,
+          "PASS": 248,
+          "PLANT": 38,
+          "SOUTH": 54,
+          "WATER": 185,
+          "WEST": 28
+        },
+        "market": {
+          "BUY_SEED": 33,
+          "SELL": 19
+        },
+        "market_units": {
+          "BUY_SEED:WHEAT": 38,
+          "SELL:WHEAT": 148
+        }
+      },
+      "final_inventory": {
+        "shed": {},
+        "carried": {},
+        "seeds": {}
+      }
+    },
+    {
+      "seed": 6,
+      "agent_player": 0,
+      "agent_reward": 8191.0,
+      "opponent_reward": 3496.0,
+      "agent_status": "DONE",
+      "opponent_status": "DONE",
+      "result": "win",
+      "agent_actions": {
+        "farmer": {
+          "EAST": 11,
+          "HARVEST": 37,
+          "NORTH": 119,
+          "PASS": 248,
+          "PLANT": 38,
+          "SOUTH": 54,
+          "WATER": 185,
+          "WEST": 28
+        },
+        "market": {
+          "BUY_SEED": 33,
+          "SELL": 19
+        },
+        "market_units": {
+          "BUY_SEED:WHEAT": 38,
+          "SELL:WHEAT": 148
+        }
+      },
+      "final_inventory": {
+        "shed": {},
+        "carried": {},
+        "seeds": {}
+      }
+    },
+    {
+      "seed": 6,
+      "agent_player": 1,
+      "agent_reward": 8191.0,
+      "opponent_reward": 3496.0,
+      "agent_status": "DONE",
+      "opponent_status": "DONE",
+      "result": "win",
+      "agent_actions": {
+        "farmer": {
+          "EAST": 11,
+          "HARVEST": 37,
+          "NORTH": 119,
+          "PASS": 248,
+          "PLANT": 38,
+          "SOUTH": 54,
+          "WATER": 185,
+          "WEST": 28
+        },
+        "market": {
+          "BUY_SEED": 33,
+          "SELL": 19
+        },
+        "market_units": {
+          "BUY_SEED:WHEAT": 38,
+          "SELL:WHEAT": 148
+        }
+      },
+      "final_inventory": {
+        "shed": {},
+        "carried": {},
+        "seeds": {}
+      }
+    },
+    {
+      "seed": 7,
+      "agent_player": 0,
+      "agent_reward": 7885.0,
+      "opponent_reward": 3507.0,
+      "agent_status": "DONE",
+      "opponent_status": "DONE",
+      "result": "win",
+      "agent_actions": {
+        "farmer": {
+          "EAST": 23,
+          "HARVEST": 37,
+          "NORTH": 100,
+          "PASS": 248,
+          "PLANT": 38,
+          "SOUTH": 42,
+          "WATER": 185,
+          "WEST": 47
+        },
+        "market": {
+          "BUY_SEED": 33,
+          "SELL": 19
+        },
+        "market_units": {
+          "BUY_SEED:WHEAT": 38,
+          "SELL:WHEAT": 148
+        }
+      },
+      "final_inventory": {
+        "shed": {},
+        "carried": {},
+        "seeds": {}
+      }
+    },
+    {
+      "seed": 7,
+      "agent_player": 1,
+      "agent_reward": 7885.0,
+      "opponent_reward": 3507.0,
+      "agent_status": "DONE",
+      "opponent_status": "DONE",
+      "result": "win",
+      "agent_actions": {
+        "farmer": {
+          "EAST": 11,
+          "HARVEST": 37,
+          "NORTH": 119,
+          "PASS": 248,
+          "PLANT": 38,
+          "SOUTH": 54,
+          "WATER": 185,
+          "WEST": 28
+        },
+        "market": {
+          "BUY_SEED": 33,
+          "SELL": 19
+        },
+        "market_units": {
+          "BUY_SEED:WHEAT": 38,
+          "SELL:WHEAT": 148
+        }
+      },
+      "final_inventory": {
+        "shed": {},
+        "carried": {},
+        "seeds": {}
+      }
+    },
+    {
+      "seed": 8,
+      "agent_player": 0,
+      "agent_reward": 8039.0,
+      "opponent_reward": 3500.0,
+      "agent_status": "DONE",
+      "opponent_status": "DONE",
+      "result": "win",
+      "agent_actions": {
+        "farmer": {
+          "EAST": 11,
+          "HARVEST": 37,
+          "NORTH": 119,
+          "PASS": 248,
+          "PLANT": 38,
+          "SOUTH": 54,
+          "WATER": 185,
+          "WEST": 28
+        },
+        "market": {
+          "BUY_SEED": 33,
+          "SELL": 19
+        },
+        "market_units": {
+          "BUY_SEED:WHEAT": 38,
+          "SELL:WHEAT": 148
+        }
+      },
+      "final_inventory": {
+        "shed": {},
+        "carried": {},
+        "seeds": {}
+      }
+    },
+    {
+      "seed": 8,
+      "agent_player": 1,
+      "agent_reward": 8039.0,
+      "opponent_reward": 3500.0,
+      "agent_status": "DONE",
+      "opponent_status": "DONE",
+      "result": "win",
+      "agent_actions": {
+        "farmer": {
+          "EAST": 11,
+          "HARVEST": 37,
+          "NORTH": 119,
+          "PASS": 248,
+          "PLANT": 38,
+          "SOUTH": 54,
+          "WATER": 185,
+          "WEST": 28
+        },
+        "market": {
+          "BUY_SEED": 33,
+          "SELL": 19
+        },
+        "market_units": {
+          "BUY_SEED:WHEAT": 38,
+          "SELL:WHEAT": 148
+        }
+      },
+      "final_inventory": {
+        "shed": {},
+        "carried": {},
+        "seeds": {}
+      }
+    },
+    {
+      "seed": 9,
+      "agent_player": 0,
+      "agent_reward": 7670.0,
+      "opponent_reward": 3501.0,
+      "agent_status": "DONE",
+      "opponent_status": "DONE",
+      "result": "win",
+      "agent_actions": {
+        "farmer": {
+          "EAST": 11,
+          "HARVEST": 37,
+          "NORTH": 119,
+          "PASS": 248,
+          "PLANT": 38,
+          "SOUTH": 54,
+          "WATER": 185,
+          "WEST": 28
+        },
+        "market": {
+          "BUY_SEED": 33,
+          "SELL": 19
+        },
+        "market_units": {
+          "BUY_SEED:WHEAT": 38,
+          "SELL:WHEAT": 148
+        }
+      },
+      "final_inventory": {
+        "shed": {},
+        "carried": {},
+        "seeds": {}
+      }
+    },
+    {
+      "seed": 9,
+      "agent_player": 1,
+      "agent_reward": 7670.0,
+      "opponent_reward": 3501.0,
+      "agent_status": "DONE",
+      "opponent_status": "DONE",
+      "result": "win",
+      "agent_actions": {
+        "farmer": {
+          "EAST": 11,
+          "HARVEST": 37,
+          "NORTH": 119,
+          "PASS": 248,
+          "PLANT": 38,
+          "SOUTH": 54,
+          "WATER": 185,
+          "WEST": 28
+        },
+        "market": {
+          "BUY_SEED": 33,
+          "SELL": 19
+        },
+        "market_units": {
+          "BUY_SEED:WHEAT": 38,
+          "SELL:WHEAT": 148
+        }
+      },
+      "final_inventory": {
+        "shed": {},
+        "carried": {},
+        "seeds": {}
+      }
+    }
+  ]
+}

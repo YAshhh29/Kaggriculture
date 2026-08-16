@@ -1,0 +1,156 @@
+{
+  "created_at": "2026-08-15T07:22:15.447017+00:00",
+  "agent": "C:\\Users\\Oyash\\Desktop\\Kaggriculture\\main.py",
+  "agent_sha256": "0b4555aa5985fe1327f1ffee9f9ead6951a619507f0aa9c19393029a1d3a8f2d",
+  "opponent": "starter",
+  "episode_steps": 720,
+  "seed_start": 0,
+  "seed_count": 1,
+  "positions": [
+    0,
+    1
+  ],
+  "parameters": {
+    "target_wheat_tiles": 7
+  },
+  "simulator_version": "1.32.3",
+  "complete": true,
+  "summary": {
+    "games": 2,
+    "completed": 2,
+    "wins": 2,
+    "losses": 0,
+    "ties": 0,
+    "errors": 0,
+    "win_rate": 1.0,
+    "score_rate": 1.0,
+    "agent_actions": {
+      "farmer": {
+        "EAST": 24,
+        "HARVEST": 80,
+        "NORTH": 240,
+        "PASS": 426,
+        "PLANT": 84,
+        "SOUTH": 36,
+        "WATER": 430,
+        "WEST": 120
+      },
+      "market": {
+        "BUY_SEED": 82,
+        "SELL": 20
+      },
+      "market_units": {
+        "BUY_SEED:WHEAT": 94,
+        "SELL:WHEAT": 270
+      }
+    },
+    "final_inventory_totals": {
+      "shed": {},
+      "carried": {
+        "WHEAT": 40
+      },
+      "seeds": {
+        "WHEAT": 10
+      }
+    },
+    "by_player": {
+      "0": {
+        "games": 1,
+        "wins": 1,
+        "losses": 0,
+        "ties": 0,
+        "errors": 0
+      },
+      "1": {
+        "games": 1,
+        "wins": 1,
+        "losses": 0,
+        "ties": 0,
+        "errors": 0
+      }
+    },
+    "mean_agent_coins": 7518.0,
+    "min_agent_coins": 7518.0,
+    "max_agent_coins": 7518.0,
+    "mean_opponent_coins": 3487.0,
+    "mean_margin": 4031.0
+  },
+  "games": [
+    {
+      "seed": 0,
+      "agent_player": 0,
+      "agent_reward": 7518.0,
+      "opponent_reward": 3487.0,
+      "agent_status": "DONE",
+      "opponent_status": "DONE",
+      "result": "win",
+      "agent_actions": {
+        "farmer": {
+          "EAST": 12,
+          "HARVEST": 40,
+          "NORTH": 120,
+          "PASS": 213,
+          "PLANT": 42,
+          "SOUTH": 18,
+          "WATER": 215,
+          "WEST": 60
+        },
+        "market": {
+          "BUY_SEED": 41,
+          "SELL": 10
+        },
+        "market_units": {
+          "BUY_SEED:WHEAT": 47,
+          "SELL:WHEAT": 135
+        }
+      },
+      "final_inventory": {
+        "shed": {},
+        "carried": {
+          "WHEAT": 20
+        },
+        "seeds": {
+          "WHEAT": 5
+        }
+      }
+    },
+    {
+      "seed": 0,
+      "agent_player": 1,
+      "agent_reward": 7518.0,
+      "opponent_reward": 3487.0,
+      "agent_status": "DONE",
+      "opponent_status": "DONE",
+      "result": "win",
+      "agent_actions": {
+        "farmer": {
+          "EAST": 12,
+          "HARVEST": 40,
+          "NORTH": 120,
+          "PASS": 213,
+          "PLANT": 42,
+          "SOUTH": 18,
+          "WATER": 215,
+          "WEST": 60
+        },
+        "market": {
+          "BUY_SEED": 41,
+          "SELL": 10
+        },
+        "market_units": {
+          "BUY_SEED:WHEAT": 47,
+          "SELL:WHEAT": 135
+        }
+      },
+      "final_inventory": {
+        "shed": {},
+        "carried": {
+          "WHEAT": 20
+        },
+        "seeds": {
+          "WHEAT": 5
+        }
+      }
+    }
+  ]
+}
