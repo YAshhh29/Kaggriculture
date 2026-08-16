@@ -1,0 +1,34 @@
+{
+  "dataset": "artifacts/datasets/v1327-v9-market-counterfactuals-train-seeds30-39.json",
+  "validation": "leave-one-seed-out",
+  "selection_metric": "total one-step regret in terminal coins",
+  "states": 28,
+  "seeds": 10,
+  "v9_total_one_step_regret": 62.0,
+  "configurations": [
+    {"max_depth": 0, "min_leaf": 2, "total_regret": 33.0, "zero_regret_states": 20},
+    {"max_depth": 0, "min_leaf": 3, "total_regret": 33.0, "zero_regret_states": 20},
+    {"max_depth": 0, "min_leaf": 4, "total_regret": 33.0, "zero_regret_states": 20},
+    {"max_depth": 0, "min_leaf": 5, "total_regret": 33.0, "zero_regret_states": 20},
+    {"max_depth": 1, "min_leaf": 2, "total_regret": 91.0, "zero_regret_states": 25},
+    {"max_depth": 1, "min_leaf": 3, "total_regret": 91.0, "zero_regret_states": 25},
+    {"max_depth": 1, "min_leaf": 4, "total_regret": 91.0, "zero_regret_states": 25},
+    {"max_depth": 1, "min_leaf": 5, "total_regret": 91.0, "zero_regret_states": 25},
+    {"max_depth": 2, "min_leaf": 2, "total_regret": 91.0, "zero_regret_states": 25},
+    {"max_depth": 2, "min_leaf": 3, "total_regret": 96.0, "zero_regret_states": 24},
+    {"max_depth": 2, "min_leaf": 4, "total_regret": 96.0, "zero_regret_states": 24},
+    {"max_depth": 2, "min_leaf": 5, "total_regret": 96.0, "zero_regret_states": 24}
+  ],
+  "best_configuration": {
+    "max_depth": 0,
+    "interpretation": "constant HOLD over the sampled intervention states",
+    "total_regret": 33.0
+  },
+  "decision": "do not promote; the best result is not state-dependent and deeper trees overfit. Collect broader counterfactual coverage before another model fit.",
+  "limitations": [
+    "labels cover only prices 34, 35, and 36",
+    "each label forces one action and then returns to v9",
+    "one-step regrets are not additive full-policy returns",
+    "seeds 20-29 are spent holdout data and were not used here"
+  ]
+}
