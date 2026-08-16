@@ -15,6 +15,21 @@
 			"command": "C:\\Progra~1\\Git\\cmd\\git.exe add .vscode/tasks.json; C:\\Progra~1\\Git\\cmd\\git.exe commit -m 'chore: add repository maintenance tasks'; C:\\Progra~1\\Git\\cmd\\git.exe add train_market_ridge.py test_train_market_ridge.py evaluate_market_models.py test_evaluate_market_models.py evaluate_ridge_thresholds.py; C:\\Progra~1\\Git\\cmd\\git.exe commit -m 'feat: evaluate regularized market models'; C:\\Progra~1\\Git\\cmd\\git.exe add experimental_ridge_agent.py test_experimental_ridge_agent.py trace_market_decisions.py; C:\\Progra~1\\Git\\cmd\\git.exe commit -m 'feat: gate learned market decisions safely'; C:\\Progra~1\\Git\\cmd\\git.exe add artifacts/benchmarks artifacts/datasets artifacts/diagnostics artifacts/models; C:\\Progra~1\\Git\\cmd\\git.exe commit -m 'data: preserve learned policy experiments'; C:\\Progra~1\\Git\\cmd\\git.exe add README.md progress.md strategy.json; C:\\Progra~1\\Git\\cmd\\git.exe commit -m 'docs: record guarded ridge holdout results'",
 			"isBackground": false,
 			"problemMatcher": []
+		},
+		{
+			"label": "Run all tests",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe -m unittest -v",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Publish main",
+			"type": "shell",
+			"command": "C:\\Progra~1\\Git\\cmd\\git.exe add .vscode/tasks.json; C:\\Progra~1\\Git\\cmd\\git.exe commit -m 'chore: add validation and publish tasks'; C:\\Progra~1\\Git\\cmd\\git.exe push origin main",
+			"isBackground": false,
+			"problemMatcher": []
 		}
 	]
 }
