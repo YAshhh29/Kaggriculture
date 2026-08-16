@@ -1,0 +1,327 @@
+{
+  "verified_environment": {
+    "competition": "kaggriculture",
+    "kaggle_environments_version": "1.32.7",
+    "episode_records": 720,
+    "initial_state_records": 1,
+    "executed_transitions": 719,
+    "turns_per_day": 24,
+    "days": 30,
+    "starting_money": 3000,
+    "objective": "maximize banked coins at the final record"
+  },
+  "current_submission_algorithm": {
+    "version": "v9",
+    "crop": "WHEAT",
+    "target_concurrent_plots": 6,
+    "last_planting_day": 24,
+    "minimum_wheat_sale_price": 35,
+    "maximum_wheat_holdings": 72,
+    "wheat_liquidation_day": 25,
+    "farmer_priority": [
+      "water wheat that has already missed one day",
+      "water all other unwatered wheat",
+      "harvest wheat at age 4 or later",
+      "plant wheat while planting remains open",
+      "pass"
+    ],
+    "market_policy": [
+      "hold wheat while price is below 35, shed stock is below 72, and day is before 25",
+      "sell all shed wheat when price reaches 35",
+      "sell all shed wheat when stock reaches the 72-unit safety cap",
+      "liquidate all remaining shed wheat from day 25 onward",
+      "buy enough seeds to maintain six concurrent wheat crops",
+      "do not buy seeds after day 24"
+    ]
+  },
+  "current_1_32_7_baseline": {
+    "version": "v9",
+    "opponent": "starter",
+    "seeds": "0-9",
+    "positions": [
+      0,
+      1
+    ],
+    "games": 20,
+    "wins": 20,
+    "losses": 0,
+    "ties": 0,
+    "errors": 0,
+    "mean_coins": 7849.9,
+    "minimum_coins": 7150,
+    "maximum_coins": 8450,
+    "mean_opponent_coins": 3642.9,
+    "mean_gain_over_v5_control": 348.8,
+    "report": "artifacts/benchmarks/v1327-price-aware-sell-35-cap72-liquidate25-vs-starter-seeds0-9.json",
+    "file_loaded_seed_0_gate": {
+      "positions": [
+        0,
+        1
+      ],
+      "scores": [
+        7992,
+        7992
+      ],
+      "report": "artifacts/benchmarks/v1327-promoted-price-aware-default-gate-seed0.json"
+    }
+  },
+  "audited_seed_11_episode": {
+    "score": 8161,
+    "opponent_score": 3677,
+    "result": "win",
+    "starting_money": 3000,
+    "successful_seed_spend": 380,
+    "realized_wheat_sale_revenue": 5541,
+    "net_profit": 5161,
+    "wheat_units_sold": 148,
+    "weighted_average_sale_price": 37.4392,
+    "minimum_batch_average_sale_price": 33.1458,
+    "maximum_batch_average_sale_price": 45,
+    "cash_reconciliation_difference": 0,
+    "turn_audit": "artifacts/v1327-agent-v9-vs-starter-seed11-720-audit.json",
+    "raw_replay": "artifacts/v1327-agent-v9-vs-starter-seed11-720-replay.json",
+    "visual_replay": "artifacts/v1327-agent-v9-vs-starter-seed11-720.html",
+    "captioned_replay": "captioned_replay.html"
+  },
+  "generalization_validation": {
+    "simulator_version": "1.32.7",
+    "opponent": "starter",
+    "seeds": "10-19",
+    "positions": [
+      0,
+      1
+    ],
+    "v9": {
+      "wins": 20,
+      "mean_coins": 7705.95,
+      "minimum_coins": 6086,
+      "maximum_coins": 8394
+    },
+    "v5_immediate_sale_control": {
+      "wins": 20,
+      "mean_coins": 7450.45,
+      "minimum_coins": 5931,
+      "maximum_coins": 8197
+    },
+    "paired_result": {
+      "mean_gain": 255.5,
+      "improved_seeds": 10,
+      "tied_seeds": 0,
+      "worse_seeds": 0,
+      "one_sided_seed_sign_test_p_value": 0.0009765625,
+      "strict_check_excluding_previously_viewed_seed_11": {
+        "mean_gain": 254.22,
+        "improved_seeds": 9,
+        "worse_seeds": 0,
+        "one_sided_seed_sign_test_p_value": 0.001953125
+      }
+    },
+    "production_check": {
+      "v9_harvested_and_sold_wheat": 2956,
+      "v5_harvested_and_sold_wheat": 2956,
+      "unsold_harvested_wheat": 0
+    },
+    "candidate_report": "artifacts/benchmarks/v1327-v9-vs-starter-unseen-seeds10-19.json",
+    "control_report": "artifacts/benchmarks/v1327-v5-immediate-sale-vs-starter-unseen-seeds10-19.json",
+    "paired_report": "artifacts/benchmarks/v1327-v9-vs-v5-paired-seeds10-19.json",
+    "decision": "passed; keep v9 as the verified control"
+  },
+  "trajectory_dataset": {
+    "status": "schema and checkpointed collection complete; not yet sufficient for policy improvement",
+    "simulator_version": "1.32.7",
+    "behavior_policy": "v9",
+    "training_seeds": "30-39",
+    "positions": [
+      0,
+      1
+    ],
+    "episodes": 20,
+    "wins": 20,
+    "mean_terminal_coins": 8093.8,
+    "market_decisions": 4154,
+    "hold_decisions": 3848,
+    "sell_decisions": 306,
+    "agent_hashes": 1,
+    "duplicate_episode_keys": 0,
+    "dataset": "artifacts/datasets/v1327-v9-market-decisions-train-seeds30-39.json",
+    "feature_boundary": "decision-time observations are separate from post-decision and terminal outcomes",
+    "limitation": "one behavior policy provides observed outcomes only; training now would imitate v9 rather than estimate counterfactual choice value"
+  },
+  "counterfactual_market_dataset": {
+    "status": "targeted development dataset complete",
+    "simulator_version": "1.32.7",
+    "development_seeds": "30-39",
+    "positions": [
+      0
+    ],
+    "sampled_prices": [
+      34,
+      35,
+      36
+    ],
+    "states": 28,
+    "preferred_hold": 7,
+    "preferred_sell": 8,
+    "ties": 13,
+    "mean_sell_minus_hold_terminal_coins": -2.5357,
+    "method": "clone the exact live state, force one HOLD or SELL WHEAT choice while preserving all other actions, then return both branches to frozen v9",
+    "determinism_checks": [
+      "source state remains unchanged by branch execution",
+      "identical cloned branches produce identical next states",
+      "resolved episode seed is explicitly copied into clone info",
+      "starter opponent is deterministic",
+      "baseline episode scores reproduce the trajectory dataset"
+    ],
+    "important_engine_finding": "kaggle-environments clone() omits env.info; the collector must copy it or future weed and shop randomness incorrectly falls back to seed 0",
+    "dataset": "artifacts/datasets/v1327-v9-market-counterfactuals-train-seeds30-39.json"
+  },
+  "first_value_model": {
+    "type": "dependency-free shallow regression tree",
+    "target": "terminal SELL minus HOLD coins after one forced choice",
+    "validation": "leave one seed out",
+    "states": 28,
+    "seeds": 10,
+    "v9_total_one_step_regret": 62,
+    "depth_2_total_one_step_regret": 91,
+    "best_grid_total_one_step_regret": 33,
+    "best_grid_interpretation": "depth-0 constant HOLD over the sampled states",
+    "decision": "do not promote; deeper state-dependent trees overfit and the best constant intervention is not a robust learned policy",
+    "model_report": "artifacts/models/v1327-market-value-tree-depth2-seeds30-39.json",
+    "grid_report": "artifacts/models/v1327-market-value-tree-grid-seeds30-39.json"
+  },
+  "threshold_refinement": {
+    "tuning_seeds": "30-39",
+    "fixed_safety_rules": {
+      "maximum_wheat_holdings": 72,
+      "wheat_liquidation_day": 25
+    },
+    "threshold_34": {
+      "mean_coins": 8066.4,
+      "mean_delta_vs_v9": -27.4,
+      "improved_seeds": 0,
+      "worse_seeds": 10,
+      "decision": "rejected"
+    },
+    "threshold_35_v9_control": {
+      "mean_coins": 8093.8
+    },
+    "threshold_36_tuning": {
+      "mean_coins": 8149.9,
+      "mean_delta_vs_v9": 56.1,
+      "improved_seeds": 10,
+      "worse_seeds": 0,
+      "decision": "advanced once to untouched holdout"
+    },
+    "untouched_holdout": {
+      "seeds": "20-29",
+      "v9_mean_coins": 7957.6,
+      "threshold_36_mean_coins": 7999.3,
+      "mean_delta": 41.7,
+      "improved_seeds": 8,
+      "worse_seeds": 2,
+      "worst_delta": -2,
+      "one_sided_seed_sign_test_p_value": 0.0546875,
+      "wins_preserved": true,
+      "production_preserved": true,
+      "all_harvested_wheat_sold": true
+    },
+    "decision": "do not promote threshold 36; it failed the predeclared every-seed improvement gate on the independent holdout",
+    "current_threshold_remains": 35
+  },
+  "next_experiment": {
+    "name": "broader counterfactual coverage for a state-dependent value model",
+    "hypothesis": "additional prices, days, and inventory levels can reduce rare costly errors that made shallow trees worse than v9",
+    "steps": [
+      "keep v9 threshold 35 frozen as the submission control",
+      "use development seeds only for additional state branching and model selection",
+      "sample broader prices, days, and stock levels with policy-hash and seed provenance",
+      "group train and validation splits by seed so both player positions never cross splits",
+      "require a state-dependent model to beat v9 leave-one-seed-out regret before any full policy rollout",
+      "reserve seeds 40-49 as the next untouched promotion holdout"
+    ],
+    "gate": {
+      "simulator_version": "1.32.7",
+      "opponent": "starter",
+      "development_seeds": "30-39",
+      "next_untouched_holdout_seeds": "40-49",
+      "positions": [
+        0,
+        1
+      ],
+      "must_preserve": [
+        "DONE status",
+        "all wins",
+        "no shed overflow",
+        "zero unsold harvested wheat",
+        "deterministic v9 fallback"
+      ],
+      "must_not_do": [
+        "do not train on outcomes from the same seed used for model validation",
+        "do not call behavior cloning a policy improvement",
+        "do not reuse seeds 20-29 to select another candidate"
+      ]
+    }
+  },
+  "learning_roadmap": {
+    "decision": "use a hybrid system: deterministic safety and action legality around learned scoring components",
+    "phase_1_complete": "explicit heuristics and parameter search established mechanics, accounting, and the reproducible v9 control",
+    "phase_2_complete": "v9 passed generalization and a leak-resistant single-policy trajectory dataset was collected",
+    "phase_3_complete": "deterministic state branching produced the first true HOLD/SELL counterfactual labels and an interpretable model baseline",
+    "phase_4_now": "broaden counterfactual coverage until a state-dependent model beats v9 under leave-one-seed-out regret",
+    "phase_5": "evaluate one selected model on fresh held-out seeds and opponents while retaining v9 as a deterministic fallback",
+    "phase_6": "consider offline RL or self-play only after the state, action, reward, and holdout protocols are stable",
+    "rl_entry_requirements": [
+      "legal-action masking",
+      "terminal banked cash and win outcome tracked correctly",
+      "a compact high-level action space",
+      "training and evaluation seed separation",
+      "multi-opponent evaluation",
+      "promotion only when repeated results beat frozen v9 without reliability regressions"
+    ]
+  },
+  "one_goose_experiment": {
+    "status": "eligible after v9 generalization, but deferred while the market-learning slice is isolated",
+    "why_goose_first": "cheaper and earlier-producing than cow or sheep",
+    "verified_costs_and_needs": {
+      "goose_purchase": 300,
+      "structure": "COOP",
+      "first_egg_day_after_placement": 4,
+      "egg_interval_days": 1,
+      "maximum_unharvested_eggs": 4,
+      "feed": "carried WHEAT; grass is not used",
+      "care": "optional animal yield bonus",
+      "fertilizer": "one collectable unit per surviving animal per day"
+    },
+    "placement_rule": "place near the shed or directly on a stable route, not at the farthest tile",
+    "reason": "feeding, harvesting, care, and fertilizer collection all require visits; distance is recurring overhead",
+    "setup_actions": [
+      "BUILD_COOP on an empty tile",
+      "BUY_ANIMAL GOOSE as a market order",
+      "PICKUP GOOSE from the shed",
+      "PLACE GOOSE on the coop",
+      "PICKUP carried wheat for future FEED actions"
+    ],
+    "promotion_gate": [
+      "include the 300-coin animal cost",
+      "include wheat opportunity cost",
+      "include every setup, feed, harvest, care, collection, and movement turn",
+      "compare the same seeds and both positions",
+      "promote only if wins are preserved and repeated banked cash increases"
+    ]
+  },
+  "do_not_do": [
+    "do not treat one favorable game as proof",
+    "do not compare reports from different simulator versions",
+    "do not tune and report performance on the same seed set",
+    "do not reuse a spent holdout to select a new candidate",
+    "do not train on one deterministic policy and claim it learned a better policy",
+    "do not jump directly to sparse terminal-reward RL over raw actions",
+    "do not let a learned component bypass legal actions or deterministic safety limits",
+    "do not count carried or shed inventory as final profit",
+    "do not place a daily-service animal far away merely because its production interval is long",
+    "do not add animals, fertilizer, routing, and market timing in one candidate",
+    "do not submit without loading main.py by file",
+    "do not move agent above another callable in main.py",
+    "do not install competition packages into the global Python environment"
+  ]
+}
