@@ -1,9 +1,25 @@
 import unittest
 
-from train_market_value_tree import fit_tree, predict
+from train_market_value_tree import (
+    _strategy_summary,
+    fit_tree,
+    predict,
+)
 
 
 class MarketValueTreeTests(unittest.TestCase):
+    def test_summarizes_regret_by_seed(self) -> None:
+        rows = [
+            {"seed": 30, "model_regret": 2},
+            {"seed": 30, "model_regret": 3},
+            {"seed": 31, "model_regret": 1},
+        ]
+
+        summary = _strategy_summary(rows, "model")
+
+        self.assertEqual(summary["regret_by_seed"], {"30": 5.0, "31": 1.0})
+        self.assertEqual(summary["worst_seed_regret"], 5.0)
+
     def test_fits_a_simple_price_split(self) -> None:
         rows = [
             self._row(30, -5),

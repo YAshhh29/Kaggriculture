@@ -183,10 +183,24 @@ def _strategy_summary(
         "always_sell": "sell_regret",
     }[strategy]
     regrets = [float(row[field]) for row in rows]
+    regret_by_seed: dict[int, float] = {}
+    for row in rows:
+        seed = int(row["seed"])
+        regret_by_seed[seed] = regret_by_seed.get(seed, 0.0) + float(
+            row[field]
+        )
     return {
         "total_one_step_regret": round(sum(regrets), 6),
         "mean_one_step_regret": round(fmean(regrets), 6),
         "zero_regret_states": sum(regret == 0 for regret in regrets),
+        "regret_by_seed": {
+            str(seed): round(regret, 6)
+            for seed, regret in sorted(regret_by_seed.items())
+        },
+        "worst_seed_regret": round(
+            max(regret_by_seed.values(), default=0.0),
+            6,
+        ),
     }
 
 
