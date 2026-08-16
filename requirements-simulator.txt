@@ -1,0 +1,4 @@
+# Shared imports needed by Kaggle's runner for Kaggriculture.
+# Install kaggle-environments==1.32.7 separately with --no-deps; see README.md.
+jsonschema==4.26.0
+requests==2.34.2
