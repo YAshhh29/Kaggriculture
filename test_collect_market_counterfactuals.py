@@ -1,13 +1,46 @@
 import unittest
+import tempfile
+from pathlib import Path
 
 from collect_market_counterfactuals import (
     clone_for_counterfactual,
     force_wheat_choice,
+    load_or_create_report,
     summarize,
+    write_checkpoint,
 )
 
 
 class MarketCounterfactualTests(unittest.TestCase):
+    def test_checkpoints_and_rejects_incompatible_resume(self) -> None:
+        collection = {
+            "agent_sha256": "policy",
+            "seed_start": 30,
+            "seed_count": 1,
+            "positions": [0],
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "counterfactuals.json"
+            report = load_or_create_report(output, collection)
+            report["episodes"].append(
+                {
+                    "seed": 30,
+                    "agent_player": 0,
+                    "rows": [],
+                }
+            )
+            write_checkpoint(output, report, expected_episodes=1)
+            resumed = load_or_create_report(output, collection)
+
+            with self.assertRaisesRegex(ValueError, "agent_sha256"):
+                load_or_create_report(
+                    output,
+                    {**collection, "agent_sha256": "different"},
+                )
+
+        self.assertTrue(resumed["complete"])
+        self.assertEqual(resumed["summary"]["episodes"], 1)
+
     def test_clone_preserves_independent_episode_seed_metadata(self) -> None:
         class FakeEnvironment:
             def __init__(self) -> None:

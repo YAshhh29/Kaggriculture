@@ -333,6 +333,40 @@ def summarize(episodes: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def load_or_create_report(
+    output_path: Path,
+    collection: dict[str, Any],
+) -> dict[str, Any]:
+    if not output_path.exists():
+        return {
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            **collection,
+            "episodes": [],
+            "summary": summarize([]),
+            "complete": False,
+        }
+
+    report = json.loads(output_path.read_text(encoding="utf-8"))
+    for field, expected in collection.items():
+        if report.get(field) != expected:
+            raise ValueError(f"checkpoint collection field differs: {field}")
+    return report
+
+
+def write_checkpoint(
+    output_path: Path,
+    report: dict[str, Any],
+    expected_episodes: int,
+) -> None:
+    report["summary"] = summarize(report["episodes"])
+    report["complete"] = len(report["episodes"]) == expected_episodes
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(
+        json.dumps(report, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -361,9 +395,39 @@ def main() -> None:
     controlled_agent = load_agent(agent_path)
     make, simulator_version = load_simulator()
     positions = (0, 1) if args.both_positions else (0,)
-    episodes = []
+    collection = {
+        "simulator_version": simulator_version,
+        "agent_file": str(agent_path),
+        "agent_sha256": hashlib.sha256(agent_path.read_bytes()).hexdigest(),
+        "opponent": args.opponent,
+        "episode_steps": args.steps,
+        "seed_start": args.seed_start,
+        "seed_count": args.seed_count,
+        "positions": list(positions),
+        "max_branches_per_episode": args.max_branches_per_episode,
+        "sampling": (
+            "first state per requested (price, pre/liquidation phase, "
+            "baseline choice), up to max branches per episode"
+        ),
+        "sample_prices": sorted(set(args.sample_price)),
+        "intervention": (
+            "force one HOLD or SELL WHEAT order, preserve all other actions, "
+            "then return to frozen policy"
+        ),
+    }
+    expected_episodes = args.seed_count * len(positions)
+    try:
+        report = load_or_create_report(args.output, collection)
+    except ValueError as error:
+        raise SystemExit(str(error)) from error
+    completed = {
+        (int(episode["seed"]), int(episode["agent_player"]))
+        for episode in report["episodes"]
+    }
     for seed in range(args.seed_start, args.seed_start + args.seed_count):
         for player in positions:
+            if (seed, player) in completed:
+                continue
             episode = collect_episode(
                 make,
                 controlled_agent,
@@ -375,40 +439,17 @@ def main() -> None:
                 args.max_branches_per_episode,
                 set(args.sample_price) or None,
             )
-            episodes.append(episode)
+            report["episodes"].append(episode)
+            write_checkpoint(args.output, report, expected_episodes)
             print(
                 f"seed={seed} player={player} "
                 f"baseline={episode['baseline']['terminal_money']} "
                 f"branches={len(episode['rows'])}"
             )
 
-    report = {
-        "created_at": datetime.now(timezone.utc).isoformat(),
-        "simulator_version": simulator_version,
-        "agent_file": str(agent_path),
-        "agent_sha256": hashlib.sha256(agent_path.read_bytes()).hexdigest(),
-        "opponent": args.opponent,
-        "seed_start": args.seed_start,
-        "seed_count": args.seed_count,
-        "positions": list(positions),
-        "sampling": (
-            "first state per requested (price, pre/liquidation phase, "
-            "baseline choice), up to max branches per episode"
-        ),
-        "sample_prices": sorted(set(args.sample_price)),
-        "intervention": (
-            "force one HOLD or SELL WHEAT order, preserve all other actions, "
-            "then return to frozen policy"
-        ),
-        "episodes": episodes,
-        "summary": summarize(episodes),
-    }
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(
-        json.dumps(report, indent=2) + "\n",
-        encoding="utf-8",
-    )
+    write_checkpoint(args.output, report, expected_episodes)
     print(f"Summary: {report['summary']}")
+    print(f"Complete: {report['complete']}")
     print(f"Report written to {args.output}")
 
 
