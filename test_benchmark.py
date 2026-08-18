@@ -82,6 +82,7 @@ class BenchmarkTests(unittest.TestCase):
                     "step": 1,
                     "day": 0,
                     "hour": 1,
+                    "worker": "farmer",
                     "task": "PLANT",
                     "tile": [3, 4],
                     "travel_turns": 1,
@@ -90,11 +91,45 @@ class BenchmarkTests(unittest.TestCase):
                     "step": 2,
                     "day": 0,
                     "hour": 2,
+                    "worker": "farmer",
                     "task": "WATER",
                     "tile": [3, 4],
                     "travel_turns": 0,
                 },
             ],
+        )
+
+    def test_analyzes_a_hand_only_crop_cycle(self) -> None:
+        empty = [[None]]
+        planted = [[{
+            "kind": "PLANT",
+            "crop": "WHEAT",
+            "planted_day": 0,
+            "yield_units": 1,
+        }]]
+        mature = [[{
+            "kind": "PLANT",
+            "crop": "WHEAT",
+            "planted_day": 0,
+            "yield_units": 4,
+        }]]
+        steps = [
+            [self._state_with_hand(0, 0, 0, empty, ["PASS"])],
+            [self._state_with_hand(1, 0, 1, planted, ["PLANT", "WHEAT"])],
+            [self._state_with_hand(2, 0, 2, planted, ["WATER"])],
+            [self._state_with_hand(96, 4, 0, mature, ["PASS"])],
+            [self._state_with_hand(97, 4, 1, empty, ["HARVEST"])],
+        ]
+
+        analysis = analyze_route(steps, 0)
+
+        self.assertEqual(analysis["cycles_harvested"], 1)
+        self.assertEqual(analysis["harvested_units"], 4)
+        self.assertEqual(analysis["hand_movement_turns"], 0)
+        self.assertEqual(analysis["all_worker_movement_turns"], 0)
+        self.assertEqual(
+            [visit["worker"] for visit in analysis["task_visits"]],
+            ["hand_1", "hand_1", "hand_1"],
         )
 
     def test_checkpoints_an_incomplete_report(self) -> None:
@@ -133,12 +168,13 @@ class BenchmarkTests(unittest.TestCase):
         self.assertEqual(classify_result(10, 10, "DONE", "DONE"), "tie")
         self.assertEqual(classify_result(None, 10, "ERROR", "DONE"), "error")
 
-    def test_counts_farmer_and_market_actions(self) -> None:
+    def test_counts_farmer_hand_and_market_actions(self) -> None:
         steps = [
             [
                 {
                     "action": {
                         "farmer": ["WATER"],
+                        "hands": [["EAST"], ["HARVEST"]],
                         "market": [["SELL", "WHEAT", 2]],
                     }
                 }
@@ -147,6 +183,7 @@ class BenchmarkTests(unittest.TestCase):
                 {
                     "action": {
                         "farmer": ["PASS"],
+                        "hands": [["WATER"], ["PASS"]],
                         "market": [
                             ["BUY_SEED", "WHEAT", 1],
                             ["SELL", "WHEAT", 1],
@@ -160,6 +197,12 @@ class BenchmarkTests(unittest.TestCase):
             count_actions(steps, 0),
             {
                 "farmer": {"PASS": 1, "WATER": 1},
+                "hands": {
+                    "EAST": 1,
+                    "HARVEST": 1,
+                    "PASS": 1,
+                    "WATER": 1,
+                },
                 "market": {"BUY_SEED": 1, "SELL": 2},
                 "market_units": {
                     "BUY_SEED:WHEAT": 1,
@@ -246,6 +289,37 @@ class BenchmarkTests(unittest.TestCase):
                     "shed": {"WHEAT": shed_wheat},
                     "seeds": {},
                     "inventories": [{}],
+                },
+            },
+        }
+
+    @staticmethod
+    def _state_with_hand(
+        step: int,
+        day: int,
+        hour: int,
+        tiles: list[list[object]],
+        hand_action: list[str],
+    ) -> dict:
+        return {
+            "action": {
+                "farmer": ["PASS"],
+                "hands": [hand_action],
+                "market": [],
+            },
+            "observation": {
+                "step": step,
+                "day": day,
+                "hour": hour,
+                "farms": [{
+                    "farmer": [0, 0],
+                    "hands": [[0, 0]],
+                    "tiles": tiles,
+                }],
+                "private": {
+                    "shed": {"WHEAT": 0},
+                    "seeds": {},
+                    "inventories": [{}, {}],
                 },
             },
         }

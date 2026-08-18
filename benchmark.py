@@ -57,6 +57,7 @@ def count_actions(
     agent_player: int,
 ) -> dict[str, dict[str, int]]:
     farmer_counts: Counter[str] = Counter()
+    hand_counts: Counter[str] = Counter()
     market_counts: Counter[str] = Counter()
     market_units: Counter[str] = Counter()
 
@@ -68,6 +69,12 @@ def count_actions(
         farmer_action = action.get("farmer")
         if isinstance(farmer_action, list) and farmer_action:
             farmer_counts[str(farmer_action[0])] += 1
+
+        hands_actions = action.get("hands", [])
+        if isinstance(hands_actions, list):
+            for hand_action in hands_actions:
+                if isinstance(hand_action, list) and hand_action:
+                    hand_counts[str(hand_action[0])] += 1
 
         market_orders = action.get("market", [])
         if isinstance(market_orders, list):
@@ -81,6 +88,7 @@ def count_actions(
 
     return {
         "farmer": dict(sorted(farmer_counts.items())),
+        "hands": dict(sorted(hand_counts.items())),
         "market": dict(sorted(market_counts.items())),
         "market_units": dict(sorted(market_units.items())),
     }
@@ -98,7 +106,8 @@ def analyze_route(
     routes_by_day: dict[str, list[dict[str, Any]]] = {}
     tile_task_counts: Counter[str] = Counter()
     movement_turns = 0
-    travel_since_task = 0
+    hand_movement_turns = 0
+    travel_since_task: dict[int, int] = {}
     current_day: int | None = None
 
     for replay_index in range(1, len(replay_steps)):
@@ -111,52 +120,68 @@ def analyze_route(
         hour = int(observation.get("hour", 0))
         step = int(observation.get("step", replay_index - 1))
         farm = _observed_farm(observation, agent_player)
-        position = _position(farm.get("farmer"))
 
         if current_day != day:
             current_day = day
-            travel_since_task = 0
+            travel_since_task = {}
 
         action = state.get("action")
         if not isinstance(action, dict):
             continue
-        farmer_action = action.get("farmer")
-        operation = (
-            str(farmer_action[0])
-            if isinstance(farmer_action, list) and farmer_action
-            else "PASS"
-        )
-
-        if operation in MOVE_ACTIONS:
-            movement_turns += 1
-            travel_since_task += 1
-        elif operation in TILE_TASK_ACTIONS and position is not None:
-            tile_before = _tile_at(farm, position)
-            visit = {
-                "step": step,
-                "day": day,
-                "hour": hour,
-                "task": operation,
-                "tile": list(position),
-                "travel_turns": travel_since_task,
-            }
-            task_visits.append(visit)
-            routes_by_day.setdefault(str(day), []).append(visit)
-            tile_task_counts[f"{position[0]},{position[1]}:{operation}"] += 1
-            travel_since_task = 0
-            _record_crop_task(
-                operation,
-                farmer_action,
-                tile_before,
-                position,
-                step,
-                day,
-                hour,
-                turns_per_day,
-                active_cycles,
-                crop_cycles,
-                pending_harvests,
+        unit_positions = [farm.get("farmer"), *farm.get("hands", [])]
+        unit_actions = [action.get("farmer"), *action.get("hands", [])]
+        for unit_index, unit_position in enumerate(unit_positions):
+            position = _position(unit_position)
+            unit_action = (
+                unit_actions[unit_index]
+                if unit_index < len(unit_actions)
+                else ["PASS"]
             )
+            operation = (
+                str(unit_action[0])
+                if isinstance(unit_action, list) and unit_action
+                else "PASS"
+            )
+            travel_since_task.setdefault(unit_index, 0)
+
+            if operation in MOVE_ACTIONS:
+                if unit_index == 0:
+                    movement_turns += 1
+                else:
+                    hand_movement_turns += 1
+                travel_since_task[unit_index] += 1
+            elif operation in TILE_TASK_ACTIONS and position is not None:
+                tile_before = _tile_at(farm, position)
+                visit = {
+                    "step": step,
+                    "day": day,
+                    "hour": hour,
+                    "worker": (
+                        "farmer" if unit_index == 0 else f"hand_{unit_index}"
+                    ),
+                    "task": operation,
+                    "tile": list(position),
+                    "travel_turns": travel_since_task[unit_index],
+                }
+                task_visits.append(visit)
+                routes_by_day.setdefault(str(day), []).append(visit)
+                tile_task_counts[
+                    f"{position[0]},{position[1]}:{operation}"
+                ] += 1
+                travel_since_task[unit_index] = 0
+                _record_crop_task(
+                    operation,
+                    unit_action,
+                    tile_before,
+                    position,
+                    step,
+                    day,
+                    hour,
+                    turns_per_day,
+                    active_cycles,
+                    crop_cycles,
+                    pending_harvests,
+                )
 
         _match_wheat_sales(
             action.get("market"),
@@ -195,6 +220,8 @@ def analyze_route(
 
     return {
         "movement_turns": movement_turns,
+        "hand_movement_turns": hand_movement_turns,
+        "all_worker_movement_turns": movement_turns + hand_movement_turns,
         "task_visit_count": len(task_visits),
         "travel_turns_to_tasks": sum(travel_turns),
         "mean_travel_turns_per_task": _mean(travel_turns),
@@ -557,6 +584,7 @@ def _sum_action_counts(
 ) -> dict[str, dict[str, int]]:
     totals: dict[str, Counter[str]] = {
         "farmer": Counter(),
+        "hands": Counter(),
         "market": Counter(),
         "market_units": Counter(),
     }
@@ -615,6 +643,14 @@ def _sum_route_analysis(records: list[dict[str, Any]]) -> dict[str, Any]:
         "games": len(analyses),
         "movement_turns": sum(
             analysis.get("movement_turns", 0) for analysis in analyses
+        ),
+        "hand_movement_turns": sum(
+            analysis.get("hand_movement_turns", 0)
+            for analysis in analyses
+        ),
+        "all_worker_movement_turns": sum(
+            analysis.get("all_worker_movement_turns", 0)
+            for analysis in analyses
         ),
         "task_visit_count": sum(
             analysis.get("task_visit_count", 0) for analysis in analyses
