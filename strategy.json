@@ -32,7 +32,15 @@
       "liquidate all remaining shed wheat from day 25 onward",
       "buy enough seeds to maintain six concurrent wheat crops",
       "do not buy seeds after day 24"
-    ]
+    ],
+    "live_kaggle_submission": {
+      "submitted_at": "2026-08-18",
+      "account": "YASH JAIN",
+      "filename": "main.py",
+      "sha256": "eee28ea012df8880c834e59d761a2551d0e9dd26f2ac55535fd1585586eba38a",
+      "description": "v9 verified baseline: six wheat plots, daily watering, day-24 planting cutoff, guarded price-aware selling",
+      "status_when_recorded": "Pending"
+    }
   },
   "current_1_32_7_baseline": {
     "version": "v9",
@@ -297,21 +305,21 @@
     "current_threshold_remains": 35
   },
   "next_experiment": {
-    "name": "broader counterfactual coverage for a state-dependent value model",
-    "hypothesis": "additional prices, days, and inventory levels can reduce rare costly errors that made shallow trees worse than v9",
+    "name": "replay-inspired labor scaling from the frozen plain-cow control",
+    "hypothesis": "raising daily labor from two hands toward the five-hand leaderboard opening can increase serviced production before land or CARE is necessary",
     "steps": [
-      "keep v9 threshold 35 frozen as the submission control",
-      "use development seeds only for additional state branching and model selection",
-      "sample broader prices, days, and stock levels with policy-hash and seed provenance",
-      "group train and validation splits by seed so both player positions never cross splits",
-      "require a state-dependent model to beat v9 leave-one-seed-out regret before any full policy rollout",
-      "reserve seeds 50-59 as the next untouched promotion holdout"
+      "keep main.py and both active Kaggle submissions unchanged",
+      "use the source-frozen plain-cow policy as the local control",
+      "increase only daily hand capacity first and measure task completion, idle actions, movement, and cash",
+      "use development seeds 30-39 for workload or livestock follow-up tuning",
+      "do not add land or CARE until labor and animal capacity pass paired gates",
+      "freeze one candidate before using seeds 70-79 once"
     ],
     "gate": {
       "simulator_version": "1.32.7",
       "opponent": "starter",
       "development_seeds": "30-39",
-      "next_untouched_holdout_seeds": "50-59",
+      "next_untouched_holdout_seeds": "70-79",
       "positions": [
         0,
         1
@@ -319,14 +327,17 @@
       "must_preserve": [
         "DONE status",
         "all wins",
+        "strictly positive paired cash delta in every game",
         "no shed overflow",
-        "zero unsold harvested wheat",
-        "deterministic v9 fallback"
+        "no escaped animals",
+        "zero terminal sellable shed or carried inventory",
+        "no market-order truncation"
       ],
       "must_not_do": [
-        "do not train on outcomes from the same seed used for model validation",
-        "do not call behavior cloning a policy improvement",
-        "do not reuse seeds 20-29 to select another candidate"
+        "do not treat starter profit as representative ladder evidence",
+        "do not change labor, land, CARE, crop mix, and animal mix in one untraceable candidate",
+        "do not reuse seeds 20-29, 40-49, 50-59, or 60-69 as a fresh holdout",
+        "do not submit a third Kaggle bot without explicit approval"
       ]
     }
   },
@@ -335,9 +346,9 @@
     "phase_1_complete": "explicit heuristics and parameter search established mechanics, accounting, and the reproducible v9 control",
     "phase_2_complete": "v9 passed generalization and a leak-resistant single-policy trajectory dataset was collected",
     "phase_3_complete": "deterministic state branching produced the first true HOLD/SELL counterfactual labels and an interpretable model baseline",
-    "phase_4_now": "broaden counterfactual coverage until a state-dependent model beats v9 under leave-one-seed-out regret",
-    "phase_5": "evaluate one selected model on fresh held-out seeds and opponents while retaining v9 as a deterministic fallback",
-    "phase_6": "consider offline RL or self-play only after the state, action, reward, and holdout protocols are stable",
+    "phase_4_complete": "broader counterfactual ridge evaluation improved average cash but was rejected after one fresh-seed regression",
+    "phase_5_now": "use public top-replay evidence to scale deterministic labor, livestock, and capital allocation around a frozen cow control",
+    "phase_6": "add representative opponents and consider learned capital allocation or self-play only after the scaled action abstraction is stable",
     "rl_entry_requirements": [
       "legal-action masking",
       "terminal banked cash and win outcome tracked correctly",
@@ -348,7 +359,51 @@
     ]
   },
   "one_goose_experiment": {
-    "status": "eligible after v9 generalization, but deferred while the market-learning slice is isolated",
+    "status": "submitted to Kaggle; validation complete; not promoted over v9 from live evidence",
+    "candidate_sha256": "67621bc08c296b90f3d6f5e6ca6ff54a19c560822c2e4bbb7cdb09dd876367bf",
+    "development_result": {
+      "seeds": "30-39",
+      "positions": [0, 1],
+      "wins": 20,
+      "mean_coins": 9884.5,
+      "mean_gain_over_v9": 1790.7,
+      "improved_seeds": 10,
+      "worse_seeds": 0,
+      "minimum_game_delta": 1285,
+      "report": "artifacts/benchmarks/v1327-goose-cutoff21-vs-v9-development-paired.json"
+    },
+    "fresh_holdout_result": {
+      "seeds": "50-59",
+      "positions": [0, 1],
+      "wins": 20,
+      "mean_coins": 9917,
+      "v9_mean_coins": 7920,
+      "mean_gain_over_v9": 1997,
+      "minimum_game_gain": 1355,
+      "maximum_game_gain": 2911,
+      "improved_games": 20,
+      "tied_games": 0,
+      "worse_games": 0,
+      "terminal_inventory_empty": true,
+      "wheat_harvested": 2200,
+      "eggs_sold": 480,
+      "fertilizer_sold": 560,
+      "report": "artifacts/benchmarks/v1327-goose-cutoff21-holdout-seeds50-59.json"
+    },
+    "kaggle_submission": {
+      "submitted_at": "2026-08-18T14:16:34Z",
+      "file": "submission-goose/main.py",
+      "file_sha256": "e236f9c5222df88f21aeae6d3ca9618e3e9dd9177921de68fafa82ea5acaf035",
+      "description": "One-goose candidate: six wheat plots, near-shed coop, urgent feeding, egg and fertilizer sales, day-21 planting cutoff",
+      "status_at_last_check": "Complete",
+      "initial_live_rating": 257.1,
+      "live_rating_note": "The first completed rating was below v9's previous best 299.2; a later leaderboard snapshot showed the team at 333.6 after additional episodes.",
+      "daily_submissions_remaining_before_upload": 4,
+      "active_submission_pair": [
+        "v9 verified baseline",
+        "one-goose candidate"
+      ]
+    },
     "why_goose_first": "cheaper and earlier-producing than cow or sheep",
     "verified_costs_and_needs": {
       "goose_purchase": 300,
@@ -369,6 +424,16 @@
       "PLACE GOOSE on the coop",
       "PICKUP carried wheat for future FEED actions"
     ],
+    "implemented_policy": [
+      "build one coop on the NW shed-access tile at (4,4)",
+      "buy and place one goose",
+      "maintain six wheat plots around the coop route",
+      "feed every other day when consecutive_unfed reaches 1",
+      "harvest eggs at the four-unit tile cap",
+      "collect and sell fertilizer through day 28",
+      "stop wheat seed buying and planting after day 21",
+      "repurchase a goose if an empty coop remains after animal loss"
+    ],
     "promotion_gate": [
       "include the 300-coin animal cost",
       "include wheat opportunity cost",
@@ -376,6 +441,187 @@
       "compare the same seeds and both positions",
       "promote only if wins are preserved and repeated banked cash increases"
     ]
+  },
+  "two_hand_experiment": {
+    "status": "validated development control; superseded locally by the plain-cow candidate",
+    "agent": "experimental_hands_agent.py",
+    "candidate_sha256": "ad75e94c36397eaddbd1de6f6cac0b49cd654243e184e7875ec9aed6db159946",
+    "policy": {
+      "daily_hands": 2,
+      "wheat_target": 12,
+      "goose": 1,
+      "last_wheat_planting_day": 21,
+      "land_purchases": 0,
+      "care_actions": 0
+    },
+    "workload_gate_seed_30": {
+      "target_10_mean_coins": 12061.5,
+      "target_12_mean_coins": 12958,
+      "target_14_mean_coins": 11854,
+      "target_16_mean_coins": 10628,
+      "decision": "keep target 12"
+    },
+    "development_result": {
+      "seeds": "30-39",
+      "positions": [0, 1],
+      "wins": 20,
+      "mean_coins": 12333.3,
+      "minimum_coins": 11381,
+      "maximum_coins": 13268,
+      "goose_control_mean_coins": 9884.5,
+      "mean_gain_over_goose": 2448.8,
+      "minimum_game_gain": 1588,
+      "improved_games": 20,
+      "tied_games": 0,
+      "worse_games": 0,
+      "all_worker_movement_turns": 20838,
+      "matched_wheat_sold": 3945,
+      "weeded_cycles": 316,
+      "terminal_sellable_inventory_empty": true,
+      "candidate_report": "artifacts/benchmarks/v1327-hands2-wheat12-goose1-current-development-seeds30-39.json",
+      "paired_report": "artifacts/benchmarks/v1327-hands2-wheat12-goose1-current-vs-goose1-development-paired.json"
+    },
+    "important_fix": "feed and setup checks use only inventories[0]; items carried by hands are inaccessible to the main farmer"
+  },
+  "plain_cow_experiment": {
+    "status": "strongest validated local candidate; development-only and not submitted",
+    "agent": "experimental_cow_agent.py",
+    "candidate_sha256": "aec06f1da0dd046a98af9e57d391ec779cb7fd690e0fb8e34d4044f9057cd9b5",
+    "policy": {
+      "daily_hands": 2,
+      "wheat_target": 12,
+      "last_wheat_planting_day": 21,
+      "goose": 1,
+      "goose_tile": [4, 4],
+      "cow": 1,
+      "cow_tile": [3, 4],
+      "last_feeding_day": 27,
+      "last_collection_day": 28,
+      "land_purchases": 0,
+      "care_actions": 0,
+      "animal_replacement": false
+    },
+    "development_result": {
+      "seeds": "30-39",
+      "positions": [0, 1],
+      "wins": 20,
+      "mean_coins": 16634.3,
+      "minimum_coins": 14844,
+      "maximum_coins": 17623,
+      "hands_control_mean_coins": 12333.3,
+      "mean_gain_over_hands": 4301,
+      "minimum_game_gain": 1894,
+      "maximum_game_gain": 5731,
+      "improved_games": 20,
+      "tied_games": 0,
+      "worse_games": 0,
+      "candidate_report": "artifacts/benchmarks/v1327-hands2-wheat12-goose1-cow1-plain-development-seeds30-39.json",
+      "paired_report": "artifacts/benchmarks/v1327-hands2-wheat12-goose1-cow1-plain-vs-hands2-current-development-paired.json"
+    },
+    "frozen_holdout_result": {
+      "seeds": "60-69",
+      "positions": [0, 1],
+      "wins": 20,
+      "mean_coins": 16694.75,
+      "minimum_coins": 15646,
+      "maximum_coins": 17902,
+      "hands_control_mean_coins": 11768.3,
+      "mean_gain_over_hands": 4926.45,
+      "minimum_game_gain": 3536,
+      "maximum_game_gain": 7113,
+      "improved_games": 20,
+      "tied_games": 0,
+      "worse_games": 0,
+      "eggs_sold": 500,
+      "milk_sold": 220,
+      "fertilizer_sold": 1120,
+      "exact_output_per_game": {
+        "eggs": 25,
+        "milk": 11,
+        "fertilizer": 56
+      },
+      "terminal_sellable_inventory_empty": true,
+      "candidate_report": "artifacts/benchmarks/v1327-hands2-wheat12-goose1-cow1-plain-holdout-seeds60-69.json",
+      "control_report": "artifacts/benchmarks/v1327-hands2-wheat12-goose1-holdout-seeds60-69.json",
+      "paired_report": "artifacts/benchmarks/v1327-hands2-wheat12-goose1-cow1-plain-vs-hands2-holdout-paired.json"
+    },
+    "decision": "promote as the frozen local control for the next scale experiment; do not replace main.py or submit without explicit approval"
+  },
+  "leaderboard_replay_scouting": {
+    "checked_at": "2026-08-19",
+    "leader_team": "カワシギ",
+    "team_id": 16677252,
+    "submission_id": 55540317,
+    "observed_rating_range": "3182.0-3196.1",
+    "episodes_listed": 147,
+    "verified_high_score_episode": {
+      "episode_id": 94173913,
+      "leader_reward": 111082,
+      "opponent_reward": 109547,
+      "result": "win"
+    },
+    "verified_recent_loss": {
+      "episode_id": 94247823,
+      "leader_reward": 78795,
+      "opponent_reward": 84889,
+      "opponent_submission_id": 55574890,
+      "result": "loss"
+    },
+    "replay_access": {
+      "metadata_endpoint": "POST /api/i/competitions.EpisodeService/ListEpisodes",
+      "public_replay_endpoint": "GET /competitions/episodes/<episode-id>/replay.json",
+      "episode_player": "https://www.kaggleusercontent.com/episode-visualizers/kaggriculture/default/index.html",
+      "status": "complete 720-record public win and loss replays captured without exposing credentials"
+    },
+    "high_score_strategy": {
+      "episode_id": 94173913,
+      "seed": 1507302619,
+      "player_index": 1,
+      "opening": "turn 0: five hands, two cows, two sheep, seven wheat seeds, twelve melon seeds, and BUILD_PASTURE",
+      "total_hires": 277,
+      "maximum_simultaneous_hands": 12,
+      "land_purchase_times": [
+        "day 6 hour 4",
+        "day 11 hour 0",
+        "day 12 hour 0"
+      ],
+      "animals_placed": {
+        "COW": 6,
+        "SHEEP": 12
+      },
+      "structures": {
+        "PASTURE": 18
+      },
+      "major_sales": {
+        "FERTILIZER": 1575,
+        "WHEAT": 1525,
+        "WOOL": 266,
+        "MILK": 188
+      },
+      "terminal_sellable_inventory_empty": true,
+      "replay": "artifacts/top-replays/episode-94173913-replay.json",
+      "analysis": "artifacts/top-replays/episode-94173913-strategy.json"
+    },
+    "loss_strategy": {
+      "episode_id": 94247823,
+      "seed": 1295704409,
+      "player_index": 1,
+      "total_hires": 277,
+      "animals_placed": {
+        "COW": 10,
+        "SHEEP": 4
+      },
+      "extra_land_purchases": 2,
+      "opponent_total_hires": 311,
+      "opponent_animals_placed": {
+        "COW": 6,
+        "SHEEP": 7,
+        "GOOSE": 3
+      },
+      "replay": "artifacts/top-replays/episode-94247823-replay.json",
+      "analysis": "artifacts/top-replays/episode-94247823-strategy.json"
+    },
+    "interpretation": "A large cheap workforce is the stable backbone across the leader win and loss; animal mix and land timing are adaptive. Local starter scores remain diagnostic only because 16.7k is still far below the observed 78k-111k opponent-facing economies."
   },
   "do_not_do": [
     "do not treat one favorable game as proof",
@@ -388,6 +634,9 @@
     "do not count carried or shed inventory as final profit",
     "do not place a daily-service animal far away merely because its production interval is long",
     "do not add animals, fertilizer, routing, and market timing in one candidate",
+    "do not treat starter profit as proof of ladder strength",
+    "do not reuse seeds 60-69 as a fresh holdout",
+    "do not submit a third Kaggle bot without explicit approval",
     "do not submit without loading main.py by file",
     "do not move agent above another callable in main.py",
     "do not install competition packages into the global Python environment"

@@ -17,6 +17,20 @@
 			"problemMatcher": []
 		},
 		{
+			"label": "Analyze captured leader replays",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe analyze_public_replay.py artifacts\\top-replays\\episode-94173913-replay.json --output artifacts\\top-replays\\episode-94173913-strategy.json; ${workspaceFolder}\\.conda\\python.exe analyze_public_replay.py artifacts\\top-replays\\episode-94247823-replay.json --output artifacts\\top-replays\\episode-94247823-strategy.json",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Compare cow development and holdout",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe compare_benchmarks.py artifacts\\benchmarks\\v1327-hands2-wheat12-goose1-cow1-plain-development-seeds30-39.json artifacts\\benchmarks\\v1327-hands2-wheat12-goose1-current-development-seeds30-39.json --output artifacts\\benchmarks\\v1327-hands2-wheat12-goose1-cow1-plain-vs-hands2-current-development-paired.json; ${workspaceFolder}\\.conda\\python.exe compare_benchmarks.py artifacts\\benchmarks\\v1327-hands2-wheat12-goose1-cow1-plain-holdout-seeds60-69.json artifacts\\benchmarks\\v1327-hands2-wheat12-goose1-holdout-seeds60-69.json --output artifacts\\benchmarks\\v1327-hands2-wheat12-goose1-cow1-plain-vs-hands2-holdout-paired.json",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
 			"label": "Run all tests",
 			"type": "shell",
 			"command": "${workspaceFolder}\\.conda\\python.exe -m unittest -v",
@@ -37,6 +51,122 @@
 			"command": "C:\\Progra~1\\Git\\cmd\\git.exe add .gitattributes .vscode/tasks.json; C:\\Progra~1\\Git\\cmd\\git.exe commit -m 'chore: exclude generated evidence from language stats'; C:\\Progra~1\\Git\\cmd\\git.exe push origin main",
 			"isBackground": false,
 			"problemMatcher": []
+		},
+		{
+			"label": "Run goose smoke benchmark",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_goose_agent.py --opponent starter --seed-start 30 --seed-count 1 --steps 120 --output artifacts\\benchmarks\\v1327-goose-smoke-seed30-120.json",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Run goose full gate",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_goose_agent.py --opponent starter --seed-start 30 --seed-count 1 --steps 720 --output artifacts\\benchmarks\\v1327-goose-cutoff21-gate-seed30.json",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Run goose development suite",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_goose_agent.py --opponent starter --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-goose-cutoff21-development-seeds30-39.json",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Analyze goose cycles",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe analyze_goose_cycles.py artifacts\\benchmarks\\v1327-goose-development-seeds30-39.json | Out-File -Encoding utf8 artifacts\\diagnostics\\goose-cycle-summary.txt",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Compare goose to v9 development",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe compare_benchmarks.py artifacts\\benchmarks\\v1327-goose-cutoff21-development-seeds30-39.json artifacts\\benchmarks\\v1327-v9-threshold35-train-seeds30-39.json --output artifacts\\benchmarks\\v1327-goose-cutoff21-vs-v9-development-paired.json",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Run v9 goose holdout control",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent main.py --opponent starter --seed-start 50 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-v9-goose-holdout-seeds50-59.json",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Run goose fresh holdout",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_goose_agent.py --opponent starter --seed-start 50 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-goose-cutoff21-holdout-seeds50-59.json",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Compare goose fresh holdout",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe compare_goose_holdout.py",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Prepare goose submission",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe prepare_goose_submission.py; ${workspaceFolder}\\.conda\\python.exe -c \"import hashlib,pathlib; from kaggle_environments import make; p=pathlib.Path('submission-goose/main.py'); e=make('kaggriculture',configuration={'episodeSteps':720,'seed':50},debug=False); e.run([str(p),str(p)]); print('statuses',[str(s.status) for s in e.steps[-1]]); print('rewards',[s.reward for s in e.steps[-1]]); print('hash',hashlib.sha256(p.read_bytes()).hexdigest())\"",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Build goose submission file",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe prepare_goose_submission.py",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Validate goose submission file",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe validate_submission.py submission-goose\\main.py --seed 50",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Publish goose research",
+			"type": "shell",
+			"command": "C:\\Progra~1\\Git\\cmd\\git.exe add experimental_goose_agent.py test_experimental_goose_agent.py analyze_goose_cycles.py compare_goose_holdout.py prepare_submission.py prepare_goose_submission.py validate_submission.py; C:\\Progra~1\\Git\\cmd\\git.exe commit -m 'feat: add guarded one-goose strategy'; C:\\Progra~1\\Git\\cmd\\git.exe add artifacts/benchmarks artifacts/diagnostics submission submission-goose; C:\\Progra~1\\Git\\cmd\\git.exe commit -m 'data: preserve goose promotion evidence'; C:\\Progra~1\\Git\\cmd\\git.exe add README.md progress.md strategy.json .vscode/tasks.json; C:\\Progra~1\\Git\\cmd\\git.exe commit -m 'docs: record Kaggle baseline and goose results'; C:\\Progra~1\\Git\\cmd\\git.exe push origin main",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Run plain cow development suite",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_cow_agent.py --opponent starter --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-hands2-wheat12-goose1-cow1-plain-development-seeds30-39.json",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Run frozen cow holdout suite",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_cow_agent.py --opponent starter --seed-start 60 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-hands2-wheat12-goose1-cow1-plain-holdout-seeds60-69.json",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Run frozen hands holdout control",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_hands_agent.py --opponent starter --seed-start 60 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-hands2-wheat12-goose1-holdout-seeds60-69.json",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Run current hands development control",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_hands_agent.py --opponent starter --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-hands2-wheat12-goose1-current-development-seeds30-39.json",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
 		}
 	]
 }

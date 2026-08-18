@@ -7,8 +7,8 @@ See `progress.md` for the detailed experiment journal, decisions, failures,
 fixes, current work, and next steps.
 
 `strategy.json` is the machine-readable current policy, verified baseline,
-next experiment, learning roadmap, one-goose experiment design, and promotion
-guardrails.
+replay findings, hands and livestock experiments, learning roadmap, and
+promotion guardrails.
 
 ## What The Competition Is
 
@@ -26,7 +26,21 @@ The leaderboard rating depends on wins and losses, not the margin of victory.
 That makes reliability across many opponents more valuable than one unusually
 profitable game.
 
-## Current Baseline
+## Current Status
+
+There are three deliberately separate policy states:
+
+- `main.py` is the frozen v9 submission control: six wheat plots and guarded
+  price-aware selling.
+- `submission-goose/main.py` is the second active Kaggle submission.
+- `experimental_cow_agent.py` is the strongest validated local candidate: two
+  daily hands, twelve wheat plots, one goose, and one plain cow. It has not been
+  packaged or submitted.
+
+No third Kaggle agent should be submitted without an explicit decision. Local
+profit against `starter` is diagnostic evidence, not proof of ladder strength.
+
+## Submitted Baseline
 
 `main.py` is already in the single-file format Kaggle accepts. It:
 
@@ -39,9 +53,9 @@ profitable game.
   and
 - uses deterministic shortest-path movement.
 
-It intentionally does not yet use farm hands, animals, fertilizer, land
-expansion, or a learned policy. Those are experiments, not missing mystery
-code.
+It intentionally does not use farm hands, animals, fertilizer, land expansion,
+or a learned policy. Those features remain isolated development experiments so
+the promoted submission control does not move silently.
 
 Kaggle's file loader executes a submission and selects its last callable.
 Therefore, `agent` must remain the final function defined in `main.py`. A unit
@@ -160,6 +174,32 @@ state and evaluates one forced HOLD and SELL choice before returning both
 branches to v9. The latter explicitly restores Kaggriculture's resolved seed in
 each clone; the generic environment `clone()` does not preserve that metadata.
 
+## Analyze A Public Leader Replay
+
+Kaggle's Episode Player fetches complete public episode data from:
+
+```text
+https://www.kaggle.com/competitions/episodes/<episode-id>/replay.json
+```
+
+After saving a replay, produce a compact strategy report with:
+
+```powershell
+./.conda/python.exe analyze_public_replay.py `
+  artifacts/top-replays/episode-94173913-replay.json `
+  --output artifacts/top-replays/episode-94173913-strategy.json
+```
+
+The report counts farmer and hand actions, hires by day, maximum workforce,
+land timing, animal purchases and placements, structures, crop transitions,
+product sales, bank trajectory, and terminal inventory for both players.
+
+The captured 111,082-coin rank-one episode used 277 hires, up to 12 simultaneous
+hands, 18 pastures, 6 cows, 12 sheep, and all four quadrants. A captured loss
+kept the same 277-hire backbone but shifted to 10 cows and 4 sheep and bought
+only two extra quadrants. These replays motivate controlled labor and capital
+experiments; they do not make the local opponent representative.
+
 ## Current Baseline Results
 
 On simulator 1.32.7, promoted v9 combines the six-plot, day-24 crop policy with
@@ -195,6 +235,30 @@ the same 2,956 wheat units. The paired report is
 A neighboring threshold of 36 improved the tuning suite but lost by 1-2 coins
 on two independent holdout seeds. It was therefore not promoted; the submitted
 default remains 35. This is intentional conservatism, not an unfinished edit.
+
+## Hands And Plain Cow Results
+
+Two daily hands around the one-goose control raised development performance on
+seeds 30-39, both positions, from 9,884.5 to 12,333.3 mean coins. The paired
+result was 20 improved, 0 tied, and 0 worse games, for a +2,448.8 mean gain.
+
+Adding only one plain cow and a protected pasture raised the same development
+suite to 16,634.3 mean coins. The exact candidate was frozen at SHA-256
+`aec06f1da0dd046a98af9e57d391ec779cb7fd690e0fb8e34d4044f9057cd9b5` before
+using untouched seeds 60-69.
+
+| Metric | Two-hand control | Frozen cow candidate |
+| --- | ---: | ---: |
+| Holdout games won | 20 / 20 | 20 / 20 |
+| Mean coins | 11,768.3 | 16,694.75 |
+| Mean paired gain | - | +4,926.45 |
+| Minimum paired game gain | - | +3,536 |
+| Improved / tied / worse | - | 20 / 0 / 0 |
+
+Every cow game sold exactly 25 eggs, 11 milk, and 56 fertilizer, used no CARE,
+and ended with no sellable shed or carried inventory. The candidate is now the
+frozen local control for the next scale experiment, but its roughly 16.7k score
+is still far below the 78k-111k public replay economies.
 
 ## Historical Baseline Results
 
@@ -245,13 +309,18 @@ not promoted. That led to broader counterfactual coverage and the guarded ridge
 experiment described next. Offline RL or self-play remains later work, after a
 state-dependent value model can pass the full consistency gate.
 
-The next research run broadened true counterfactual coverage to 120 states over
+An earlier research run broadened true counterfactual coverage to 120 states over
 prices 28-40 and produced a guarded ridge policy. It improved every development
 seed by 156.4 coins on average. On fresh seeds 40-49 it preserved all 20 wins,
 all production, and gained 116 coins on average, but seed 48 lost 25 coins.
 Therefore the learned policy remains in `experimental_ridge_agent.py`; the
-submission in `main.py` is still v9. Seeds 40-49 are spent, and 50-59 are the
-next untouched holdout.
+submission in `main.py` is still v9. Seeds 20-29, 40-49, 50-59, and 60-69 are
+spent holdouts. The next frozen candidate may use seeds 70-79 once.
+
+The immediate next strategy question is whether increasing only daily hand
+capacity from the frozen cow control can support more production. Land, CARE,
+crop mix, and animal mix should remain fixed until that labor axis passes the
+same paired development gate.
 
 Before submitting, accept the competition rules in the browser. API credentials
 are useful later for automation but are not needed to understand or test the

@@ -1,6 +1,6 @@
 # Kaggriculture Progress Journal
 
-Last updated: August 17, 2026
+Last updated: August 19, 2026
 
 This file is the durable record of what we are doing, why we are doing it,
 how we verify it, what went wrong, how we fixed it, and what comes next. Update
@@ -9,8 +9,217 @@ approach.
 
 ## Current Objective
 
-Explain and reduce the learned policy's rare timing regressions while keeping
-promoted v9 frozen as the deterministic submission control.
+Reverse-engineer the public leaderboard's large-scale economies and build a
+stronger opponent-facing policy while keeping promoted v9 frozen as the
+deterministic submission control.
+
+### Live Ladder And Leader Scouting
+
+The one-goose submission completed Kaggle validation. Its first observed live
+rating was 257.1, below v9's previous best 299.2, despite gaining 1,997 coins on
+average over v9 on the fresh local holdout. A later leaderboard refresh showed
+the team at 333.6 after more episodes. This confirms that profit against the
+local `starter` opponent is not a sufficient metagame test: ladder rating is
+driven by wins and losses against other submitted economies, not victory
+margin against the starter.
+
+We therefore began scouting public leaderboard episodes. The leader,
+カワシギ, used team ID 16677252 and submission ID 55540317. Kaggle listed 147
+public episodes for that submission. Two useful verified outcomes are:
+
+| Episode | Leader coins | Opponent coins | Result |
+| --- | ---: | ---: | --- |
+| 94173913 | 111,082 | 109,547 | Win |
+| 94247823 | 78,795 | 84,889 | Loss |
+
+The Episode Player revealed a simpler public route than the generated SDK:
+`GET /competitions/episodes/<episode-id>/replay.json`. We captured the complete
+720-record win and loss replays without exposing credentials, then added
+`analyze_public_replay.py` to summarize worker, land, crop, animal, structure,
+market, bank, and terminal-state behavior.
+
+Episode 94173913 maps player 1 to カワシギ and seed 1507302619. Its exact opening
+was five hands, two cows, two sheep, seven wheat seeds, twelve melon seeds, and
+one pasture build on turn 0. Across the full season, the leader:
+
+- hired 277 hands, reaching 12 simultaneously;
+- built 18 pastures and placed 6 cows plus 12 sheep;
+- bought land on day 6 hour 4, day 11 hour 0, and day 12 hour 0;
+- planted wheat, melon, strawberry, and carrot;
+- sold 1,575 fertilizer, 1,525 wheat, 266 wool, and 188 milk, plus crops; and
+- ended at 111,082 coins with no sellable shed or carried inventory.
+
+The opponent used the same 277-hire schedule, land timing, and 6-cow/12-sheep
+structure, yet scored 109,547. This was a contest between two similar
+large-scale policies, not a leader farming an easy baseline.
+
+In episode 94247823, カワシギ again hired 277 hands and bought its first two
+extra quadrants on the same schedule, but shifted to 10 cows and 4 sheep and
+finished with only three quadrants. The opponent won 84,889 to 78,795 using 311
+hires, 6 cows, 7 sheep, and 3 geese. The evidence therefore separates a stable
+backbone from an adaptive layer: cheap labor is persistent, while animal mix
+and capital timing vary with the episode.
+
+Artifacts:
+
+- `artifacts/top-replays/episode-94173913-replay.json` and its compact
+  `episode-94173913-strategy.json` report;
+- `artifacts/top-replays/episode-94247823-replay.json` and its compact
+  `episode-94247823-strategy.json` report; and
+- `analyze_public_replay.py`, with synthetic schema tests.
+
+### Two-Hand Candidate: Corrected Evidence
+
+The first isolated response to the replay evidence was two hands hired at hour
+0 each day around the one-goose policy. The first two daily hires cost one coin
+each, so the full-season labor bill is only 60 coins. The coordinator assigns
+distinct urgent-water, normal-water, harvest, and planting targets across the
+farmer and hands. The farmer retains goose setup and service ownership.
+
+A workload sweep on seed 30, both positions, selected twelve wheat plots:
+
+| Wheat target | Mean coins |
+| ---: | ---: |
+| 10 | 12,061.5 |
+| 12 | 12,958.0 |
+| 14 | 11,854.0 |
+| 16 | 10,628.0 |
+
+Compact near-shed planting reduced travel but also reduced cash to 12,489, so
+it was rejected. The inventory helper was then fixed to inspect only the main
+farmer's inventory; wheat carried by a hand cannot satisfy a farmer `FEED`.
+The seed-30 gate reproduced exactly after that fix.
+
+Current-code development seeds 30-39, both positions:
+
+| Metric | One goose | Two hands + twelve wheat | Difference |
+| --- | ---: | ---: | ---: |
+| Wins | 20 | 20 | Preserved |
+| Mean coins | 9,884.5 | 12,333.3 | +2,448.8 |
+| Improved / tied / worse games | - | 20 / 0 / 0 | Passed |
+| Minimum paired gain | - | +1,588 | All positive |
+
+The corrected all-worker report records 20,838 movement turns, 3,945 matched
+wheat sales, 316 weeded cycles, and no terminal shed or carried inventory.
+Unused seed inventory remains, so twelve plots is a useful labor baseline, not
+an optimized end state.
+
+### Plain Cow Candidate: Development And Frozen Holdout
+
+The next isolated axis added one uncared-for cow and pasture at `(3,4)` while
+retaining the goose at `(4,4)`, two daily hands, twelve wheat plots, no land,
+and no CARE. A new explicit multi-animal scheduler handles setup, carried feed,
+urgent feeding, fertilizer, and capped or day-28 product harvest separately for
+each species. The crop coordinator now accepts protected tiles so crops cannot
+occupy livestock structures; the default hands policy is unchanged.
+
+Development seeds 30-39, both positions:
+
+| Metric | Two-hand control | Plain cow candidate | Difference |
+| --- | ---: | ---: | ---: |
+| Wins | 20 | 20 | Preserved |
+| Mean coins | 12,333.3 | 16,634.3 | +4,301.0 |
+| Minimum candidate coins | - | 14,844 | - |
+| Maximum candidate coins | - | 17,623 | - |
+| Improved / tied / worse games | - | 20 / 0 / 0 | Passed |
+| Minimum paired game gain | - | +1,894 | Passed the +1,500 gate |
+
+The exact candidate was frozen before holdout with SHA-256
+`aec06f1da0dd046a98af9e57d391ec779cb7fd690e0fb8e34d4044f9057cd9b5`.
+Untouched seeds 60-69 were then used once, in both positions:
+
+| Metric | Two-hand control | Frozen cow candidate | Difference |
+| --- | ---: | ---: | ---: |
+| Wins | 20 | 20 | Preserved |
+| Mean coins | 11,768.3 | 16,694.75 | +4,926.45 |
+| Candidate range | - | 15,646-17,902 | - |
+| Improved / tied / worse games | - | 20 / 0 / 0 | Passed |
+| Minimum paired game gain | - | +3,536 | All positive |
+
+Every development and holdout game bought exactly one goose and one cow and
+sold exactly 25 eggs, 11 milk, and 56 fertilizer. No game used CARE, repurchased
+an animal, or ended with sellable shed/carried inventory. The candidate remains
+development-only: `main.py`, `submission/main.py`, and
+`submission-goose/main.py` are unchanged, and no third Kaggle agent was
+submitted.
+
+Decision: promote the plain cow policy as the strongest validated local
+candidate, not as a proven leaderboard policy. Its 16.7k local economy is still
+far below the 78k-111k public replay scale, and `starter` is not a representative
+opponent. The next development axis should increase daily labor and livestock
+capacity in a controlled stage before adding land or CARE.
+
+### One-Goose Candidate: Promotion Evidence
+
+After the first v9 Kaggle submission validated at rating 600, we isolated one
+livestock change. The candidate builds a coop on `(4,4)`, the unlocked
+northwest shed-access tile, and keeps six wheat plots on the adjacent route. It
+does not place animals far away: feeding, egg harvest, and fertilizer collection
+are recurring services, so proximity to the shed and crop route minimizes labor.
+
+The candidate buys and places one goose, feeds it every other day when escape
+risk becomes urgent, harvests at the four-egg cap, and collects fertilizer
+through day 28. It immediately sells eggs and fertilizer. The first prototype
+accidentally bought wheat every turn and mixed livestock value with wheat
+trading; feed purchasing was corrected to happen only when urgent. The final
+policy buys about seven feed wheat per game.
+
+Late-cycle analysis found every useful final wheat planting occurred by day 21.
+Moving the goose policy's planting cutoff from day 24 to day 21 removed 3-4
+terminal seeds per game while preserving crop and animal output. The candidate
+also skips fertilizer collection on the final day and can repurchase a goose
+for an empty coop after animal loss.
+
+Development seeds 30-39, both positions:
+
+| Metric | V9 | One goose | Difference |
+| --- | ---: | ---: | ---: |
+| Wins | 20 | 20 | Preserved |
+| Mean coins | 8,093.8 | 9,884.5 | +1,790.7 |
+| Improved games | - | 20 / 20 | All improved |
+
+The exact candidate hash was frozen before fresh holdout evaluation:
+`67621bc08c296b90f3d6f5e6ca6ff54a19c560822c2e4bbb7cdb09dd876367bf`.
+
+Fresh seeds 50-59, both positions:
+
+| Metric | V9 | One goose | Difference |
+| --- | ---: | ---: | ---: |
+| Wins | 20 | 20 | Preserved |
+| Mean coins | 7,920 | 9,917 | +1,997 |
+| Minimum paired gain | - | +1,355 | All positive |
+| Maximum paired gain | - | +2,911 | - |
+| Improved / tied / worse | - | 20 / 0 / 0 | Passed |
+| Terminal inventories | Empty | Empty | Clean |
+
+The goose policy produces less wheat than v9: 2,200 versus 2,960 harvested
+units. That deliberate trade buys 480 eggs and 560 fertilizer sales across the
+suite, more than repaying the animal, feed, and service-turn costs. This is the
+first non-wheat strategy to pass both development and untouched holdout gates on
+every seed and position.
+
+Decision: approve the one-goose candidate as the next Kaggle submission while
+retaining the validated v9 bot as the other active submission. The source stays
+in `experimental_goose_agent.py` until the upload decision is explicitly
+approved; the existing submitted `main.py` is unchanged.
+
+### First Live Kaggle Submission
+
+On August 18, 2026, the verified v9 `main.py` was uploaded to the live
+Kaggriculture competition under the signed-in YASH JAIN account.
+
+- description: `v9 verified baseline: six wheat plots, daily watering,
+  day-24 planting cutoff, guarded price-aware selling`;
+- submitted file: `submission/main.py`;
+- SHA-256: `eee28ea012df8880c834e59d761a2551d0e9dd26f2ac55535fd1585586eba38a`;
+- daily quota before submission: 5 remaining;
+- daily quota consumed: 1;
+- Kaggle status immediately after upload: `Pending`;
+- local Kaggle self-play before upload: both `DONE`, 7,467–7,467.
+
+The uploaded file is exactly the promoted v9 submission hash, not the
+development-only ridge agent. No private GitHub repository link or code was
+published on Kaggle.
 
 Status: simulator 1.32.7 is installed in the existing project-local `.conda`.
 V9 passed a new generalization check against immediate sale, a checkpointed
@@ -409,6 +618,9 @@ can inspect and a clean comparison against the rule it may replace.
 | `benchmark.py` | Runs repeatable games across seeds and player positions. |
 | `test_benchmark.py` | Tests benchmark arithmetic and action counting. |
 | `audit_episode.py` | Reconciles every replay transition, action, and cash flow. |
+| `analyze_public_replay.py` | Extracts workforce, land, crop, livestock, and market strategy from public replays. |
+| `experimental_hands_agent.py` | Development-only two-hand, twelve-wheat labor policy. |
+| `experimental_cow_agent.py` | Development-only goose, cow, and two-hand policy. |
 | `captioned_replay.html` | Explains each official visualizer step in plain language. |
 | `requirements-simulator.txt` | Minimal Windows runtime dependencies. |
 | `README.md` | Setup and usage guide. |
