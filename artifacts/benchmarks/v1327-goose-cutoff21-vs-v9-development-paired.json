@@ -1,0 +1,337 @@
+{
+  "simulator_version": "1.32.7",
+  "opponent": "starter",
+  "episode_steps": 720,
+  "candidate_parameters": {},
+  "control_parameters": {},
+  "summary": {
+    "all_games": {
+      "games": 20,
+      "mean_coin_delta": 1790.7,
+      "median_coin_delta": 1633.0,
+      "minimum_coin_delta": 1285.0,
+      "maximum_coin_delta": 2497.0,
+      "improved_games": 20,
+      "tied_games": 0,
+      "worse_games": 0,
+      "one_sided_sign_test_p_value": 9.5367431640625e-07
+    },
+    "all_seeds": {
+      "games": 10,
+      "mean_coin_delta": 1790.7,
+      "median_coin_delta": 1607.25,
+      "minimum_coin_delta": 1285.0,
+      "maximum_coin_delta": 2497.0,
+      "improved_games": 10,
+      "tied_games": 0,
+      "worse_games": 0,
+      "one_sided_sign_test_p_value": 0.0009765625
+    },
+    "excluded_seed_check": {
+      "excluded_seeds": [],
+      "games": {
+        "games": 20,
+        "mean_coin_delta": 1790.7,
+        "median_coin_delta": 1633.0,
+        "minimum_coin_delta": 1285.0,
+        "maximum_coin_delta": 2497.0,
+        "improved_games": 20,
+        "tied_games": 0,
+        "worse_games": 0,
+        "one_sided_sign_test_p_value": 9.5367431640625e-07
+      },
+      "seeds": {
+        "games": 10,
+        "mean_coin_delta": 1790.7,
+        "median_coin_delta": 1607.25,
+        "minimum_coin_delta": 1285.0,
+        "maximum_coin_delta": 2497.0,
+        "improved_games": 10,
+        "tied_games": 0,
+        "worse_games": 0,
+        "one_sided_sign_test_p_value": 0.0009765625
+      }
+    },
+    "candidate": {
+      "wins": 20,
+      "losses": 0,
+      "ties": 0,
+      "errors": 0,
+      "mean_coins": 9884.5,
+      "minimum_coins": 9570.0,
+      "maximum_coins": 10502.0,
+      "final_inventory_totals": {
+        "shed": {},
+        "carried": {},
+        "seeds": {}
+      },
+      "mean_harvest_to_sale_turns": 84.13
+    },
+    "control": {
+      "wins": 20,
+      "losses": 0,
+      "ties": 0,
+      "errors": 0,
+      "mean_coins": 8093.8,
+      "minimum_coins": 7347.0,
+      "maximum_coins": 8446.0,
+      "final_inventory_totals": {
+        "shed": {},
+        "carried": {},
+        "seeds": {}
+      },
+      "mean_harvest_to_sale_turns": 45.55
+    },
+    "production": {
+      "candidate_harvested_units": 2208,
+      "control_harvested_units": 2960,
+      "candidate_sold_units": 2170,
+      "control_sold_units": 2960,
+      "candidate_unsold_harvested_units": 38,
+      "control_unsold_harvested_units": 0
+    }
+  },
+  "checks": {
+    "identical_game_keys": true,
+    "candidate_won_every_game": true,
+    "candidate_improved_every_game": true,
+    "identical_harvested_units": false,
+    "candidate_sold_every_harvested_unit": false
+  },
+  "games": [
+    {
+      "seed": 30,
+      "agent_player": 0,
+      "candidate_coins": 9841.0,
+      "control_coins": 8308.0,
+      "coin_delta": 1533.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 30,
+      "agent_player": 1,
+      "candidate_coins": 9683.0,
+      "control_coins": 8308.0,
+      "coin_delta": 1375.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 31,
+      "agent_player": 0,
+      "candidate_coins": 10502.0,
+      "control_coins": 8005.0,
+      "coin_delta": 2497.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 31,
+      "agent_player": 1,
+      "candidate_coins": 10502.0,
+      "control_coins": 8005.0,
+      "coin_delta": 2497.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 32,
+      "agent_player": 0,
+      "candidate_coins": 9570.0,
+      "control_coins": 8195.0,
+      "coin_delta": 1375.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 32,
+      "agent_player": 1,
+      "candidate_coins": 9570.0,
+      "control_coins": 8195.0,
+      "coin_delta": 1375.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 33,
+      "agent_player": 0,
+      "candidate_coins": 9844.0,
+      "control_coins": 8211.0,
+      "coin_delta": 1633.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 33,
+      "agent_player": 1,
+      "candidate_coins": 9844.0,
+      "control_coins": 8211.0,
+      "coin_delta": 1633.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 34,
+      "agent_player": 0,
+      "candidate_coins": 9628.0,
+      "control_coins": 8248.0,
+      "coin_delta": 1380.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 34,
+      "agent_player": 1,
+      "candidate_coins": 9628.0,
+      "control_coins": 8248.0,
+      "coin_delta": 1380.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 35,
+      "agent_player": 0,
+      "candidate_coins": 9754.0,
+      "control_coins": 7347.0,
+      "coin_delta": 2407.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 35,
+      "agent_player": 1,
+      "candidate_coins": 9754.0,
+      "control_coins": 7347.0,
+      "coin_delta": 2407.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 36,
+      "agent_player": 0,
+      "candidate_coins": 10030.0,
+      "control_coins": 7542.0,
+      "coin_delta": 2488.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 36,
+      "agent_player": 1,
+      "candidate_coins": 10030.0,
+      "control_coins": 7542.0,
+      "coin_delta": 2488.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 37,
+      "agent_player": 0,
+      "candidate_coins": 9817.0,
+      "control_coins": 8328.0,
+      "coin_delta": 1489.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 37,
+      "agent_player": 1,
+      "candidate_coins": 10002.0,
+      "control_coins": 8328.0,
+      "coin_delta": 1674.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 38,
+      "agent_player": 0,
+      "candidate_coins": 9731.0,
+      "control_coins": 8446.0,
+      "coin_delta": 1285.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 38,
+      "agent_player": 1,
+      "candidate_coins": 9731.0,
+      "control_coins": 8446.0,
+      "coin_delta": 1285.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 39,
+      "agent_player": 0,
+      "candidate_coins": 10020.0,
+      "control_coins": 8308.0,
+      "coin_delta": 1712.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 39,
+      "agent_player": 1,
+      "candidate_coins": 10209.0,
+      "control_coins": 8308.0,
+      "coin_delta": 1901.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    }
+  ],
+  "seeds": [
+    {
+      "seed": 30,
+      "positions": 2,
+      "coin_delta": 1454.0
+    },
+    {
+      "seed": 31,
+      "positions": 2,
+      "coin_delta": 2497.0
+    },
+    {
+      "seed": 32,
+      "positions": 2,
+      "coin_delta": 1375.0
+    },
+    {
+      "seed": 33,
+      "positions": 2,
+      "coin_delta": 1633.0
+    },
+    {
+      "seed": 34,
+      "positions": 2,
+      "coin_delta": 1380.0
+    },
+    {
+      "seed": 35,
+      "positions": 2,
+      "coin_delta": 2407.0
+    },
+    {
+      "seed": 36,
+      "positions": 2,
+      "coin_delta": 2488.0
+    },
+    {
+      "seed": 37,
+      "positions": 2,
+      "coin_delta": 1581.5
+    },
+    {
+      "seed": 38,
+      "positions": 2,
+      "coin_delta": 1285.0
+    },
+    {
+      "seed": 39,
+      "positions": 2,
+      "coin_delta": 1806.5
+    }
+  ],
+  "candidate_report": "artifacts\\benchmarks\\v1327-goose-cutoff21-development-seeds30-39.json",
+  "control_report": "artifacts\\benchmarks\\v1327-v9-threshold35-train-seeds30-39.json"
+}

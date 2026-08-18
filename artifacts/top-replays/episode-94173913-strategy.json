@@ -1,0 +1,1268 @@
+{
+  "metadata": {
+    "environment": "kaggriculture",
+    "simulator_version": "1.32.7",
+    "episode_id": 94173913,
+    "seed": 1507302619,
+    "records": 720,
+    "teams": [
+      "Thomas Tschinkel",
+      "\u30ab\u30ef\u30b7\u30ae"
+    ],
+    "rewards": [
+      109547.0,
+      111082.0
+    ]
+  },
+  "players": [
+    {
+      "player": 0,
+      "team_name": "Thomas Tschinkel",
+      "reward": 109547.0,
+      "status": "DONE",
+      "action_counts": {
+        "farmer": {
+          "BUILD_PASTURE": 4,
+          "CARE": 120,
+          "COLLECT_FERTILIZER": 7,
+          "DROP": 1,
+          "EAST": 86,
+          "FEED": 123,
+          "HARVEST": 26,
+          "NORTH": 69,
+          "PASS": 51,
+          "PICKUP": 30,
+          "PLACE": 5,
+          "PLANT": 12,
+          "SOUTH": 80,
+          "WATER": 39,
+          "WEST": 66
+        },
+        "hands": {
+          "BUILD_PASTURE": 14,
+          "CARE": 247,
+          "COLLECT_FERTILIZER": 340,
+          "DIG": 20,
+          "DROP": 6,
+          "EAST": 734,
+          "FEED": 245,
+          "FERTILIZE": 56,
+          "HARVEST": 363,
+          "NORTH": 839,
+          "PASS": 568,
+          "PICKUP": 128,
+          "PLACE": 53,
+          "PLANT": 177,
+          "SOUTH": 661,
+          "WATER": 885,
+          "WEST": 862
+        },
+        "all_workers": {
+          "BUILD_PASTURE": 18,
+          "CARE": 367,
+          "COLLECT_FERTILIZER": 347,
+          "DIG": 20,
+          "DROP": 7,
+          "EAST": 820,
+          "FEED": 368,
+          "FERTILIZE": 56,
+          "HARVEST": 389,
+          "NORTH": 908,
+          "PASS": 619,
+          "PICKUP": 158,
+          "PLACE": 58,
+          "PLANT": 189,
+          "SOUTH": 741,
+          "WATER": 924,
+          "WEST": 928
+        }
+      },
+      "targeted_actions": {
+        "CARE:COW": 146,
+        "CARE:SHEEP": 221,
+        "COLLECT_FERTILIZER:COW": 143,
+        "COLLECT_FERTILIZER:SHEEP": 204,
+        "FEED:COW": 147,
+        "FEED:SHEEP": 221,
+        "FERTILIZE:CARROT": 2,
+        "FERTILIZE:STRAWBERRY": 54,
+        "HARVEST:CARROT": 4,
+        "HARVEST:MELON": 20,
+        "HARVEST:MILK": 57,
+        "HARVEST:STRAWBERRY": 123,
+        "HARVEST:WHEAT": 123,
+        "HARVEST:WOOL": 62,
+        "PICKUP:COW": 6,
+        "PICKUP:FERTILIZER": 6,
+        "PICKUP:SHEEP": 20,
+        "PICKUP:WHEAT": 126,
+        "PLACE:COW": 6,
+        "PLACE:FERTILIZER": 3,
+        "PLACE:MELON": 8,
+        "PLACE:MILK": 4,
+        "PLACE:SHEEP": 12,
+        "PLACE:STRAWBERRY": 8,
+        "PLACE:WOOL": 17,
+        "PLANT:CARROT": 4,
+        "PLANT:MELON": 20,
+        "PLANT:STRAWBERRY": 34,
+        "PLANT:WHEAT": 131
+      },
+      "market_order_counts": {
+        "BUY_ANIMAL": 11,
+        "BUY_LAND": 3,
+        "BUY_PRODUCT": 88,
+        "BUY_SEED": 97,
+        "HIRE": 277,
+        "SELL": 286
+      },
+      "market_units_requested": {
+        "BUY_ANIMAL:COW": 6,
+        "BUY_ANIMAL:SHEEP": 12,
+        "BUY_PRODUCT:WHEAT": 838,
+        "BUY_SEED:CARROT": 10,
+        "BUY_SEED:MELON": 20,
+        "BUY_SEED:STRAWBERRY": 34,
+        "BUY_SEED:WHEAT": 133,
+        "SELL:CARROT": 10,
+        "SELL:FERTILIZER": 291,
+        "SELL:MELON": 120,
+        "SELL:MILK": 188,
+        "SELL:STRAWBERRY": 221,
+        "SELL:WHEAT": 852,
+        "SELL:WOOL": 269
+      },
+      "maximum_market_order_entries_in_turn": 10,
+      "workforce": {
+        "hires": 277,
+        "hires_by_day": {
+          "0": 5,
+          "2": 4,
+          "3": 5,
+          "4": 5,
+          "5": 4,
+          "6": 4,
+          "7": 8,
+          "8": 11,
+          "9": 12,
+          "10": 11,
+          "11": 12,
+          "12": 10,
+          "13": 11,
+          "14": 8,
+          "15": 12,
+          "16": 9,
+          "17": 12,
+          "18": 12,
+          "19": 12,
+          "20": 12,
+          "21": 12,
+          "22": 12,
+          "23": 12,
+          "24": 11,
+          "25": 11,
+          "26": 11,
+          "27": 11,
+          "28": 10,
+          "29": 8
+        },
+        "maximum_simultaneous_hands": 12
+      },
+      "land_purchases": [
+        {
+          "step": 148,
+          "day": 6,
+          "hour": 4
+        },
+        {
+          "step": 264,
+          "day": 11,
+          "hour": 0
+        },
+        {
+          "step": 288,
+          "day": 12,
+          "hour": 0
+        }
+      ],
+      "animal_purchase_events": [
+        {
+          "step": 0,
+          "day": 0,
+          "hour": 0,
+          "animal": "COW",
+          "quantity": 2
+        },
+        {
+          "step": 0,
+          "day": 0,
+          "hour": 0,
+          "animal": "SHEEP",
+          "quantity": 2
+        },
+        {
+          "step": 73,
+          "day": 3,
+          "hour": 1,
+          "animal": "COW",
+          "quantity": 1
+        },
+        {
+          "step": 120,
+          "day": 5,
+          "hour": 0,
+          "animal": "COW",
+          "quantity": 1
+        },
+        {
+          "step": 168,
+          "day": 7,
+          "hour": 0,
+          "animal": "COW",
+          "quantity": 2
+        },
+        {
+          "step": 168,
+          "day": 7,
+          "hour": 0,
+          "animal": "SHEEP",
+          "quantity": 1
+        },
+        {
+          "step": 193,
+          "day": 8,
+          "hour": 1,
+          "animal": "SHEEP",
+          "quantity": 1
+        },
+        {
+          "step": 216,
+          "day": 9,
+          "hour": 0,
+          "animal": "SHEEP",
+          "quantity": 2
+        },
+        {
+          "step": 264,
+          "day": 11,
+          "hour": 0,
+          "animal": "SHEEP",
+          "quantity": 2
+        },
+        {
+          "step": 288,
+          "day": 12,
+          "hour": 0,
+          "animal": "SHEEP",
+          "quantity": 2
+        },
+        {
+          "step": 312,
+          "day": 13,
+          "hour": 0,
+          "animal": "SHEEP",
+          "quantity": 2
+        }
+      ],
+      "successful_board_transitions": {
+        "plants": {
+          "CARROT": 4,
+          "MELON": 20,
+          "STRAWBERRY": 34,
+          "WHEAT": 131
+        },
+        "animal_placements": {
+          "COW": 6,
+          "SHEEP": 12
+        },
+        "animal_losses": {
+          "SHEEP": 4
+        },
+        "structures": [
+          {
+            "step": 0,
+            "day": 0,
+            "hour": 0,
+            "structure": "PASTURE",
+            "tile": [
+              4,
+              4
+            ]
+          },
+          {
+            "step": 2,
+            "day": 0,
+            "hour": 2,
+            "structure": "PASTURE",
+            "tile": [
+              3,
+              4
+            ]
+          },
+          {
+            "step": 3,
+            "day": 0,
+            "hour": 3,
+            "structure": "PASTURE",
+            "tile": [
+              4,
+              3
+            ]
+          },
+          {
+            "step": 4,
+            "day": 0,
+            "hour": 4,
+            "structure": "PASTURE",
+            "tile": [
+              3,
+              3
+            ]
+          },
+          {
+            "step": 66,
+            "day": 2,
+            "hour": 18,
+            "structure": "PASTURE",
+            "tile": [
+              2,
+              4
+            ]
+          },
+          {
+            "step": 113,
+            "day": 4,
+            "hour": 17,
+            "structure": "PASTURE",
+            "tile": [
+              4,
+              2
+            ]
+          },
+          {
+            "step": 153,
+            "day": 6,
+            "hour": 9,
+            "structure": "PASTURE",
+            "tile": [
+              5,
+              4
+            ]
+          },
+          {
+            "step": 167,
+            "day": 6,
+            "hour": 23,
+            "structure": "PASTURE",
+            "tile": [
+              5,
+              3
+            ]
+          },
+          {
+            "step": 172,
+            "day": 7,
+            "hour": 4,
+            "structure": "PASTURE",
+            "tile": [
+              6,
+              4
+            ]
+          },
+          {
+            "step": 177,
+            "day": 7,
+            "hour": 9,
+            "structure": "PASTURE",
+            "tile": [
+              6,
+              3
+            ]
+          },
+          {
+            "step": 198,
+            "day": 8,
+            "hour": 6,
+            "structure": "PASTURE",
+            "tile": [
+              7,
+              4
+            ]
+          },
+          {
+            "step": 200,
+            "day": 8,
+            "hour": 8,
+            "structure": "PASTURE",
+            "tile": [
+              5,
+              2
+            ]
+          },
+          {
+            "step": 266,
+            "day": 11,
+            "hour": 2,
+            "structure": "PASTURE",
+            "tile": [
+              4,
+              5
+            ]
+          },
+          {
+            "step": 269,
+            "day": 11,
+            "hour": 5,
+            "structure": "PASTURE",
+            "tile": [
+              3,
+              5
+            ]
+          },
+          {
+            "step": 294,
+            "day": 12,
+            "hour": 6,
+            "structure": "PASTURE",
+            "tile": [
+              6,
+              5
+            ]
+          },
+          {
+            "step": 298,
+            "day": 12,
+            "hour": 10,
+            "structure": "PASTURE",
+            "tile": [
+              5,
+              6
+            ]
+          },
+          {
+            "step": 300,
+            "day": 12,
+            "hour": 12,
+            "structure": "PASTURE",
+            "tile": [
+              6,
+              6
+            ]
+          },
+          {
+            "step": 333,
+            "day": 13,
+            "hour": 21,
+            "structure": "PASTURE",
+            "tile": [
+              5,
+              7
+            ]
+          }
+        ],
+        "first_crop_step": {
+          "CARROT": 598,
+          "MELON": 8,
+          "STRAWBERRY": 131,
+          "WHEAT": 5
+        },
+        "first_animal_step": {
+          "COW": 4,
+          "SHEEP": 4
+        }
+      },
+      "maximum_board_counts": {
+        "crops": {
+          "CARROT": 3,
+          "MELON": 20,
+          "STRAWBERRY": 34,
+          "WHEAT": 37
+        },
+        "animals": {
+          "COW": 6,
+          "SHEEP": 12
+        },
+        "structures": {
+          "PASTURE": 18
+        },
+        "weeds": {
+          "WEED": 26
+        }
+      },
+      "bank_at_day_start": [
+        {
+          "day": 0,
+          "money": 3000.0
+        },
+        {
+          "day": 1,
+          "money": 23.0
+        },
+        {
+          "day": 2,
+          "money": 176.0
+        },
+        {
+          "day": 3,
+          "money": 49.0
+        },
+        {
+          "day": 4,
+          "money": 10.0
+        },
+        {
+          "day": 5,
+          "money": 159.0
+        },
+        {
+          "day": 6,
+          "money": 52.0
+        },
+        {
+          "day": 7,
+          "money": 1258.0
+        },
+        {
+          "day": 8,
+          "money": 246.0
+        },
+        {
+          "day": 9,
+          "money": 1565.0
+        },
+        {
+          "day": 10,
+          "money": 2525.0
+        },
+        {
+          "day": 11,
+          "money": 15603.0
+        },
+        {
+          "day": 12,
+          "money": 11736.0
+        },
+        {
+          "day": 13,
+          "money": 8504.0
+        },
+        {
+          "day": 14,
+          "money": 11216.0
+        },
+        {
+          "day": 15,
+          "money": 14394.0
+        },
+        {
+          "day": 16,
+          "money": 19285.0
+        },
+        {
+          "day": 17,
+          "money": 28373.0
+        },
+        {
+          "day": 18,
+          "money": 34840.0
+        },
+        {
+          "day": 19,
+          "money": 38155.0
+        },
+        {
+          "day": 20,
+          "money": 48186.0
+        },
+        {
+          "day": 21,
+          "money": 52339.0
+        },
+        {
+          "day": 22,
+          "money": 60430.0
+        },
+        {
+          "day": 23,
+          "money": 68138.0
+        },
+        {
+          "day": 24,
+          "money": 75853.0
+        },
+        {
+          "day": 25,
+          "money": 79286.0
+        },
+        {
+          "day": 26,
+          "money": 85194.0
+        },
+        {
+          "day": 27,
+          "money": 85752.0
+        },
+        {
+          "day": 28,
+          "money": 93244.0
+        },
+        {
+          "day": 29,
+          "money": 97657.0
+        }
+      ],
+      "terminal": {
+        "money": 109547.0,
+        "unlocked_quadrants": [
+          "NW",
+          "NE",
+          "SW",
+          "SE"
+        ],
+        "board_counts": {
+          "crops": {
+            "STRAWBERRY": 1
+          },
+          "animals": {
+            "COW": 6,
+            "SHEEP": 8
+          },
+          "structures": {
+            "PASTURE": 18
+          },
+          "weeds": {
+            "WEED": 26
+          }
+        },
+        "inventory": {
+          "shed": {},
+          "carried": {},
+          "seeds": {
+            "CARROT": 6,
+            "WHEAT": 2
+          }
+        }
+      }
+    },
+    {
+      "player": 1,
+      "team_name": "\u30ab\u30ef\u30b7\u30ae",
+      "reward": 111082.0,
+      "status": "DONE",
+      "action_counts": {
+        "farmer": {
+          "BUILD_PASTURE": 5,
+          "CARE": 121,
+          "COLLECT_FERTILIZER": 9,
+          "DIG": 3,
+          "DROP": 1,
+          "EAST": 82,
+          "FEED": 122,
+          "HARVEST": 23,
+          "NORTH": 81,
+          "PASS": 54,
+          "PICKUP": 31,
+          "PLACE": 3,
+          "PLANT": 11,
+          "SOUTH": 72,
+          "WATER": 29,
+          "WEST": 72
+        },
+        "hands": {
+          "BUILD_PASTURE": 13,
+          "CARE": 241,
+          "COLLECT_FERTILIZER": 330,
+          "DIG": 28,
+          "DROP": 8,
+          "EAST": 775,
+          "FEED": 245,
+          "FERTILIZE": 63,
+          "HARVEST": 379,
+          "NORTH": 829,
+          "PASS": 535,
+          "PICKUP": 131,
+          "PLACE": 53,
+          "PLANT": 182,
+          "SOUTH": 650,
+          "WATER": 876,
+          "WEST": 855
+        },
+        "all_workers": {
+          "BUILD_PASTURE": 18,
+          "CARE": 362,
+          "COLLECT_FERTILIZER": 339,
+          "DIG": 31,
+          "DROP": 9,
+          "EAST": 857,
+          "FEED": 367,
+          "FERTILIZE": 63,
+          "HARVEST": 402,
+          "NORTH": 910,
+          "PASS": 589,
+          "PICKUP": 162,
+          "PLACE": 56,
+          "PLANT": 193,
+          "SOUTH": 722,
+          "WATER": 905,
+          "WEST": 927
+        }
+      },
+      "targeted_actions": {
+        "CARE:COW": 145,
+        "CARE:SHEEP": 217,
+        "COLLECT_FERTILIZER:COW": 143,
+        "COLLECT_FERTILIZER:SHEEP": 196,
+        "FEED:COW": 147,
+        "FEED:SHEEP": 220,
+        "FERTILIZE:STRAWBERRY": 63,
+        "HARVEST:CARROT": 2,
+        "HARVEST:MELON": 12,
+        "HARVEST:MILK": 56,
+        "HARVEST:STRAWBERRY": 151,
+        "HARVEST:WHEAT": 120,
+        "HARVEST:WOOL": 61,
+        "PICKUP:COW": 6,
+        "PICKUP:FERTILIZER": 5,
+        "PICKUP:SHEEP": 23,
+        "PICKUP:WHEAT": 128,
+        "PLACE:COW": 6,
+        "PLACE:FERTILIZER": 4,
+        "PLACE:MELON": 5,
+        "PLACE:MILK": 6,
+        "PLACE:SHEEP": 12,
+        "PLACE:STRAWBERRY": 7,
+        "PLACE:WOOL": 16,
+        "PLANT:CARROT": 3,
+        "PLANT:MELON": 12,
+        "PLANT:STRAWBERRY": 42,
+        "PLANT:WHEAT": 136
+      },
+      "market_order_counts": {
+        "BUY_ANIMAL": 10,
+        "BUY_LAND": 3,
+        "BUY_PRODUCT": 98,
+        "BUY_SEED": 98,
+        "HIRE": 277,
+        "SELL": 480
+      },
+      "market_units_requested": {
+        "BUY_ANIMAL:COW": 6,
+        "BUY_ANIMAL:SHEEP": 12,
+        "BUY_PRODUCT:WHEAT": 910,
+        "BUY_SEED:CARROT": 11,
+        "BUY_SEED:MELON": 12,
+        "BUY_SEED:STRAWBERRY": 42,
+        "BUY_SEED:WHEAT": 144,
+        "SELL:CARROT": 4,
+        "SELL:FERTILIZER": 1575,
+        "SELL:MELON": 72,
+        "SELL:MILK": 188,
+        "SELL:STRAWBERRY": 266,
+        "SELL:WHEAT": 1525,
+        "SELL:WOOL": 266
+      },
+      "maximum_market_order_entries_in_turn": 10,
+      "workforce": {
+        "hires": 277,
+        "hires_by_day": {
+          "0": 5,
+          "2": 4,
+          "3": 5,
+          "4": 5,
+          "5": 4,
+          "6": 4,
+          "7": 8,
+          "8": 11,
+          "9": 12,
+          "10": 11,
+          "11": 12,
+          "12": 10,
+          "13": 11,
+          "14": 8,
+          "15": 12,
+          "16": 9,
+          "17": 12,
+          "18": 12,
+          "19": 12,
+          "20": 12,
+          "21": 12,
+          "22": 12,
+          "23": 12,
+          "24": 11,
+          "25": 11,
+          "26": 11,
+          "27": 11,
+          "28": 10,
+          "29": 8
+        },
+        "maximum_simultaneous_hands": 12
+      },
+      "land_purchases": [
+        {
+          "step": 148,
+          "day": 6,
+          "hour": 4
+        },
+        {
+          "step": 264,
+          "day": 11,
+          "hour": 0
+        },
+        {
+          "step": 288,
+          "day": 12,
+          "hour": 0
+        }
+      ],
+      "animal_purchase_events": [
+        {
+          "step": 0,
+          "day": 0,
+          "hour": 0,
+          "animal": "COW",
+          "quantity": 2
+        },
+        {
+          "step": 0,
+          "day": 0,
+          "hour": 0,
+          "animal": "SHEEP",
+          "quantity": 2
+        },
+        {
+          "step": 72,
+          "day": 3,
+          "hour": 0,
+          "animal": "COW",
+          "quantity": 1
+        },
+        {
+          "step": 120,
+          "day": 5,
+          "hour": 0,
+          "animal": "COW",
+          "quantity": 1
+        },
+        {
+          "step": 168,
+          "day": 7,
+          "hour": 0,
+          "animal": "COW",
+          "quantity": 2
+        },
+        {
+          "step": 168,
+          "day": 7,
+          "hour": 0,
+          "animal": "SHEEP",
+          "quantity": 2
+        },
+        {
+          "step": 216,
+          "day": 9,
+          "hour": 0,
+          "animal": "SHEEP",
+          "quantity": 2
+        },
+        {
+          "step": 264,
+          "day": 11,
+          "hour": 0,
+          "animal": "SHEEP",
+          "quantity": 2
+        },
+        {
+          "step": 288,
+          "day": 12,
+          "hour": 0,
+          "animal": "SHEEP",
+          "quantity": 2
+        },
+        {
+          "step": 312,
+          "day": 13,
+          "hour": 0,
+          "animal": "SHEEP",
+          "quantity": 2
+        }
+      ],
+      "successful_board_transitions": {
+        "plants": {
+          "CARROT": 3,
+          "MELON": 12,
+          "STRAWBERRY": 42,
+          "WHEAT": 136
+        },
+        "animal_placements": {
+          "COW": 6,
+          "SHEEP": 12
+        },
+        "animal_losses": {
+          "SHEEP": 3
+        },
+        "structures": [
+          {
+            "step": 0,
+            "day": 0,
+            "hour": 0,
+            "structure": "PASTURE",
+            "tile": [
+              4,
+              4
+            ]
+          },
+          {
+            "step": 2,
+            "day": 0,
+            "hour": 2,
+            "structure": "PASTURE",
+            "tile": [
+              3,
+              4
+            ]
+          },
+          {
+            "step": 3,
+            "day": 0,
+            "hour": 3,
+            "structure": "PASTURE",
+            "tile": [
+              4,
+              3
+            ]
+          },
+          {
+            "step": 4,
+            "day": 0,
+            "hour": 4,
+            "structure": "PASTURE",
+            "tile": [
+              3,
+              3
+            ]
+          },
+          {
+            "step": 66,
+            "day": 2,
+            "hour": 18,
+            "structure": "PASTURE",
+            "tile": [
+              2,
+              4
+            ]
+          },
+          {
+            "step": 113,
+            "day": 4,
+            "hour": 17,
+            "structure": "PASTURE",
+            "tile": [
+              4,
+              2
+            ]
+          },
+          {
+            "step": 153,
+            "day": 6,
+            "hour": 9,
+            "structure": "PASTURE",
+            "tile": [
+              5,
+              4
+            ]
+          },
+          {
+            "step": 167,
+            "day": 6,
+            "hour": 23,
+            "structure": "PASTURE",
+            "tile": [
+              5,
+              3
+            ]
+          },
+          {
+            "step": 179,
+            "day": 7,
+            "hour": 11,
+            "structure": "PASTURE",
+            "tile": [
+              6,
+              4
+            ]
+          },
+          {
+            "step": 188,
+            "day": 7,
+            "hour": 20,
+            "structure": "PASTURE",
+            "tile": [
+              6,
+              3
+            ]
+          },
+          {
+            "step": 206,
+            "day": 8,
+            "hour": 14,
+            "structure": "PASTURE",
+            "tile": [
+              5,
+              2
+            ]
+          },
+          {
+            "step": 206,
+            "day": 8,
+            "hour": 14,
+            "structure": "PASTURE",
+            "tile": [
+              7,
+              4
+            ]
+          },
+          {
+            "step": 266,
+            "day": 11,
+            "hour": 2,
+            "structure": "PASTURE",
+            "tile": [
+              4,
+              5
+            ]
+          },
+          {
+            "step": 269,
+            "day": 11,
+            "hour": 5,
+            "structure": "PASTURE",
+            "tile": [
+              3,
+              5
+            ]
+          },
+          {
+            "step": 298,
+            "day": 12,
+            "hour": 10,
+            "structure": "PASTURE",
+            "tile": [
+              6,
+              5
+            ]
+          },
+          {
+            "step": 304,
+            "day": 12,
+            "hour": 16,
+            "structure": "PASTURE",
+            "tile": [
+              6,
+              6
+            ]
+          },
+          {
+            "step": 306,
+            "day": 12,
+            "hour": 18,
+            "structure": "PASTURE",
+            "tile": [
+              5,
+              6
+            ]
+          },
+          {
+            "step": 308,
+            "day": 12,
+            "hour": 20,
+            "structure": "PASTURE",
+            "tile": [
+              5,
+              7
+            ]
+          }
+        ],
+        "first_crop_step": {
+          "CARROT": 548,
+          "MELON": 8,
+          "STRAWBERRY": 131,
+          "WHEAT": 5
+        },
+        "first_animal_step": {
+          "COW": 4,
+          "SHEEP": 4
+        }
+      },
+      "maximum_board_counts": {
+        "crops": {
+          "CARROT": 3,
+          "MELON": 12,
+          "STRAWBERRY": 42,
+          "WHEAT": 32
+        },
+        "animals": {
+          "COW": 6,
+          "SHEEP": 12
+        },
+        "structures": {
+          "PASTURE": 18
+        },
+        "weeds": {
+          "WEED": 29
+        }
+      },
+      "bank_at_day_start": [
+        {
+          "day": 0,
+          "money": 3000.0
+        },
+        {
+          "day": 1,
+          "money": 23.0
+        },
+        {
+          "day": 2,
+          "money": 176.0
+        },
+        {
+          "day": 3,
+          "money": 49.0
+        },
+        {
+          "day": 4,
+          "money": 30.0
+        },
+        {
+          "day": 5,
+          "money": 147.0
+        },
+        {
+          "day": 6,
+          "money": 286.0
+        },
+        {
+          "day": 7,
+          "money": 1872.0
+        },
+        {
+          "day": 8,
+          "money": 29.0
+        },
+        {
+          "day": 9,
+          "money": 1107.0
+        },
+        {
+          "day": 10,
+          "money": 2252.0
+        },
+        {
+          "day": 11,
+          "money": 15053.0
+        },
+        {
+          "day": 12,
+          "money": 10989.0
+        },
+        {
+          "day": 13,
+          "money": 7628.0
+        },
+        {
+          "day": 14,
+          "money": 10305.0
+        },
+        {
+          "day": 15,
+          "money": 13572.0
+        },
+        {
+          "day": 16,
+          "money": 18438.0
+        },
+        {
+          "day": 17,
+          "money": 26397.0
+        },
+        {
+          "day": 18,
+          "money": 32936.0
+        },
+        {
+          "day": 19,
+          "money": 40499.0
+        },
+        {
+          "day": 20,
+          "money": 47405.0
+        },
+        {
+          "day": 21,
+          "money": 54465.0
+        },
+        {
+          "day": 22,
+          "money": 63051.0
+        },
+        {
+          "day": 23,
+          "money": 71784.0
+        },
+        {
+          "day": 24,
+          "money": 78671.0
+        },
+        {
+          "day": 25,
+          "money": 80115.0
+        },
+        {
+          "day": 26,
+          "money": 86368.0
+        },
+        {
+          "day": 27,
+          "money": 89982.0
+        },
+        {
+          "day": 28,
+          "money": 93658.0
+        },
+        {
+          "day": 29,
+          "money": 100276.0
+        }
+      ],
+      "terminal": {
+        "money": 111082.0,
+        "unlocked_quadrants": [
+          "NW",
+          "NE",
+          "SW",
+          "SE"
+        ],
+        "board_counts": {
+          "crops": {},
+          "animals": {
+            "COW": 6,
+            "SHEEP": 9
+          },
+          "structures": {
+            "PASTURE": 18
+          },
+          "weeds": {
+            "WEED": 29
+          }
+        },
+        "inventory": {
+          "shed": {},
+          "carried": {},
+          "seeds": {
+            "CARROT": 8,
+            "WHEAT": 8
+          }
+        }
+      }
+    }
+  ]
+}

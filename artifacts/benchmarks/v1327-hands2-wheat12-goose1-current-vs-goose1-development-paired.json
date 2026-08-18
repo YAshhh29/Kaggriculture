@@ -1,0 +1,339 @@
+{
+  "simulator_version": "1.32.7",
+  "opponent": "starter",
+  "episode_steps": 720,
+  "candidate_parameters": {},
+  "control_parameters": {},
+  "summary": {
+    "all_games": {
+      "games": 20,
+      "mean_coin_delta": 2448.8,
+      "median_coin_delta": 2488.0,
+      "minimum_coin_delta": 1588.0,
+      "maximum_coin_delta": 3514.0,
+      "improved_games": 20,
+      "tied_games": 0,
+      "worse_games": 0,
+      "one_sided_sign_test_p_value": 9.5367431640625e-07
+    },
+    "all_seeds": {
+      "games": 10,
+      "mean_coin_delta": 2448.8,
+      "median_coin_delta": 2582.0,
+      "minimum_coin_delta": 1673.0,
+      "maximum_coin_delta": 3438.0,
+      "improved_games": 10,
+      "tied_games": 0,
+      "worse_games": 0,
+      "one_sided_sign_test_p_value": 0.0009765625
+    },
+    "excluded_seed_check": {
+      "excluded_seeds": [],
+      "games": {
+        "games": 20,
+        "mean_coin_delta": 2448.8,
+        "median_coin_delta": 2488.0,
+        "minimum_coin_delta": 1588.0,
+        "maximum_coin_delta": 3514.0,
+        "improved_games": 20,
+        "tied_games": 0,
+        "worse_games": 0,
+        "one_sided_sign_test_p_value": 9.5367431640625e-07
+      },
+      "seeds": {
+        "games": 10,
+        "mean_coin_delta": 2448.8,
+        "median_coin_delta": 2582.0,
+        "minimum_coin_delta": 1673.0,
+        "maximum_coin_delta": 3438.0,
+        "improved_games": 10,
+        "tied_games": 0,
+        "worse_games": 0,
+        "one_sided_sign_test_p_value": 0.0009765625
+      }
+    },
+    "candidate": {
+      "wins": 20,
+      "losses": 0,
+      "ties": 0,
+      "errors": 0,
+      "mean_coins": 12333.3,
+      "minimum_coins": 11381.0,
+      "maximum_coins": 13268.0,
+      "final_inventory_totals": {
+        "shed": {},
+        "carried": {},
+        "seeds": {
+          "WHEAT": 94
+        }
+      },
+      "mean_harvest_to_sale_turns": 55.28
+    },
+    "control": {
+      "wins": 20,
+      "losses": 0,
+      "ties": 0,
+      "errors": 0,
+      "mean_coins": 9884.5,
+      "minimum_coins": 9570.0,
+      "maximum_coins": 10502.0,
+      "final_inventory_totals": {
+        "shed": {},
+        "carried": {},
+        "seeds": {}
+      },
+      "mean_harvest_to_sale_turns": 84.13
+    },
+    "production": {
+      "candidate_harvested_units": 4020,
+      "control_harvested_units": 2208,
+      "candidate_sold_units": 3945,
+      "control_sold_units": 2170,
+      "candidate_unsold_harvested_units": 75,
+      "control_unsold_harvested_units": 38
+    }
+  },
+  "checks": {
+    "identical_game_keys": true,
+    "candidate_won_every_game": true,
+    "candidate_improved_every_game": true,
+    "identical_harvested_units": false,
+    "candidate_sold_every_harvested_unit": false
+  },
+  "games": [
+    {
+      "seed": 30,
+      "agent_player": 0,
+      "candidate_coins": 13252.0,
+      "control_coins": 9841.0,
+      "coin_delta": 3411.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 30,
+      "agent_player": 1,
+      "candidate_coins": 12664.0,
+      "control_coins": 9683.0,
+      "coin_delta": 2981.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 31,
+      "agent_player": 0,
+      "candidate_coins": 12260.0,
+      "control_coins": 10502.0,
+      "coin_delta": 1758.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 31,
+      "agent_player": 1,
+      "candidate_coins": 12090.0,
+      "control_coins": 10502.0,
+      "coin_delta": 1588.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 32,
+      "agent_player": 0,
+      "candidate_coins": 11381.0,
+      "control_coins": 9570.0,
+      "coin_delta": 1811.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 32,
+      "agent_player": 1,
+      "candidate_coins": 11381.0,
+      "control_coins": 9570.0,
+      "coin_delta": 1811.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 33,
+      "agent_player": 0,
+      "candidate_coins": 12336.0,
+      "control_coins": 9844.0,
+      "coin_delta": 2492.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 33,
+      "agent_player": 1,
+      "candidate_coins": 12336.0,
+      "control_coins": 9844.0,
+      "coin_delta": 2492.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 34,
+      "agent_player": 0,
+      "candidate_coins": 11382.0,
+      "control_coins": 9628.0,
+      "coin_delta": 1754.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 34,
+      "agent_player": 1,
+      "candidate_coins": 11759.0,
+      "control_coins": 9628.0,
+      "coin_delta": 2131.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 35,
+      "agent_player": 0,
+      "candidate_coins": 13116.0,
+      "control_coins": 9754.0,
+      "coin_delta": 3362.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 35,
+      "agent_player": 1,
+      "candidate_coins": 13268.0,
+      "control_coins": 9754.0,
+      "coin_delta": 3514.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 36,
+      "agent_player": 0,
+      "candidate_coins": 11954.0,
+      "control_coins": 10030.0,
+      "coin_delta": 1924.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 36,
+      "agent_player": 1,
+      "candidate_coins": 11622.0,
+      "control_coins": 10030.0,
+      "coin_delta": 1592.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 37,
+      "agent_player": 0,
+      "candidate_coins": 12976.0,
+      "control_coins": 9817.0,
+      "coin_delta": 3159.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 37,
+      "agent_player": 1,
+      "candidate_coins": 12466.0,
+      "control_coins": 10002.0,
+      "coin_delta": 2464.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 38,
+      "agent_player": 0,
+      "candidate_coins": 12236.0,
+      "control_coins": 9731.0,
+      "coin_delta": 2505.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 38,
+      "agent_player": 1,
+      "candidate_coins": 12614.0,
+      "control_coins": 9731.0,
+      "coin_delta": 2883.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 39,
+      "agent_player": 0,
+      "candidate_coins": 12880.0,
+      "control_coins": 10020.0,
+      "coin_delta": 2860.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    },
+    {
+      "seed": 39,
+      "agent_player": 1,
+      "candidate_coins": 12693.0,
+      "control_coins": 10209.0,
+      "coin_delta": 2484.0,
+      "candidate_result": "win",
+      "control_result": "win"
+    }
+  ],
+  "seeds": [
+    {
+      "seed": 30,
+      "positions": 2,
+      "coin_delta": 3196.0
+    },
+    {
+      "seed": 31,
+      "positions": 2,
+      "coin_delta": 1673.0
+    },
+    {
+      "seed": 32,
+      "positions": 2,
+      "coin_delta": 1811.0
+    },
+    {
+      "seed": 33,
+      "positions": 2,
+      "coin_delta": 2492.0
+    },
+    {
+      "seed": 34,
+      "positions": 2,
+      "coin_delta": 1942.5
+    },
+    {
+      "seed": 35,
+      "positions": 2,
+      "coin_delta": 3438.0
+    },
+    {
+      "seed": 36,
+      "positions": 2,
+      "coin_delta": 1758.0
+    },
+    {
+      "seed": 37,
+      "positions": 2,
+      "coin_delta": 2811.5
+    },
+    {
+      "seed": 38,
+      "positions": 2,
+      "coin_delta": 2694.0
+    },
+    {
+      "seed": 39,
+      "positions": 2,
+      "coin_delta": 2672.0
+    }
+  ],
+  "candidate_report": "artifacts\\benchmarks\\v1327-hands2-wheat12-goose1-current-development-seeds30-39.json",
+  "control_report": "artifacts\\benchmarks\\v1327-goose-cutoff21-development-seeds30-39.json"
+}
