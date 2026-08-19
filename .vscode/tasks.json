@@ -297,33 +297,33 @@
 			"group": "test"
 		},
 		{
-			"label": "Run zoned development suite",
+			"label": "Run final zoned no-land development",
 			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_zoned_agent.py --opponent starter --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-zoned-development-seeds30-39.json",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_zoned_agent.py --opponent starter --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-zoned-paired-stagedhire-no-land-development-final-seeds30-39.json",
 			"isBackground": false,
 			"problemMatcher": [],
 			"group": "test"
 		},
 		{
-			"label": "Run zoned versus scale",
+			"label": "Run final zoned expansion development",
 			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_zoned_agent.py --opponent experimental_scale_agent.py --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-zoned-vs-scale-seeds30-39.json",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_zoned_expansion_agent.py --opponent starter --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-zoned-expansion-development-final-seeds30-39.json",
 			"isBackground": false,
 			"problemMatcher": [],
 			"group": "test"
 		},
 		{
-			"label": "Run zoned versus investment",
+			"label": "Run zoned expansion direct comparisons",
 			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_zoned_agent.py --opponent experimental_investment_agent.py --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-zoned-vs-investment-seeds30-39.json",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_zoned_expansion_agent.py --opponent experimental_scale_agent.py --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-zoned-expansion-vs-scale-final-seeds30-39.json; ${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_zoned_expansion_agent.py --opponent experimental_investment_agent.py --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-zoned-expansion-vs-investment-final-seeds30-39.json",
 			"isBackground": false,
 			"problemMatcher": [],
 			"group": "test"
 		},
 		{
-			"label": "Generate zoned review replay",
+			"label": "Generate captioned zoned expansion replay",
 			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe -c \"import json,pathlib; from kaggle_environments import make; p=pathlib.Path('experimental_zoned_agent.py').resolve(); e=make('kaggriculture',configuration={'episodeSteps':720,'seed':30},debug=False); e.run([str(p),'starter']); pathlib.Path('artifacts/v1327-zoned-no-land-vs-starter-seed30-720-replay.json').write_text(json.dumps(e.toJSON()),encoding='utf-8'); pathlib.Path('artifacts/v1327-zoned-no-land-vs-starter-seed30-720.html').write_text(e.render(mode='html',width=1200,height=800),encoding='utf-8'); print([s.reward for s in e.steps[-1]])\"",
+			"command": "${workspaceFolder}\\.conda\\python.exe run_match.py --agent experimental_zoned_expansion_agent.py --opponent starter --steps 720 --seed 30 --replay artifacts\\v1327-zoned-expansion-vs-starter-seed30-720-replay.json --html artifacts\\v1327-zoned-expansion-vs-starter-seed30-720.html; ${workspaceFolder}\\.conda\\python.exe audit_episode.py artifacts\\v1327-zoned-expansion-vs-starter-seed30-720-replay.json --player 0 --agent experimental_zoned_expansion_agent.py --output artifacts\\v1327-zoned-expansion-vs-starter-seed30-720-audit.json",
 			"isBackground": false,
 			"problemMatcher": [],
 			"group": "test"

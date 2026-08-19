@@ -785,11 +785,17 @@
   "zoned_routing_experiment": {
     "status": "research-only; separate from both submitted agents",
     "agent": "experimental_zoned_agent.py",
-    "confirmed_bug": "plant tasks sliced row-major empty tiles before worker distance; sixteen seeds exposed only rows y=0 and y=1",
+    "agent_sha256": "b6b23889ece1a474be45ad58ada49344f43f5397c8b3d90e37556a3ab3c111f2",
+    "confirmed_bugs": [
+      "plant tasks sliced row-major empty tiles before worker distance; sixteen seeds exposed only rows y=0 and y=1",
+      "five of six row-0 plantings in the first zoned replay crossed the day boundary without first watering and became weeds"
+    ],
     "policy": {
       "planting_order": "distance from central shed, then center-adjacent rows",
       "near_crew": "worker IDs 0-4 prefer NW planting",
       "far_crew": "worker IDs 5+ prefer NE planting when unlocked",
+      "planting_safety": "spend a seed only through a co-located PLANT then WATER worker pair in the same simulator transition",
+      "hiring": "retry same-day hires displaced by the ten-entry market order cap",
       "global_overrides": [
         "urgent watering",
         "normal watering",
@@ -799,19 +805,51 @@
     },
     "no_land": {
       "capital_policy": "same eight hands, four cows, four sheep as submitted scale agent",
-      "seed_30_mean": 64424,
-      "weeds_per_game": 12,
-      "development_mean_seeds_30_39": 60100.45,
-      "direct_vs_scale": {"wins": 20, "losses": 0},
-      "direct_vs_investment": {"wins": 2, "losses": 18},
-      "review_replay": "artifacts/v1327-zoned-no-land-vs-starter-seed30-720.html"
+      "development": {
+        "seeds": "30-39, both positions",
+        "games": 20,
+        "wins": 20,
+        "mean_coins": 62989.8,
+        "min_coins": 49400,
+        "max_coins": 72702,
+        "first_watering_misses": 0,
+        "crop_cycles": 1412,
+        "animal_losses": 0,
+        "report": "artifacts/benchmarks/v1327-zoned-paired-stagedhire-no-land-development-final-seeds30-39.json"
+      }
     },
-    "right_land_rejections": {
+    "ne_expansion": {
+      "agent": "experimental_zoned_expansion_agent.py",
+      "agent_sha256": "b0cb1a2748ed8aaff29c7f10d0a9d7cdf7a2fec76f59cf278cac684f01bc1ac4",
+      "capital_policy": "one NE quadrant, ten hands, sixteen wheat, six cows, eight sheep",
+      "development": {
+        "games": 20,
+        "wins": 20,
+        "mean_coins": 64549.75,
+        "min_coins": 25677,
+        "max_coins": 94567,
+        "first_watering_misses": 0,
+        "crop_cycles": 1240,
+        "animal_losses": 0,
+        "report": "artifacts/benchmarks/v1327-zoned-expansion-development-final-seeds30-39.json"
+      },
+      "direct_vs_scale": {"wins": 20, "losses": 0, "mean_coins": 50300.2, "opponent_mean": 36681.3},
+      "direct_vs_investment": {"wins": 18, "losses": 2, "mean_coins": 49506.4, "opponent_mean": 38135.55},
+      "rank_one_script": {"wins": 0, "losses": 2, "mean_coins": 67444.5, "script_mean": 117806},
+      "market_risk": "seed 38 had no milk or wool demand; late milk fell to 3 and wool to 5 despite zero mechanical losses",
+      "captioned_replay": "http://127.0.0.1:8765/captioned_replay.html?replay=artifacts%2Fv1327-zoned-expansion-vs-starter-seed30-720.html&audit=artifacts%2Fv1327-zoned-expansion-vs-starter-seed30-720-audit.json"
+    },
+    "rejections": {
       "same_eight_animals": {"seed_30_mean": 52204, "weeds_per_game": "38-39"},
       "two_cows_two_sheep": {"seed_30_mean": 34492.5, "weeds_per_game": "42-43"},
-      "three_cows_three_sheep": {"seed_30_mean": 50676, "weeds_per_game": "41-42"}
+      "three_cows_three_sheep": {"seed_30_mean": 50676, "weeds_per_game": "41-42"},
+      "all_land_six_cows_twelve_sheep": {"seed_30_mean": 48039, "reason": "all land unlocked safely but capital and service cost dominated"},
+      "harvest_before_daily_water": {"seed_30_mean": 57245},
+      "water_then_global_harvest": {"seed_30_mean": 64487.5},
+      "local_current_tile_harvest": {"seed_30_mean": 67430},
+      "reserve_row_zero": {"seed_30_mean": 65874}
     },
-    "decision": "keep center-first zoning for future integration; reject right-land expansion until dedicated crop labor remains after livestock service; do not submit this version"
+    "decision": "keep no-land as safer research control and NE as higher-upside research variant; keep both unsubmitted; reject unconditional all-land expansion; next test demand-aware product and crop allocation"
   },
   "leaderboard_replay_scouting": {
     "checked_at": "2026-08-19",

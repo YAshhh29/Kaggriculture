@@ -139,10 +139,11 @@ step, serve the repository root and open the captioned wrapper:
 ./.conda/python.exe -m http.server 8765 --bind 127.0.0.1
 ```
 
-Then open `http://127.0.0.1:8765/captioned_replay.html`. The left side is
-Kaggle's official visualizer. The right side follows its slider and reports the
-farmer action, destination, market order, cash change, inventory, and board
-change for the same replay record.
+Then open `http://127.0.0.1:8765/captioned_replay.html`. Kaggle's official
+visualizer is followed by a caption panel underneath. The panel tracks its
+slider and reports every farmer/hand action and position, market orders issued,
+observed hires/land/animal changes, bank change, inventory, and board changes
+for the same replay record.
 
 ## Run A Multi-Seed Benchmark
 
@@ -311,12 +312,27 @@ sheep when opponent market pressure permits; it scales down when the opponent
 already operates many animals. Its untouched seed-80-89 mean is 56,501.8 with
 an 88,136 maximum, and it wins 16/20 direct games against the scale control.
 
-The separate `experimental_zoned_agent.py` fixes a confirmed row-major planting
-bias by selecting center-near crop tiles and assigning persistent near/far
-planting crews. It is intentionally unsubmitted. Center-first/no-land routing
-scores 64,424 on the seed-30 gate and averages 60,100.45 on development seeds;
-adding the right quadrant with the same labor reduces performance because animal
-service leaves too few crop actions to maintain two zones.
+The separate `experimental_zoned_agent.py` fixes confirmed row-major planting
+bias and fresh crops dying before their first watering. It selects center-near
+tiles, assigns persistent near/far planting crews, and spends a seed only when a
+co-located second worker can water it in the same simulator transition. On
+seeds 30-39 in both positions, the no-land policy averages 62,989.8 coins, wins
+20/20, and records zero missed planting-day waterings and animal losses.
+
+`experimental_zoned_expansion_agent.py` is a separate bold variant: one NE
+quadrant, ten hands, sixteen wheat, six cows, and eight sheep. It averages
+64,549.75 against `starter` (25,677-94,567), beats scale 20/20 and pressure-aware
+investment 18/20 in direct development matches, and has zero animal losses and
+missed first waterings. Its lower floor is real: towns without milk/wool demand
+can drive those products near the price floor. An all-land 6-cow/12-sheep gate
+scored only 48,039, so more acreage is rejected until capital allocation and crop
+diversification improve.
+
+The captioned seed-30 expansion replay scored 87,623:
+`http://127.0.0.1:8765/captioned_replay.html?replay=artifacts%2Fv1327-zoned-expansion-vs-starter-seed30-720.html&audit=artifacts%2Fv1327-zoned-expansion-vs-starter-seed30-720-audit.json`.
+All 64 plant actions were watered in the same turn. Row 0 had five harvested
+crop cycles and three later-lifecycle failures; measured harvest-priority and
+row-reservation alternatives reduced profit and were rejected.
 
 ## Historical Baseline Results
 

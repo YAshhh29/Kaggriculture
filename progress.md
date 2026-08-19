@@ -359,41 +359,82 @@ The opponent used the spatial idea raised during review:
 - finished with only 3 weeds and 42,465 coins.
 
 We created `experimental_zoned_agent.py` as a separate research agent. It does
-not modify either submitted package. Its crop policy:
+not modify either submitted package. The first review replay proved a specific
+top-row defect: row 0 was planted six times; only `(1,0)` was watered and
+harvested, while the other five fresh crops crossed the day boundary unwatered
+and became weeds.
+
+The simulator starts a crop at `consecutive_unwatered = 1`, so a crop planted
+without same-day water dies at that day's refresh. The corrected crop policy:
 
 - ranks empty planting tiles from the shed outward instead of row-major order;
 - gives worker IDs 0-4 near/NW planting ownership;
 - gives worker IDs 5+ far/NE planting ownership after land unlock;
+- commits a seed only when a second co-located worker waters it in the same
+  simulator transition;
 - keeps urgent watering, normal watering, and harvesting globally accessible;
-  and
+- retries hires displaced by the ten-entry market-order cap later that day; and
 - still performs feed, setup, fertilizer, harvest, and CARE before crop work.
 
-Results:
+The paired policy is source SHA-256
+`b6b23889ece1a474be45ad58ada49344f43f5397c8b3d90e37556a3ab3c111f2`.
 
-| Candidate | Seed-30 mean | Weeds/game | Decision |
-| --- | ---: | ---: | --- |
-| Existing row-major scale gate | 64,593 | about 16 | Submitted control |
-| Center-first zoning, same 8 animals/hands, no land | 64,424 | 12 | Keep for research |
-| Same zoning + right land | 52,204 | 38-39 | Reject |
-| Right land + 2 cows/2 sheep | 34,492.5 | 42-43 | Reject |
-| Right land + 3 cows/3 sheep | 50,676 | 41-42 | Reject |
+Development results, seeds 30-39, both positions:
 
-The center-first no-land version is effectively tied with the submitted scale
-agent on seed 30 and averages 60,100.45 over development seeds 30-39. It wins
-20/20 direct games against the submitted scale policy, but loses 18/20 to the
-pressure-aware investment policy and collapses to 30,097 on seed 70 when using
-the earlier aggressive 18-animal version. Therefore it remains separate and
-unsubmitted.
+| Candidate | Mean | Min-max | First-water misses | Animal losses |
+| --- | ---: | ---: | ---: | ---: |
+| Paired no-land: 8 hands, 4 cows, 4 sheep | 62,989.8 | 49,400-72,702 | 0 / 1,412 | 0 |
+| Paired NE: 10 hands, 6 cows, 8 sheep | 64,549.75 | 25,677-94,567 | 0 / 1,240 | 0 |
 
-The important conclusion is nuanced: center-first planting and stable worker
-zones are valid improvements to routing. Buying NE is not automatically good;
-the extra land only pays when enough labor remains after animal service to keep
-both zones watered. One worker cannot service eight animals alone because FEED,
-CARE, and fertilizer collection already require 24 tile actions per service day
-before movement or animal-product harvesting.
+The NE expansion is `experimental_zoned_expansion_agent.py`, source SHA-256
+`b0cb1a2748ed8aaff29c7f10d0a9d7cdf7a2fec76f59cf278cac684f01bc1ac4`.
+It buys one right-side quadrant and stages fourteen animals around NW/NE. It
+wins 20/20 direct games against scale (50,300.2 versus 36,681.3 mean) and 18/20
+against pressure-aware investment (49,506.4 versus 38,135.55 mean).
 
-Review replay:
-`artifacts/v1327-zoned-no-land-vs-starter-seed30-720.html`.
+The variance is economic rather than a hidden service failure. In seed 38, all
+fourteen animals survived and every fresh crop was watered immediately, but the
+town had no milk or wool buyer: late milk fell to 3 and wool to 5. The same mix
+reached 87,623 on seed 30, where milk/wool demand kept prices high. The NE agent
+is therefore a high-upside research variant, not a universally safer control.
+
+Top-leaderboard comparison remains a hard boundary. Against the captured
+rank-one action script on its original seed, NE lost both positions, averaging
+67,444.5 versus 117,806. The public leader used all land, up to twelve hands,
+six cows, twelve sheep, multiple crop markets, and fertilizer. Our first-land
+timing and livestock density are closer, but our wheat-only crop mix and
+unconditional animal-product selling remain materially behind.
+
+Rejected measured alternatives:
+
+| Experiment | Seed-30 mean | Why rejected |
+| --- | ---: | --- |
+| NE land with 24 wheat / 10 hands | 54,895.5 | movement and wheat glut exceeded added harvest value |
+| All land, 6 cows / 12 sheep / 10 hands | 48,039 | all land unlocked safely, but service and capital costs dominated |
+| Harvest before ordinary watering | 57,245 | harvested sooner but sacrificed wheat yield |
+| Water then globally prioritize harvest | 64,487.5 | better crop completion but lower field throughput |
+| Local current-tile harvest completion | 67,430 | still below the 87,623 accepted expansion gate |
+| Reserve row 0 from planting | 65,874 | hid usable land and reduced profit |
+
+The important conclusion is nuanced: guaranteed first watering fixes the
+original dead-row behavior, and NE pays only as a complete animal/labor bundle.
+Buying all land still does not. One worker cannot service eight animals alone
+because FEED, CARE, and fertilizer collection already require 24 tile actions
+per service day before movement or animal-product harvesting.
+
+The new seed-30 expansion replay has 720 records and scores 87,623. All 64
+plant actions have a same-transition WATER action. Row 0 is no longer planted
+once and abandoned: it has eight crop cycles, five harvested and three weeded
+later in their lifecycle. The captioned viewer places every farmer/hand action,
+readable market order, observed hire/land/animal change, bank delta, and board
+delta underneath the official visualizer:
+
+`http://127.0.0.1:8765/captioned_replay.html?replay=artifacts%2Fv1327-zoned-expansion-vs-starter-seed30-720.html&audit=artifacts%2Fv1327-zoned-expansion-vs-starter-seed30-720-audit.json`.
+
+Decision: keep both zoned policies separate and unsubmitted. No-land has the
+safer floor; NE has the stronger mean and direct-match record. The next justified
+experiment is demand-aware product/crop allocation, not another unconditional
+land purchase.
 
 ### One-Goose Candidate: Promotion Evidence
 
