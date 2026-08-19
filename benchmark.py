@@ -922,6 +922,7 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="use the replay-grounded daily workforce schedule",
     )
+    parser.add_argument("--target-market-animals", type=int)
     parser.add_argument(
         "--last-planting-day",
         type=int,
@@ -1080,6 +1081,8 @@ def main() -> None:
         0 <= args.target_extra_land <= 3
     ):
         raise SystemExit("--target-extra-land must be between 0 and 3")
+    if args.target_market_animals is not None and args.target_market_animals < 1:
+        raise SystemExit("--target-market-animals must be positive")
     if args.last_planting_day is not None and args.last_planting_day < 0:
         raise SystemExit("--last-planting-day cannot be negative")
     if (
@@ -1126,6 +1129,8 @@ def main() -> None:
         parameters["target_extra_land"] = args.target_extra_land
     if args.adaptive_hands:
         parameters["adaptive_hands"] = True
+    if args.target_market_animals is not None:
+        parameters["target_market_animals"] = args.target_market_animals
     if args.last_planting_day is not None:
         parameters["last_planting_day"] = args.last_planting_day
     if args.harvest_watered_current_first:
