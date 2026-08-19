@@ -28,14 +28,16 @@ profitable game.
 
 ## Current Status
 
-There are three deliberately separate policy states:
+There are four deliberately separate policy states:
 
 - `main.py` is the frozen v9 submission control: six wheat plots and guarded
   price-aware selling.
 - `submission-goose/main.py` is the second active Kaggle submission.
-- `experimental_cow_agent.py` is the strongest validated local candidate: two
-  daily hands, twelve wheat plots, one goose, and one plain cow. It has not been
-  packaged or submitted.
+- `experimental_cow_agent.py` is the superseded plain-cow research control.
+- `experimental_scale_agent.py` is the strongest frozen candidate: eight daily
+  hands, sixteen wheat plots, four cows, four sheep, daily feed, CARE, staged
+  expansion, and no land. Its package is `submission-scale/main.py`; it has not
+  been uploaded.
 
 No third Kaggle agent should be submitted without an explicit decision. Local
 profit against `starter` is diagnostic evidence, not proof of ladder strength.
@@ -260,6 +262,46 @@ and ended with no sellable shed or carried inventory. The candidate is now the
 frozen local control for the next scale experiment, but its roughly 16.7k score
 is still far below the 78k-111k public replay economies.
 
+## Frozen Scale Candidate
+
+The replay-inspired overnight ladder changed one axis at a time: workforce,
+crop capacity, animal count and mix, CARE, feed cadence, market priority, then
+land. The selected policy uses eight hands, sixteen wheat, four cows, and four
+sheep. It feeds and cares for animals daily, stages purchases over days 0, 3,
+5, and 7, and protects required feed from wheat sales.
+
+The exact source hash is
+`acfc19dd312dcd281428e62ff8d4c2919150b1aed0776d093e14470a0380cfb5`.
+
+| Metric | Plain cow | Frozen scale |
+| --- | ---: | ---: |
+| Development mean, seeds 30-39 | 16,634.3 | 58,853.4 |
+| Development paired result | - | 20 / 0 / 0 |
+| Untouched holdout mean, seeds 70-79 | 17,052.3 | 57,231.45 |
+| Holdout paired gain | - | +40,179.15 |
+| Holdout minimum / maximum | 16,102 / 18,346 | 43,745 / 65,110 |
+| Holdout animal losses | 0 | 0 |
+
+It also won all 40 direct local matches against the two active policies: 20/20
+against v9 and 20/20 against goose, testing both player positions. Against the
+captured rank-one action script on its original seed, however, it lost 41,702
+to 113,032 in both positions. That script is a fixed stress test, not an
+adaptive clone, but it usefully shows that the candidate is a large upgrade,
+not a solved leaderboard strategy.
+
+Build and validate the single-file candidate with:
+
+```powershell
+./.conda/python.exe prepare_scale_submission.py
+./.conda/python.exe validate_submission.py submission-scale/main.py --seed 70
+```
+
+The packaged SHA-256 is
+`a478741d32205b1ec772aced6879796c718249b695b0a8b5d85bb65ad893dac2`.
+Kaggle's file loader completed full self-play with both statuses `DONE`.
+Source and package each score 55,138 against `starter` on seed 70, confirming
+packaging equivalence. Upload remains an explicit user decision.
+
 ## Historical Baseline Results
 
 The six-plot policy with a day-24 planting cutoff was measured on simulator
@@ -314,13 +356,16 @@ prices 28-40 and produced a guarded ridge policy. It improved every development
 seed by 156.4 coins on average. On fresh seeds 40-49 it preserved all 20 wins,
 all production, and gained 116 coins on average, but seed 48 lost 25 coins.
 Therefore the learned policy remains in `experimental_ridge_agent.py`; the
-submission in `main.py` is still v9. Seeds 20-29, 40-49, 50-59, and 60-69 are
-spent holdouts. The next frozen candidate may use seeds 70-79 once.
+submission in `main.py` is still v9. Seeds 20-29, 40-49, 50-59, 60-69, and
+70-79 are spent holdouts.
 
-The immediate next strategy question is whether increasing only daily hand
-capacity from the frozen cow control can support more production. Land, CARE,
-crop mix, and animal mix should remain fixed until that labor axis passes the
-same paired development gate.
+The next research question is no longer raw labor capacity. Blindly copying the
+leader's 12-hand, 18-animal, all-land topology scored only 52,536.5 because
+service and crop churn prevented most expansion animals from coming online.
+The next candidate should make high-level capital choices adaptively: hire,
+buy land, add a cow or sheep, change crop mix, or hold cash. Selection must use
+head-to-head and replay-script pressure as well as `starter`, with deterministic
+legality, feeding, market-order, and endgame safeguards retained.
 
 Before submitting, accept the competition rules in the browser. API credentials
 are useful later for automation but are not needed to understand or test the

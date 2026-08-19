@@ -167,6 +167,70 @@
 			"isBackground": false,
 			"problemMatcher": [],
 			"group": "test"
+		},
+		{
+			"label": "Run promoted scale development suite",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_scale_agent.py --opponent starter --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-scale-promoted-development-seeds30-39.json",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Run scale versus leader replay script",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_scale_agent.py --opponent leader_replay_agent.py --seed-start 1507302619 --seed-count 1 --one-position --steps 720 --output artifacts\\benchmarks\\v1327-scale-vs-leader-replay-script-original-seed.json",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Run frozen scale development suite",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_scale_agent.py --opponent starter --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-scale-frozen-development-seeds30-39.json",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Run frozen scale holdout suite",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_scale_agent.py --opponent starter --seed-start 70 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-scale-frozen-holdout-seeds70-79.json",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Run plain cow scale holdout control",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_cow_agent.py --opponent starter --seed-start 70 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-plain-cow-control-holdout-seeds70-79.json",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Run scale leader script both positions",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_scale_agent.py --opponent leader_replay_agent.py --seed-start 1507302619 --seed-count 1 --steps 720 --output artifacts\\benchmarks\\v1327-scale-vs-leader-replay-script-both-positions.json",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Run scale versus active v9",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_scale_agent.py --opponent main.py --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-scale-frozen-vs-active-v9-seeds30-39.json",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Run scale versus active goose",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_scale_agent.py --opponent experimental_goose_agent.py --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-scale-frozen-vs-active-goose-seeds30-39.json",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
 		}
 	]
 }

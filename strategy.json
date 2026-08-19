@@ -305,28 +305,35 @@
     "current_threshold_remains": 35
   },
   "next_experiment": {
-    "name": "replay-inspired labor scaling from the frozen plain-cow control",
-    "hypothesis": "raising daily labor from two hands toward the five-hand leaderboard opening can increase serviced production before land or CARE is necessary",
+    "name": "opponent-facing adaptive capital allocation from the frozen scale control",
+    "hypothesis": "choosing when to hire, add livestock, buy land, and change product mix from current cash, service load, and opponent market pressure can close part of the 71k leader-script deficit without the churn caused by blindly copying the final topology",
     "steps": [
       "keep main.py and both active Kaggle submissions unchanged",
-      "use the source-frozen plain-cow policy as the local control",
-      "increase only daily hand capacity first and measure task completion, idle actions, movement, and cash",
-      "use development seeds 30-39 for workload or livestock follow-up tuning",
-      "do not add land or CARE until labor and animal capacity pass paired gates",
-      "freeze one candidate before using seeds 70-79 once"
+      "use experimental_scale_agent.py hash acfc19dd...0cfb5 as the deterministic control",
+      "define compact choices: hold cash, hire to a target, add cow, add sheep, buy next land, or adjust crop mix",
+      "score choices with terminal banked cash and direct win outcome against starter, active local policies, self-play, and captured replay scripts",
+      "retain deterministic feeding, care, legality, market-order, and endgame liquidation safeguards",
+      "group training and validation by seed and opponent",
+      "freeze one candidate before using seeds 80-89 once"
     ],
     "gate": {
       "simulator_version": "1.32.7",
-      "opponent": "starter",
+      "opponents": [
+        "starter",
+        "main.py",
+        "experimental_goose_agent.py",
+        "experimental_scale_agent.py self-play",
+        "leader_replay_agent.py scripted stress test"
+      ],
       "development_seeds": "30-39",
-      "next_untouched_holdout_seeds": "70-79",
+      "next_untouched_holdout_seeds": "80-89",
       "positions": [
         0,
         1
       ],
       "must_preserve": [
         "DONE status",
-        "all wins",
+        "all wins against active local policies",
         "strictly positive paired cash delta in every game",
         "no shed overflow",
         "no escaped animals",
@@ -336,7 +343,7 @@
       "must_not_do": [
         "do not treat starter profit as representative ladder evidence",
         "do not change labor, land, CARE, crop mix, and animal mix in one untraceable candidate",
-        "do not reuse seeds 20-29, 40-49, 50-59, or 60-69 as a fresh holdout",
+        "do not reuse seeds 20-29, 40-49, 50-59, 60-69, or 70-79 as a fresh holdout",
         "do not submit a third Kaggle bot without explicit approval"
       ]
     }
@@ -347,8 +354,8 @@
     "phase_2_complete": "v9 passed generalization and a leak-resistant single-policy trajectory dataset was collected",
     "phase_3_complete": "deterministic state branching produced the first true HOLD/SELL counterfactual labels and an interpretable model baseline",
     "phase_4_complete": "broader counterfactual ridge evaluation improved average cash but was rejected after one fresh-seed regression",
-    "phase_5_now": "use public top-replay evidence to scale deterministic labor, livestock, and capital allocation around a frozen cow control",
-    "phase_6": "add representative opponents and consider learned capital allocation or self-play only after the scaled action abstraction is stable",
+    "phase_5_complete": "public replay evidence produced a zero-loss 57k scale candidate that passed untouched holdout and active-policy head-to-head gates",
+    "phase_6_now": "learn or search high-level capital allocation under multiple opponents while retaining the frozen scale policy as deterministic fallback",
     "rl_entry_requirements": [
       "legal-action masking",
       "terminal banked cash and win outcome tracked correctly",
@@ -547,6 +554,122 @@
     },
     "decision": "promote as the frozen local control for the next scale experiment; do not replace main.py or submit without explicit approval"
   },
+  "frozen_scale_candidate": {
+    "status": "holdout-validated and packaged; ready for explicit upload approval; not submitted",
+    "agent": "experimental_scale_agent.py",
+    "candidate_sha256": "acfc19dd312dcd281428e62ff8d4c2919150b1aed0776d093e14470a0380cfb5",
+    "package": {
+      "file": "submission-scale/main.py",
+      "sha256": "a478741d32205b1ec772aced6879796c718249b695b0a8b5d85bb65ad893dac2",
+      "manifest": "submission-scale/manifest.json",
+      "kaggle_self_play_statuses": ["DONE", "DONE"],
+      "self_play_rewards_seed_70": [18389, 18389],
+      "starter_reward_seed_70": 55138,
+      "source_and_package_behavior_match": true
+    },
+    "policy": {
+      "daily_hands": 8,
+      "wheat_target": 16,
+      "cows": 4,
+      "sheep": 4,
+      "care": true,
+      "feed_daily": true,
+      "staged_expansion": {
+        "day_0": "2 cows and 2 sheep",
+        "day_3": "third cow",
+        "day_5": "fourth cow",
+        "day_7": "third and fourth sheep"
+      },
+      "extra_land": 0,
+      "last_wheat_planting_day": 21,
+      "last_feeding_day": 27,
+      "last_collection_day": 28,
+      "market_priority": [
+        "sell realized products",
+        "secure required feed",
+        "hire labor",
+        "buy staged animals",
+        "buy land when an experiment enables it",
+        "buy seeds"
+      ]
+    },
+    "development_result": {
+      "seeds": "30-39",
+      "positions": [0, 1],
+      "wins": 20,
+      "mean_coins": 58853.4,
+      "minimum_coins": 38264,
+      "maximum_coins": 65579,
+      "plain_cow_mean_coins": 16634.3,
+      "mean_gain_over_plain_cow": 42219.1,
+      "minimum_game_gain": 22524,
+      "improved_games": 20,
+      "tied_games": 0,
+      "worse_games": 0,
+      "animal_losses": 0,
+      "terminal_sellable_inventory_empty": true,
+      "candidate_report": "artifacts/benchmarks/v1327-scale-frozen-development-seeds30-39.json",
+      "paired_report": "artifacts/benchmarks/v1327-scale-frozen-vs-plain-cow-development-paired.json"
+    },
+    "untouched_holdout_result": {
+      "seeds": "70-79",
+      "positions": [0, 1],
+      "wins": 20,
+      "mean_coins": 57231.45,
+      "minimum_coins": 43745,
+      "maximum_coins": 65110,
+      "plain_cow_mean_coins": 17052.3,
+      "mean_gain_over_plain_cow": 40179.15,
+      "minimum_game_gain": 27367,
+      "maximum_game_gain": 47564,
+      "improved_games": 20,
+      "tied_games": 0,
+      "worse_games": 0,
+      "animal_losses": 0,
+      "terminal_sellable_inventory_empty": true,
+      "candidate_report": "artifacts/benchmarks/v1327-scale-frozen-holdout-seeds70-79.json",
+      "control_report": "artifacts/benchmarks/v1327-plain-cow-control-holdout-seeds70-79.json",
+      "paired_report": "artifacts/benchmarks/v1327-scale-frozen-vs-plain-cow-holdout-paired.json"
+    },
+    "opponent_facing_results": {
+      "active_v9": {
+        "seeds": "30-39",
+        "positions": [0, 1],
+        "wins": 20,
+        "losses": 0,
+        "candidate_mean_coins": 57713.6,
+        "opponent_mean_coins": 7954.9,
+        "report": "artifacts/benchmarks/v1327-scale-frozen-vs-active-v9-seeds30-39.json"
+      },
+      "active_goose": {
+        "seeds": "30-39",
+        "positions": [0, 1],
+        "wins": 20,
+        "losses": 0,
+        "candidate_mean_coins": 55996.05,
+        "opponent_mean_coins": 9362.4,
+        "report": "artifacts/benchmarks/v1327-scale-frozen-vs-active-goose-seeds30-39.json"
+      },
+      "rank_one_replay_script": {
+        "seed": 1507302619,
+        "positions": [0, 1],
+        "wins": 0,
+        "losses": 2,
+        "candidate_coins": 41702,
+        "script_coins": 113032,
+        "interpretation": "scripted shared-market stress test; not an adaptive copy of the live leader",
+        "report": "artifacts/benchmarks/v1327-scale-vs-leader-replay-script-both-positions.json"
+      }
+    },
+    "rejected_axes": {
+      "one_land_plus_24_wheat": "54,376.9 mean on seeds 30-34, below the no-land control",
+      "full_leader_topology": "52,536.5 on seed 30; only 6 cows and 2 sheep activated while crop churn increased",
+      "cow_heavy_mix": "6 cows plus 2 sheep scored 59,314 versus 65,052 for the safe 4/4 gate",
+      "all_cow_mix": "8 cows scored 45,144",
+      "fixed_10_or_12_hands": "33,050; overpaid or truncated hiring"
+    },
+    "decision": "recommended replacement candidate for the weaker active live slot, pending explicit user approval; retain the other live submission as control"
+  },
   "leaderboard_replay_scouting": {
     "checked_at": "2026-08-19",
     "leader_team": "カワシギ",
@@ -621,7 +744,7 @@
       "replay": "artifacts/top-replays/episode-94247823-replay.json",
       "analysis": "artifacts/top-replays/episode-94247823-strategy.json"
     },
-    "interpretation": "A large cheap workforce is the stable backbone across the leader win and loss; animal mix and land timing are adaptive. Local starter scores remain diagnostic only because 16.7k is still far below the observed 78k-111k opponent-facing economies."
+    "interpretation": "A large cheap workforce is the stable backbone across the leader win and loss; animal mix and land timing are adaptive. The frozen scale candidate reaches 57k against starter and beats both active local policies, but loses 41,702 to 113,032 against the captured rank-one script. The next gain must be selected under representative opponent pressure, not starter profit alone."
   },
   "do_not_do": [
     "do not treat one favorable game as proof",
@@ -636,6 +759,7 @@
     "do not add animals, fertilizer, routing, and market timing in one candidate",
     "do not treat starter profit as proof of ladder strength",
     "do not reuse seeds 60-69 as a fresh holdout",
+    "do not reuse seeds 70-79 as a fresh holdout",
     "do not submit a third Kaggle bot without explicit approval",
     "do not submit without loading main.py by file",
     "do not move agent above another callable in main.py",

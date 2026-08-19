@@ -149,6 +149,119 @@ far below the 78k-111k public replay scale, and `starter` is not a representativ
 opponent. The next development axis should increase daily labor and livestock
 capacity in a controlled stage before adding land or CARE.
 
+### Overnight Scale Candidate: Frozen, Held Out, And Packaged
+
+The valid next step was not another small sale threshold. The two live agents
+were rated around 300 and 333, while captured top episodes operated at 78k-111k
+coins. We therefore built a replay-inspired scale policy one axis at a time
+around the frozen plain-cow control.
+
+Seed-30 gates first selected labor and crop capacity while keeping one goose and
+one cow fixed:
+
+| Axis | Candidates | Selected result |
+| --- | --- | ---: |
+| Daily hands | 2, 3, 4, 5, 6, 8 | 5 hands at 18,021 before CARE |
+| Wheat target | 12, 16, 20, 23 | 16 wheat at 18,715 |
+| Four-animal opening | 2 cows + 2 sheep | 24,773 |
+| CARE | off versus on | CARE raised the gate to 33,645 |
+
+CARE changed the labor optimum. Under CARE, eight hands reached 35,993 while
+ten and twelve fell to 33,050 because expensive or truncated hires stopped
+returning value. Animal-density gates then selected four cows plus four sheep:
+
+| Species mix | Seed-30 mean coins |
+| --- | ---: |
+| 4 cows + 4 sheep | 48,697 before feed repair |
+| 6 cows + 2 sheep | 43,980 |
+| 8 cows | 45,144 |
+
+The first eight-animal prototype hid five escapes per game behind replacement
+purchases. New benchmark instrumentation now records animal placements, loss
+events, maximum active counts, and pre-endgame losses. The trace exposed two
+root causes: expansion animals were placed too late on day 0, and feed purchases
+were ordered after hires and expansion. The corrected policy:
+
+- begins with two cows and two sheep;
+- adds cows on days 3 and 5 and the final two sheep from day 7;
+- feeds daily and protects required wheat from sale;
+- prioritizes realized sales, feed, hires, animal expansion, land, then seeds;
+- lets every worker carry, place, feed, care for, collect from, and harvest an
+  animal; and
+- reserves all livestock tiles from crop assignment.
+
+The safe zero-loss gate scored 65,052. The exact final source was frozen at
+SHA-256 `acfc19dd312dcd281428e62ff8d4c2919150b1aed0776d093e14470a0380cfb5`.
+Its default policy is eight daily hands, sixteen wheat, four cows, four sheep,
+daily feeding, CARE, staged expansion, and no land.
+
+Development seeds 30-39, both positions:
+
+| Metric | Plain cow control | Frozen scale |
+| --- | ---: | ---: |
+| Wins | 20 | 20 |
+| Mean coins | 16,634.3 | 58,853.4 |
+| Minimum / maximum | 14,844 / 17,623 | 38,264 / 65,579 |
+| Mean paired gain | - | +42,219.1 |
+| Minimum paired gain | - | +22,524 |
+| Improved / tied / worse | - | 20 / 0 / 0 |
+| Animal losses | 0 | 0 |
+
+The source was not changed after this gate. It was evaluated exactly once on
+untouched seeds 70-79, both positions:
+
+| Metric | Plain cow control | Frozen scale |
+| --- | ---: | ---: |
+| Wins | 20 | 20 |
+| Mean coins | 17,052.3 | 57,231.45 |
+| Minimum / maximum | 16,102 / 18,346 | 43,745 / 65,110 |
+| Mean paired gain | - | +40,179.15 |
+| Minimum paired gain | - | +27,367 |
+| Improved / tied / worse | - | 20 / 0 / 0 |
+| Pre-endgame animal losses | 0 | 0 |
+| Terminal shed / carried inventory | Empty | Empty |
+
+The frozen policy also won every direct local match against the two active
+submission policies on development seeds 30-39, both positions:
+
+- 20/20 versus v9, averaging 57,713.6 versus 7,954.9; and
+- 20/20 versus the one-goose policy, averaging 55,996.05 versus 9,362.4.
+
+We added a research-only opponent that replays the captured rank-one action
+sequence. This is a scripted stress test, not an adaptive copy of the leader.
+On the original replay seed, the frozen scale candidate lost 41,702 to 113,032
+from both positions. The result prevents a false claim that 57k against
+`starter` equals leaderboard strength. The remaining strategic gap is larger
+capital scale and market allocation: the script runs 18 animals, all land, and
+up to 12 hands.
+
+Two direct attempts to copy that topology were rejected:
+
+- one extra land plus 24 wheat averaged 54,376.9 on a five-seed development
+  screen, below the 58,853.4 no-land control; and
+- a 12-hand, 6-cow, 12-sheep, three-land, 32-wheat gate scored 52,536.5 and
+  activated only 6 cows and 2 sheep before service/crop churn dominated.
+
+Decision: the no-land 4-cow/4-sheep policy is the strongest safe candidate from
+this run. `submission-scale/main.py` is built and ready but was not uploaded.
+Kaggle's real loader completed full self-play with both statuses `DONE`.
+Packaged and source agents both scored 55,138 against `starter` on seed 70 and
+18,389-18,389 in self-play, proving behavioral equivalence.
+
+- candidate source hash:
+  `acfc19dd312dcd281428e62ff8d4c2919150b1aed0776d093e14470a0380cfb5`;
+- packaged file hash:
+  `a478741d32205b1ec772aced6879796c718249b695b0a8b5d85bb65ad893dac2`;
+- package: `submission-scale/main.py`;
+- manifest: `submission-scale/manifest.json`; and
+- full suite: 98 tests passed.
+
+Recommended live action: replace the weaker active submission with this frozen
+scale package only after explicit approval. Keep the other slot as a control.
+Do not describe this candidate as a leaderboard winner; describe it as a
+zero-loss, holdout-validated step from 10k-17k local economies into the 57k
+range, with a measured 71k deficit against the rank-one script.
+
 ### One-Goose Candidate: Promotion Evidence
 
 After the first v9 Kaggle submission validated at rating 600, we isolated one
