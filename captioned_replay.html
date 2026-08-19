@@ -5,25 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Captioned Kaggriculture Replay</title>
   <style>
-    :root { color-scheme: dark; font-family: Segoe UI, sans-serif; }
+    :root { color-scheme: dark; font-family: Georgia, serif; }
     * { box-sizing: border-box; }
     body { margin: 0; background: #101412; color: #edf2ed; }
-    main { display: grid; grid-template-columns: minmax(0, 1fr) 360px; height: 100vh; }
-    iframe { width: 100%; height: 100%; border: 0; background: #182019; }
-    aside { padding: 18px; overflow: auto; border-left: 1px solid #3d493f; background: #151a17; }
-    h1 { margin: 0 0 6px; font-size: 20px; }
+    main { min-height: 100vh; }
+    iframe { display: block; width: 100%; height: min(72vh, 820px); border: 0; background: #182019; }
+    aside { padding: 20px clamp(18px, 4vw, 56px) 32px; border-top: 2px solid #5f8164; background: #151a17; }
+    h1 { margin: 0 0 6px; font-size: 22px; }
     h2 { margin: 20px 0 8px; font-size: 13px; color: #aab6ac; text-transform: uppercase; }
     p { margin: 7px 0; line-height: 1.4; }
     .step { color: #8fd29b; font-weight: 700; }
-    .action { font-size: 18px; font-weight: 700; }
+    .workers { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 6px; margin-top: 10px; }
+    .worker { min-height: 64px; padding: 9px 10px; border-left: 3px solid #5f8164; background: #1d241f; }
+    .worker strong { display: block; color: #b9d9bd; font-size: 13px; text-transform: uppercase; }
+    .worker span { display: block; margin-top: 3px; font-family: Consolas, monospace; font-size: 14px; }
     .market { color: #f0c879; }
     .money { font-variant-numeric: tabular-nums; }
     .muted { color: #9ba59d; }
     .pill { display: inline-block; padding: 3px 7px; border: 1px solid #58645a; border-radius: 4px; margin: 2px 3px 2px 0; font-size: 12px; }
     code { color: #d9e8db; }
-    @media (max-width: 900px) {
-      main { grid-template-columns: 1fr; grid-template-rows: 60vh auto; height: auto; min-height: 100vh; }
-      aside { border-left: 0; border-top: 1px solid #3d493f; }
+    @media (max-width: 700px) {
+      iframe { height: 58vh; }
+      aside { padding: 16px; }
+      .workers { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -31,21 +35,20 @@
   <main>
     <iframe id="replay" title="Official Kaggriculture visualizer"></iframe>
     <aside>
-      <h1>What the farmer is doing</h1>
-      <p class="muted">Captions follow the official visualizer slider.</p>
+      <h1>What happens on this turn</h1>
+      <p class="muted">Captions follow the official visualizer slider. Market lines report orders issued; bank and board lines report observed results.</p>
       <p id="step" class="step">Loading audit...</p>
-      <p id="action" class="action"></p>
-      <p id="reason"></p>
-      <p id="position"></p>
-      <h2>Market</h2>
+      <h2>Farmer and farm hands</h2>
+      <div id="workers" class="workers"></div>
+      <h2>Market orders issued</h2>
       <p id="market" class="market"></p>
-      <h2>Money and inventory</h2>
+      <h2>Observed money and inventory</h2>
       <p id="money" class="money"></p>
       <p id="inventory"></p>
       <h2>Resulting changes</h2>
       <p id="changes"></p>
       <h2>Legend</h2>
-      <p><span class="pill">Move</span><span class="pill">Plant</span><span class="pill">Water</span><span class="pill">Harvest</span><span class="pill">Sell/Buy</span></p>
+      <p><span class="pill">Move</span><span class="pill">Plant + Water pair</span><span class="pill">Animal service</span><span class="pill">Harvest</span><span class="pill">Market order</span></p>
     </aside>
   </main>
   <script>
@@ -56,29 +59,60 @@
     frame.src = replayUrl;
     let audit;
 
-    const reasons = {
-      NORTH: 'Move one tile north toward the next selected farm task.',
-      SOUTH: 'Move one tile south toward the next selected farm task.',
-      EAST: 'Move one tile east toward the next selected farm task.',
-      WEST: 'Move one tile west toward the next selected farm task.',
-      PLANT: 'Use a purchased seed to start a new crop on this empty tile.',
-      WATER: 'Water this crop for today; fresh crops must be watered before day end.',
-      HARVEST: 'Collect the crop yield into the farmer inventory.',
-      PASS: 'No higher-priority farm task is currently available.',
-      FERTILIZE: 'Apply one carried fertilizer unit to increase future yield.',
-      DIG: 'Clear the current tile.',
-      FEED: 'Feed the animal using carried wheat.',
-      CARE: 'Care for the animal to bank a future yield bonus.',
-      COLLECT_FERTILIZER: 'Collect the animal fertilizer available today.'
-    };
-
     function text(id, value) { document.getElementById(id).textContent = value; }
+    function formatPosition(position) {
+      return position ? `(${position.join(', ')})` : 'off board';
+    }
+    function renderWorkers(workers) {
+      const container = document.getElementById('workers');
+      container.replaceChildren();
+      for (const worker of workers || []) {
+        const item = document.createElement('div');
+        item.className = 'worker';
+        const name = document.createElement('strong');
+        name.textContent = worker.worker.replace('_', ' ');
+        const action = document.createElement('span');
+        const route = `${formatPosition(worker.position_before)} → ${formatPosition(worker.position_after)}`;
+        action.textContent = `${worker.action.join(' ')} | ${route}`;
+        item.append(name, action);
+        container.append(item);
+      }
+    }
+    function plural(item, quantity) {
+      const names = { COW: 'cow', SHEEP: 'sheep', GOOSE: 'goose', WHEAT: 'wheat' };
+      const name = names[item] || item.toLowerCase();
+      if (quantity === 1 || name === 'sheep' || name === 'wheat') return name;
+      return name === 'goose' ? 'geese' : `${name}s`;
+    }
+    function formatOrder(order) {
+      const [operation, item, rawQuantity] = order;
+      const quantity = Number(rawQuantity || 1);
+      if (operation === 'HIRE') return 'Hire 1 farm hand';
+      if (operation === 'BUY_LAND') return 'Buy the next land quadrant';
+      if (operation === 'BUY_ANIMAL') return `Buy ${quantity} ${plural(item, quantity)}`;
+      if (operation === 'BUY_SEED') return `Buy ${quantity} ${item.toLowerCase()} seeds`;
+      if (operation === 'BUY_PRODUCT') return `Buy ${quantity} ${plural(item, quantity)}`;
+      if (operation === 'SELL') return `Sell ${quantity} ${plural(item, quantity)}`;
+      return order.join(' ');
+    }
     function formatOrders(orders) {
       if (!orders || !orders.length) return 'No market order this step.';
-      return orders.map(order => order.join(' ')).join(' | ');
+      const grouped = [];
+      let hires = 0;
+      for (const order of orders) {
+        if (order[0] === 'HIRE') hires += 1;
+        else grouped.push(formatOrder(order));
+      }
+      if (hires) grouped.push(`Hire ${hires} farm hand${hires === 1 ? '' : 's'}`);
+      return grouped.join(' | ');
     }
-    function formatChanges(changes) {
+    function formatChanges(changes, observed) {
       const parts = [];
+      if (observed.hands_added) parts.push(`${observed.hands_added} farm hand${observed.hands_added === 1 ? '' : 's'} appeared`);
+      if (observed.hands_removed) parts.push(`${observed.hands_removed} farm hand${observed.hands_removed === 1 ? '' : 's'} left`);
+      if (observed.unlocked_quadrants.length) parts.push(`Unlocked ${observed.unlocked_quadrants.join(', ')}`);
+      if (observed.created_structures.length) parts.push(observed.created_structures.map(x => `${x.structure.toLowerCase()} built at (${x.tile.join(',')})`).join(', '));
+      if (observed.created_animals.length) parts.push(observed.created_animals.map(x => `${x.animal.toLowerCase()} placed at (${x.tile.join(',')})`).join(', '));
       if (changes.created_plants.length) parts.push(`Planted at ${changes.created_plants.map(x => `(${x.tile.join(',')})`).join(', ')}`);
       if (changes.removed_plants.length) parts.push(`Plant removed at ${changes.removed_plants.map(x => `(${x.tile.join(',')})`).join(', ')}`);
       if (changes.created_weeds.length) parts.push(`Weed appeared at ${changes.created_weeds.map(x => `(${x.tile.join(',')})`).join(', ')}`);
@@ -89,28 +123,21 @@
       const record = audit.records[Math.max(0, Math.min(index, audit.records.length - 1))];
       if (record.record_type === 'initialized_state') {
         text('step', 'Record 1 / 720 — initialized farm');
-        text('action', 'Initial state');
-        text('reason', 'The environment has initialized both farms; no agent transition has executed yet.');
-        text('position', `Farmer at (${record.state.farmer.join(', ')})`);
+        renderWorkers([{ worker: 'farmer', action: ['INITIAL STATE'], position_before: record.state.farmer, position_after: record.state.farmer }]);
         text('market', 'No market order.');
         text('money', `Bank: ${record.state.money}`);
         text('inventory', `Seeds ${record.state.wheat_seeds} | Shed wheat ${record.state.shed_wheat} | Carried wheat ${record.state.carried_wheat}`);
         text('changes', 'Empty starting farm.');
         return;
       }
-      const op = record.farmer_operation;
-      const target = record.next_observed_task;
-      const movementReason = target ? `${reasons[op]} Next observed task: ${target.operation} at (${target.position.join(', ')}).` : reasons[op];
       text('step', `Record ${record.record_index + 1} / 720 — day ${record.day + 1}, hour ${record.hour + 1}`);
-      text('action', record.farmer_action.join(' '));
-      text('reason', movementReason || 'Execute the selected action.');
-      text('position', `Position (${record.position_before.join(', ')}) → (${record.position_after.join(', ')})`);
+      renderWorkers(record.worker_actions);
       text('market', formatOrders(record.market_orders));
       const cash = record.cash_flow;
       text('money', `Bank ${cash.money_before} → ${cash.money_after} (${cash.net_money_delta >= 0 ? '+' : ''}${cash.net_money_delta})`);
       const after = record.state_after;
       text('inventory', `Seeds ${after.wheat_seeds} | Planted wheat ${after.planted_wheat} | Shed wheat ${after.shed_wheat} | Carried wheat ${after.carried_wheat} | Market price ${after.wheat_market_price}`);
-      text('changes', formatChanges(record.board_changes));
+      text('changes', formatChanges(record.board_changes, record.observed_changes));
     }
 
     fetch(auditUrl).then(response => {
@@ -126,7 +153,12 @@
       addEventListener('beforeunload', () => clearInterval(timer));
     }).catch(error => {
       text('step', 'Could not load audit');
-      text('reason', error.message);
+      renderWorkers([{
+        worker: 'audit',
+        action: [error.message],
+        position_before: null,
+        position_after: null
+      }]);
     });
   </script>
 </body>

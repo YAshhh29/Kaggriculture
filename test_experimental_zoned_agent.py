@@ -1,4 +1,5 @@
 import ast
+import importlib.util
 import unittest
 from pathlib import Path
 
@@ -21,6 +22,22 @@ class ExperimentalZonedAgentTests(unittest.TestCase):
         ]
         self.assertEqual(functions[-1], "agent")
 
+    def test_expansion_file_loads_as_measured_bundle(self) -> None:
+        path = Path(__file__).with_name(
+            "experimental_zoned_expansion_agent.py"
+        )
+        spec = importlib.util.spec_from_file_location("zoned_expansion", path)
+        self.assertIsNotNone(spec)
+        self.assertIsNotNone(spec.loader)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        decision = module.agent(scale_observation())
+
+        self.assertEqual(decision["market"].count(["HIRE"]), 8)
+        self.assertIn(["BUY_ANIMAL", "COW", 2], decision["market"])
+        self.assertIn(["BUY_ANIMAL", "SHEEP", 2], decision["market"])
+
     def test_default_keeps_safe_scale_capital_policy(self) -> None:
         decision = agent(scale_observation())
 
@@ -38,6 +55,32 @@ class ExperimentalZonedAgentTests(unittest.TestCase):
 
         self.assertIn(["BUY_ANIMAL", "COW", 2], decision["market"])
         self.assertIn(["BUY_ANIMAL", "SHEEP", 2], decision["market"])
+
+    def test_land_bundle_respects_staged_opening_and_order_cap(self) -> None:
+        decision = __import__("experimental_zoned_agent").decide(
+            scale_observation(),
+            target_wheat_tiles=24,
+            target_daily_hands=10,
+            target_extra_land=1,
+        )
+
+        self.assertEqual(decision["market"].count(["HIRE"]), 8)
+        self.assertEqual(len(decision["market"]), 10)
+        self.assertNotIn(["BUY_LAND"], decision["market"])
+
+    def test_land_bundle_retries_displaced_hires_after_hour_zero(self) -> None:
+        state = scale_observation(hour=1)
+        state["farms"][0]["hands"] = [[4, 4] for _ in range(8)]
+        state["private"]["inventories"] = [{} for _ in range(9)]
+
+        decision = __import__("experimental_zoned_agent").decide(
+            state,
+            target_wheat_tiles=24,
+            target_daily_hands=10,
+            target_extra_land=1,
+        )
+
+        self.assertEqual(decision["market"].count(["HIRE"]), 2)
 
     def test_near_planting_starts_beside_center_not_top_left(self) -> None:
         state = scale_observation()
@@ -66,6 +109,42 @@ class ExperimentalZonedAgentTests(unittest.TestCase):
         )[-1]
 
         self.assertTrue(all(position[0] >= 5 for position, _ in plants))
+
+    def test_lone_worker_never_plants_on_final_turn(self) -> None:
+        state = scale_observation(hour=23)
+        state["private"]["seeds"]["WHEAT"] = 4
+        positions = [tuple(state["farms"][0]["farmer"])]
+        actions = [None]
+
+        _assign_zoned_crops(
+            0,
+            state["farms"][0],
+            state["private"],
+            positions,
+            actions,
+            set(),
+        )
+
+        self.assertEqual(actions, [["PASS"]])
+
+    def test_pair_plants_and_waters_on_same_turn(self) -> None:
+        state = scale_observation(hour=23)
+        state["farms"][0]["hands"] = [[4, 4]]
+        state["private"]["inventories"] = [{}, {}]
+        state["private"]["seeds"]["WHEAT"] = 1
+        positions = [(4, 4), (4, 4)]
+        actions = [None, None]
+
+        _assign_zoned_crops(
+            0,
+            state["farms"][0],
+            state["private"],
+            positions,
+            actions,
+            set(),
+        )
+
+        self.assertEqual(actions, [["PLANT", "WHEAT"], ["WATER"]])
 
     def test_near_and_far_workers_choose_different_zones(self) -> None:
         state = scale_observation()
@@ -123,6 +202,7 @@ class ExperimentalZonedAgentTests(unittest.TestCase):
         )
 
         self.assertEqual(actions[0], ["WEST"])
+
 
 
 if __name__ == "__main__":

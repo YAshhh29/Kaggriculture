@@ -7,7 +7,6 @@ import hashlib
 import json
 from collections import Counter
 from pathlib import Path
-from statistics import fmean
 from typing import Any
 
 
@@ -170,6 +169,12 @@ def _transition_record(
     before_tile = _tile_at(before_farm, before_position)
     after_tile = _tile_at(after_farm, after_position)
     changes = _board_changes(before_farm, after_farm)
+    worker_actions = _worker_actions(
+        action,
+        before_farm,
+        after_farm,
+    )
+    observed_changes = _observed_changes(before_farm, after_farm)
 
     cash = _cash_flow(
         before_snapshot,
@@ -189,6 +194,8 @@ def _transition_record(
         "farmer_action": farmer_action,
         "farmer_operation": operation,
         "hands_actions": action.get("hands", []),
+        "worker_actions": worker_actions,
+        "observed_changes": observed_changes,
         "market_orders": market_orders,
         "position_before": _list_position(before_position),
         "position_after": _list_position(after_position),
@@ -207,7 +214,102 @@ def _transition_record(
     }
 
 
-def _state_snapshot(observation: dict[str, Any], player: int) -> dict[str, Any]:
+def _worker_actions(
+    action: dict[str, Any],
+    before_farm: dict[str, Any],
+    after_farm: dict[str, Any],
+) -> list[dict[str, Any]]:
+    actions = [action.get("farmer", ["PASS"]), *action.get("hands", [])]
+    before_positions = [
+        before_farm.get("farmer"),
+        *before_farm.get("hands", []),
+    ]
+    after_positions = [
+        after_farm.get("farmer"),
+        *after_farm.get("hands", []),
+    ]
+    records = []
+    for index, worker_action in enumerate(actions):
+        normalized = (
+            worker_action
+            if isinstance(worker_action, list) and worker_action
+            else ["PASS"]
+        )
+        before_position = _position(
+            before_positions[index] if index < len(before_positions) else None
+        )
+        after_position = _position(
+            after_positions[index] if index < len(after_positions) else None
+        )
+        records.append(
+            {
+                "worker": "farmer" if index == 0 else f"hand_{index}",
+                "action": normalized,
+                "operation": str(normalized[0]),
+                "position_before": _list_position(before_position),
+                "position_after": _list_position(after_position),
+            }
+        )
+    return records
+
+
+def _observed_changes(
+    before_farm: dict[str, Any],
+    after_farm: dict[str, Any],
+) -> dict[str, Any]:
+    before_hands = len(before_farm.get("hands", []))
+    after_hands = len(after_farm.get("hands", []))
+    before_quadrants = set(before_farm.get("unlocked_quadrants", []))
+    after_quadrants = set(after_farm.get("unlocked_quadrants", []))
+    created_animals = []
+    created_structures = []
+    before_tiles = before_farm.get("tiles", [])
+    after_tiles = after_farm.get("tiles", [])
+    for y, after_row in enumerate(after_tiles):
+        for x, after_tile in enumerate(after_row):
+            before_tile = (
+                before_tiles[y][x]
+                if y < len(before_tiles) and x < len(before_tiles[y])
+                else None
+            )
+            if not isinstance(after_tile, dict):
+                continue
+            after_animal = after_tile.get("animal")
+            before_animal = (
+                before_tile.get("animal")
+                if isinstance(before_tile, dict)
+                else None
+            )
+            if after_animal and after_animal != before_animal:
+                created_animals.append(
+                    {"animal": str(after_animal), "tile": [x, y]}
+                )
+            after_kind = after_tile.get("kind")
+            before_kind = (
+                before_tile.get("kind")
+                if isinstance(before_tile, dict)
+                else before_tile
+            )
+            if (
+                after_kind in ("COOP", "PASTURE")
+                and after_kind != before_kind
+            ):
+                created_structures.append(
+                    {"structure": str(after_kind), "tile": [x, y]}
+                )
+    return {
+        "hands_added": max(0, after_hands - before_hands),
+        "hands_removed": max(0, before_hands - after_hands),
+        "unlocked_quadrants": sorted(after_quadrants - before_quadrants),
+        "created_animals": created_animals,
+        "created_structures": created_structures,
+    }
+
+
+def _state_snapshot(
+    observation: dict[str, Any],
+    player: int,
+) -> dict[str, Any]:
     farm = _farm(observation, player)
     private = observation.get("private", {})
     private = private if isinstance(private, dict) else {}
@@ -440,7 +542,7 @@ def _annotate_movement_destinations(records: list[dict[str, Any]]) -> None:
     for index, record in enumerate(records):
         if record["farmer_operation"] not in MOVE_ACTIONS:
             continue
-        for later in records[index + 1 :]:
+        for later in records[index + 1:]:
             if later["day"] != record["day"]:
                 break
             operation = later["farmer_operation"]

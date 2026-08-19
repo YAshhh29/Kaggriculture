@@ -23,7 +23,6 @@ from experimental_scale_agent import (
     _assign_animal_services,
     _assign_setup,
     _assign_urgent_feeding,
-    _hire_orders,
     _inventories,
     _land_orders,
     _protect_feed_reserve,
@@ -35,6 +34,14 @@ from main import decide as decide_wheat
 
 NEAR_CREW_SIZE = 5
 SHED_CENTER = (4, 4)
+
+
+def _zoned_hire_orders(
+    farm: dict[str, Any],
+    target_daily_hands: int,
+) -> list[list[str]]:
+    missing = max(0, target_daily_hands - len(farm.get("hands", [])))
+    return [["HIRE"] for _ in range(missing)]
 
 
 def _unlocked(position: tuple[int, int], farm: dict[str, Any]) -> bool:
@@ -130,14 +137,13 @@ def _assign_zoned_crops(
         group = next(
             (
                 tasks
-                for tasks in groups
+                for tasks in groups[:-1]
                 if any(target not in reserved for target, _ in tasks)
             ),
             [],
         )
         available = [task for task in group if task[0] not in reserved]
         if not available:
-            actions[worker] = ["PASS"]
             continue
         target, operation = min(
             available,
@@ -152,6 +158,62 @@ def _assign_zoned_crops(
         )
         reserved.add(target)
         actions[worker] = _act_at_or_move(position, target, operation)
+
+    available_seeds = int(private.get("seeds", {}).get("WHEAT", 0))
+    for zone in ("near", "far"):
+        workers = [
+            worker
+            for worker, action in enumerate(actions)
+            if action is None
+            and ("near" if worker < NEAR_CREW_SIZE else "far") == zone
+        ]
+        while len(workers) >= 2 and available_seeds > 0:
+            planter, waterer = workers[:2]
+            workers = workers[2:]
+            plants = _zoned_task_groups(
+                day,
+                farm,
+                private,
+                livestock_tiles,
+                zone,
+            )[-1]
+            candidates = [
+                task for task in plants if task[0] not in reserved
+            ]
+            if not candidates:
+                break
+            target, _ = min(
+                candidates,
+                key=lambda task: (
+                    _crop_priority(task[0], zone),
+                    max(
+                        _distance(positions[planter], task[0]),
+                        _distance(positions[waterer], task[0]),
+                    ),
+                    _distance(positions[planter], task[0])
+                    + _distance(positions[waterer], task[0]),
+                ),
+            )
+            reserved.add(target)
+            if positions[planter] == target and positions[waterer] == target:
+                actions[planter] = ["PLANT", "WHEAT"]
+                actions[waterer] = ["WATER"]
+                available_seeds -= 1
+                continue
+            actions[planter] = (
+                ["PASS"]
+                if positions[planter] == target
+                else _act_at_or_move(positions[planter], target, ["PASS"])
+            )
+            actions[waterer] = (
+                ["PASS"]
+                if positions[waterer] == target
+                else _act_at_or_move(positions[waterer], target, ["PASS"])
+            )
+
+    for worker, action in enumerate(actions):
+        if action is None:
+            actions[worker] = ["PASS"]
 
 
 def _zoned_worker_actions(
@@ -207,6 +269,8 @@ def _zoned_worker_actions(
 
 def decide(
     observation: dict[str, Any],
+    target_wheat_tiles: int = TARGET_WHEAT_TILES,
+    target_daily_hands: int = TARGET_DAILY_HANDS,
     target_extra_land: int = 0,
     target_cows: int = TARGET_COWS,
     target_sheep: int = TARGET_SHEEP,
@@ -221,7 +285,7 @@ def decide(
     active_plans = _unlocked_animal_plans(desired_plans, farm)
     baseline = decide_wheat(
         observation,
-        target_wheat_tiles=TARGET_WHEAT_TILES,
+        target_wheat_tiles=target_wheat_tiles,
         last_planting_day=LAST_WHEAT_PLANTING_DAY,
     )
     baseline_market = _protect_feed_reserve(
@@ -249,7 +313,7 @@ def decide(
         sales,
         urgent,
         _land_orders(day, hour, farm, target_extra_land),
-        _hire_orders(day, hour, farm, TARGET_DAILY_HANDS, False),
+        _zoned_hire_orders(farm, target_daily_hands),
         baseline_market,
     )
     return {
