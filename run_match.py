@@ -15,6 +15,12 @@ PROJECT_ROOT = Path(__file__).resolve().parent
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
+        "--agent",
+        type=Path,
+        default=PROJECT_ROOT / "main.py",
+        help="agent file to run (default: main.py)",
+    )
+    parser.add_argument(
         "--opponent",
         choices=("pass", "random", "starter"),
         default="pass",
@@ -58,6 +64,9 @@ def load_make() -> Any:
 
 def main() -> None:
     args = parse_args()
+    agent_path = args.agent.resolve()
+    if not agent_path.is_file():
+        raise SystemExit(f"Agent file does not exist: {agent_path}")
     make = load_make()
     configuration = {"episodeSteps": args.steps, "seed": args.seed}
     environment = make(
@@ -65,7 +74,7 @@ def main() -> None:
         configuration=configuration,
         debug=True,
     )
-    environment.run([str(PROJECT_ROOT / "main.py"), args.opponent])
+    environment.run([str(agent_path), args.opponent])
 
     final_states = environment.steps[-1]
     failed = False
