@@ -821,6 +821,8 @@
     "ne_expansion": {
       "agent": "experimental_zoned_expansion_agent.py",
       "agent_sha256": "b0cb1a2748ed8aaff29c7f10d0a9d7cdf7a2fec76f59cf278cac684f01bc1ac4",
+      "package": "submission-zoned-expansion/main.py",
+      "package_sha256": "3414e23178a61b162fbbc1910b215aac3bee973d8f259216b81fa101fe788283",
       "capital_policy": "one NE quadrant, ten hands, sixteen wheat, six cows, eight sheep",
       "development": {
         "games": 20,
@@ -837,7 +839,13 @@
       "direct_vs_investment": {"wins": 18, "losses": 2, "mean_coins": 49506.4, "opponent_mean": 38135.55},
       "rank_one_script": {"wins": 0, "losses": 2, "mean_coins": 67444.5, "script_mean": 117806},
       "market_risk": "seed 38 had no milk or wool demand; late milk fell to 3 and wool to 5 despite zero mechanical losses",
-      "captioned_replay": "http://127.0.0.1:8765/captioned_replay.html?replay=artifacts%2Fv1327-zoned-expansion-vs-starter-seed30-720.html&audit=artifacts%2Fv1327-zoned-expansion-vs-starter-seed30-720-audit.json"
+      "captioned_replay": "http://127.0.0.1:8765/captioned_replay.html?replay=artifacts%2Fv1327-zoned-expansion-vs-starter-seed30-720.html&audit=artifacts%2Fv1327-zoned-expansion-vs-starter-seed30-720-audit.json",
+      "live_submission": {
+        "submission_id": 55630744,
+        "status": "Complete",
+        "initial_score": 600.0,
+        "submitted_at": "2026-08-19T19:40:51.503Z"
+      }
     },
     "rejections": {
       "same_eight_animals": {"seed_30_mean": 52204, "weeds_per_game": "38-39"},
@@ -849,7 +857,7 @@
       "local_current_tile_harvest": {"seed_30_mean": 67430},
       "reserve_row_zero": {"seed_30_mean": 65874}
     },
-    "decision": "keep no-land as safer research control and NE as higher-upside research variant; keep both unsubmitted; reject unconditional all-land expansion; next test demand-aware product and crop allocation"
+    "decision": "keep no-land as safer research control; NE was submitted at explicit user request as submission 55630744; reject unconditional all-land expansion; next discussion is demand-aware product, crop, labor, and routing allocation before implementation"
   },
   "leaderboard_replay_scouting": {
     "checked_at": "2026-08-19",

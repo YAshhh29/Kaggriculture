@@ -431,10 +431,28 @@ delta underneath the official visualizer:
 
 `http://127.0.0.1:8765/captioned_replay.html?replay=artifacts%2Fv1327-zoned-expansion-vs-starter-seed30-720.html&audit=artifacts%2Fv1327-zoned-expansion-vs-starter-seed30-720-audit.json`.
 
-Decision: keep both zoned policies separate and unsubmitted. No-land has the
-safer floor; NE has the stronger mean and direct-match record. The next justified
-experiment is demand-aware product/crop allocation, not another unconditional
-land purchase.
+At the user's explicit request, the exact NE policy was packaged as
+`submission-zoned-expansion/main.py`. The package produced zero action
+mismatches against the source across all 719 seed-30 transitions and both
+finished at 87,623. Kaggle's real file loader completed 720-step self-play with
+both agents `DONE`.
+
+Live submission record:
+
+- submission ID: `55630744`;
+- status after validation: `Complete`;
+- initial Kaggle Score: `600.0`;
+- uploaded SHA-256:
+  `3414e23178a61b162fbbc1910b215aac3bee973d8f259216b81fa101fe788283`;
+- upload description: `Zoned NE expansion: 10 daily hands, 16 wheat, 6 cows,
+  8 sheep; paired PLANT+WATER, staged same-day hiring, zero first-water misses
+  and animal losses`; and
+- daily submissions remaining before upload: 3.
+
+The no-land policy remains the safer research control. The submitted NE policy
+has the stronger mean and direct-match record but the weaker standalone floor.
+The next justified discussion is demand-aware product/crop allocation and
+worker routing, not another unconditional land purchase.
 
 ### One-Goose Candidate: Promotion Evidence
 

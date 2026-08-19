@@ -334,6 +334,13 @@ All 64 plant actions were watered in the same turn. Row 0 had five harvested
 crop cycles and three later-lifecycle failures; measured harvest-priority and
 row-reservation alternatives reduced profit and were rejected.
 
+At the user's explicit request, the exact validated policy was submitted as
+Kaggle submission `55630744`. Its standalone package is
+`submission-zoned-expansion/main.py`, SHA-256
+`3414e23178a61b162fbbc1910b215aac3bee973d8f259216b81fa101fe788283`.
+Kaggle completed validation at an initial Score of 600.0. This is an early Score
+snapshot, not a stable ranking guarantee.
+
 ## Historical Baseline Results
 
 The six-plot policy with a day-24 planting cutoff was measured on simulator
