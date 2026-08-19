@@ -671,14 +671,14 @@
     "live_submission": {
       "status": "Complete",
       "description": "Frozen scale candidate: 8 daily hands, 16 wheat, 4 cows, 4 sheep, staged expansion, daily feed and CARE, zero-loss holdout",
-      "score_observations": [600.0, 567.0, 539.3],
+      "score_observations": [600.0, 567.0, 539.3, 537.4],
       "score_note": "Kaggle Score is aggregated from episode performance and changes as episodes accumulate",
       "local_replay": "artifacts/v1327-scale-submission-vs-starter-seed70-720.html"
     },
     "decision": "submitted and retained as the safer live control"
   },
   "pressure_aware_investment_candidate": {
-    "status": "submitted; Pending",
+    "status": "submitted; Complete",
     "agent": "experimental_investment_agent.py",
     "candidate_sha256": "d93dd956bfb6951cc9c958bc93caf090dcb77c1b6f897e52ab4707699fe0beac",
     "package": {
@@ -745,7 +745,8 @@
     },
     "key_learning": "full investment is profitable alone but can collapse under shared product gluts; pressure-aware scaling converted three catastrophic scale-agent loss seeds into wins and prevents blindly paying feed above depressed animal-product prices",
     "live_submission": {
-      "status": "Pending",
+      "status": "Complete",
+      "score_observations": [491.3],
       "description": "Pressure-aware investment: up to 10 hands, 12 wheat, all land, 6 cows, 12 sheep, daily feed and CARE; 88k peak, holdout validated",
       "daily_submissions_remaining_before_upload": 4
     }

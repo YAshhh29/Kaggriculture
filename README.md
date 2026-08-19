@@ -305,8 +305,8 @@ Kaggle's file loader completed full self-play with both statuses `DONE`.
 Source and package each score 55,138 against `starter` on seed 70, confirming
 packaging equivalence. This package is now live on Kaggle as the safer control.
 
-A second pressure-aware investment package is also submitted and currently
-Pending. It uses up to ten hands, twelve wheat, all land, six cows, and twelve
+A second pressure-aware investment package is also submitted and currently has
+a live Score of 491.3. It uses up to ten hands, twelve wheat, all land, six cows, and twelve
 sheep when opponent market pressure permits; it scales down when the opponent
 already operates many animals. Its untouched seed-80-89 mean is 56,501.8 with
 an 88,136 maximum, and it wins 16/20 direct games against the scale control.

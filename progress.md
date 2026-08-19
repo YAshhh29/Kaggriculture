@@ -325,10 +325,10 @@ The investment package was validated through Kaggle's real loader:
 - self-play: both `DONE`, 48,433 versus 48,085 on seed 80; and
 - packaged/source equivalence: 44,147 versus `starter` on seed 80.
 
-It was submitted with four daily submissions remaining and is currently
-Pending. The frozen scale agent remains the safer live control. No further
-submission should be selected from this run until both new Scores have enough
-episodes to stabilize.
+It was submitted with four daily submissions remaining and completed at a live
+Score of 491.3. The frozen scale agent currently scores 537.4 and remains the
+safer live control. No further submission should be selected from this run until
+both new Scores have enough episodes to stabilize.
 
 ### One-Goose Candidate: Promotion Evidence
 
