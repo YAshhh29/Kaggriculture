@@ -145,10 +145,11 @@ def _coordinated_crop_actions(
 def _hire_orders(
     hour: int,
     farm: dict[str, Any],
+    target_daily_hands: int = TARGET_DAILY_HANDS,
 ) -> list[list[str]]:
     if hour != 0:
         return []
-    missing = max(0, TARGET_DAILY_HANDS - len(farm.get("hands", [])))
+    missing = max(0, target_daily_hands - len(farm.get("hands", [])))
     return [["HIRE"] for _ in range(missing)]
 
 

@@ -257,6 +257,7 @@ def _livestock_market_orders(
 def decide(
     observation: dict[str, Any],
     target_wheat_tiles: int = TARGET_WHEAT_TILES,
+    target_daily_hands: int = 2,
 ) -> dict[str, Any]:
     """Run one goose, one cow, two daily hands, and a wheat workload."""
     player = int(observation["player"])
@@ -284,7 +285,7 @@ def decide(
     )
 
     market = [
-        *_hire_orders(hour, farm),
+        *_hire_orders(hour, farm, target_daily_hands),
         *_livestock_market_orders(day, farm, private),
         *baseline["market"],
     ]

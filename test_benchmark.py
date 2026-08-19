@@ -4,10 +4,12 @@ import unittest
 from pathlib import Path
 
 from benchmark import (
+    analyze_livestock,
     analyze_route,
     classify_result,
     count_actions,
     inventory_snapshot,
+    load_agent_callable,
     load_parameterized_agent,
     summarize,
     write_report,
@@ -16,6 +18,71 @@ from test_main import observation
 
 
 class BenchmarkTests(unittest.TestCase):
+    def test_tracks_animal_placements_losses_and_maximum_active(self) -> None:
+        empty = [[{"kind": "PASTURE"}, {"kind": "PASTURE"}]]
+        one_cow = [[
+            {"kind": "PASTURE", "animal": "COW"},
+            {"kind": "PASTURE"},
+        ]]
+        cow_and_sheep = [[
+            {"kind": "PASTURE", "animal": "COW"},
+            {"kind": "PASTURE", "animal": "SHEEP"},
+        ]]
+        escaped_cow = [[
+            {"kind": "PASTURE"},
+            {"kind": "PASTURE", "animal": "SHEEP"},
+        ]]
+        steps = [
+            [self._state(0, 0, 0, (0, 0), empty, ["PASS"])],
+            [self._state(1, 0, 1, (0, 0), one_cow, ["PLACE", "COW"])],
+            [
+                self._state(
+                    2,
+                    0,
+                    2,
+                    (1, 0),
+                    cow_and_sheep,
+                    ["PLACE", "SHEEP"],
+                )
+            ],
+            [self._state(24, 1, 0, (0, 0), escaped_cow, ["PASS"])],
+        ]
+
+        self.assertEqual(
+            analyze_livestock(steps, 0),
+            {
+                "placements": {"COW": 1, "SHEEP": 1},
+                "losses": {"COW": 1},
+                "maximum_active": {"COW": 1, "SHEEP": 1},
+                "final_active": {"SHEEP": 1},
+                "placement_events": [
+                    {
+                        "step": 1,
+                        "day": 0,
+                        "hour": 1,
+                        "animal": "COW",
+                        "tile": [0, 0],
+                    },
+                    {
+                        "step": 2,
+                        "day": 0,
+                        "hour": 2,
+                        "animal": "SHEEP",
+                        "tile": [1, 0],
+                    },
+                ],
+                "loss_events": [
+                    {
+                        "step": 24,
+                        "day": 1,
+                        "hour": 0,
+                        "animal": "COW",
+                        "tile": [0, 0],
+                    }
+                ],
+            },
+        )
+
     def test_analyzes_route_crop_cycle_and_sale_delay(self) -> None:
         empty_tiles = [[None for _ in range(5)] for _ in range(5)]
         planted_tiles = [[None for _ in range(5)] for _ in range(5)]
@@ -161,6 +228,13 @@ class BenchmarkTests(unittest.TestCase):
         decision = experiment_agent(observation())
 
         self.assertEqual(decision["market"], [["BUY_SEED", "WHEAT", 8]])
+
+    def test_loads_a_file_opponent_callable(self) -> None:
+        opponent_path = Path(__file__).with_name("leader_replay_agent.py")
+
+        opponent = load_agent_callable(opponent_path)
+
+        self.assertTrue(callable(opponent))
 
     def test_classifies_results_and_invalid_games(self) -> None:
         self.assertEqual(classify_result(10, 9, "DONE", "DONE"), "win")

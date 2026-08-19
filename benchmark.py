@@ -266,6 +266,88 @@ def analyze_route(
     }
 
 
+def analyze_livestock(
+    replay_steps: list[list[dict[str, Any]]],
+    agent_player: int,
+) -> dict[str, Any]:
+    placements: Counter[str] = Counter()
+    losses: Counter[str] = Counter()
+    maximum_active: Counter[str] = Counter()
+    placement_events: list[dict[str, Any]] = []
+    loss_events: list[dict[str, Any]] = []
+    final_active: Counter[str] = Counter()
+
+    for replay_index, states in enumerate(replay_steps):
+        observation = states[agent_player].get("observation", {})
+        farm = _observed_farm(observation, agent_player)
+        active: Counter[str] = Counter()
+        for row in farm.get("tiles", []):
+            for tile in row:
+                if isinstance(tile, dict) and tile.get("animal"):
+                    active[str(tile["animal"])] += 1
+        for animal, quantity in active.items():
+            maximum_active[animal] = max(maximum_active[animal], quantity)
+        final_active = active
+
+        if replay_index == 0:
+            continue
+        previous_observation = replay_steps[replay_index - 1][agent_player].get(
+            "observation", {}
+        )
+        previous_farm = _observed_farm(previous_observation, agent_player)
+        previous_tiles = previous_farm.get("tiles", [])
+        current_tiles = farm.get("tiles", [])
+        for y, row in enumerate(current_tiles):
+            for x, tile in enumerate(row):
+                previous_tile = (
+                    previous_tiles[y][x]
+                    if y < len(previous_tiles) and x < len(previous_tiles[y])
+                    else None
+                )
+                previous_animal = (
+                    str(previous_tile.get("animal"))
+                    if isinstance(previous_tile, dict)
+                    and previous_tile.get("animal")
+                    else None
+                )
+                current_animal = (
+                    str(tile.get("animal"))
+                    if isinstance(tile, dict) and tile.get("animal")
+                    else None
+                )
+                if current_animal and current_animal != previous_animal:
+                    placements[current_animal] += 1
+                    placement_events.append(
+                        {
+                            "step": int(observation.get("step", replay_index)),
+                            "day": int(observation.get("day", 0)),
+                            "hour": int(observation.get("hour", 0)),
+                            "animal": current_animal,
+                            "tile": [x, y],
+                        }
+                    )
+                if previous_animal and current_animal != previous_animal:
+                    losses[previous_animal] += 1
+                    loss_events.append(
+                        {
+                            "step": int(observation.get("step", replay_index)),
+                            "day": int(observation.get("day", 0)),
+                            "hour": int(observation.get("hour", 0)),
+                            "animal": previous_animal,
+                            "tile": [x, y],
+                        }
+                    )
+
+    return {
+        "placements": dict(sorted(placements.items())),
+        "losses": dict(sorted(losses.items())),
+        "maximum_active": dict(sorted(maximum_active.items())),
+        "final_active": dict(sorted(final_active.items())),
+        "placement_events": placement_events,
+        "loss_events": loss_events,
+    }
+
+
 def _observed_farm(
     observation: dict[str, Any],
     agent_player: int,
@@ -525,6 +607,7 @@ def summarize(records: list[dict[str, Any]]) -> dict[str, Any]:
         "score_rate": _rate(wins + 0.5 * ties, len(completed)),
         "agent_actions": _sum_action_counts(records),
         "route_analysis": _sum_route_analysis(records),
+        "livestock_analysis": _sum_livestock_analysis(records),
         "final_inventory_totals": _sum_final_inventory(records),
         "by_player": {
             str(player): _result_counts(
@@ -745,9 +828,53 @@ def run_game(
             agent_player,
             int(replay.get("configuration", {}).get("turnsPerDay", 24)),
         ),
+        "livestock_analysis": analyze_livestock(
+            replay["steps"],
+            agent_player,
+        ),
         "final_inventory": inventory_snapshot(
             agent_state.get("observation", {})
         ),
+    }
+
+
+def _sum_livestock_analysis(records: list[dict[str, Any]]) -> dict[str, Any]:
+    placements: Counter[str] = Counter()
+    losses: Counter[str] = Counter()
+    maximum_active: Counter[str] = Counter()
+    pre_endgame_losses: Counter[str] = Counter()
+    for record in records:
+        analysis = record.get("livestock_analysis", {})
+        placements.update(analysis.get("placements", {}))
+        losses.update(analysis.get("losses", {}))
+        pre_endgame_losses.update(
+            event["animal"]
+            for event in analysis.get("loss_events", [])
+            if int(event.get("day", 0)) < 29
+        )
+        for animal, quantity in analysis.get("maximum_active", {}).items():
+            maximum_active[animal] = max(maximum_active[animal], quantity)
+    return {
+        "placements": dict(sorted(placements.items())),
+        "losses": dict(sorted(losses.items())),
+        "pre_endgame_losses": dict(sorted(pre_endgame_losses.items())),
+        "maximum_active": dict(sorted(maximum_active.items())),
+        "final_active": {
+            animal: sum(
+                int(record.get("livestock_analysis", {})
+                    .get("final_active", {})
+                    .get(animal, 0))
+                for record in records
+            )
+            for animal in sorted(
+                {
+                    animal
+                    for record in records
+                    for animal in record.get("livestock_analysis", {})
+                    .get("final_active", {})
+                }
+            )
+        },
     }
 
 
@@ -761,9 +888,8 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--opponent",
-        choices=("pass", "random", "starter"),
         default="starter",
-        help="built-in opponent (default: starter)",
+        help="built-in opponent or agent file (default: starter)",
     )
     parser.add_argument("--seed-start", type=int, default=0)
     parser.add_argument("--seed-count", type=int, default=10)
@@ -772,6 +898,29 @@ def parse_args() -> argparse.Namespace:
         "--target-wheat-tiles",
         type=int,
         help="locally evaluate this wheat target through agent.decide",
+    )
+    parser.add_argument(
+        "--target-daily-hands",
+        type=int,
+        help="locally evaluate this daily hand target through agent.decide",
+    )
+    parser.add_argument(
+        "--care-enabled",
+        action="store_true",
+        help="locally evaluate animal CARE through agent.decide",
+    )
+    parser.add_argument("--target-cows", type=int)
+    parser.add_argument("--target-sheep", type=int)
+    parser.add_argument(
+        "--feed-daily",
+        action="store_true",
+        help="locally feed active animals every service day",
+    )
+    parser.add_argument("--target-extra-land", type=int)
+    parser.add_argument(
+        "--adaptive-hands",
+        action="store_true",
+        help="use the replay-grounded daily workforce schedule",
     )
     parser.add_argument(
         "--last-planting-day",
@@ -831,6 +980,20 @@ def load_parameterized_agent(
         return decision_function(observation, **parameters)
 
     return parameterized_agent
+
+
+def load_agent_callable(agent_path: Path) -> AgentInput:
+    agent_digest = hashlib.sha256(agent_path.read_bytes()).hexdigest()
+    module_name = f"benchmark_opponent_{agent_digest}"
+    spec = importlib.util.spec_from_file_location(module_name, agent_path)
+    if spec is None or spec.loader is None:
+        raise SystemExit(f"Could not load opponent module: {agent_path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    opponent_agent = getattr(module, "agent", None)
+    if not callable(opponent_agent):
+        raise SystemExit(f"Opponent file does not define agent(): {agent_path}")
+    return opponent_agent
 
 
 def default_output_path(args: argparse.Namespace) -> Path:
@@ -907,6 +1070,16 @@ def main() -> None:
         raise SystemExit("--steps must be at least 1")
     if args.target_wheat_tiles is not None and args.target_wheat_tiles < 1:
         raise SystemExit("--target-wheat-tiles must be at least 1")
+    if args.target_daily_hands is not None and args.target_daily_hands < 0:
+        raise SystemExit("--target-daily-hands cannot be negative")
+    if args.target_cows is not None and args.target_cows < 0:
+        raise SystemExit("--target-cows cannot be negative")
+    if args.target_sheep is not None and args.target_sheep < 0:
+        raise SystemExit("--target-sheep cannot be negative")
+    if args.target_extra_land is not None and not (
+        0 <= args.target_extra_land <= 3
+    ):
+        raise SystemExit("--target-extra-land must be between 0 and 3")
     if args.last_planting_day is not None and args.last_planting_day < 0:
         raise SystemExit("--last-planting-day cannot be negative")
     if (
@@ -929,9 +1102,30 @@ def main() -> None:
 
     make, simulator_version = load_simulator()
     agent_input: AgentInput = str(agent_path)
+    opponent_input = args.opponent
+    opponent_path = Path(args.opponent)
+    if args.opponent not in ("pass", "random", "starter"):
+        opponent_path = opponent_path.resolve()
+        if not opponent_path.is_file():
+            raise SystemExit(f"Opponent file does not exist: {opponent_path}")
+        opponent_input = load_agent_callable(opponent_path)
     parameters: dict[str, Any] = {}
     if args.target_wheat_tiles is not None:
         parameters["target_wheat_tiles"] = args.target_wheat_tiles
+    if args.target_daily_hands is not None:
+        parameters["target_daily_hands"] = args.target_daily_hands
+    if args.care_enabled:
+        parameters["care_enabled"] = True
+    if args.target_cows is not None:
+        parameters["target_cows"] = args.target_cows
+    if args.target_sheep is not None:
+        parameters["target_sheep"] = args.target_sheep
+    if args.feed_daily:
+        parameters["feed_daily"] = True
+    if args.target_extra_land is not None:
+        parameters["target_extra_land"] = args.target_extra_land
+    if args.adaptive_hands:
+        parameters["adaptive_hands"] = True
     if args.last_planting_day is not None:
         parameters["last_planting_day"] = args.last_planting_day
     if args.harvest_watered_current_first:
@@ -968,7 +1162,7 @@ def main() -> None:
             record = run_game(
                 make,
                 agent_input,
-                args.opponent,
+                opponent_input,
                 args.steps,
                 seed,
                 agent_player,

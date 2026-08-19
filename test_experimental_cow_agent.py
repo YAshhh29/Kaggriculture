@@ -6,6 +6,7 @@ from experimental_cow_agent import (
     LIVESTOCK_TILES,
     _collection_action,
     agent,
+    decide,
 )
 from experimental_hands_agent import _task_groups
 from test_experimental_goose_agent import goose_tile
@@ -71,6 +72,17 @@ class ExperimentalCowAgentTests(unittest.TestCase):
         self.assertIn(["BUY_ANIMAL", "COW", 1], decision["market"])
         self.assertIn(["BUY_SEED", "WHEAT", 12], decision["market"])
         self.assertLessEqual(len(decision["market"]), 10)
+
+    def test_can_evaluate_five_daily_hands_without_changing_default(self) -> None:
+        state = livestock_observation()
+        state["farms"][0]["hands"] = []
+        state["private"]["inventories"] = [{}]
+
+        default = agent(state)
+        scaled = decide(state, target_daily_hands=5)
+
+        self.assertEqual(default["market"].count(["HIRE"]), 2)
+        self.assertEqual(scaled["market"].count(["HIRE"]), 5)
 
     def test_crop_scheduler_never_targets_livestock_tiles(self) -> None:
         state = livestock_observation()

@@ -1,0 +1,14 @@
+{
+  "created_at": "2026-08-19T12:25:34.716082+00:00",
+  "competition": "kaggriculture",
+  "agent": "main.py",
+  "sha256": "a478741d32205b1ec772aced6879796c718249b695b0a8b5d85bb65ad893dac2",
+  "candidate_source_sha256": "acfc19dd312dcd281428e62ff8d4c2919150b1aed0776d093e14470a0380cfb5",
+  "source_files": [
+    "../main.py",
+    "../experimental_goose_agent.py",
+    "../experimental_hands_agent.py",
+    "../experimental_scale_agent.py"
+  ],
+  "policy": "eight daily hands, sixteen wheat, four cows, four sheep, daily feed, CARE, staged expansion, no land"
+}
