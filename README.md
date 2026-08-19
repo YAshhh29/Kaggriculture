@@ -22,9 +22,12 @@ competition. A deterministic policy with good scheduling, accounting, and
 market logic is the best place to learn the environment. We can consider
 search or learning methods only after we have a measured baseline.
 
-The leaderboard rating depends on wins and losses, not the margin of victory.
-That makes reliability across many opponents more valuable than one unusually
-profitable game.
+Kaggle labels the displayed submission metric `Score`. It is distinct from
+in-game coins: episode performances are aggregated into this competition Score,
+so it changes as more episodes are played. The frozen scale submission started
+at 600.0 and later moved to 567.0 and 539.3 while its local seed-70 farm score
+remained 55,138 coins. Reliability across many opponents therefore matters more
+than one unusually profitable game against `starter`.
 
 ## Current Status
 
@@ -300,7 +303,13 @@ The packaged SHA-256 is
 `a478741d32205b1ec772aced6879796c718249b695b0a8b5d85bb65ad893dac2`.
 Kaggle's file loader completed full self-play with both statuses `DONE`.
 Source and package each score 55,138 against `starter` on seed 70, confirming
-packaging equivalence. Upload remains an explicit user decision.
+packaging equivalence. This package is now live on Kaggle as the safer control.
+
+A second pressure-aware investment package is also submitted and currently
+Pending. It uses up to ten hands, twelve wheat, all land, six cows, and twelve
+sheep when opponent market pressure permits; it scales down when the opponent
+already operates many animals. Its untouched seed-80-89 mean is 56,501.8 with
+an 88,136 maximum, and it wins 16/20 direct games against the scale control.
 
 ## Historical Baseline Results
 

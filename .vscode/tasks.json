@@ -231,6 +231,70 @@
 			"isBackground": false,
 			"problemMatcher": [],
 			"group": "test"
+		},
+		{
+			"label": "Run investment development suite",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_investment_agent.py --opponent starter --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-investment-development-seeds30-39.json",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Run investment versus frozen scale",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_investment_agent.py --opponent experimental_scale_agent.py --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-investment-vs-frozen-scale-seeds30-39.json",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Run stable investment development",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_investment_agent.py --opponent starter --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-investment-stable-development-seeds30-39.json",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Run stable investment versus scale",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_investment_agent.py --opponent experimental_scale_agent.py --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-investment-stable-vs-scale-seeds30-39.json",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Run pressure investment versus scale",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_investment_agent.py --opponent experimental_scale_agent.py --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-investment-pressure-vs-scale-seeds30-39.json",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Run pressure investment standalone",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_investment_agent.py --opponent starter --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-investment-pressure-development-seeds30-39.json",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Run frozen investment holdout",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_investment_agent.py --opponent starter --seed-start 80 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-investment-frozen-holdout-seeds80-89.json",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Run investment versus leader script",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_investment_agent.py --opponent leader_replay_agent.py --seed-start 1507302619 --seed-count 1 --steps 720 --output artifacts\\benchmarks\\v1327-investment-vs-leader-script-both-positions.json",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
 		}
 	]
 }

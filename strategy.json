@@ -668,7 +668,87 @@
       "all_cow_mix": "8 cows scored 45,144",
       "fixed_10_or_12_hands": "33,050; overpaid or truncated hiring"
     },
-    "decision": "recommended replacement candidate for the weaker active live slot, pending explicit user approval; retain the other live submission as control"
+    "live_submission": {
+      "status": "Complete",
+      "description": "Frozen scale candidate: 8 daily hands, 16 wheat, 4 cows, 4 sheep, staged expansion, daily feed and CARE, zero-loss holdout",
+      "score_observations": [600.0, 567.0, 539.3],
+      "score_note": "Kaggle Score is aggregated from episode performance and changes as episodes accumulate",
+      "local_replay": "artifacts/v1327-scale-submission-vs-starter-seed70-720.html"
+    },
+    "decision": "submitted and retained as the safer live control"
+  },
+  "pressure_aware_investment_candidate": {
+    "status": "submitted; Pending",
+    "agent": "experimental_investment_agent.py",
+    "candidate_sha256": "d93dd956bfb6951cc9c958bc93caf090dcb77c1b6f897e52ab4707699fe0beac",
+    "package": {
+      "file": "submission-investment/main.py",
+      "sha256": "305db546dbef37b266833df3853633989ec7e9ea1d03255e9077cb258abe3287",
+      "kaggle_self_play_statuses": ["DONE", "DONE"],
+      "self_play_rewards_seed_80": [48433, 48085],
+      "starter_reward_seed_80": 44147,
+      "source_and_package_behavior_match": true
+    },
+    "policy": {
+      "maximum_daily_hands": 10,
+      "wheat_target": 12,
+      "maximum_cows": 6,
+      "maximum_sheep": 12,
+      "maximum_extra_land": 3,
+      "feed_daily": true,
+      "care": true,
+      "pressure_aware": true,
+      "pressure_rule": "target total market animals around 18; reduce our livestock, land, and labor targets when the opponent already operates animals",
+      "market_priority": [
+        "sell realized products",
+        "secure feed",
+        "buy justified land",
+        "buy staged animals",
+        "hire labor",
+        "buy seeds"
+      ]
+    },
+    "standalone_development": {
+      "seeds": "30-39",
+      "positions": [0, 1],
+      "wins": 20,
+      "mean_coins": 63566.25,
+      "minimum_coins": 39540,
+      "maximum_coins": 88517,
+      "animal_losses": 0,
+      "report": "artifacts/benchmarks/v1327-investment-pressure-development-seeds30-39.json"
+    },
+    "untouched_holdout": {
+      "seeds": "80-89",
+      "positions": [0, 1],
+      "wins": 20,
+      "mean_coins": 56501.8,
+      "minimum_coins": 42577,
+      "maximum_coins": 88136,
+      "report": "artifacts/benchmarks/v1327-investment-frozen-holdout-seeds80-89.json"
+    },
+    "opponent_facing": {
+      "frozen_scale": {
+        "wins": 16,
+        "losses": 4,
+        "mean_coins": 49273.8,
+        "opponent_mean_coins": 45003.85,
+        "report": "artifacts/benchmarks/v1327-investment-pressure-vs-scale-seeds30-39.json"
+      },
+      "rank_one_replay_script": {
+        "wins": 0,
+        "losses": 2,
+        "candidate_coins": 34243,
+        "script_coins": 66697,
+        "report": "artifacts/benchmarks/v1327-investment-vs-leader-script-both-positions.json"
+      }
+    },
+    "key_learning": "full investment is profitable alone but can collapse under shared product gluts; pressure-aware scaling converted three catastrophic scale-agent loss seeds into wins and prevents blindly paying feed above depressed animal-product prices",
+    "live_submission": {
+      "status": "Pending",
+      "description": "Pressure-aware investment: up to 10 hands, 12 wheat, all land, 6 cows, 12 sheep, daily feed and CARE; 88k peak, holdout validated",
+      "daily_submissions_remaining_before_upload": 4
+    }
   },
   "leaderboard_replay_scouting": {
     "checked_at": "2026-08-19",
@@ -760,6 +840,7 @@
     "do not treat starter profit as proof of ladder strength",
     "do not reuse seeds 60-69 as a fresh holdout",
     "do not reuse seeds 70-79 as a fresh holdout",
+    "do not reuse seeds 80-89 as a fresh holdout",
     "do not submit a third Kaggle bot without explicit approval",
     "do not submit without loading main.py by file",
     "do not move agent above another callable in main.py",

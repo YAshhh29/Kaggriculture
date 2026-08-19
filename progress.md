@@ -262,6 +262,74 @@ Do not describe this candidate as a leaderboard winner; describe it as a
 zero-loss, holdout-validated step from 10k-17k local economies into the 57k
 range, with a measured 71k deficit against the rank-one script.
 
+### Live Scale And Pressure-Aware Investment Submissions
+
+Kaggle labels the submission column `Score`. We should use that exact term.
+It is not the farm's terminal coin total: the rules state that submissions are
+scored from episode performance and those episode performances are aggregated
+for leaderboard position. This explains why a 55,138-coin local episode and a
+Kaggle Score near 600 can both describe the same agent.
+
+The frozen scale package was uploaded with SHA-256
+`a478741d32205b1ec772aced6879796c718249b695b0a8b5d85bb65ad893dac2`.
+It completed at an initial Score of 600.0, then moved to 567.0 and 539.3 as more
+competitive episodes were aggregated. Both older agents remained much lower:
+the goose at 321.6 and v9 at 299.8. This is live evidence that the scale agent
+is substantially stronger, while also showing why an initial Score is not
+stable after only a few episodes.
+
+The exact uploaded package was replayed locally on seed 70 and is available at:
+
+- `artifacts/v1327-scale-submission-vs-starter-seed70-720.html`; and
+- `artifacts/v1327-scale-submission-vs-starter-seed70-720-replay.json`.
+
+It scored 55,138 versus 3,625, placed four cows and four sheep with zero losses,
+and ended with no sellable shed or carried inventory.
+
+We then implemented the requested investment strategy as a separate policy. It
+clusters 6 cows and 12 sheep around central routes, buys all three quadrants,
+uses adaptive labor up to ten hands, feeds and cares daily, and prioritizes
+sales, feed, land, animals, labor, then seeds. Its first full gate reached
+85,611 mean coins with all land, all 18 animals, and zero losses.
+
+The raw 12-hand/24-wheat version averaged only 58,647 and lost 12 of 20 paired
+games to the scale control. Lowering it to ten hands and twelve wheat improved
+standalone development to 63,566.25. Direct shared-market tests then exposed a
+catastrophic over-investment case: animal products fell toward the price floor
+while wheat feed rose above 50 coins. A pressure-aware target now observes the
+opponent's active animal count and reduces our own livestock, land, and labor
+targets instead of blindly creating a shared glut.
+
+Frozen pressure-aware source SHA-256:
+`d93dd956bfb6951cc9c958bc93caf090dcb77c1b6f897e52ab4707699fe0beac`.
+
+Untouched seeds 80-89, both positions:
+
+| Metric | Pressure-aware investment |
+| --- | ---: |
+| Wins | 20 / 20 |
+| Mean coins | 56,501.8 |
+| Minimum / maximum | 42,577 / 88,136 |
+| Animal losses | 0 |
+
+It won 16 of 20 direct development games against the frozen scale policy and
+lost 4, so it is deliberately the aggressive complement, not a universal
+replacement. Against the captured rank-one script it lost 34,243 to 66,697,
+cutting the earlier scale candidate's scripted deficit from 71,330 to 32,454.
+
+The investment package was validated through Kaggle's real loader:
+
+- package: `submission-investment/main.py`;
+- package SHA-256:
+  `305db546dbef37b266833df3853633989ec7e9ea1d03255e9077cb258abe3287`;
+- self-play: both `DONE`, 48,433 versus 48,085 on seed 80; and
+- packaged/source equivalence: 44,147 versus `starter` on seed 80.
+
+It was submitted with four daily submissions remaining and is currently
+Pending. The frozen scale agent remains the safer live control. No further
+submission should be selected from this run until both new Scores have enough
+episodes to stabilize.
+
 ### One-Goose Candidate: Promotion Evidence
 
 After the first v9 Kaggle submission validated at rating 600, we isolated one
