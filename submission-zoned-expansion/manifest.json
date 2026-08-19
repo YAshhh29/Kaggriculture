@@ -1,0 +1,16 @@
+{
+  "created_at": "2026-08-19T19:34:35.648641+00:00",
+  "competition": "kaggriculture",
+  "agent": "main.py",
+  "sha256": "3414e23178a61b162fbbc1910b215aac3bee973d8f259216b81fa101fe788283",
+  "zoned_source_sha256": "b6b23889ece1a474be45ad58ada49344f43f5397c8b3d90e37556a3ab3c111f2",
+  "expansion_source_sha256": "b0cb1a2748ed8aaff29c7f10d0a9d7cdf7a2fec76f59cf278cac684f01bc1ac4",
+  "policy": "one NE quadrant, ten daily hands, sixteen wheat, six cows, eight sheep, paired planting and watering",
+  "live_submission": {
+    "submission_id": 55630744,
+    "submitted_at": "2026-08-19T19:40:51.503Z",
+    "status": "Complete",
+    "initial_score": 600.0,
+    "description": "Zoned NE expansion: 10 daily hands, 16 wheat, 6 cows, 8 sheep; paired PLANT+WATER, staged same-day hiring, zero first-water misses and animal losses"
+  }
+}
