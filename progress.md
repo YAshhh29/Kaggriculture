@@ -330,6 +330,71 @@ Score of 491.3. The frozen scale agent currently scores 537.4 and remains the
 safer live control. No further submission should be selected from this run until
 both new Scores have enough episodes to stabilize.
 
+### Live Episode 94524971 And Zoned Routing Experiment
+
+The screenshot showing 34,452 coins is correct. It is episode 94524971, seed
+156033218: our scale submission lost 34,452 to dankwa wadie's 42,465. The 58k
+number was a multi-seed `starter` development mean, never a promise that every
+live episode would score 58k.
+
+The replay separates two causes:
+
+1. **Shared-market prices:** our live game sold almost the same quantities as
+  the local seed-70 run: 198 fertilizer, 126 milk, 92 wool, and 58 wheat versus
+  198, 126, 92, and 50 locally. The lower cash therefore came primarily from
+  both players selling overlapping products into the same market.
+2. **Routing/layout:** our scheduler formed planting tasks by scanning rows and
+  slicing the first `available_seeds` empty positions before worker distance
+  was considered. With sixteen seeds, the legal planting candidates were
+  `(0,0)` through `(9,1)`. All 326 live crop tasks stayed in NW with a mean tile
+  position of `(2.15, 1.49)`, and the farm ended with 16 weeds.
+
+The opponent used the spatial idea raised during review:
+
+- bought NE on day 6;
+- used 7-8 daily hands;
+- placed 12 cows and 4 sheep in a dense strip around the shed spanning NW/NE;
+- performed 406 crop tasks in NW and 284 in NE;
+- planted 122 wheat plus 5 melon cycles; and
+- finished with only 3 weeds and 42,465 coins.
+
+We created `experimental_zoned_agent.py` as a separate research agent. It does
+not modify either submitted package. Its crop policy:
+
+- ranks empty planting tiles from the shed outward instead of row-major order;
+- gives worker IDs 0-4 near/NW planting ownership;
+- gives worker IDs 5+ far/NE planting ownership after land unlock;
+- keeps urgent watering, normal watering, and harvesting globally accessible;
+  and
+- still performs feed, setup, fertilizer, harvest, and CARE before crop work.
+
+Results:
+
+| Candidate | Seed-30 mean | Weeds/game | Decision |
+| --- | ---: | ---: | --- |
+| Existing row-major scale gate | 64,593 | about 16 | Submitted control |
+| Center-first zoning, same 8 animals/hands, no land | 64,424 | 12 | Keep for research |
+| Same zoning + right land | 52,204 | 38-39 | Reject |
+| Right land + 2 cows/2 sheep | 34,492.5 | 42-43 | Reject |
+| Right land + 3 cows/3 sheep | 50,676 | 41-42 | Reject |
+
+The center-first no-land version is effectively tied with the submitted scale
+agent on seed 30 and averages 60,100.45 over development seeds 30-39. It wins
+20/20 direct games against the submitted scale policy, but loses 18/20 to the
+pressure-aware investment policy and collapses to 30,097 on seed 70 when using
+the earlier aggressive 18-animal version. Therefore it remains separate and
+unsubmitted.
+
+The important conclusion is nuanced: center-first planting and stable worker
+zones are valid improvements to routing. Buying NE is not automatically good;
+the extra land only pays when enough labor remains after animal service to keep
+both zones watered. One worker cannot service eight animals alone because FEED,
+CARE, and fertilizer collection already require 24 tile actions per service day
+before movement or animal-product harvesting.
+
+Review replay:
+`artifacts/v1327-zoned-no-land-vs-starter-seed30-720.html`.
+
 ### One-Goose Candidate: Promotion Evidence
 
 After the first v9 Kaggle submission validated at rating 600, we isolated one

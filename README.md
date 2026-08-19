@@ -311,6 +311,13 @@ sheep when opponent market pressure permits; it scales down when the opponent
 already operates many animals. Its untouched seed-80-89 mean is 56,501.8 with
 an 88,136 maximum, and it wins 16/20 direct games against the scale control.
 
+The separate `experimental_zoned_agent.py` fixes a confirmed row-major planting
+bias by selecting center-near crop tiles and assigning persistent near/far
+planting crews. It is intentionally unsubmitted. Center-first/no-land routing
+scores 64,424 on the seed-30 gate and averages 60,100.45 on development seeds;
+adding the right quadrant with the same labor reduces performance because animal
+service leaves too few crop actions to maintain two zones.
+
 ## Historical Baseline Results
 
 The six-plot policy with a day-24 planting cutoff was measured on simulator

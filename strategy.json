@@ -751,6 +751,68 @@
       "daily_submissions_remaining_before_upload": 4
     }
   },
+  "live_episode_94524971": {
+    "seed": 156033218,
+    "our_reward": 34452,
+    "opponent": "dankwa wadie",
+    "opponent_reward": 42465,
+    "our_submission_id": 55624349,
+    "our_output": {
+      "fertilizer_sold": 198,
+      "milk_sold": 126,
+      "wool_sold": 92,
+      "wheat_sold": 58,
+      "cows": 4,
+      "sheep": 4,
+      "land": ["NW"],
+      "terminal_weeds": 16
+    },
+    "opponent_output": {
+      "fertilizer_sold": 230,
+      "milk_sold": 134,
+      "wool_sold": 96,
+      "wheat_sold": 83,
+      "melon_sold": 26,
+      "cows": 12,
+      "sheep": 4,
+      "land": ["NW", "NE"],
+      "terminal_weeds": 3
+    },
+    "finding": "our animal output closely matched local output, so most of the 55,138-to-34,452 cash drop came from shared-market prices; row-major crop placement still caused avoidable NW travel and weeds",
+    "replay": "artifacts/live-replays/episode-94524971-replay.json",
+    "analysis": "artifacts/live-replays/episode-94524971-strategy.json"
+  },
+  "zoned_routing_experiment": {
+    "status": "research-only; separate from both submitted agents",
+    "agent": "experimental_zoned_agent.py",
+    "confirmed_bug": "plant tasks sliced row-major empty tiles before worker distance; sixteen seeds exposed only rows y=0 and y=1",
+    "policy": {
+      "planting_order": "distance from central shed, then center-adjacent rows",
+      "near_crew": "worker IDs 0-4 prefer NW planting",
+      "far_crew": "worker IDs 5+ prefer NE planting when unlocked",
+      "global_overrides": [
+        "urgent watering",
+        "normal watering",
+        "harvesting",
+        "all livestock service"
+      ]
+    },
+    "no_land": {
+      "capital_policy": "same eight hands, four cows, four sheep as submitted scale agent",
+      "seed_30_mean": 64424,
+      "weeds_per_game": 12,
+      "development_mean_seeds_30_39": 60100.45,
+      "direct_vs_scale": {"wins": 20, "losses": 0},
+      "direct_vs_investment": {"wins": 2, "losses": 18},
+      "review_replay": "artifacts/v1327-zoned-no-land-vs-starter-seed30-720.html"
+    },
+    "right_land_rejections": {
+      "same_eight_animals": {"seed_30_mean": 52204, "weeds_per_game": "38-39"},
+      "two_cows_two_sheep": {"seed_30_mean": 34492.5, "weeds_per_game": "42-43"},
+      "three_cows_three_sheep": {"seed_30_mean": 50676, "weeds_per_game": "41-42"}
+    },
+    "decision": "keep center-first zoning for future integration; reject right-land expansion until dedicated crop labor remains after livestock service; do not submit this version"
+  },
   "leaderboard_replay_scouting": {
     "checked_at": "2026-08-19",
     "leader_team": "カワシギ",
