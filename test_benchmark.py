@@ -7,6 +7,7 @@ from benchmark import (
     analyze_livestock,
     analyze_route,
     classify_result,
+    combined_source_hash,
     count_actions,
     inventory_snapshot,
     load_agent_callable,
@@ -18,6 +19,22 @@ from test_main import observation
 
 
 class BenchmarkTests(unittest.TestCase):
+    def test_combined_source_hash_depends_on_order_and_contents(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            first = root / "first.py"
+            second = root / "second.py"
+            first.write_text("first", encoding="utf-8")
+            second.write_text("second", encoding="utf-8")
+
+            forward = combined_source_hash([first, second])
+            reverse = combined_source_hash([second, first])
+            second.write_text("changed", encoding="utf-8")
+            changed = combined_source_hash([first, second])
+
+        self.assertNotEqual(forward, reverse)
+        self.assertNotEqual(forward, changed)
+
     def test_tracks_animal_placements_losses_and_maximum_active(self) -> None:
         empty = [[{"kind": "PASTURE"}, {"kind": "PASTURE"}]]
         one_cow = [[
@@ -228,6 +245,22 @@ class BenchmarkTests(unittest.TestCase):
         decision = experiment_agent(observation())
 
         self.assertEqual(decision["market"], [["BUY_SEED", "WHEAT", 8]])
+
+    def test_loads_parameterized_lifecycle_capacity(self) -> None:
+        agent_path = Path(__file__).with_name(
+            "experimental_lifecycle_agent.py"
+        )
+        experiment_agent = load_parameterized_agent(
+            agent_path,
+            {"max_wheat_per_pair": 5},
+        )
+        state = observation(hour=1)
+        state["farms"][0]["hands"] = [[0, 0] for _ in range(12)]
+        state["private"]["inventories"] = [{} for _ in range(13)]
+
+        decision = experiment_agent(state)
+
+        self.assertIn(["BUY_SEED", "WHEAT", 15], decision["market"])
 
     def test_loads_a_file_opponent_callable(self) -> None:
         opponent_path = Path(__file__).with_name("leader_replay_agent.py")

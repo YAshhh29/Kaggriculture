@@ -900,6 +900,11 @@ def parse_args() -> argparse.Namespace:
         help="locally evaluate this wheat target through agent.decide",
     )
     parser.add_argument(
+        "--max-wheat-per-pair",
+        type=int,
+        help="locally evaluate lifecycle crop capacity per worker pair",
+    )
+    parser.add_argument(
         "--target-daily-hands",
         type=int,
         help="locally evaluate this daily hand target through agent.decide",
@@ -997,6 +1002,14 @@ def load_agent_callable(agent_path: Path) -> AgentInput:
     return opponent_agent
 
 
+def combined_source_hash(paths: list[Path]) -> str:
+    digest = hashlib.sha256()
+    for path in paths:
+        digest.update(path.read_bytes())
+        digest.update(b"\0")
+    return digest.hexdigest()
+
+
 def default_output_path(args: argparse.Namespace) -> Path:
     final_seed = args.seed_start + args.seed_count - 1
     target = (
@@ -1071,6 +1084,8 @@ def main() -> None:
         raise SystemExit("--steps must be at least 1")
     if args.target_wheat_tiles is not None and args.target_wheat_tiles < 1:
         raise SystemExit("--target-wheat-tiles must be at least 1")
+    if args.max_wheat_per_pair is not None and args.max_wheat_per_pair < 1:
+        raise SystemExit("--max-wheat-per-pair must be at least 1")
     if args.target_daily_hands is not None and args.target_daily_hands < 0:
         raise SystemExit("--target-daily-hands cannot be negative")
     if args.target_cows is not None and args.target_cows < 0:
@@ -1115,6 +1130,8 @@ def main() -> None:
     parameters: dict[str, Any] = {}
     if args.target_wheat_tiles is not None:
         parameters["target_wheat_tiles"] = args.target_wheat_tiles
+    if args.max_wheat_per_pair is not None:
+        parameters["max_wheat_per_pair"] = args.max_wheat_per_pair
     if args.target_daily_hands is not None:
         parameters["target_daily_hands"] = args.target_daily_hands
     if args.care_enabled:
@@ -1159,6 +1176,16 @@ def main() -> None:
         "parameters": parameters,
         "simulator_version": simulator_version,
     }
+    dependency_paths = [
+        agent_path.with_name("experimental_lifecycle_agent.py")
+    ]
+    if (
+        agent_path.name == "experimental_lifecycle_compact_agent.py"
+        and dependency_paths[0].is_file()
+    ):
+        metadata["combined_source_sha256"] = combined_source_hash(
+            [dependency_paths[0], agent_path]
+        )
     records: list[dict[str, Any]] = []
     report: dict[str, Any] = {}
 
