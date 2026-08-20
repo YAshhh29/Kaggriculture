@@ -863,14 +863,14 @@
     "status": "holdout and direct-match validated; packaged for review; not submitted",
     "core_agent": "experimental_lifecycle_agent.py",
     "agent": "experimental_lifecycle_compact_agent.py",
-    "combined_source_sha256": "f69695ceda91bcec03431b9e0fca39ad4c68ef27dd6e6f212a34434a9cda0dc8",
+    "combined_source_sha256": "98d1725c4297ae046e0ba98cb6f50e106bdf62cc24af9f46dbc71af85dcc0f91",
     "package": "submission-lifecycle/main.py",
-    "package_sha256": "e5872cdef2359bb4f9748a6d810f404e68e4ba11eb53fabacbed54dd90d54cd6",
+    "package_sha256": "aeb70a14f97d9c9778a1eadad9f424b97adc333470071432f7ca030b28de85a7",
     "package_equivalence": {
-      "records": 720,
-      "action_mismatches": 0,
-      "source_reward": 88602,
-      "package_reward": 88602
+      "records_per_position": 720,
+      "action_mismatches": {"player_0": 0, "player_1": 0},
+      "source_rewards": {"player_0": 90685, "player_1": 90440},
+      "package_rewards": {"player_0": 90685, "player_1": 90440}
     },
     "timing_rules": {
       "planting_day": "paired PLANT and WATER in one transition because a fresh unwatered crop dies at that night refresh",
@@ -887,22 +887,24 @@
       "patch_ownership": "deterministic vertical tile bands derived from worker slot and tile x coordinate",
       "nearby_assistance": "idle crop/floater workers may service an animal only within Manhattan distance two; no optional long-distance retarget",
       "admission": "five wheat per pair by default; six only after two public wheat-demand shops or wheat price at least 35",
-      "endgame_hiring": "taper after crop and animal service deadlines"
+      "endgame_hiring": "taper after crop and animal service deadlines; hire two hands on day 29 for value-ranked collection, deadline-aware shed return, DROP, and same-transition sale"
     },
     "fresh_holdout": {
       "seeds": "80-89, both positions",
       "games": 20,
       "wins": 20,
-      "mean_coins": 68895.55,
-      "min_coins": 50083,
-      "max_coins": 88038,
+      "mean_coins": 70527.35,
+      "min_coins": 51034,
+      "max_coins": 90124,
       "crop_cycles": 1144,
       "harvested_cycles": 1144,
       "weeded_cycles": 0,
       "unfinished_cycles": 0,
       "first_watering_misses": 0,
       "animal_losses": 0,
-      "report": "artifacts/benchmarks/v1327-lifecycle-finalfootprint-holdout-seeds80-89.json"
+      "movement_turns": 58959,
+      "paired_gain_vs_farmer_only": {"improved": 20, "tied": 0, "worse": 0, "mean_coins": 1631.8, "minimum": 951, "maximum": 2339},
+      "report": "artifacts/benchmarks/v1327-lifecycle-compact-final-holdout-seeds80-89.json"
     },
     "submitted_ne_holdout_control": {
       "mean_coins": 70781.85,
@@ -916,8 +918,8 @@
       "report": "artifacts/benchmarks/v1327-submitted-ne-holdout-seeds80-89.json"
     },
     "direct_matches": {
-      "vs_submitted_ne": {"wins": 18, "losses": 2, "mean_coins": 46994.9, "opponent_mean": 44670.85},
-      "vs_investment": {"wins": 20, "losses": 0, "mean_coins": 47760.6, "opponent_mean": 36179.3},
+      "vs_submitted_ne": {"wins": 19, "losses": 1, "mean_coins": 47816.45, "opponent_mean": 44670.85, "paired_gain_vs_farmer_only": 821.55},
+      "vs_investment": {"wins": 20, "losses": 0, "mean_coins": 48620.15, "opponent_mean": 36179.3, "paired_gain_vs_farmer_only": 859.55},
       "rank_one_script": {"wins": 0, "losses": 2, "mean_coins": 12684, "script_mean": 60954}
     },
     "rejections": {
@@ -930,7 +932,7 @@
       "eleven_hands": {"seed_30_mean": 82211, "reason": "good midpoint but ten-hand nearby-assist candidate was cheaper and stronger on seed 30"}
     },
     "review_replay": "http://127.0.0.1:8765/captioned_replay.html?replay=artifacts%2Fv1327-lifecycle-compact-vs-starter-seed30-720.html&audit=artifacts%2Fv1327-lifecycle-compact-vs-starter-seed30-720-audit.json",
-    "decision": "keep submitted NE live; retain lifecycle compact as a separate packaged challenger because it completes every admitted holdout crop, wins 18-2 versus submitted NE and 20-0 versus investment, but trails submitted NE by 1886.3 mean coins on fresh standalone holdout; do not submit without explicit review"
+    "decision": "keep submitted NE live; retain lifecycle compact as a separate packaged challenger because it completes every admitted holdout crop, wins 19-1 versus submitted NE and 20-0 versus investment, and trails submitted NE by only 254.5 mean coins on fresh standalone holdout; do not submit without explicit review"
   },
   "leaderboard_replay_scouting": {
     "checked_at": "2026-08-19",

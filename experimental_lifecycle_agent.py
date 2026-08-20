@@ -24,6 +24,7 @@ from experimental_scale_agent import (
     _land_orders,
     _plan_is_active,
     _protect_feed_reserve,
+    _shed_access_tiles,
     _staged_animal_plans,
     _tile_at,
     _unlocked_animal_plans,
@@ -87,7 +88,7 @@ def _demand_capacity(observation: dict[str, Any]) -> int:
 
 def _daily_hand_target(day: int, maximum_hands: int) -> int:
     if day >= 29:
-        return 0
+        return min(maximum_hands, 2)
     if day == 28:
         return min(maximum_hands, 5)
     if day >= 26:
@@ -385,6 +386,110 @@ def _assign_idle_current_animal_services(
         )
 
 
+def _final_day_liquidation_actions(
+    animal_plans: tuple[dict[str, Any], ...],
+    hour: int,
+    farm: dict[str, Any],
+    private: dict[str, Any],
+    market: dict[str, Any],
+) -> tuple[list[str], list[list[str]]]:
+    positions = [
+        tuple(farm["farmer"]),
+        *(tuple(position) for position in farm.get("hands", [])),
+    ]
+    tiles = farm["tiles"]
+    shed_tiles = _shed_access_tiles(len(tiles))
+    inventories = _inventories(private, len(positions))
+    prices = market.get("prices", {})
+    reserved: set[tuple[str, str]] = set()
+    actions: list[list[str]] = []
+
+    for position, inventory in zip(positions, inventories):
+        candidates: list[
+            tuple[float, int, int, str, tuple[int, int], list[str]]
+        ] = []
+        for plan in animal_plans:
+            if not _plan_is_active(plan, tiles):
+                continue
+            target = tuple(plan["position"])
+            distance = _distance(position, target)
+            return_distance = min(
+                _distance(target, shed_tile) for shed_tile in shed_tiles
+            )
+            if hour + distance + 1 + return_distance > 22:
+                continue
+            tile = _tile_at(tiles, target)
+            plan_id = str(plan["id"])
+            units = int(tile.get("yield_units", 0))
+            if units > 0 and (plan_id, "HARVEST") not in reserved:
+                product = str(plan["product"])
+                value = int(prices.get(product, 0)) * units
+                candidates.append(
+                    (
+                        value / (distance + 1),
+                        value,
+                        -distance,
+                        plan_id,
+                        target,
+                        ["HARVEST"],
+                    )
+                )
+            if (
+                tile.get("fertilizer_available", False)
+                and (plan_id, "COLLECT_FERTILIZER") not in reserved
+            ):
+                value = int(prices.get("FERTILIZER", 0))
+                candidates.append(
+                    (
+                        value / (distance + 1),
+                        value,
+                        -distance,
+                        plan_id,
+                        target,
+                        ["COLLECT_FERTILIZER"],
+                    )
+                )
+
+        if candidates:
+            _, _, _, plan_id, target, operation = max(
+                candidates,
+                key=lambda candidate: (
+                    candidate[0],
+                    candidate[1],
+                    candidate[2],
+                    -candidate[4][1],
+                    -candidate[4][0],
+                ),
+            )
+            reserved.add((plan_id, operation[0]))
+            actions.append(_act_at_or_move(position, target, operation))
+            continue
+
+        carried = sum(
+            int(inventory.get(item, 0))
+            for item in ("MILK", "WOOL", "FERTILIZER")
+        )
+        if carried <= 0:
+            actions.append(["PASS"])
+            continue
+        target = min(
+            shed_tiles,
+            key=lambda shed_tile: (
+                _distance(position, shed_tile),
+                shed_tile[1],
+                shed_tile[0],
+            ),
+        )
+        if position == target:
+            actions.append(["DROP"])
+        elif hour + _distance(position, target) <= 22:
+            actions.append(_act_at_or_move(position, target, ["DROP"]))
+        else:
+            actions.append(["PASS"])
+
+    return actions[0], actions[1:]
+
+
 def _lifecycle_worker_actions(
     animal_plans: tuple[dict[str, Any], ...],
     livestock_tiles: set[tuple[int, int]],
@@ -483,6 +588,8 @@ def _lifecycle_livestock_orders(
     day: int,
     farm: dict[str, Any],
     private: dict[str, Any],
+    *,
+    projected_drop_workers: set[int] | None = None,
 ) -> tuple[list[list[Any]], list[list[Any]]]:
     tiles = farm["tiles"]
     shed = private.get("shed", {})
@@ -526,6 +633,12 @@ def _lifecycle_livestock_orders(
 
     for item in ("MILK", "WOOL", "FERTILIZER"):
         quantity = int(shed.get(item, 0))
+        inventories = private.get("inventories", [])
+        for worker in projected_drop_workers or set():
+            if worker < len(inventories) and isinstance(
+                inventories[worker], dict
+            ):
+                quantity += int(inventories[worker].get(item, 0))
         if quantity > 0:
             sales.append(["SELL", item, quantity])
     return urgent, sales
@@ -570,20 +683,35 @@ def decide(
         private,
         True,
     )
-    farmer_action, hands_actions = _lifecycle_worker_actions(
-        active_plans,
-        {plan["position"] for plan in final_plans},
-        day,
-        farm,
-        private,
-        max_wheat_per_pair,
-        animal_crew_size,
-    )
+    if day == 29:
+        farmer_action, hands_actions = _final_day_liquidation_actions(
+            active_plans,
+            hour,
+            farm,
+            private,
+            observation.get("market", {}),
+        )
+    else:
+        farmer_action, hands_actions = _lifecycle_worker_actions(
+            active_plans,
+            {plan["position"] for plan in final_plans},
+            day,
+            farm,
+            private,
+            max_wheat_per_pair,
+            animal_crew_size,
+        )
+    worker_actions = [farmer_action, *hands_actions]
     urgent, sales = _lifecycle_livestock_orders(
         active_plans,
         day,
         farm,
         private,
+        projected_drop_workers={
+            worker
+            for worker, action in enumerate(worker_actions)
+            if action == ["DROP"]
+        },
     )
     market = _investment_market_orders(
         sales,

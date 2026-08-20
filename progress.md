@@ -483,30 +483,35 @@ The selected `experimental_lifecycle_compact_agent.py` uses:
 - five wheat slots per pair by default and six only after public wheat demand
   (two wheat-consuming shop instances or price at least 35);
 - no long-distance optional retargeting; an idle crop worker helps an animal
-  only within Manhattan distance two; and
-- late hiring taper after crop and animal deadlines.
+  only within Manhattan distance two;
+- late hiring taper after crop and animal deadlines; and
+- two final-day hands plus the farmer collect the highest-value reachable
+  animal output, return by hour 22, `DROP` at the shed, and sell the deposited
+  inventory in the same transition.
 
 Fresh holdout seeds 80-89, both positions:
 
 | Metric | Submitted NE | Lifecycle compact |
 | --- | ---: | ---: |
 | Wins | 20 / 20 | 20 / 20 |
-| Mean coins | 70,781.85 | 68,895.55 |
-| Minimum / maximum | 56,832 / 89,648 | 50,083 / 88,038 |
+| Mean coins | 70,781.85 | 70,527.35 |
+| Minimum / maximum | 56,832 / 89,648 | 51,034 / 90,124 |
 | Crop cycles | 1,276 | 1,144 |
 | Harvested cycles | 818 | 1,144 |
 | Weeded cycles | 301 | **0** |
 | Unfinished cycles | 157 | **0** |
 | First-water misses | 0 | 0 |
 | Animal losses | 0 | 0 |
-| Worker movement turns | 83,408 | 57,337 |
+| Worker movement turns | 83,408 | 58,959 |
 
-Lifecycle compact trails by 1,886.3 mean standalone coins, but it completes
+Lifecycle compact now trails by only 254.5 mean standalone coins, while it completes
 every admitted holdout crop, eliminates all 301 weeds and 157 unfinished
-cycles, harvests 326 more crop cycles, and cuts movement by roughly one third.
-More importantly for the shared market, the final footprint-reserved version
-wins 18/20 direct development games against submitted NE and 20/20 against
-pressure-aware investment.
+cycles, harvests 326 more crop cycles, and cuts movement by 29%. The final-day
+liquidation change improved all 20 paired holdout games over the farmer-only
+control by 951-2,339 coins (mean +1,631.8). In the shared market, the final
+policy wins 19/20 direct development games against submitted NE and 20/20
+against pressure-aware investment. It improved all 20 paired direct games
+against each prior lifecycle control, by means of +821.55 and +859.55.
 
 The result also disproves several tempting shortcuts:
 
@@ -526,16 +531,25 @@ Against the captured rank-one script, lifecycle compact still loses both games,
 12,684 versus 60,954 mean. The remaining frontier is diversified product and
 market timing, not more unconditional land or wheat.
 
-The exact review replay scores 84,437 versus 3,736 and is captioned at:
+The old 88,602 replay appeared to stop growing after record 697 because the
+day-29 hour-0 sale emptied the shed, while later animal output stayed on tiles
+or in worker inventories. Only shed inventory can be sold. A farmer-only
+return route raised seed 30 to 90,058; five hands raised it to 90,673; the full
+0-10 hand frontier selected two hands because they recover the same output at
+the lowest Fibonacci wage. Ten hands fell to 90,541. The final review replay
+scores 90,685 versus 3,602 and is captioned at:
 
 `http://127.0.0.1:8765/captioned_replay.html?replay=artifacts%2Fv1327-lifecycle-compact-vs-starter-seed30-720.html&audit=artifacts%2Fv1327-lifecycle-compact-vs-starter-seed30-720-audit.json`.
 
 The review package `submission-lifecycle/main.py` is Kaggle-loader valid and
-source-equivalent across all 720 records before the final footprint-only change;
-the rebuilt final package is loader-valid. Package SHA-256:
-`e5872cdef2359bb4f9748a6d810f404e68e4ba11eb53fabacbed54dd90d54cd6`.
-It is not submitted. Keep submitted NE live until the user reviews this
-standalone-versus-head-to-head tradeoff.
+source-equivalent across all 720 records in both player positions. Source and
+package scored 90,685 as player 0 and 90,440 as player 1 with zero action
+mismatches. Package SHA-256:
+`aeb70a14f97d9c9778a1eadad9f424b97adc333470071432f7ca030b28de85a7`;
+combined source SHA-256:
+`98d1725c4297ae046e0ba98cb6f50e106bdf62cc24af9f46dbc71af85dcc0f91`.
+It is not submitted. Keep submitted NE live until the user reviews the remaining
+254.5-coin standalone gap.
 
 ### One-Goose Candidate: Promotion Evidence
 

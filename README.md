@@ -339,14 +339,19 @@ global crop retargeting with deterministic patch ownership and lifecycle
 deadlines. Ten hands are divided into six animal specialists, two crop pairs,
 and one floater. Age-1 wheat watering is skipped safely; ages 2-4 are watered
 for yield; planting is admitted only within per-pair capacity; idle workers may
-assist animals only within two tiles.
+assist animals only within two tiles. On day 29, two low-cost hands join the
+farmer for value-ranked animal collection, return to a shed-access tile by hour
+22, `DROP`, and sell in that same simulator transition.
 
-On fresh seeds 80-89 it averages 68,895.55 versus submitted NE's 70,781.85, but
+On fresh seeds 80-89 it averages 70,527.35 versus submitted NE's 70,781.85, but
 records **0 weeds and 0 unfinished cycles versus 301 and 157**, harvests every
-admitted cycle (1,144/1,144) versus 818/1,276, and uses roughly one-third fewer
-movement turns. The final footprint-reserved version wins 18/20 direct games
-against the submitted NE source and 20/20 against investment. It is packaged for review at
-`submission-lifecycle/main.py` but is not submitted.
+admitted cycle (1,144/1,144) versus 818/1,276, and uses 29% fewer movement
+turns. The final version improves all 20 paired holdout games over its
+farmer-only endgame and wins 19/20 direct games against the submitted NE source
+and 20/20 against investment. It is packaged for review at
+`submission-lifecycle/main.py`, SHA-256
+`aeb70a14f97d9c9778a1eadad9f424b97adc333470071432f7ca030b28de85a7`,
+but is not submitted.
 
 Review replay:
 `http://127.0.0.1:8765/captioned_replay.html?replay=artifacts%2Fv1327-lifecycle-compact-vs-starter-seed30-720.html&audit=artifacts%2Fv1327-lifecycle-compact-vs-starter-seed30-720-audit.json`.

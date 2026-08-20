@@ -262,7 +262,83 @@ class ExperimentalLifecycleAgentTests(unittest.TestCase):
         self.assertEqual(_daily_hand_target(26, 12), 8)
         self.assertEqual(_daily_hand_target(27, 12), 8)
         self.assertEqual(_daily_hand_target(28, 12), 5)
-        self.assertEqual(_daily_hand_target(29, 12), 0)
+        self.assertEqual(_daily_hand_target(29, 12), 2)
+
+    def test_final_day_farmer_returns_and_sells_carried_value(self) -> None:
+        state = scale_observation(day=29, hour=21)
+        state["farms"][0]["farmer"] = [4, 3]
+        state["private"]["inventories"] = [{"FERTILIZER": 2}]
+
+        returning = decide(state)
+
+        self.assertEqual(returning["farmer"], ["SOUTH"])
+
+        state["hour"] = 22
+        state["farms"][0]["farmer"] = [4, 4]
+        dropping = decide(state)
+
+        self.assertEqual(dropping["farmer"], ["DROP"])
+        self.assertIn(["SELL", "FERTILIZER", 2], dropping["market"])
+
+    def test_final_day_crew_drops_and_sells_all_worker_inventory(self) -> None:
+        state = scale_observation(day=29, hour=22)
+        state["farms"][0]["hands"] = [[5, 4], [4, 5]]
+        state["private"]["inventories"] = [
+            {"FERTILIZER": 1},
+            {"MILK": 2},
+            {"WOOL": 3},
+        ]
+
+        decision = decide(state)
+
+        self.assertEqual(decision["farmer"], ["DROP"])
+        self.assertEqual(decision["hands"], [["DROP"], ["DROP"]])
+        self.assertIn(["SELL", "FERTILIZER", 1], decision["market"])
+        self.assertIn(["SELL", "MILK", 2], decision["market"])
+        self.assertIn(["SELL", "WOOL", 3], decision["market"])
+
+    def test_final_day_farmer_prioritizes_more_valuable_product(self) -> None:
+        state = scale_observation(day=29, hour=0)
+        state["farms"][0]["unlocked_quadrants"].append("NE")
+        state["market"]["prices"].update(
+            {"MILK": 160, "WOOL": 200, "FERTILIZER": 100}
+        )
+        plans = _staged_animal_plans(29, 6, 8)
+        cow = plans[0]
+        sheep = next(plan for plan in plans if plan["animal"] == "SHEEP")
+        for plan, units in ((cow, 1), (sheep, 2)):
+            x, y = plan["position"]
+            state["farms"][0]["tiles"][y][x] = {
+                "kind": "PASTURE",
+                "animal": plan["animal"],
+                "yield_units": units,
+                "fertilizer_available": True,
+                "fed_today": False,
+                "cared_today": False,
+                "consecutive_unfed": 0,
+            }
+
+        decision = decide(state)
+
+        self.assertEqual(decision["farmer"], ["NORTH"])
+
+    def test_final_day_farmer_rejects_task_without_return_budget(self) -> None:
+        state = scale_observation(day=29, hour=22)
+        state["farms"][0]["farmer"] = [4, 4]
+        state["farms"][0]["tiles"][4][4] = {
+            "kind": "PASTURE",
+            "animal": "COW",
+            "yield_units": 1,
+            "fertilizer_available": True,
+            "fed_today": False,
+            "cared_today": False,
+            "consecutive_unfed": 0,
+        }
+        state["private"]["inventories"] = [{"FERTILIZER": 1}]
+
+        decision = decide(state)
+
+        self.assertEqual(decision["farmer"], ["DROP"])
 
 
 if __name__ == "__main__":

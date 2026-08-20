@@ -84,7 +84,8 @@ def main() -> None:
                 "policy": (
                     "ten hands, six animal specialists, two fixed crop "
                     "pairs, one floater, demand-aware wheat admission, "
-                    "nearby-only assistance, lifecycle deadlines"
+                    "nearby-only assistance, lifecycle deadlines, "
+                    "two-hand final-day animal liquidation"
                 ),
                 "status": "research package; not submitted",
             },

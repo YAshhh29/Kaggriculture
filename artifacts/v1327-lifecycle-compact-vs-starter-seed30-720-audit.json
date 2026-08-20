@@ -34,7 +34,7 @@
     "agent_sha256": "6dfaf3fb29b9436ccdcef0e93b453f71dc72814fb3e95b89627257529708c35c"
   },
   "score": {
-    "final_reward": 88602.0,
+    "final_reward": 90685.0,
     "opponent_reward": 3602.0,
     "status": "DONE",
     "result": "win"
@@ -62,40 +62,41 @@
     "action_counts": {
       "BUILD_PASTURE": 6,
       "CARE": 41,
-      "COLLECT_FERTILIZER": 34,
-      "EAST": 67,
+      "COLLECT_FERTILIZER": 36,
+      "DROP": 1,
+      "EAST": 72,
       "FEED": 68,
-      "HARVEST": 8,
-      "NORTH": 78,
-      "PASS": 230,
+      "HARVEST": 12,
+      "NORTH": 80,
+      "PASS": 210,
       "PICKUP": 69,
       "PLACE": 1,
-      "SOUTH": 49,
-      "WEST": 68
+      "SOUTH": 51,
+      "WEST": 72
     },
     "initial_money": 3000.0,
-    "final_money": 88602.0,
-    "net_profit": 85602.0,
+    "final_money": 90685.0,
+    "net_profit": 87685.0,
     "successful_seed_spend": 540,
-    "realized_sale_revenue": 10015.0,
+    "realized_sale_revenue": 2085.0,
     "wheat_units_sold": 52,
-    "weighted_average_wheat_sale_price": 192.5962,
+    "weighted_average_wheat_sale_price": 40.0962,
     "minimum_batch_average_sale_price": 0.0,
     "maximum_batch_average_sale_price": 0.0,
     "cash_accounting_supported": false,
     "cash_reconciliation": {
       "formula": "initial_money + realized_sale_revenue - seed_spend",
-      "expected_final_money": 12475.0,
-      "observed_final_money": 88602.0,
-      "difference": 76127.0
+      "expected_final_money": 4545.0,
+      "observed_final_money": 90685.0,
+      "difference": 86140.0
     },
     "plants_created": 54,
     "weeds_created": 4,
     "harvested_wheat_units": 0,
     "final_state": {
-      "money": 88602.0,
+      "money": 90685.0,
       "farmer": [
-        4,
+        5,
         4
       ],
       "wheat_seeds": 0,
@@ -5315,17 +5316,205 @@
       "first_hour": 0,
       "last_hour": 22,
       "money_start": 78587.0,
-      "money_end": 88602.0,
-      "net_money_delta": 10015.0,
-      "realized_sale_revenue": 10015.0,
+      "money_end": 90685.0,
+      "net_money_delta": 12098.0,
+      "realized_sale_revenue": 2085.0,
       "seed_spend": 0,
       "wheat_units_sold": 0,
       "average_wheat_sale_price": null,
       "actions": {
-        "PASS": 23
+        "COLLECT_FERTILIZER": 2,
+        "DROP": 1,
+        "EAST": 5,
+        "HARVEST": 4,
+        "NORTH": 2,
+        "PASS": 3,
+        "SOUTH": 2,
+        "WEST": 4
       },
       "weeds_created": 0,
-      "route": []
+      "route": [
+        {
+          "record_index": 697,
+          "hour": 0,
+          "operation": "NORTH",
+          "position": [
+            4,
+            4
+          ]
+        },
+        {
+          "record_index": 698,
+          "hour": 1,
+          "operation": "NORTH",
+          "position": [
+            4,
+            3
+          ]
+        },
+        {
+          "record_index": 699,
+          "hour": 2,
+          "operation": "HARVEST",
+          "position": [
+            4,
+            2
+          ]
+        },
+        {
+          "record_index": 700,
+          "hour": 3,
+          "operation": "WEST",
+          "position": [
+            4,
+            2
+          ]
+        },
+        {
+          "record_index": 701,
+          "hour": 4,
+          "operation": "HARVEST",
+          "position": [
+            3,
+            2
+          ]
+        },
+        {
+          "record_index": 702,
+          "hour": 5,
+          "operation": "WEST",
+          "position": [
+            3,
+            2
+          ]
+        },
+        {
+          "record_index": 703,
+          "hour": 6,
+          "operation": "SOUTH",
+          "position": [
+            2,
+            2
+          ]
+        },
+        {
+          "record_index": 704,
+          "hour": 7,
+          "operation": "HARVEST",
+          "position": [
+            2,
+            3
+          ]
+        },
+        {
+          "record_index": 705,
+          "hour": 8,
+          "operation": "EAST",
+          "position": [
+            2,
+            3
+          ]
+        },
+        {
+          "record_index": 706,
+          "hour": 9,
+          "operation": "EAST",
+          "position": [
+            3,
+            3
+          ]
+        },
+        {
+          "record_index": 707,
+          "hour": 10,
+          "operation": "EAST",
+          "position": [
+            4,
+            3
+          ]
+        },
+        {
+          "record_index": 708,
+          "hour": 11,
+          "operation": "EAST",
+          "position": [
+            5,
+            3
+          ]
+        },
+        {
+          "record_index": 709,
+          "hour": 12,
+          "operation": "EAST",
+          "position": [
+            6,
+            3
+          ]
+        },
+        {
+          "record_index": 710,
+          "hour": 13,
+          "operation": "SOUTH",
+          "position": [
+            7,
+            3
+          ]
+        },
+        {
+          "record_index": 711,
+          "hour": 14,
+          "operation": "HARVEST",
+          "position": [
+            7,
+            4
+          ]
+        },
+        {
+          "record_index": 712,
+          "hour": 15,
+          "operation": "COLLECT_FERTILIZER",
+          "position": [
+            7,
+            4
+          ]
+        },
+        {
+          "record_index": 713,
+          "hour": 16,
+          "operation": "WEST",
+          "position": [
+            7,
+            4
+          ]
+        },
+        {
+          "record_index": 714,
+          "hour": 17,
+          "operation": "WEST",
+          "position": [
+            6,
+            4
+          ]
+        },
+        {
+          "record_index": 715,
+          "hour": 18,
+          "operation": "COLLECT_FERTILIZER",
+          "position": [
+            5,
+            4
+          ]
+        },
+        {
+          "record_index": 716,
+          "hour": 19,
+          "operation": "DROP",
+          "position": [
+            5,
+            4
+          ]
+        }
+      ]
     }
   ],
   "records": [
@@ -215523,29 +215712,29 @@
       "day": 29,
       "hour": 0,
       "farmer_action": [
-        "PASS"
+        "NORTH"
       ],
-      "farmer_operation": "PASS",
+      "farmer_operation": "NORTH",
       "hands_actions": [],
       "worker_actions": [
         {
           "worker": "farmer",
           "action": [
-            "PASS"
+            "NORTH"
           ],
-          "operation": "PASS",
+          "operation": "NORTH",
           "position_before": [
             4,
             4
           ],
           "position_after": [
             4,
-            4
+            3
           ]
         }
       ],
       "observed_changes": {
-        "hands_added": 0,
+        "hands_added": 2,
         "hands_removed": 0,
         "unlocked_quadrants": [],
         "created_animals": [],
@@ -215566,6 +215755,12 @@
           "SELL",
           "FERTILIZER",
           14
+        ],
+        [
+          "HIRE"
+        ],
+        [
+          "HIRE"
         ]
       ],
       "position_before": [
@@ -215574,9 +215769,9 @@
       ],
       "position_after": [
         4,
-        4
+        3
       ],
-      "actual_movement_distance": 0,
+      "actual_movement_distance": 1,
       "tile_before": {
         "kind": "PASTURE",
         "animal": "COW",
@@ -215590,14 +215785,14 @@
       },
       "tile_after": {
         "kind": "PASTURE",
-        "animal": "COW",
+        "animal": "SHEEP",
         "placed_day": 0,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
         "fertilizer_available": true,
-        "pending_care_bonus": 1
+        "pending_care_bonus": 2
       },
       "task_valid_from_pre_state": null,
       "board_changes": {
@@ -215607,15 +215802,17 @@
       },
       "cash_flow": {
         "money_before": 78587.0,
-        "money_after": 88602.0,
-        "net_money_delta": 10015.0,
+        "money_after": 88600.0,
+        "net_money_delta": 10013.0,
         "successful_seed_purchases": {},
         "seed_spend": 0,
         "wheat_units_sold": 0,
-        "realized_sale_revenue": 10015.0,
+        "realized_sale_revenue": null,
         "average_wheat_sale_price": null,
-        "accounting_supported": true,
-        "unsupported_orders": []
+        "accounting_supported": false,
+        "unsupported_orders": [
+          "HIRE"
+        ]
       },
       "state_before": {
         "money": 78587.0,
@@ -215642,10 +215839,10 @@
         ]
       },
       "state_after": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
           4,
-          4
+          3
         ],
         "wheat_seeds": 0,
         "shed_wheat": 0,
@@ -215665,7 +215862,14 @@
           "BRUNCH_SPOT"
         ]
       },
-      "next_observed_task": null
+      "next_observed_task": {
+        "operation": "HARVEST",
+        "position": [
+          4,
+          2
+        ],
+        "record_index": 699
+      }
     },
     {
       "record_index": 698,
@@ -215675,24 +215879,61 @@
       "day": 29,
       "hour": 1,
       "farmer_action": [
-        "PASS"
+        "NORTH"
       ],
-      "farmer_operation": "PASS",
-      "hands_actions": [],
+      "farmer_operation": "NORTH",
+      "hands_actions": [
+        [
+          "WEST"
+        ],
+        [
+          "NORTH"
+        ]
+      ],
       "worker_actions": [
         {
           "worker": "farmer",
           "action": [
-            "PASS"
+            "NORTH"
           ],
-          "operation": "PASS",
+          "operation": "NORTH",
+          "position_before": [
+            4,
+            3
+          ],
+          "position_after": [
+            4,
+            2
+          ]
+        },
+        {
+          "worker": "hand_1",
+          "action": [
+            "WEST"
+          ],
+          "operation": "WEST",
           "position_before": [
             4,
             4
           ],
           "position_after": [
-            4,
+            3,
             4
+          ]
+        },
+        {
+          "worker": "hand_2",
+          "action": [
+            "NORTH"
+          ],
+          "operation": "NORTH",
+          "position_before": [
+            5,
+            4
+          ],
+          "position_after": [
+            5,
+            3
           ]
         }
       ],
@@ -215706,34 +215947,34 @@
       "market_orders": [],
       "position_before": [
         4,
-        4
+        3
       ],
       "position_after": [
         4,
-        4
+        2
       ],
-      "actual_movement_distance": 0,
+      "actual_movement_distance": 1,
       "tile_before": {
         "kind": "PASTURE",
-        "animal": "COW",
+        "animal": "SHEEP",
         "placed_day": 0,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
         "fertilizer_available": true,
-        "pending_care_bonus": 1
+        "pending_care_bonus": 2
       },
       "tile_after": {
         "kind": "PASTURE",
         "animal": "COW",
-        "placed_day": 0,
-        "yield_units": 0,
+        "placed_day": 5,
+        "yield_units": 1,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
         "fertilizer_available": true,
-        "pending_care_bonus": 1
+        "pending_care_bonus": 0
       },
       "task_valid_from_pre_state": null,
       "board_changes": {
@@ -215742,8 +215983,8 @@
         "created_weeds": []
       },
       "cash_flow": {
-        "money_before": 88602.0,
-        "money_after": 88602.0,
+        "money_before": 88600.0,
+        "money_after": 88600.0,
         "net_money_delta": 0.0,
         "successful_seed_purchases": {},
         "seed_spend": 0,
@@ -215754,10 +215995,10 @@
         "unsupported_orders": []
       },
       "state_before": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
           4,
-          4
+          3
         ],
         "wheat_seeds": 0,
         "shed_wheat": 0,
@@ -215778,10 +216019,10 @@
         ]
       },
       "state_after": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
           4,
-          4
+          2
         ],
         "wheat_seeds": 0,
         "shed_wheat": 0,
@@ -215801,7 +216042,14 @@
           "BRUNCH_SPOT"
         ]
       },
-      "next_observed_task": null
+      "next_observed_task": {
+        "operation": "HARVEST",
+        "position": [
+          4,
+          2
+        ],
+        "record_index": 699
+      }
     },
     {
       "record_index": 699,
@@ -215811,24 +216059,61 @@
       "day": 29,
       "hour": 2,
       "farmer_action": [
-        "PASS"
+        "HARVEST"
       ],
-      "farmer_operation": "PASS",
-      "hands_actions": [],
+      "farmer_operation": "HARVEST",
+      "hands_actions": [
+        [
+          "WEST"
+        ],
+        [
+          "NORTH"
+        ]
+      ],
       "worker_actions": [
         {
           "worker": "farmer",
           "action": [
-            "PASS"
+            "HARVEST"
           ],
-          "operation": "PASS",
+          "operation": "HARVEST",
           "position_before": [
             4,
-            4
+            2
           ],
           "position_after": [
             4,
+            2
+          ]
+        },
+        {
+          "worker": "hand_1",
+          "action": [
+            "WEST"
+          ],
+          "operation": "WEST",
+          "position_before": [
+            3,
             4
+          ],
+          "position_after": [
+            2,
+            4
+          ]
+        },
+        {
+          "worker": "hand_2",
+          "action": [
+            "NORTH"
+          ],
+          "operation": "NORTH",
+          "position_before": [
+            5,
+            3
+          ],
+          "position_after": [
+            5,
+            2
           ]
         }
       ],
@@ -215842,44 +216127,44 @@
       "market_orders": [],
       "position_before": [
         4,
-        4
+        2
       ],
       "position_after": [
         4,
-        4
+        2
       ],
       "actual_movement_distance": 0,
       "tile_before": {
         "kind": "PASTURE",
         "animal": "COW",
-        "placed_day": 0,
-        "yield_units": 0,
+        "placed_day": 5,
+        "yield_units": 1,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
         "fertilizer_available": true,
-        "pending_care_bonus": 1
+        "pending_care_bonus": 0
       },
       "tile_after": {
         "kind": "PASTURE",
         "animal": "COW",
-        "placed_day": 0,
+        "placed_day": 5,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
         "fertilizer_available": true,
-        "pending_care_bonus": 1
+        "pending_care_bonus": 0
       },
-      "task_valid_from_pre_state": null,
+      "task_valid_from_pre_state": true,
       "board_changes": {
         "created_plants": [],
         "removed_plants": [],
         "created_weeds": []
       },
       "cash_flow": {
-        "money_before": 88602.0,
-        "money_after": 88602.0,
+        "money_before": 88600.0,
+        "money_after": 88600.0,
         "net_money_delta": 0.0,
         "successful_seed_purchases": {},
         "seed_spend": 0,
@@ -215890,10 +216175,10 @@
         "unsupported_orders": []
       },
       "state_before": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
           4,
-          4
+          2
         ],
         "wheat_seeds": 0,
         "shed_wheat": 0,
@@ -215914,10 +216199,10 @@
         ]
       },
       "state_after": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
           4,
-          4
+          2
         ],
         "wheat_seeds": 0,
         "shed_wheat": 0,
@@ -215947,24 +216232,61 @@
       "day": 29,
       "hour": 3,
       "farmer_action": [
-        "PASS"
+        "WEST"
       ],
-      "farmer_operation": "PASS",
-      "hands_actions": [],
+      "farmer_operation": "WEST",
+      "hands_actions": [
+        [
+          "HARVEST"
+        ],
+        [
+          "HARVEST"
+        ]
+      ],
       "worker_actions": [
         {
           "worker": "farmer",
           "action": [
-            "PASS"
+            "WEST"
           ],
-          "operation": "PASS",
+          "operation": "WEST",
           "position_before": [
             4,
+            2
+          ],
+          "position_after": [
+            3,
+            2
+          ]
+        },
+        {
+          "worker": "hand_1",
+          "action": [
+            "HARVEST"
+          ],
+          "operation": "HARVEST",
+          "position_before": [
+            2,
             4
           ],
           "position_after": [
-            4,
+            2,
             4
+          ]
+        },
+        {
+          "worker": "hand_2",
+          "action": [
+            "HARVEST"
+          ],
+          "operation": "HARVEST",
+          "position_before": [
+            5,
+            2
+          ],
+          "position_after": [
+            5,
+            2
           ]
         }
       ],
@@ -215978,34 +216300,34 @@
       "market_orders": [],
       "position_before": [
         4,
-        4
+        2
       ],
       "position_after": [
-        4,
-        4
+        3,
+        2
       ],
-      "actual_movement_distance": 0,
+      "actual_movement_distance": 1,
       "tile_before": {
         "kind": "PASTURE",
         "animal": "COW",
-        "placed_day": 0,
+        "placed_day": 5,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
         "fertilizer_available": true,
-        "pending_care_bonus": 1
+        "pending_care_bonus": 0
       },
       "tile_after": {
         "kind": "PASTURE",
         "animal": "COW",
-        "placed_day": 0,
-        "yield_units": 0,
+        "placed_day": 7,
+        "yield_units": 1,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
         "fertilizer_available": true,
-        "pending_care_bonus": 1
+        "pending_care_bonus": 0
       },
       "task_valid_from_pre_state": null,
       "board_changes": {
@@ -216014,8 +216336,8 @@
         "created_weeds": []
       },
       "cash_flow": {
-        "money_before": 88602.0,
-        "money_after": 88602.0,
+        "money_before": 88600.0,
+        "money_after": 88600.0,
         "net_money_delta": 0.0,
         "successful_seed_purchases": {},
         "seed_spend": 0,
@@ -216026,10 +216348,10 @@
         "unsupported_orders": []
       },
       "state_before": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
           4,
-          4
+          2
         ],
         "wheat_seeds": 0,
         "shed_wheat": 0,
@@ -216050,10 +216372,10 @@
         ]
       },
       "state_after": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
-          4,
-          4
+          3,
+          2
         ],
         "wheat_seeds": 0,
         "shed_wheat": 0,
@@ -216073,7 +216395,14 @@
           "BRUNCH_SPOT"
         ]
       },
-      "next_observed_task": null
+      "next_observed_task": {
+        "operation": "HARVEST",
+        "position": [
+          3,
+          2
+        ],
+        "record_index": 701
+      }
     },
     {
       "record_index": 701,
@@ -216083,24 +216412,61 @@
       "day": 29,
       "hour": 4,
       "farmer_action": [
-        "PASS"
+        "HARVEST"
       ],
-      "farmer_operation": "PASS",
-      "hands_actions": [],
+      "farmer_operation": "HARVEST",
+      "hands_actions": [
+        [
+          "NORTH"
+        ],
+        [
+          "EAST"
+        ]
+      ],
       "worker_actions": [
         {
           "worker": "farmer",
           "action": [
-            "PASS"
+            "HARVEST"
           ],
-          "operation": "PASS",
+          "operation": "HARVEST",
           "position_before": [
-            4,
+            3,
+            2
+          ],
+          "position_after": [
+            3,
+            2
+          ]
+        },
+        {
+          "worker": "hand_1",
+          "action": [
+            "NORTH"
+          ],
+          "operation": "NORTH",
+          "position_before": [
+            2,
             4
           ],
           "position_after": [
-            4,
-            4
+            2,
+            3
+          ]
+        },
+        {
+          "worker": "hand_2",
+          "action": [
+            "EAST"
+          ],
+          "operation": "EAST",
+          "position_before": [
+            5,
+            2
+          ],
+          "position_after": [
+            6,
+            2
           ]
         }
       ],
@@ -216113,45 +216479,45 @@
       },
       "market_orders": [],
       "position_before": [
-        4,
-        4
+        3,
+        2
       ],
       "position_after": [
-        4,
-        4
+        3,
+        2
       ],
       "actual_movement_distance": 0,
       "tile_before": {
         "kind": "PASTURE",
         "animal": "COW",
-        "placed_day": 0,
-        "yield_units": 0,
+        "placed_day": 7,
+        "yield_units": 1,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
         "fertilizer_available": true,
-        "pending_care_bonus": 1
+        "pending_care_bonus": 0
       },
       "tile_after": {
         "kind": "PASTURE",
         "animal": "COW",
-        "placed_day": 0,
+        "placed_day": 7,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
         "fertilizer_available": true,
-        "pending_care_bonus": 1
+        "pending_care_bonus": 0
       },
-      "task_valid_from_pre_state": null,
+      "task_valid_from_pre_state": true,
       "board_changes": {
         "created_plants": [],
         "removed_plants": [],
         "created_weeds": []
       },
       "cash_flow": {
-        "money_before": 88602.0,
-        "money_after": 88602.0,
+        "money_before": 88600.0,
+        "money_after": 88600.0,
         "net_money_delta": 0.0,
         "successful_seed_purchases": {},
         "seed_spend": 0,
@@ -216162,10 +216528,10 @@
         "unsupported_orders": []
       },
       "state_before": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
-          4,
-          4
+          3,
+          2
         ],
         "wheat_seeds": 0,
         "shed_wheat": 0,
@@ -216186,10 +216552,10 @@
         ]
       },
       "state_after": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
-          4,
-          4
+          3,
+          2
         ],
         "wheat_seeds": 0,
         "shed_wheat": 0,
@@ -216219,24 +216585,61 @@
       "day": 29,
       "hour": 5,
       "farmer_action": [
-        "PASS"
+        "WEST"
       ],
-      "farmer_operation": "PASS",
-      "hands_actions": [],
+      "farmer_operation": "WEST",
+      "hands_actions": [
+        [
+          "COLLECT_FERTILIZER"
+        ],
+        [
+          "EAST"
+        ]
+      ],
       "worker_actions": [
         {
           "worker": "farmer",
           "action": [
-            "PASS"
+            "WEST"
           ],
-          "operation": "PASS",
+          "operation": "WEST",
           "position_before": [
-            4,
-            4
+            3,
+            2
           ],
           "position_after": [
-            4,
-            4
+            2,
+            2
+          ]
+        },
+        {
+          "worker": "hand_1",
+          "action": [
+            "COLLECT_FERTILIZER"
+          ],
+          "operation": "COLLECT_FERTILIZER",
+          "position_before": [
+            2,
+            3
+          ],
+          "position_after": [
+            2,
+            3
+          ]
+        },
+        {
+          "worker": "hand_2",
+          "action": [
+            "EAST"
+          ],
+          "operation": "EAST",
+          "position_before": [
+            6,
+            2
+          ],
+          "position_after": [
+            7,
+            2
           ]
         }
       ],
@@ -216249,36 +216652,26 @@
       },
       "market_orders": [],
       "position_before": [
-        4,
-        4
+        3,
+        2
       ],
       "position_after": [
-        4,
-        4
+        2,
+        2
       ],
-      "actual_movement_distance": 0,
+      "actual_movement_distance": 1,
       "tile_before": {
         "kind": "PASTURE",
         "animal": "COW",
-        "placed_day": 0,
+        "placed_day": 7,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
         "fertilizer_available": true,
-        "pending_care_bonus": 1
+        "pending_care_bonus": 0
       },
-      "tile_after": {
-        "kind": "PASTURE",
-        "animal": "COW",
-        "placed_day": 0,
-        "yield_units": 0,
-        "fed_today": false,
-        "consecutive_unfed": 1,
-        "cared_today": false,
-        "fertilizer_available": true,
-        "pending_care_bonus": 1
-      },
+      "tile_after": null,
       "task_valid_from_pre_state": null,
       "board_changes": {
         "created_plants": [],
@@ -216286,8 +216679,8 @@
         "created_weeds": []
       },
       "cash_flow": {
-        "money_before": 88602.0,
-        "money_after": 88602.0,
+        "money_before": 88600.0,
+        "money_after": 88600.0,
         "net_money_delta": 0.0,
         "successful_seed_purchases": {},
         "seed_spend": 0,
@@ -216298,10 +216691,10 @@
         "unsupported_orders": []
       },
       "state_before": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
-          4,
-          4
+          3,
+          2
         ],
         "wheat_seeds": 0,
         "shed_wheat": 0,
@@ -216322,10 +216715,10 @@
         ]
       },
       "state_after": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
-          4,
-          4
+          2,
+          2
         ],
         "wheat_seeds": 0,
         "shed_wheat": 0,
@@ -216345,7 +216738,14 @@
           "BRUNCH_SPOT"
         ]
       },
-      "next_observed_task": null
+      "next_observed_task": {
+        "operation": "HARVEST",
+        "position": [
+          2,
+          3
+        ],
+        "record_index": 704
+      }
     },
     {
       "record_index": 703,
@@ -216355,24 +216755,61 @@
       "day": 29,
       "hour": 6,
       "farmer_action": [
-        "PASS"
+        "SOUTH"
       ],
-      "farmer_operation": "PASS",
-      "hands_actions": [],
+      "farmer_operation": "SOUTH",
+      "hands_actions": [
+        [
+          "EAST"
+        ],
+        [
+          "WEST"
+        ]
+      ],
       "worker_actions": [
         {
           "worker": "farmer",
           "action": [
-            "PASS"
+            "SOUTH"
           ],
-          "operation": "PASS",
+          "operation": "SOUTH",
           "position_before": [
-            4,
-            4
+            2,
+            2
           ],
           "position_after": [
-            4,
-            4
+            2,
+            3
+          ]
+        },
+        {
+          "worker": "hand_1",
+          "action": [
+            "EAST"
+          ],
+          "operation": "EAST",
+          "position_before": [
+            2,
+            3
+          ],
+          "position_after": [
+            3,
+            3
+          ]
+        },
+        {
+          "worker": "hand_2",
+          "action": [
+            "WEST"
+          ],
+          "operation": "WEST",
+          "position_before": [
+            7,
+            2
+          ],
+          "position_after": [
+            6,
+            2
           ]
         }
       ],
@@ -216385,35 +216822,25 @@
       },
       "market_orders": [],
       "position_before": [
-        4,
-        4
+        2,
+        2
       ],
       "position_after": [
-        4,
-        4
+        2,
+        3
       ],
-      "actual_movement_distance": 0,
-      "tile_before": {
-        "kind": "PASTURE",
-        "animal": "COW",
-        "placed_day": 0,
-        "yield_units": 0,
-        "fed_today": false,
-        "consecutive_unfed": 1,
-        "cared_today": false,
-        "fertilizer_available": true,
-        "pending_care_bonus": 1
-      },
+      "actual_movement_distance": 1,
+      "tile_before": null,
       "tile_after": {
         "kind": "PASTURE",
         "animal": "COW",
-        "placed_day": 0,
-        "yield_units": 0,
+        "placed_day": 7,
+        "yield_units": 1,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
-        "fertilizer_available": true,
-        "pending_care_bonus": 1
+        "fertilizer_available": false,
+        "pending_care_bonus": 0
       },
       "task_valid_from_pre_state": null,
       "board_changes": {
@@ -216422,8 +216849,8 @@
         "created_weeds": []
       },
       "cash_flow": {
-        "money_before": 88602.0,
-        "money_after": 88602.0,
+        "money_before": 88600.0,
+        "money_after": 88600.0,
         "net_money_delta": 0.0,
         "successful_seed_purchases": {},
         "seed_spend": 0,
@@ -216434,10 +216861,10 @@
         "unsupported_orders": []
       },
       "state_before": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
-          4,
-          4
+          2,
+          2
         ],
         "wheat_seeds": 0,
         "shed_wheat": 0,
@@ -216458,10 +216885,10 @@
         ]
       },
       "state_after": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
-          4,
-          4
+          2,
+          3
         ],
         "wheat_seeds": 0,
         "shed_wheat": 0,
@@ -216481,7 +216908,14 @@
           "BRUNCH_SPOT"
         ]
       },
-      "next_observed_task": null
+      "next_observed_task": {
+        "operation": "HARVEST",
+        "position": [
+          2,
+          3
+        ],
+        "record_index": 704
+      }
     },
     {
       "record_index": 704,
@@ -216491,24 +216925,61 @@
       "day": 29,
       "hour": 7,
       "farmer_action": [
-        "PASS"
+        "HARVEST"
       ],
-      "farmer_operation": "PASS",
-      "hands_actions": [],
+      "farmer_operation": "HARVEST",
+      "hands_actions": [
+        [
+          "EAST"
+        ],
+        [
+          "WEST"
+        ]
+      ],
       "worker_actions": [
         {
           "worker": "farmer",
           "action": [
-            "PASS"
+            "HARVEST"
           ],
-          "operation": "PASS",
+          "operation": "HARVEST",
           "position_before": [
-            4,
-            4
+            2,
+            3
+          ],
+          "position_after": [
+            2,
+            3
+          ]
+        },
+        {
+          "worker": "hand_1",
+          "action": [
+            "EAST"
+          ],
+          "operation": "EAST",
+          "position_before": [
+            3,
+            3
           ],
           "position_after": [
             4,
-            4
+            3
+          ]
+        },
+        {
+          "worker": "hand_2",
+          "action": [
+            "WEST"
+          ],
+          "operation": "WEST",
+          "position_before": [
+            6,
+            2
+          ],
+          "position_after": [
+            5,
+            2
           ]
         }
       ],
@@ -216521,45 +216992,45 @@
       },
       "market_orders": [],
       "position_before": [
-        4,
-        4
+        2,
+        3
       ],
       "position_after": [
-        4,
-        4
+        2,
+        3
       ],
       "actual_movement_distance": 0,
       "tile_before": {
         "kind": "PASTURE",
         "animal": "COW",
-        "placed_day": 0,
-        "yield_units": 0,
+        "placed_day": 7,
+        "yield_units": 1,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
-        "fertilizer_available": true,
-        "pending_care_bonus": 1
+        "fertilizer_available": false,
+        "pending_care_bonus": 0
       },
       "tile_after": {
         "kind": "PASTURE",
         "animal": "COW",
-        "placed_day": 0,
+        "placed_day": 7,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
-        "fertilizer_available": true,
-        "pending_care_bonus": 1
+        "fertilizer_available": false,
+        "pending_care_bonus": 0
       },
-      "task_valid_from_pre_state": null,
+      "task_valid_from_pre_state": true,
       "board_changes": {
         "created_plants": [],
         "removed_plants": [],
         "created_weeds": []
       },
       "cash_flow": {
-        "money_before": 88602.0,
-        "money_after": 88602.0,
+        "money_before": 88600.0,
+        "money_after": 88600.0,
         "net_money_delta": 0.0,
         "successful_seed_purchases": {},
         "seed_spend": 0,
@@ -216570,10 +217041,10 @@
         "unsupported_orders": []
       },
       "state_before": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
-          4,
-          4
+          2,
+          3
         ],
         "wheat_seeds": 0,
         "shed_wheat": 0,
@@ -216594,10 +217065,10 @@
         ]
       },
       "state_after": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
-          4,
-          4
+          2,
+          3
         ],
         "wheat_seeds": 0,
         "shed_wheat": 0,
@@ -216627,24 +217098,61 @@
       "day": 29,
       "hour": 8,
       "farmer_action": [
-        "PASS"
+        "EAST"
       ],
-      "farmer_operation": "PASS",
-      "hands_actions": [],
+      "farmer_operation": "EAST",
+      "hands_actions": [
+        [
+          "COLLECT_FERTILIZER"
+        ],
+        [
+          "COLLECT_FERTILIZER"
+        ]
+      ],
       "worker_actions": [
         {
           "worker": "farmer",
           "action": [
-            "PASS"
+            "EAST"
           ],
-          "operation": "PASS",
+          "operation": "EAST",
+          "position_before": [
+            2,
+            3
+          ],
+          "position_after": [
+            3,
+            3
+          ]
+        },
+        {
+          "worker": "hand_1",
+          "action": [
+            "COLLECT_FERTILIZER"
+          ],
+          "operation": "COLLECT_FERTILIZER",
           "position_before": [
             4,
-            4
+            3
           ],
           "position_after": [
             4,
-            4
+            3
+          ]
+        },
+        {
+          "worker": "hand_2",
+          "action": [
+            "COLLECT_FERTILIZER"
+          ],
+          "operation": "COLLECT_FERTILIZER",
+          "position_before": [
+            5,
+            2
+          ],
+          "position_after": [
+            5,
+            2
           ]
         }
       ],
@@ -216657,35 +217165,35 @@
       },
       "market_orders": [],
       "position_before": [
-        4,
-        4
+        2,
+        3
       ],
       "position_after": [
-        4,
-        4
+        3,
+        3
       ],
-      "actual_movement_distance": 0,
+      "actual_movement_distance": 1,
       "tile_before": {
         "kind": "PASTURE",
         "animal": "COW",
-        "placed_day": 0,
+        "placed_day": 7,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
-        "fertilizer_available": true,
-        "pending_care_bonus": 1
+        "fertilizer_available": false,
+        "pending_care_bonus": 0
       },
       "tile_after": {
         "kind": "PASTURE",
-        "animal": "COW",
+        "animal": "SHEEP",
         "placed_day": 0,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
         "fertilizer_available": true,
-        "pending_care_bonus": 1
+        "pending_care_bonus": 2
       },
       "task_valid_from_pre_state": null,
       "board_changes": {
@@ -216694,8 +217202,8 @@
         "created_weeds": []
       },
       "cash_flow": {
-        "money_before": 88602.0,
-        "money_after": 88602.0,
+        "money_before": 88600.0,
+        "money_after": 88600.0,
         "net_money_delta": 0.0,
         "successful_seed_purchases": {},
         "seed_spend": 0,
@@ -216706,10 +217214,10 @@
         "unsupported_orders": []
       },
       "state_before": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
-          4,
-          4
+          2,
+          3
         ],
         "wheat_seeds": 0,
         "shed_wheat": 0,
@@ -216730,10 +217238,10 @@
         ]
       },
       "state_after": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
-          4,
-          4
+          3,
+          3
         ],
         "wheat_seeds": 0,
         "shed_wheat": 0,
@@ -216753,7 +217261,14 @@
           "BRUNCH_SPOT"
         ]
       },
-      "next_observed_task": null
+      "next_observed_task": {
+        "operation": "HARVEST",
+        "position": [
+          7,
+          4
+        ],
+        "record_index": 711
+      }
     },
     {
       "record_index": 706,
@@ -216763,24 +217278,61 @@
       "day": 29,
       "hour": 9,
       "farmer_action": [
-        "PASS"
+        "EAST"
       ],
-      "farmer_operation": "PASS",
-      "hands_actions": [],
+      "farmer_operation": "EAST",
+      "hands_actions": [
+        [
+          "NORTH"
+        ],
+        [
+          "SOUTH"
+        ]
+      ],
       "worker_actions": [
         {
           "worker": "farmer",
           "action": [
-            "PASS"
+            "EAST"
           ],
-          "operation": "PASS",
+          "operation": "EAST",
           "position_before": [
-            4,
-            4
+            3,
+            3
           ],
           "position_after": [
             4,
-            4
+            3
+          ]
+        },
+        {
+          "worker": "hand_1",
+          "action": [
+            "NORTH"
+          ],
+          "operation": "NORTH",
+          "position_before": [
+            4,
+            3
+          ],
+          "position_after": [
+            4,
+            2
+          ]
+        },
+        {
+          "worker": "hand_2",
+          "action": [
+            "SOUTH"
+          ],
+          "operation": "SOUTH",
+          "position_before": [
+            5,
+            2
+          ],
+          "position_after": [
+            5,
+            3
           ]
         }
       ],
@@ -216793,35 +217345,35 @@
       },
       "market_orders": [],
       "position_before": [
-        4,
-        4
+        3,
+        3
       ],
       "position_after": [
         4,
-        4
+        3
       ],
-      "actual_movement_distance": 0,
+      "actual_movement_distance": 1,
       "tile_before": {
         "kind": "PASTURE",
-        "animal": "COW",
+        "animal": "SHEEP",
         "placed_day": 0,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
         "fertilizer_available": true,
-        "pending_care_bonus": 1
+        "pending_care_bonus": 2
       },
       "tile_after": {
         "kind": "PASTURE",
-        "animal": "COW",
+        "animal": "SHEEP",
         "placed_day": 0,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
-        "fertilizer_available": true,
-        "pending_care_bonus": 1
+        "fertilizer_available": false,
+        "pending_care_bonus": 2
       },
       "task_valid_from_pre_state": null,
       "board_changes": {
@@ -216830,8 +217382,8 @@
         "created_weeds": []
       },
       "cash_flow": {
-        "money_before": 88602.0,
-        "money_after": 88602.0,
+        "money_before": 88600.0,
+        "money_after": 88600.0,
         "net_money_delta": 0.0,
         "successful_seed_purchases": {},
         "seed_spend": 0,
@@ -216842,10 +217394,10 @@
         "unsupported_orders": []
       },
       "state_before": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
-          4,
-          4
+          3,
+          3
         ],
         "wheat_seeds": 0,
         "shed_wheat": 0,
@@ -216866,10 +217418,10 @@
         ]
       },
       "state_after": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
           4,
-          4
+          3
         ],
         "wheat_seeds": 0,
         "shed_wheat": 0,
@@ -216889,7 +217441,14 @@
           "BRUNCH_SPOT"
         ]
       },
-      "next_observed_task": null
+      "next_observed_task": {
+        "operation": "HARVEST",
+        "position": [
+          7,
+          4
+        ],
+        "record_index": 711
+      }
     },
     {
       "record_index": 707,
@@ -216899,24 +217458,61 @@
       "day": 29,
       "hour": 10,
       "farmer_action": [
-        "PASS"
+        "EAST"
       ],
-      "farmer_operation": "PASS",
-      "hands_actions": [],
+      "farmer_operation": "EAST",
+      "hands_actions": [
+        [
+          "COLLECT_FERTILIZER"
+        ],
+        [
+          "COLLECT_FERTILIZER"
+        ]
+      ],
       "worker_actions": [
         {
           "worker": "farmer",
           "action": [
-            "PASS"
+            "EAST"
           ],
-          "operation": "PASS",
+          "operation": "EAST",
           "position_before": [
             4,
-            4
+            3
+          ],
+          "position_after": [
+            5,
+            3
+          ]
+        },
+        {
+          "worker": "hand_1",
+          "action": [
+            "COLLECT_FERTILIZER"
+          ],
+          "operation": "COLLECT_FERTILIZER",
+          "position_before": [
+            4,
+            2
           ],
           "position_after": [
             4,
-            4
+            2
+          ]
+        },
+        {
+          "worker": "hand_2",
+          "action": [
+            "COLLECT_FERTILIZER"
+          ],
+          "operation": "COLLECT_FERTILIZER",
+          "position_before": [
+            5,
+            3
+          ],
+          "position_after": [
+            5,
+            3
           ]
         }
       ],
@@ -216930,33 +217526,33 @@
       "market_orders": [],
       "position_before": [
         4,
-        4
+        3
       ],
       "position_after": [
-        4,
-        4
+        5,
+        3
       ],
-      "actual_movement_distance": 0,
+      "actual_movement_distance": 1,
       "tile_before": {
         "kind": "PASTURE",
-        "animal": "COW",
+        "animal": "SHEEP",
         "placed_day": 0,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
-        "fertilizer_available": true,
-        "pending_care_bonus": 1
+        "fertilizer_available": false,
+        "pending_care_bonus": 2
       },
       "tile_after": {
         "kind": "PASTURE",
-        "animal": "COW",
-        "placed_day": 0,
+        "animal": "SHEEP",
+        "placed_day": 7,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
-        "fertilizer_available": true,
+        "fertilizer_available": false,
         "pending_care_bonus": 1
       },
       "task_valid_from_pre_state": null,
@@ -216966,8 +217562,8 @@
         "created_weeds": []
       },
       "cash_flow": {
-        "money_before": 88602.0,
-        "money_after": 88602.0,
+        "money_before": 88600.0,
+        "money_after": 88600.0,
         "net_money_delta": 0.0,
         "successful_seed_purchases": {},
         "seed_spend": 0,
@@ -216978,10 +217574,10 @@
         "unsupported_orders": []
       },
       "state_before": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
           4,
-          4
+          3
         ],
         "wheat_seeds": 0,
         "shed_wheat": 0,
@@ -217002,10 +217598,10 @@
         ]
       },
       "state_after": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
-          4,
-          4
+          5,
+          3
         ],
         "wheat_seeds": 0,
         "shed_wheat": 0,
@@ -217025,7 +217621,14 @@
           "BRUNCH_SPOT"
         ]
       },
-      "next_observed_task": null
+      "next_observed_task": {
+        "operation": "HARVEST",
+        "position": [
+          7,
+          4
+        ],
+        "record_index": 711
+      }
     },
     {
       "record_index": 708,
@@ -217035,24 +217638,61 @@
       "day": 29,
       "hour": 11,
       "farmer_action": [
-        "PASS"
+        "EAST"
       ],
-      "farmer_operation": "PASS",
-      "hands_actions": [],
+      "farmer_operation": "EAST",
+      "hands_actions": [
+        [
+          "WEST"
+        ],
+        [
+          "EAST"
+        ]
+      ],
       "worker_actions": [
         {
           "worker": "farmer",
           "action": [
-            "PASS"
+            "EAST"
           ],
-          "operation": "PASS",
+          "operation": "EAST",
           "position_before": [
-            4,
-            4
+            5,
+            3
           ],
           "position_after": [
+            6,
+            3
+          ]
+        },
+        {
+          "worker": "hand_1",
+          "action": [
+            "WEST"
+          ],
+          "operation": "WEST",
+          "position_before": [
             4,
-            4
+            2
+          ],
+          "position_after": [
+            3,
+            2
+          ]
+        },
+        {
+          "worker": "hand_2",
+          "action": [
+            "EAST"
+          ],
+          "operation": "EAST",
+          "position_before": [
+            5,
+            3
+          ],
+          "position_after": [
+            6,
+            3
           ]
         }
       ],
@@ -217065,35 +217705,35 @@
       },
       "market_orders": [],
       "position_before": [
-        4,
-        4
+        5,
+        3
       ],
       "position_after": [
-        4,
-        4
+        6,
+        3
       ],
-      "actual_movement_distance": 0,
+      "actual_movement_distance": 1,
       "tile_before": {
         "kind": "PASTURE",
-        "animal": "COW",
-        "placed_day": 0,
+        "animal": "SHEEP",
+        "placed_day": 7,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
-        "fertilizer_available": true,
+        "fertilizer_available": false,
         "pending_care_bonus": 1
       },
       "tile_after": {
         "kind": "PASTURE",
-        "animal": "COW",
-        "placed_day": 0,
+        "animal": "SHEEP",
+        "placed_day": 9,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
         "fertilizer_available": true,
-        "pending_care_bonus": 1
+        "pending_care_bonus": 2
       },
       "task_valid_from_pre_state": null,
       "board_changes": {
@@ -217102,8 +217742,8 @@
         "created_weeds": []
       },
       "cash_flow": {
-        "money_before": 88602.0,
-        "money_after": 88602.0,
+        "money_before": 88600.0,
+        "money_after": 88600.0,
         "net_money_delta": 0.0,
         "successful_seed_purchases": {},
         "seed_spend": 0,
@@ -217114,10 +217754,10 @@
         "unsupported_orders": []
       },
       "state_before": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
-          4,
-          4
+          5,
+          3
         ],
         "wheat_seeds": 0,
         "shed_wheat": 0,
@@ -217138,10 +217778,10 @@
         ]
       },
       "state_after": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
-          4,
-          4
+          6,
+          3
         ],
         "wheat_seeds": 0,
         "shed_wheat": 0,
@@ -217161,7 +217801,14 @@
           "BRUNCH_SPOT"
         ]
       },
-      "next_observed_task": null
+      "next_observed_task": {
+        "operation": "HARVEST",
+        "position": [
+          7,
+          4
+        ],
+        "record_index": 711
+      }
     },
     {
       "record_index": 709,
@@ -217171,24 +217818,61 @@
       "day": 29,
       "hour": 12,
       "farmer_action": [
-        "PASS"
+        "EAST"
       ],
-      "farmer_operation": "PASS",
-      "hands_actions": [],
+      "farmer_operation": "EAST",
+      "hands_actions": [
+        [
+          "COLLECT_FERTILIZER"
+        ],
+        [
+          "COLLECT_FERTILIZER"
+        ]
+      ],
       "worker_actions": [
         {
           "worker": "farmer",
           "action": [
-            "PASS"
+            "EAST"
           ],
-          "operation": "PASS",
+          "operation": "EAST",
           "position_before": [
-            4,
-            4
+            6,
+            3
           ],
           "position_after": [
-            4,
-            4
+            7,
+            3
+          ]
+        },
+        {
+          "worker": "hand_1",
+          "action": [
+            "COLLECT_FERTILIZER"
+          ],
+          "operation": "COLLECT_FERTILIZER",
+          "position_before": [
+            3,
+            2
+          ],
+          "position_after": [
+            3,
+            2
+          ]
+        },
+        {
+          "worker": "hand_2",
+          "action": [
+            "COLLECT_FERTILIZER"
+          ],
+          "operation": "COLLECT_FERTILIZER",
+          "position_before": [
+            6,
+            3
+          ],
+          "position_after": [
+            6,
+            3
           ]
         }
       ],
@@ -217201,36 +217885,26 @@
       },
       "market_orders": [],
       "position_before": [
-        4,
-        4
+        6,
+        3
       ],
       "position_after": [
-        4,
-        4
+        7,
+        3
       ],
-      "actual_movement_distance": 0,
+      "actual_movement_distance": 1,
       "tile_before": {
         "kind": "PASTURE",
-        "animal": "COW",
-        "placed_day": 0,
+        "animal": "SHEEP",
+        "placed_day": 9,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
         "fertilizer_available": true,
-        "pending_care_bonus": 1
+        "pending_care_bonus": 2
       },
-      "tile_after": {
-        "kind": "PASTURE",
-        "animal": "COW",
-        "placed_day": 0,
-        "yield_units": 0,
-        "fed_today": false,
-        "consecutive_unfed": 1,
-        "cared_today": false,
-        "fertilizer_available": true,
-        "pending_care_bonus": 1
-      },
+      "tile_after": null,
       "task_valid_from_pre_state": null,
       "board_changes": {
         "created_plants": [],
@@ -217238,8 +217912,8 @@
         "created_weeds": []
       },
       "cash_flow": {
-        "money_before": 88602.0,
-        "money_after": 88602.0,
+        "money_before": 88600.0,
+        "money_after": 88600.0,
         "net_money_delta": 0.0,
         "successful_seed_purchases": {},
         "seed_spend": 0,
@@ -217250,10 +217924,10 @@
         "unsupported_orders": []
       },
       "state_before": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
-          4,
-          4
+          6,
+          3
         ],
         "wheat_seeds": 0,
         "shed_wheat": 0,
@@ -217274,10 +217948,10 @@
         ]
       },
       "state_after": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
-          4,
-          4
+          7,
+          3
         ],
         "wheat_seeds": 0,
         "shed_wheat": 0,
@@ -217297,7 +217971,14 @@
           "BRUNCH_SPOT"
         ]
       },
-      "next_observed_task": null
+      "next_observed_task": {
+        "operation": "HARVEST",
+        "position": [
+          7,
+          4
+        ],
+        "record_index": 711
+      }
     },
     {
       "record_index": 710,
@@ -217307,23 +217988,60 @@
       "day": 29,
       "hour": 13,
       "farmer_action": [
-        "PASS"
+        "SOUTH"
       ],
-      "farmer_operation": "PASS",
-      "hands_actions": [],
+      "farmer_operation": "SOUTH",
+      "hands_actions": [
+        [
+          "SOUTH"
+        ],
+        [
+          "SOUTH"
+        ]
+      ],
       "worker_actions": [
         {
           "worker": "farmer",
           "action": [
-            "PASS"
+            "SOUTH"
           ],
-          "operation": "PASS",
+          "operation": "SOUTH",
           "position_before": [
-            4,
-            4
+            7,
+            3
           ],
           "position_after": [
-            4,
+            7,
+            4
+          ]
+        },
+        {
+          "worker": "hand_1",
+          "action": [
+            "SOUTH"
+          ],
+          "operation": "SOUTH",
+          "position_before": [
+            3,
+            2
+          ],
+          "position_after": [
+            3,
+            3
+          ]
+        },
+        {
+          "worker": "hand_2",
+          "action": [
+            "SOUTH"
+          ],
+          "operation": "SOUTH",
+          "position_before": [
+            6,
+            3
+          ],
+          "position_after": [
+            6,
             4
           ]
         }
@@ -217337,35 +218055,25 @@
       },
       "market_orders": [],
       "position_before": [
-        4,
-        4
+        7,
+        3
       ],
       "position_after": [
-        4,
+        7,
         4
       ],
-      "actual_movement_distance": 0,
-      "tile_before": {
-        "kind": "PASTURE",
-        "animal": "COW",
-        "placed_day": 0,
-        "yield_units": 0,
-        "fed_today": false,
-        "consecutive_unfed": 1,
-        "cared_today": false,
-        "fertilizer_available": true,
-        "pending_care_bonus": 1
-      },
+      "actual_movement_distance": 1,
+      "tile_before": null,
       "tile_after": {
         "kind": "PASTURE",
-        "animal": "COW",
-        "placed_day": 0,
-        "yield_units": 0,
+        "animal": "SHEEP",
+        "placed_day": 11,
+        "yield_units": 1,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
         "fertilizer_available": true,
-        "pending_care_bonus": 1
+        "pending_care_bonus": 0
       },
       "task_valid_from_pre_state": null,
       "board_changes": {
@@ -217374,8 +218082,8 @@
         "created_weeds": []
       },
       "cash_flow": {
-        "money_before": 88602.0,
-        "money_after": 88602.0,
+        "money_before": 88600.0,
+        "money_after": 88600.0,
         "net_money_delta": 0.0,
         "successful_seed_purchases": {},
         "seed_spend": 0,
@@ -217386,10 +218094,10 @@
         "unsupported_orders": []
       },
       "state_before": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
-          4,
-          4
+          7,
+          3
         ],
         "wheat_seeds": 0,
         "shed_wheat": 0,
@@ -217410,9 +218118,9 @@
         ]
       },
       "state_after": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
-          4,
+          7,
           4
         ],
         "wheat_seeds": 0,
@@ -217433,7 +218141,14 @@
           "BRUNCH_SPOT"
         ]
       },
-      "next_observed_task": null
+      "next_observed_task": {
+        "operation": "HARVEST",
+        "position": [
+          7,
+          4
+        ],
+        "record_index": 711
+      }
     },
     {
       "record_index": 711,
@@ -217443,23 +218158,60 @@
       "day": 29,
       "hour": 14,
       "farmer_action": [
-        "PASS"
+        "HARVEST"
       ],
-      "farmer_operation": "PASS",
-      "hands_actions": [],
+      "farmer_operation": "HARVEST",
+      "hands_actions": [
+        [
+          "COLLECT_FERTILIZER"
+        ],
+        [
+          "COLLECT_FERTILIZER"
+        ]
+      ],
       "worker_actions": [
         {
           "worker": "farmer",
           "action": [
-            "PASS"
+            "HARVEST"
           ],
-          "operation": "PASS",
+          "operation": "HARVEST",
           "position_before": [
-            4,
+            7,
             4
           ],
           "position_after": [
-            4,
+            7,
+            4
+          ]
+        },
+        {
+          "worker": "hand_1",
+          "action": [
+            "COLLECT_FERTILIZER"
+          ],
+          "operation": "COLLECT_FERTILIZER",
+          "position_before": [
+            3,
+            3
+          ],
+          "position_after": [
+            3,
+            3
+          ]
+        },
+        {
+          "worker": "hand_2",
+          "action": [
+            "COLLECT_FERTILIZER"
+          ],
+          "operation": "COLLECT_FERTILIZER",
+          "position_before": [
+            6,
+            4
+          ],
+          "position_after": [
+            6,
             4
           ]
         }
@@ -217473,45 +218225,45 @@
       },
       "market_orders": [],
       "position_before": [
-        4,
+        7,
         4
       ],
       "position_after": [
-        4,
+        7,
         4
       ],
       "actual_movement_distance": 0,
       "tile_before": {
         "kind": "PASTURE",
-        "animal": "COW",
-        "placed_day": 0,
-        "yield_units": 0,
+        "animal": "SHEEP",
+        "placed_day": 11,
+        "yield_units": 1,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
         "fertilizer_available": true,
-        "pending_care_bonus": 1
+        "pending_care_bonus": 0
       },
       "tile_after": {
         "kind": "PASTURE",
-        "animal": "COW",
-        "placed_day": 0,
+        "animal": "SHEEP",
+        "placed_day": 11,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
         "fertilizer_available": true,
-        "pending_care_bonus": 1
+        "pending_care_bonus": 0
       },
-      "task_valid_from_pre_state": null,
+      "task_valid_from_pre_state": true,
       "board_changes": {
         "created_plants": [],
         "removed_plants": [],
         "created_weeds": []
       },
       "cash_flow": {
-        "money_before": 88602.0,
-        "money_after": 88602.0,
+        "money_before": 88600.0,
+        "money_after": 88600.0,
         "net_money_delta": 0.0,
         "successful_seed_purchases": {},
         "seed_spend": 0,
@@ -217522,9 +218274,9 @@
         "unsupported_orders": []
       },
       "state_before": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
-          4,
+          7,
           4
         ],
         "wheat_seeds": 0,
@@ -217546,9 +218298,9 @@
         ]
       },
       "state_after": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
-          4,
+          7,
           4
         ],
         "wheat_seeds": 0,
@@ -217579,23 +218331,60 @@
       "day": 29,
       "hour": 15,
       "farmer_action": [
-        "PASS"
+        "COLLECT_FERTILIZER"
       ],
-      "farmer_operation": "PASS",
-      "hands_actions": [],
+      "farmer_operation": "COLLECT_FERTILIZER",
+      "hands_actions": [
+        [
+          "SOUTH"
+        ],
+        [
+          "WEST"
+        ]
+      ],
       "worker_actions": [
         {
           "worker": "farmer",
           "action": [
-            "PASS"
+            "COLLECT_FERTILIZER"
           ],
-          "operation": "PASS",
+          "operation": "COLLECT_FERTILIZER",
           "position_before": [
-            4,
+            7,
             4
           ],
           "position_after": [
-            4,
+            7,
+            4
+          ]
+        },
+        {
+          "worker": "hand_1",
+          "action": [
+            "SOUTH"
+          ],
+          "operation": "SOUTH",
+          "position_before": [
+            3,
+            3
+          ],
+          "position_after": [
+            3,
+            4
+          ]
+        },
+        {
+          "worker": "hand_2",
+          "action": [
+            "WEST"
+          ],
+          "operation": "WEST",
+          "position_before": [
+            6,
+            4
+          ],
+          "position_after": [
+            5,
             4
           ]
         }
@@ -217609,35 +218398,35 @@
       },
       "market_orders": [],
       "position_before": [
-        4,
+        7,
         4
       ],
       "position_after": [
-        4,
+        7,
         4
       ],
       "actual_movement_distance": 0,
       "tile_before": {
         "kind": "PASTURE",
-        "animal": "COW",
-        "placed_day": 0,
+        "animal": "SHEEP",
+        "placed_day": 11,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
         "fertilizer_available": true,
-        "pending_care_bonus": 1
+        "pending_care_bonus": 0
       },
       "tile_after": {
         "kind": "PASTURE",
-        "animal": "COW",
-        "placed_day": 0,
+        "animal": "SHEEP",
+        "placed_day": 11,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
-        "fertilizer_available": true,
-        "pending_care_bonus": 1
+        "fertilizer_available": false,
+        "pending_care_bonus": 0
       },
       "task_valid_from_pre_state": null,
       "board_changes": {
@@ -217646,8 +218435,8 @@
         "created_weeds": []
       },
       "cash_flow": {
-        "money_before": 88602.0,
-        "money_after": 88602.0,
+        "money_before": 88600.0,
+        "money_after": 88600.0,
         "net_money_delta": 0.0,
         "successful_seed_purchases": {},
         "seed_spend": 0,
@@ -217658,9 +218447,9 @@
         "unsupported_orders": []
       },
       "state_before": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
-          4,
+          7,
           4
         ],
         "wheat_seeds": 0,
@@ -217682,9 +218471,9 @@
         ]
       },
       "state_after": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
-          4,
+          7,
           4
         ],
         "wheat_seeds": 0,
@@ -217715,19 +218504,56 @@
       "day": 29,
       "hour": 16,
       "farmer_action": [
-        "PASS"
+        "WEST"
       ],
-      "farmer_operation": "PASS",
-      "hands_actions": [],
+      "farmer_operation": "WEST",
+      "hands_actions": [
+        [
+          "COLLECT_FERTILIZER"
+        ],
+        [
+          "WEST"
+        ]
+      ],
       "worker_actions": [
         {
           "worker": "farmer",
           "action": [
-            "PASS"
+            "WEST"
           ],
-          "operation": "PASS",
+          "operation": "WEST",
           "position_before": [
-            4,
+            7,
+            4
+          ],
+          "position_after": [
+            6,
+            4
+          ]
+        },
+        {
+          "worker": "hand_1",
+          "action": [
+            "COLLECT_FERTILIZER"
+          ],
+          "operation": "COLLECT_FERTILIZER",
+          "position_before": [
+            3,
+            4
+          ],
+          "position_after": [
+            3,
+            4
+          ]
+        },
+        {
+          "worker": "hand_2",
+          "action": [
+            "WEST"
+          ],
+          "operation": "WEST",
+          "position_before": [
+            5,
             4
           ],
           "position_after": [
@@ -217745,35 +218571,35 @@
       },
       "market_orders": [],
       "position_before": [
-        4,
+        7,
         4
       ],
       "position_after": [
-        4,
+        6,
         4
       ],
-      "actual_movement_distance": 0,
+      "actual_movement_distance": 1,
       "tile_before": {
         "kind": "PASTURE",
-        "animal": "COW",
-        "placed_day": 0,
+        "animal": "SHEEP",
+        "placed_day": 11,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
-        "fertilizer_available": true,
-        "pending_care_bonus": 1
+        "fertilizer_available": false,
+        "pending_care_bonus": 0
       },
       "tile_after": {
         "kind": "PASTURE",
-        "animal": "COW",
-        "placed_day": 0,
+        "animal": "SHEEP",
+        "placed_day": 9,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
-        "fertilizer_available": true,
-        "pending_care_bonus": 1
+        "fertilizer_available": false,
+        "pending_care_bonus": 2
       },
       "task_valid_from_pre_state": null,
       "board_changes": {
@@ -217782,8 +218608,8 @@
         "created_weeds": []
       },
       "cash_flow": {
-        "money_before": 88602.0,
-        "money_after": 88602.0,
+        "money_before": 88600.0,
+        "money_after": 88600.0,
         "net_money_delta": 0.0,
         "successful_seed_purchases": {},
         "seed_spend": 0,
@@ -217794,9 +218620,9 @@
         "unsupported_orders": []
       },
       "state_before": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
-          4,
+          7,
           4
         ],
         "wheat_seeds": 0,
@@ -217818,9 +218644,9 @@
         ]
       },
       "state_after": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
-          4,
+          6,
           4
         ],
         "wheat_seeds": 0,
@@ -217841,7 +218667,14 @@
           "BRUNCH_SPOT"
         ]
       },
-      "next_observed_task": null
+      "next_observed_task": {
+        "operation": "COLLECT_FERTILIZER",
+        "position": [
+          5,
+          4
+        ],
+        "record_index": 715
+      }
     },
     {
       "record_index": 714,
@@ -217851,17 +218684,54 @@
       "day": 29,
       "hour": 17,
       "farmer_action": [
-        "PASS"
+        "WEST"
       ],
-      "farmer_operation": "PASS",
-      "hands_actions": [],
+      "farmer_operation": "WEST",
+      "hands_actions": [
+        [
+          "WEST"
+        ],
+        [
+          "COLLECT_FERTILIZER"
+        ]
+      ],
       "worker_actions": [
         {
           "worker": "farmer",
           "action": [
-            "PASS"
+            "WEST"
           ],
-          "operation": "PASS",
+          "operation": "WEST",
+          "position_before": [
+            6,
+            4
+          ],
+          "position_after": [
+            5,
+            4
+          ]
+        },
+        {
+          "worker": "hand_1",
+          "action": [
+            "WEST"
+          ],
+          "operation": "WEST",
+          "position_before": [
+            3,
+            4
+          ],
+          "position_after": [
+            2,
+            4
+          ]
+        },
+        {
+          "worker": "hand_2",
+          "action": [
+            "COLLECT_FERTILIZER"
+          ],
+          "operation": "COLLECT_FERTILIZER",
           "position_before": [
             4,
             4
@@ -217881,29 +218751,29 @@
       },
       "market_orders": [],
       "position_before": [
-        4,
+        6,
         4
       ],
       "position_after": [
-        4,
+        5,
         4
       ],
-      "actual_movement_distance": 0,
+      "actual_movement_distance": 1,
       "tile_before": {
         "kind": "PASTURE",
-        "animal": "COW",
-        "placed_day": 0,
+        "animal": "SHEEP",
+        "placed_day": 9,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
-        "fertilizer_available": true,
-        "pending_care_bonus": 1
+        "fertilizer_available": false,
+        "pending_care_bonus": 2
       },
       "tile_after": {
         "kind": "PASTURE",
-        "animal": "COW",
-        "placed_day": 0,
+        "animal": "SHEEP",
+        "placed_day": 7,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
@@ -217918,8 +218788,8 @@
         "created_weeds": []
       },
       "cash_flow": {
-        "money_before": 88602.0,
-        "money_after": 88602.0,
+        "money_before": 88600.0,
+        "money_after": 88600.0,
         "net_money_delta": 0.0,
         "successful_seed_purchases": {},
         "seed_spend": 0,
@@ -217930,9 +218800,9 @@
         "unsupported_orders": []
       },
       "state_before": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
-          4,
+          6,
           4
         ],
         "wheat_seeds": 0,
@@ -217954,9 +218824,9 @@
         ]
       },
       "state_after": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
-          4,
+          5,
           4
         ],
         "wheat_seeds": 0,
@@ -217977,7 +218847,14 @@
           "BRUNCH_SPOT"
         ]
       },
-      "next_observed_task": null
+      "next_observed_task": {
+        "operation": "COLLECT_FERTILIZER",
+        "position": [
+          5,
+          4
+        ],
+        "record_index": 715
+      }
     },
     {
       "record_index": 715,
@@ -217987,17 +218864,54 @@
       "day": 29,
       "hour": 18,
       "farmer_action": [
-        "PASS"
+        "COLLECT_FERTILIZER"
       ],
-      "farmer_operation": "PASS",
-      "hands_actions": [],
+      "farmer_operation": "COLLECT_FERTILIZER",
+      "hands_actions": [
+        [
+          "COLLECT_FERTILIZER"
+        ],
+        [
+          "DROP"
+        ]
+      ],
       "worker_actions": [
         {
           "worker": "farmer",
           "action": [
-            "PASS"
+            "COLLECT_FERTILIZER"
           ],
-          "operation": "PASS",
+          "operation": "COLLECT_FERTILIZER",
+          "position_before": [
+            5,
+            4
+          ],
+          "position_after": [
+            5,
+            4
+          ]
+        },
+        {
+          "worker": "hand_1",
+          "action": [
+            "COLLECT_FERTILIZER"
+          ],
+          "operation": "COLLECT_FERTILIZER",
+          "position_before": [
+            2,
+            4
+          ],
+          "position_after": [
+            2,
+            4
+          ]
+        },
+        {
+          "worker": "hand_2",
+          "action": [
+            "DROP"
+          ],
+          "operation": "DROP",
           "position_before": [
             4,
             4
@@ -218015,20 +218929,31 @@
         "created_animals": [],
         "created_structures": []
       },
-      "market_orders": [],
+      "market_orders": [
+        [
+          "SELL",
+          "WOOL",
+          1
+        ],
+        [
+          "SELL",
+          "FERTILIZER",
+          5
+        ]
+      ],
       "position_before": [
-        4,
+        5,
         4
       ],
       "position_after": [
-        4,
+        5,
         4
       ],
       "actual_movement_distance": 0,
       "tile_before": {
         "kind": "PASTURE",
-        "animal": "COW",
-        "placed_day": 0,
+        "animal": "SHEEP",
+        "placed_day": 7,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
@@ -218038,13 +218963,13 @@
       },
       "tile_after": {
         "kind": "PASTURE",
-        "animal": "COW",
-        "placed_day": 0,
+        "animal": "SHEEP",
+        "placed_day": 7,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
-        "fertilizer_available": true,
+        "fertilizer_available": false,
         "pending_care_bonus": 1
       },
       "task_valid_from_pre_state": null,
@@ -218054,21 +218979,21 @@
         "created_weeds": []
       },
       "cash_flow": {
-        "money_before": 88602.0,
-        "money_after": 88602.0,
-        "net_money_delta": 0.0,
+        "money_before": 88600.0,
+        "money_after": 89027.0,
+        "net_money_delta": 427.0,
         "successful_seed_purchases": {},
         "seed_spend": 0,
         "wheat_units_sold": 0,
-        "realized_sale_revenue": 0.0,
+        "realized_sale_revenue": 427.0,
         "average_wheat_sale_price": null,
         "accounting_supported": true,
         "unsupported_orders": []
       },
       "state_before": {
-        "money": 88602.0,
+        "money": 88600.0,
         "farmer": [
-          4,
+          5,
           4
         ],
         "wheat_seeds": 0,
@@ -218090,9 +219015,9 @@
         ]
       },
       "state_after": {
-        "money": 88602.0,
+        "money": 89027.0,
         "farmer": [
-          4,
+          5,
           4
         ],
         "wheat_seeds": 0,
@@ -218123,13 +219048,50 @@
       "day": 29,
       "hour": 19,
       "farmer_action": [
-        "PASS"
+        "DROP"
       ],
-      "farmer_operation": "PASS",
-      "hands_actions": [],
+      "farmer_operation": "DROP",
+      "hands_actions": [
+        [
+          "EAST"
+        ],
+        [
+          "PASS"
+        ]
+      ],
       "worker_actions": [
         {
           "worker": "farmer",
+          "action": [
+            "DROP"
+          ],
+          "operation": "DROP",
+          "position_before": [
+            5,
+            4
+          ],
+          "position_after": [
+            5,
+            4
+          ]
+        },
+        {
+          "worker": "hand_1",
+          "action": [
+            "EAST"
+          ],
+          "operation": "EAST",
+          "position_before": [
+            2,
+            4
+          ],
+          "position_after": [
+            3,
+            4
+          ]
+        },
+        {
+          "worker": "hand_2",
           "action": [
             "PASS"
           ],
@@ -218151,36 +219113,52 @@
         "created_animals": [],
         "created_structures": []
       },
-      "market_orders": [],
+      "market_orders": [
+        [
+          "SELL",
+          "MILK",
+          3
+        ],
+        [
+          "SELL",
+          "WOOL",
+          1
+        ],
+        [
+          "SELL",
+          "FERTILIZER",
+          2
+        ]
+      ],
       "position_before": [
-        4,
+        5,
         4
       ],
       "position_after": [
-        4,
+        5,
         4
       ],
       "actual_movement_distance": 0,
       "tile_before": {
         "kind": "PASTURE",
-        "animal": "COW",
-        "placed_day": 0,
+        "animal": "SHEEP",
+        "placed_day": 7,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
-        "fertilizer_available": true,
+        "fertilizer_available": false,
         "pending_care_bonus": 1
       },
       "tile_after": {
         "kind": "PASTURE",
-        "animal": "COW",
-        "placed_day": 0,
+        "animal": "SHEEP",
+        "placed_day": 7,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
-        "fertilizer_available": true,
+        "fertilizer_available": false,
         "pending_care_bonus": 1
       },
       "task_valid_from_pre_state": null,
@@ -218190,21 +219168,21 @@
         "created_weeds": []
       },
       "cash_flow": {
-        "money_before": 88602.0,
-        "money_after": 88602.0,
-        "net_money_delta": 0.0,
+        "money_before": 89027.0,
+        "money_after": 90167.0,
+        "net_money_delta": 1140.0,
         "successful_seed_purchases": {},
         "seed_spend": 0,
         "wheat_units_sold": 0,
-        "realized_sale_revenue": 0.0,
+        "realized_sale_revenue": 1140.0,
         "average_wheat_sale_price": null,
         "accounting_supported": true,
         "unsupported_orders": []
       },
       "state_before": {
-        "money": 88602.0,
+        "money": 89027.0,
         "farmer": [
-          4,
+          5,
           4
         ],
         "wheat_seeds": 0,
@@ -218226,9 +219204,9 @@
         ]
       },
       "state_after": {
-        "money": 88602.0,
+        "money": 90167.0,
         "farmer": [
-          4,
+          5,
           4
         ],
         "wheat_seeds": 0,
@@ -218262,10 +219240,47 @@
         "PASS"
       ],
       "farmer_operation": "PASS",
-      "hands_actions": [],
+      "hands_actions": [
+        [
+          "EAST"
+        ],
+        [
+          "PASS"
+        ]
+      ],
       "worker_actions": [
         {
           "worker": "farmer",
+          "action": [
+            "PASS"
+          ],
+          "operation": "PASS",
+          "position_before": [
+            5,
+            4
+          ],
+          "position_after": [
+            5,
+            4
+          ]
+        },
+        {
+          "worker": "hand_1",
+          "action": [
+            "EAST"
+          ],
+          "operation": "EAST",
+          "position_before": [
+            3,
+            4
+          ],
+          "position_after": [
+            4,
+            4
+          ]
+        },
+        {
+          "worker": "hand_2",
           "action": [
             "PASS"
           ],
@@ -218289,34 +219304,34 @@
       },
       "market_orders": [],
       "position_before": [
-        4,
+        5,
         4
       ],
       "position_after": [
-        4,
+        5,
         4
       ],
       "actual_movement_distance": 0,
       "tile_before": {
         "kind": "PASTURE",
-        "animal": "COW",
-        "placed_day": 0,
+        "animal": "SHEEP",
+        "placed_day": 7,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
-        "fertilizer_available": true,
+        "fertilizer_available": false,
         "pending_care_bonus": 1
       },
       "tile_after": {
         "kind": "PASTURE",
-        "animal": "COW",
-        "placed_day": 0,
+        "animal": "SHEEP",
+        "placed_day": 7,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
-        "fertilizer_available": true,
+        "fertilizer_available": false,
         "pending_care_bonus": 1
       },
       "task_valid_from_pre_state": null,
@@ -218326,8 +219341,8 @@
         "created_weeds": []
       },
       "cash_flow": {
-        "money_before": 88602.0,
-        "money_after": 88602.0,
+        "money_before": 90167.0,
+        "money_after": 90167.0,
         "net_money_delta": 0.0,
         "successful_seed_purchases": {},
         "seed_spend": 0,
@@ -218338,9 +219353,9 @@
         "unsupported_orders": []
       },
       "state_before": {
-        "money": 88602.0,
+        "money": 90167.0,
         "farmer": [
-          4,
+          5,
           4
         ],
         "wheat_seeds": 0,
@@ -218362,9 +219377,9 @@
         ]
       },
       "state_after": {
-        "money": 88602.0,
+        "money": 90167.0,
         "farmer": [
-          4,
+          5,
           4
         ],
         "wheat_seeds": 0,
@@ -218398,10 +219413,47 @@
         "PASS"
       ],
       "farmer_operation": "PASS",
-      "hands_actions": [],
+      "hands_actions": [
+        [
+          "DROP"
+        ],
+        [
+          "PASS"
+        ]
+      ],
       "worker_actions": [
         {
           "worker": "farmer",
+          "action": [
+            "PASS"
+          ],
+          "operation": "PASS",
+          "position_before": [
+            5,
+            4
+          ],
+          "position_after": [
+            5,
+            4
+          ]
+        },
+        {
+          "worker": "hand_1",
+          "action": [
+            "DROP"
+          ],
+          "operation": "DROP",
+          "position_before": [
+            4,
+            4
+          ],
+          "position_after": [
+            4,
+            4
+          ]
+        },
+        {
+          "worker": "hand_2",
           "action": [
             "PASS"
           ],
@@ -218423,36 +219475,47 @@
         "created_animals": [],
         "created_structures": []
       },
-      "market_orders": [],
+      "market_orders": [
+        [
+          "SELL",
+          "MILK",
+          1
+        ],
+        [
+          "SELL",
+          "FERTILIZER",
+          7
+        ]
+      ],
       "position_before": [
-        4,
+        5,
         4
       ],
       "position_after": [
-        4,
+        5,
         4
       ],
       "actual_movement_distance": 0,
       "tile_before": {
         "kind": "PASTURE",
-        "animal": "COW",
-        "placed_day": 0,
+        "animal": "SHEEP",
+        "placed_day": 7,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
-        "fertilizer_available": true,
+        "fertilizer_available": false,
         "pending_care_bonus": 1
       },
       "tile_after": {
         "kind": "PASTURE",
-        "animal": "COW",
-        "placed_day": 0,
+        "animal": "SHEEP",
+        "placed_day": 7,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
-        "fertilizer_available": true,
+        "fertilizer_available": false,
         "pending_care_bonus": 1
       },
       "task_valid_from_pre_state": null,
@@ -218462,21 +219525,21 @@
         "created_weeds": []
       },
       "cash_flow": {
-        "money_before": 88602.0,
-        "money_after": 88602.0,
-        "net_money_delta": 0.0,
+        "money_before": 90167.0,
+        "money_after": 90685.0,
+        "net_money_delta": 518.0,
         "successful_seed_purchases": {},
         "seed_spend": 0,
         "wheat_units_sold": 0,
-        "realized_sale_revenue": 0.0,
+        "realized_sale_revenue": 518.0,
         "average_wheat_sale_price": null,
         "accounting_supported": true,
         "unsupported_orders": []
       },
       "state_before": {
-        "money": 88602.0,
+        "money": 90167.0,
         "farmer": [
-          4,
+          5,
           4
         ],
         "wheat_seeds": 0,
@@ -218498,9 +219561,9 @@
         ]
       },
       "state_after": {
-        "money": 88602.0,
+        "money": 90685.0,
         "farmer": [
-          4,
+          5,
           4
         ],
         "wheat_seeds": 0,
@@ -218534,10 +219597,47 @@
         "PASS"
       ],
       "farmer_operation": "PASS",
-      "hands_actions": [],
+      "hands_actions": [
+        [
+          "PASS"
+        ],
+        [
+          "PASS"
+        ]
+      ],
       "worker_actions": [
         {
           "worker": "farmer",
+          "action": [
+            "PASS"
+          ],
+          "operation": "PASS",
+          "position_before": [
+            5,
+            4
+          ],
+          "position_after": [
+            5,
+            4
+          ]
+        },
+        {
+          "worker": "hand_1",
+          "action": [
+            "PASS"
+          ],
+          "operation": "PASS",
+          "position_before": [
+            4,
+            4
+          ],
+          "position_after": [
+            4,
+            4
+          ]
+        },
+        {
+          "worker": "hand_2",
           "action": [
             "PASS"
           ],
@@ -218561,34 +219661,34 @@
       },
       "market_orders": [],
       "position_before": [
-        4,
+        5,
         4
       ],
       "position_after": [
-        4,
+        5,
         4
       ],
       "actual_movement_distance": 0,
       "tile_before": {
         "kind": "PASTURE",
-        "animal": "COW",
-        "placed_day": 0,
+        "animal": "SHEEP",
+        "placed_day": 7,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
-        "fertilizer_available": true,
+        "fertilizer_available": false,
         "pending_care_bonus": 1
       },
       "tile_after": {
         "kind": "PASTURE",
-        "animal": "COW",
-        "placed_day": 0,
+        "animal": "SHEEP",
+        "placed_day": 7,
         "yield_units": 0,
         "fed_today": false,
         "consecutive_unfed": 1,
         "cared_today": false,
-        "fertilizer_available": true,
+        "fertilizer_available": false,
         "pending_care_bonus": 1
       },
       "task_valid_from_pre_state": null,
@@ -218598,8 +219698,8 @@
         "created_weeds": []
       },
       "cash_flow": {
-        "money_before": 88602.0,
-        "money_after": 88602.0,
+        "money_before": 90685.0,
+        "money_after": 90685.0,
         "net_money_delta": 0.0,
         "successful_seed_purchases": {},
         "seed_spend": 0,
@@ -218610,9 +219710,9 @@
         "unsupported_orders": []
       },
       "state_before": {
-        "money": 88602.0,
+        "money": 90685.0,
         "farmer": [
-          4,
+          5,
           4
         ],
         "wheat_seeds": 0,
@@ -218634,9 +219734,9 @@
         ]
       },
       "state_after": {
-        "money": 88602.0,
+        "money": 90685.0,
         "farmer": [
-          4,
+          5,
           4
         ],
         "wheat_seeds": 0,
