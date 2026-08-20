@@ -334,6 +334,22 @@ All 64 plant actions were watered in the same turn. Row 0 had five harvested
 crop cycles and three later-lifecycle failures; measured harvest-priority and
 row-reservation alternatives reduced profit and were rejected.
 
+The next research agent, `experimental_lifecycle_compact_agent.py`, replaces
+global crop retargeting with deterministic patch ownership and lifecycle
+deadlines. Ten hands are divided into six animal specialists, two crop pairs,
+and one floater. Age-1 wheat watering is skipped safely; ages 2-4 are watered
+for yield; planting is admitted only within per-pair capacity; idle workers may
+assist animals only within two tiles.
+
+On fresh seeds 80-89 it averages 68,752.05 versus submitted NE's 70,781.85, but
+records **0 weeds versus 301**, harvests 1,131/1,180 cycles versus 818/1,276,
+and uses 31.3% fewer movement turns. It wins 19/20 direct games against the
+submitted NE source and 17/20 against investment. It is packaged for review at
+`submission-lifecycle/main.py` but is not submitted.
+
+Review replay:
+`http://127.0.0.1:8765/captioned_replay.html?replay=artifacts%2Fv1327-lifecycle-compact-vs-starter-seed30-720.html&audit=artifacts%2Fv1327-lifecycle-compact-vs-starter-seed30-720-audit.json`.
+
 At the user's explicit request, the exact validated policy was submitted as
 Kaggle submission `55630744`. Its standalone package is
 `submission-zoned-expansion/main.py`, SHA-256

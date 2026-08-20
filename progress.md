@@ -454,6 +454,86 @@ has the stronger mean and direct-match record but the weaker standalone floor.
 The next justified discussion is demand-aware product/crop allocation and
 worker routing, not another unconditional land purchase.
 
+### Deterministic Lifecycle Crews And Admission Control
+
+The submitted NE replay still lost 270 of 1,240 development crop cycles to
+later weeds. We tested the user's hypothesis that workers should retain primary
+roles and crops should be admitted only when their owners can complete them.
+This work is separate from live submission `55630744`; the live package was not
+changed or replaced.
+
+The simulator rules answer two timing questions precisely:
+
+- a fresh crop starts at `consecutive_unwatered = 1`, so planting-day water is
+  mandatory;
+- wheat age 1 is outside its yield window, so watering can be skipped when
+  `consecutive_unwatered == 0`;
+- wheat ages 2-4 are its productive water window and should be watered;
+- mature wheat must be harvested before age-5 decay removes its yield; and
+- animals are different: skipping feed forfeits that day's CARE bonus and moves
+  the animal toward escape, so daily feed remains economically justified.
+
+The selected `experimental_lifecycle_compact_agent.py` uses:
+
+- ten daily hands, matching the submitted NE capital footprint;
+- six primary animal specialists;
+- two crop pairs with deterministic vertical patch ownership;
+- one floater;
+- paired same-turn planting and watering;
+- five wheat slots per pair by default and six only after public wheat demand
+  (two wheat-consuming shop instances or price at least 35);
+- no long-distance optional retargeting; an idle crop worker helps an animal
+  only within Manhattan distance two; and
+- late hiring taper after crop and animal deadlines.
+
+Fresh holdout seeds 80-89, both positions:
+
+| Metric | Submitted NE | Lifecycle compact |
+| --- | ---: | ---: |
+| Wins | 20 / 20 | 20 / 20 |
+| Mean coins | 70,781.85 | 68,752.05 |
+| Minimum / maximum | 56,832 / 89,648 | 40,397 / 88,680 |
+| Crop cycles | 1,276 | 1,180 |
+| Harvested cycles | 818 | 1,131 |
+| Weeded cycles | 301 | **0** |
+| Unfinished cycles | 157 | 49 |
+| First-water misses | 0 | 0 |
+| Animal losses | 0 | 0 |
+| Worker movement turns | 83,408 | 57,337 |
+
+Lifecycle compact trails by 2,029.8 mean standalone coins, but it eliminates
+all 301 holdout weeds, harvests 313 more crop cycles, and cuts movement 31.3%.
+More importantly for the shared market, it wins 19/20 direct development games
+against submitted NE and 17/20 against pressure-aware investment.
+
+The result also disproves several tempting shortcuts:
+
+- buying SW with unchanged workload scored 73,902 versus the 80,662 lifecycle
+  NE gate;
+- replacing four wheat slots with four fully managed SW melons scored 55,514
+  after liquidation, so lower land and melons did not repay their cost;
+- seven wheat per pair still had zero weeds but fell to 59,457.5 from self-glut;
+- eight per pair reintroduced weeds and fell to 47,398;
+- twelve hands controlled crops perfectly but lost 0/20 direct games to the
+  submitted NE policy because its labor and wheat market footprint were larger;
+  and
+- five animal specialists underserviced milk/wool, while six plus nearby idle
+  assistance recovered animal output without global wandering.
+
+Against the captured rank-one script, lifecycle compact still loses both games,
+12,684 versus 60,954 mean. The remaining frontier is diversified product and
+market timing, not more unconditional land or wheat.
+
+The exact review replay scores 84,437 versus 3,736 and is captioned at:
+
+`http://127.0.0.1:8765/captioned_replay.html?replay=artifacts%2Fv1327-lifecycle-compact-vs-starter-seed30-720.html&audit=artifacts%2Fv1327-lifecycle-compact-vs-starter-seed30-720-audit.json`.
+
+The review package `submission-lifecycle/main.py` is Kaggle-loader valid and
+source-equivalent across all 720 records. Package SHA-256:
+`16cffc4af515de728234ab03babbf930cfa14ec60ac40d60be75253ed4c933d6`.
+It is not submitted. Keep submitted NE live until the user reviews this
+standalone-versus-head-to-head tradeoff.
+
 ### One-Goose Candidate: Promotion Evidence
 
 After the first v9 Kaggle submission validated at rating 600, we isolated one

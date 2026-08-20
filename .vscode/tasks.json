@@ -327,6 +327,66 @@
 			"isBackground": false,
 			"problemMatcher": [],
 			"group": "test"
+		},
+		{
+			"label": "Run lifecycle submitted holdout control",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_zoned_expansion_agent.py --opponent starter --seed-start 80 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-submitted-ne-holdout-seeds80-89.json",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Run final lifecycle holdout",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_lifecycle_compact_agent.py --opponent starter --seed-start 80 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-lifecycle-compact-final-holdout-seeds80-89.json",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Generate captioned lifecycle replay",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe run_match.py --agent experimental_lifecycle_compact_agent.py --opponent starter --steps 720 --seed 30 --replay artifacts\\v1327-lifecycle-compact-vs-starter-seed30-720-replay.json --html artifacts\\v1327-lifecycle-compact-vs-starter-seed30-720.html; ${workspaceFolder}\\.conda\\python.exe audit_episode.py artifacts\\v1327-lifecycle-compact-vs-starter-seed30-720-replay.json --player 0 --agent experimental_lifecycle_compact_agent.py --output artifacts\\v1327-lifecycle-compact-vs-starter-seed30-720-audit.json",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Build lifecycle review package",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe prepare_lifecycle_submission.py; ${workspaceFolder}\\.conda\\python.exe validate_submission.py submission-lifecycle\\main.py --seed 30",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Commit lifecycle implementation",
+			"type": "shell",
+			"command": "C:\\Progra~1\\Git\\cmd\\git.exe add experimental_lifecycle_agent.py experimental_lifecycle_compact_agent.py test_experimental_lifecycle_agent.py benchmark.py test_benchmark.py prepare_lifecycle_submission.py test_prepare_lifecycle_submission.py submission-lifecycle\\main.py submission-lifecycle\\manifest.json; C:\\Progra~1\\Git\\cmd\\git.exe diff --cached --check; C:\\Progra~1\\Git\\cmd\\git.exe commit -m 'feat: add deterministic lifecycle crews'",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Commit lifecycle evidence",
+			"type": "shell",
+			"command": "C:\\Progra~1\\Git\\cmd\\git.exe add artifacts\\benchmarks\\v1327-lifecycle-compact-final-holdout-seeds80-89.json artifacts\\benchmarks\\v1327-submitted-ne-holdout-seeds80-89.json artifacts\\benchmarks\\v1327-lifecycle-compact-nearassist-vs-submitted-ne-seeds30-39.json artifacts\\benchmarks\\v1327-lifecycle-compact-nearassist-vs-investment-seeds30-39.json artifacts\\benchmarks\\v1327-lifecycle-compact-vs-rank-one-script-original-seed.json artifacts\\benchmarks\\v1327-lifecycle-cap6-land2-seed30-gate.json artifacts\\benchmarks\\v1327-lifecycle-melon4-sell-land2-seed30-gate.json artifacts\\benchmarks\\v1327-lifecycle-animal7-pairs6-valid-seed30-gate.json artifacts\\benchmarks\\v1327-lifecycle-animal7-pairs7-valid-seed30-gate.json artifacts\\benchmarks\\v1327-lifecycle-animal7-pairs8-valid-seed30-gate.json artifacts\\v1327-lifecycle-compact-vs-starter-seed30-720-replay.json artifacts\\v1327-lifecycle-compact-vs-starter-seed30-720.html artifacts\\v1327-lifecycle-compact-vs-starter-seed30-720-audit.json; C:\\Progra~1\\Git\\cmd\\git.exe commit -m 'data: preserve lifecycle strategy evidence'",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Commit lifecycle docs",
+			"type": "shell",
+			"command": "C:\\Progra~1\\Git\\cmd\\git.exe add README.md progress.md strategy.json .vscode\\tasks.json; C:\\Progra~1\\Git\\cmd\\git.exe diff --cached --check; C:\\Progra~1\\Git\\cmd\\git.exe commit -m 'docs: record lifecycle strategy results'",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Push lifecycle research",
+			"type": "shell",
+			"command": "C:\\Progra~1\\Git\\cmd\\git.exe push origin main",
+			"isBackground": false,
+			"problemMatcher": []
 		}
 	]
 }

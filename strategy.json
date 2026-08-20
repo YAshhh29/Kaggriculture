@@ -859,6 +859,79 @@
     },
     "decision": "keep no-land as safer research control; NE was submitted at explicit user request as submission 55630744; reject unconditional all-land expansion; next discussion is demand-aware product, crop, labor, and routing allocation before implementation"
   },
+  "lifecycle_research": {
+    "status": "holdout and direct-match validated; packaged for review; not submitted",
+    "core_agent": "experimental_lifecycle_agent.py",
+    "agent": "experimental_lifecycle_compact_agent.py",
+    "combined_source_sha256": "c01130e545981764a019f26bb5b992921247587a732ef48c214577fa76b0a852",
+    "package": "submission-lifecycle/main.py",
+    "package_sha256": "16cffc4af515de728234ab03babbf930cfa14ec60ac40d60be75253ed4c933d6",
+    "package_equivalence": {
+      "records": 720,
+      "action_mismatches": 0,
+      "source_reward": 84437,
+      "package_reward": 84437
+    },
+    "timing_rules": {
+      "planting_day": "paired PLANT and WATER in one transition because a fresh unwatered crop dies at that night refresh",
+      "wheat_age_1": "skip watering when consecutive_unwatered is zero because age 1 gives no yield bonus",
+      "wheat_ages_2_to_4": "water for yield; rescue immediately whenever consecutive_unwatered reaches one",
+      "wheat_harvest": "harvest mature owned crops before their age-5 decay deadline",
+      "animals": "feed daily to preserve CARE production; only escape-risk feed may override crew ownership globally"
+    },
+    "crew_model": {
+      "daily_hands": 10,
+      "animal_specialists": 6,
+      "crop_pairs": 2,
+      "floater": 1,
+      "patch_ownership": "deterministic vertical tile bands derived from worker slot and tile x coordinate",
+      "nearby_assistance": "idle crop/floater workers may service an animal only within Manhattan distance two; no optional long-distance retarget",
+      "admission": "five wheat per pair by default; six only after two public wheat-demand shops or wheat price at least 35",
+      "endgame_hiring": "taper after crop and animal service deadlines"
+    },
+    "fresh_holdout": {
+      "seeds": "80-89, both positions",
+      "games": 20,
+      "wins": 20,
+      "mean_coins": 68752.05,
+      "min_coins": 40397,
+      "max_coins": 88680,
+      "crop_cycles": 1180,
+      "harvested_cycles": 1131,
+      "weeded_cycles": 0,
+      "unfinished_cycles": 49,
+      "first_watering_misses": 0,
+      "animal_losses": 0,
+      "report": "artifacts/benchmarks/v1327-lifecycle-compact-final-holdout-seeds80-89.json"
+    },
+    "submitted_ne_holdout_control": {
+      "mean_coins": 70781.85,
+      "min_coins": 56832,
+      "max_coins": 89648,
+      "crop_cycles": 1276,
+      "harvested_cycles": 818,
+      "weeded_cycles": 301,
+      "unfinished_cycles": 157,
+      "movement_turns": 83408,
+      "report": "artifacts/benchmarks/v1327-submitted-ne-holdout-seeds80-89.json"
+    },
+    "direct_matches": {
+      "vs_submitted_ne": {"wins": 19, "losses": 1, "mean_coins": 46970.5, "opponent_mean": 44866.1},
+      "vs_investment": {"wins": 17, "losses": 3, "mean_coins": 47424.2, "opponent_mean": 35649.85},
+      "rank_one_script": {"wins": 0, "losses": 2, "mean_coins": 12684, "script_mean": 60954}
+    },
+    "rejections": {
+      "sw_land_without_new_work": {"seed_30_mean": 73902, "reason": "land cost and route dilution without productive use"},
+      "four_sw_melons": {"seed_30_mean": 55514, "reason": "long occupancy and lower wheat throughput did not repay SW land"},
+      "seven_wheat_per_pair": {"seed_30_mean": 59457.5, "reason": "wheat glut reduced value despite zero weeds"},
+      "eight_wheat_per_pair": {"seed_30_mean": 47398, "reason": "market glut plus three weeds crossed care capacity"},
+      "twelve_hands": {"reason": "excellent standalone lifecycle control but lost 0-20 to submitted NE due higher labor and wheat market footprint"},
+      "five_animal_specialists": {"seed_30_mean": 52479, "reason": "insufficient milk and wool service"},
+      "eleven_hands": {"seed_30_mean": 82211, "reason": "good midpoint but ten-hand nearby-assist candidate was cheaper and stronger on seed 30"}
+    },
+    "review_replay": "http://127.0.0.1:8765/captioned_replay.html?replay=artifacts%2Fv1327-lifecycle-compact-vs-starter-seed30-720.html&audit=artifacts%2Fv1327-lifecycle-compact-vs-starter-seed30-720-audit.json",
+    "decision": "keep submitted NE live; retain lifecycle compact as a separate packaged challenger because it eliminates crop waste and wins direct matchups but trails submitted NE by 2029.8 mean coins on fresh standalone holdout; do not submit without explicit review"
+  },
   "leaderboard_replay_scouting": {
     "checked_at": "2026-08-19",
     "leader_team": "カワシギ",
