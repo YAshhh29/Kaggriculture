@@ -345,6 +345,38 @@
 			"group": "test"
 		},
 		{
+			"label": "Gate lifecycle final footprint",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe -m unittest test_experimental_lifecycle_agent.py -v; ${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_lifecycle_compact_agent.py --opponent starter --seed-start 30 --seed-count 1 --steps 720 --output artifacts\\benchmarks\\v1327-lifecycle-compact-finalfootprint-seed30-gate.json",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Run lifecycle final footprint holdout",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_lifecycle_compact_agent.py --opponent starter --seed-start 80 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-lifecycle-finalfootprint-holdout-seeds80-89.json",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Run lifecycle final footprint versus NE",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_lifecycle_compact_agent.py --opponent experimental_zoned_expansion_agent.py --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-lifecycle-finalfootprint-vs-submitted-ne-seeds30-39.json",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
+			"label": "Run lifecycle final footprint versus investment",
+			"type": "shell",
+			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_lifecycle_compact_agent.py --opponent experimental_investment_agent.py --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-lifecycle-finalfootprint-vs-investment-seeds30-39.json",
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "test"
+		},
+		{
 			"label": "Generate captioned lifecycle replay",
 			"type": "shell",
 			"command": "${workspaceFolder}\\.conda\\python.exe run_match.py --agent experimental_lifecycle_compact_agent.py --opponent starter --steps 720 --seed 30 --replay artifacts\\v1327-lifecycle-compact-vs-starter-seed30-720-replay.json --html artifacts\\v1327-lifecycle-compact-vs-starter-seed30-720.html; ${workspaceFolder}\\.conda\\python.exe audit_episode.py artifacts\\v1327-lifecycle-compact-vs-starter-seed30-720-replay.json --player 0 --agent experimental_lifecycle_compact_agent.py --output artifacts\\v1327-lifecycle-compact-vs-starter-seed30-720-audit.json",
@@ -385,6 +417,13 @@
 			"label": "Push lifecycle research",
 			"type": "shell",
 			"command": "C:\\Progra~1\\Git\\cmd\\git.exe push origin main",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Commit lifecycle footprint correction",
+			"type": "shell",
+			"command": "C:\\Progra~1\\Git\\cmd\\git.exe add experimental_lifecycle_agent.py test_experimental_lifecycle_agent.py submission-lifecycle\\main.py submission-lifecycle\\manifest.json artifacts\\benchmarks\\v1327-lifecycle-finalfootprint-holdout-seeds80-89.json artifacts\\benchmarks\\v1327-lifecycle-finalfootprint-vs-submitted-ne-seeds30-39.json artifacts\\benchmarks\\v1327-lifecycle-finalfootprint-vs-investment-seeds30-39.json artifacts\\v1327-lifecycle-compact-vs-starter-seed30-720-replay.json artifacts\\v1327-lifecycle-compact-vs-starter-seed30-720.html artifacts\\v1327-lifecycle-compact-vs-starter-seed30-720-audit.json README.md progress.md strategy.json .vscode\\tasks.json; C:\\Progra~1\\Git\\cmd\\git.exe diff --cached --check; C:\\Progra~1\\Git\\cmd\\git.exe commit -m 'fix: reserve future livestock footprint'",
 			"isBackground": false,
 			"problemMatcher": []
 		}

@@ -491,20 +491,22 @@ Fresh holdout seeds 80-89, both positions:
 | Metric | Submitted NE | Lifecycle compact |
 | --- | ---: | ---: |
 | Wins | 20 / 20 | 20 / 20 |
-| Mean coins | 70,781.85 | 68,752.05 |
-| Minimum / maximum | 56,832 / 89,648 | 40,397 / 88,680 |
-| Crop cycles | 1,276 | 1,180 |
-| Harvested cycles | 818 | 1,131 |
+| Mean coins | 70,781.85 | 68,895.55 |
+| Minimum / maximum | 56,832 / 89,648 | 50,083 / 88,038 |
+| Crop cycles | 1,276 | 1,144 |
+| Harvested cycles | 818 | 1,144 |
 | Weeded cycles | 301 | **0** |
-| Unfinished cycles | 157 | 49 |
+| Unfinished cycles | 157 | **0** |
 | First-water misses | 0 | 0 |
 | Animal losses | 0 | 0 |
 | Worker movement turns | 83,408 | 57,337 |
 
-Lifecycle compact trails by 2,029.8 mean standalone coins, but it eliminates
-all 301 holdout weeds, harvests 313 more crop cycles, and cuts movement 31.3%.
-More importantly for the shared market, it wins 19/20 direct development games
-against submitted NE and 17/20 against pressure-aware investment.
+Lifecycle compact trails by 1,886.3 mean standalone coins, but it completes
+every admitted holdout crop, eliminates all 301 weeds and 157 unfinished
+cycles, harvests 326 more crop cycles, and cuts movement by roughly one third.
+More importantly for the shared market, the final footprint-reserved version
+wins 18/20 direct development games against submitted NE and 20/20 against
+pressure-aware investment.
 
 The result also disproves several tempting shortcuts:
 
@@ -529,8 +531,9 @@ The exact review replay scores 84,437 versus 3,736 and is captioned at:
 `http://127.0.0.1:8765/captioned_replay.html?replay=artifacts%2Fv1327-lifecycle-compact-vs-starter-seed30-720.html&audit=artifacts%2Fv1327-lifecycle-compact-vs-starter-seed30-720-audit.json`.
 
 The review package `submission-lifecycle/main.py` is Kaggle-loader valid and
-source-equivalent across all 720 records. Package SHA-256:
-`16cffc4af515de728234ab03babbf930cfa14ec60ac40d60be75253ed4c933d6`.
+source-equivalent across all 720 records before the final footprint-only change;
+the rebuilt final package is loader-valid. Package SHA-256:
+`e5872cdef2359bb4f9748a6d810f404e68e4ba11eb53fabacbed54dd90d54cd6`.
 It is not submitted. Keep submitted NE live until the user reviews this
 standalone-versus-head-to-head tradeoff.
 

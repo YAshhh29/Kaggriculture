@@ -341,10 +341,11 @@ and one floater. Age-1 wheat watering is skipped safely; ages 2-4 are watered
 for yield; planting is admitted only within per-pair capacity; idle workers may
 assist animals only within two tiles.
 
-On fresh seeds 80-89 it averages 68,752.05 versus submitted NE's 70,781.85, but
-records **0 weeds versus 301**, harvests 1,131/1,180 cycles versus 818/1,276,
-and uses 31.3% fewer movement turns. It wins 19/20 direct games against the
-submitted NE source and 17/20 against investment. It is packaged for review at
+On fresh seeds 80-89 it averages 68,895.55 versus submitted NE's 70,781.85, but
+records **0 weeds and 0 unfinished cycles versus 301 and 157**, harvests every
+admitted cycle (1,144/1,144) versus 818/1,276, and uses roughly one-third fewer
+movement turns. The final footprint-reserved version wins 18/20 direct games
+against the submitted NE source and 20/20 against investment. It is packaged for review at
 `submission-lifecycle/main.py` but is not submitted.
 
 Review replay:

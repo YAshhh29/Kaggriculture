@@ -828,10 +828,11 @@ def decide(observation: dict[str, Any], max_wheat_per_pair: int=MAX_WHEAT_PER_PA
     hour = int(observation['hour'])
     target_wheat_tiles = max(0, _effective_pair_count(target_daily_hands, animal_crew_size) * max_wheat_per_pair)
     desired_plans = _staged_animal_plans(day, target_cows, target_sheep)
+    final_plans = _staged_animal_plans(29, target_cows, target_sheep)
     active_plans = _unlocked_animal_plans(desired_plans, farm)
     baseline = decide_wheat(observation, target_wheat_tiles=target_wheat_tiles, last_planting_day=LAST_WHEAT_PLANTING_DAY)
     baseline_market = _protect_feed_reserve(baseline['market'], active_plans, day, farm, private, True)
-    farmer_action, hands_actions = _lifecycle_worker_actions(active_plans, {plan['position'] for plan in desired_plans}, day, farm, private, max_wheat_per_pair, animal_crew_size)
+    farmer_action, hands_actions = _lifecycle_worker_actions(active_plans, {plan['position'] for plan in final_plans}, day, farm, private, max_wheat_per_pair, animal_crew_size)
     urgent, sales = _lifecycle_livestock_orders(active_plans, day, farm, private)
     market = _investment_market_orders(sales, urgent, _land_orders(day, hour, farm, target_extra_land), _zoned_hire_orders(farm, _daily_hand_target(day, target_daily_hands)), baseline_market)
     return {'farmer': farmer_action, 'hands': hands_actions, 'market': market}

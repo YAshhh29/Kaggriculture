@@ -12,7 +12,9 @@ from experimental_lifecycle_agent import (
     _effective_pair_count,
     _pair_owner,
     agent,
+    decide,
 )
+from experimental_scale_agent import _staged_animal_plans
 from test_experimental_scale_agent import scale_observation
 from test_main import wheat_tile
 
@@ -103,6 +105,24 @@ class ExperimentalLifecycleAgentTests(unittest.TestCase):
         )
 
         self.assertEqual(groups["plant"], [])
+
+    def test_future_animal_tiles_are_reserved_from_day_zero(self) -> None:
+        state = scale_observation(day=0)
+        final_plans = _staged_animal_plans(29, 6, 8)
+        livestock_tiles = {plan["position"] for plan in final_plans}
+
+        groups = _crop_task_groups(
+            0,
+            state["farms"][0],
+            livestock_tiles,
+            pair=1,
+            pair_count=3,
+        )
+
+        self.assertTrue(livestock_tiles)
+        self.assertTrue(
+            all(position not in groups["plant"] for position in livestock_tiles)
+        )
 
 
     def test_uses_seven_animal_workers_and_three_crop_pairs(self) -> None:
@@ -208,7 +228,7 @@ class ExperimentalLifecycleAgentTests(unittest.TestCase):
         state = scale_observation(day=7, hour=1)
         state["private"]["shed"].update({"COW": 6, "SHEEP": 8})
 
-        decision = __import__("experimental_lifecycle_agent").decide(state)
+        decision = decide(state)
 
         animal_orders = [
             order

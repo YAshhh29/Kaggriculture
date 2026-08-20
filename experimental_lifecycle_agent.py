@@ -555,6 +555,7 @@ def decide(
         * max_wheat_per_pair,
     )
     desired_plans = _staged_animal_plans(day, target_cows, target_sheep)
+    final_plans = _staged_animal_plans(29, target_cows, target_sheep)
     active_plans = _unlocked_animal_plans(desired_plans, farm)
     baseline = decide_wheat(
         observation,
@@ -571,7 +572,7 @@ def decide(
     )
     farmer_action, hands_actions = _lifecycle_worker_actions(
         active_plans,
-        {plan["position"] for plan in desired_plans},
+        {plan["position"] for plan in final_plans},
         day,
         farm,
         private,
