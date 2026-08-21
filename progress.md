@@ -551,6 +551,71 @@ combined source SHA-256:
 It is not submitted. Keep submitted NE live until the user reviews the remaining
 254.5-coin standalone gap.
 
+### Center-Out Diversified NW-NE-SW Challenger
+
+We implemented the user's spatial plan as a separate research agent without
+changing the live submission or lifecycle package. NW is already owned, so the
+forced purchase sequence is NE then SW. The strategy uses:
+
+- animal cores at NW blocks 34/35/44/45, NE 36/37/46/47, and SW
+  54/55/64/65;
+- two cows and two sheep in each four-block core;
+- three fixed crop pairs, one per quadrant;
+- six managed center-out crop blocks per pair;
+- wheat/carrot staples plus tomatoes, four strawberries, and two melon
+  locations;
+- two timed fertilizer windows per strawberry, each paired with water;
+- eleven daily hands through day 28 and four final-day liquidation hands; and
+- exact same-turn planting water, feed/CARE safety, deadline admission, and
+  terminal `DROP`/sale rules.
+
+The initial 12-slot design admitted more work than two workers per quadrant
+could complete. It scored 75,051 on seed 30 with 23 crop losses. Eight slots
+reduced losses but underused premium crops. Six slots plus shared seed-admission
+logic and quadrant-local one-time capacity produced the final zero-loss policy.
+Geese were screened and rejected; the balanced 6-cow/6-sheep farm had the best
+five-seed floor. Delaying SW reduced seed-30 return; NE-only lost 15,583 versus
+the current full NW/NE/SW workload.
+
+Starter development seeds 30-34, both positions:
+
+| Metric | Center-out diversified | Lifecycle control |
+| --- | ---: | ---: |
+| Wins | 10 / 10 | 10 / 10 |
+| Mean coins | **72,202** | 54,287.7 |
+| Minimum / maximum | **60,571 / 83,355** | 31,332 / 90,685 |
+| Crop cycles | 642 | 562 |
+| Harvested / weeded / unfinished | **642 / 0 / 0** | 562 / 0 / 0 |
+| Animal losses | 0 | 0 |
+| Final animals per game | 6 cows, 6 sheep | 6 cows, 8 sheep |
+| Land purchases per game | NE + SW | NE |
+| Strawberry fertilizer actions | 8 per game | 0 |
+
+The shared-market check remains the blocker. Against lifecycle compact over
+the same seeds and both positions, center-out loses 0/10, averaging 42,203.5
+against 50,353.2. The cause is economic: extra SW capital, more labor, feed,
+and overlapping milk/wool/fertilizer sales. A premium-price holding screen did
+not recover the matchup. This agent is therefore a successful spatial and
+diversification prototype, not an approved submission candidate.
+
+The standalone review package `submission-center-out/main.py` is Kaggle-loader
+valid and source-equivalent across all 720 records in both player positions.
+Source and package each score 83,355 versus starter on seed 30 with zero action
+mismatches. Package SHA-256:
+`cd3d7e92b114dd1bcdef085a3b9fd36d4c37b36146e3c8bd40b58254efe51284`.
+The manifest remains explicitly review-only because the 0/10 direct gate has
+not been solved.
+
+The final seed-30 replay scores 83,355 versus 3,393 and shows all workers,
+market orders, bank changes, land unlocks, and crop/animal changes:
+
+`http://127.0.0.1:8765/captioned_replay.html?replay=artifacts%2Fv1327-center-out-diversified-vs-starter-seed30-720.html&audit=artifacts%2Fv1327-center-out-diversified-vs-starter-seed30-720-audit.json`.
+
+Source SHA-256:
+`fb2d94b2e51ed81afb46d277d7ea8913f51cbf690ab42860591ec8c7decfc546`.
+The durable rules and planning tools are `RULEBOOK.md` and
+`field_strategy_planner.html`.
+
 ### One-Goose Candidate: Promotion Evidence
 
 After the first v9 Kaggle submission validated at rating 600, we isolated one

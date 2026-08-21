@@ -934,6 +934,70 @@
     "review_replay": "http://127.0.0.1:8765/captioned_replay.html?replay=artifacts%2Fv1327-lifecycle-compact-vs-starter-seed30-720.html&audit=artifacts%2Fv1327-lifecycle-compact-vs-starter-seed30-720-audit.json",
     "decision": "keep submitted NE live; retain lifecycle compact as a separate packaged challenger because it completes every admitted holdout crop, wins 19-1 versus submitted NE and 20-0 versus investment, and trails submitted NE by only 254.5 mean coins on fresh standalone holdout; do not submit without explicit review"
   },
+  "center_out_research": {
+    "status": "starter-validated spatial prototype; packaged for review; direct shared-market gate failed; not submitted",
+    "agent": "experimental_center_out_agent.py",
+    "source_sha256": "fb2d94b2e51ed81afb46d277d7ea8913f51cbf690ab42860591ec8c7decfc546",
+    "package": "submission-center-out/main.py",
+    "package_sha256": "cd3d7e92b114dd1bcdef085a3b9fd36d4c37b36146e3c8bd40b58254efe51284",
+    "package_equivalence": {
+      "records_per_position": 720,
+      "action_mismatches": {"player_0": 0, "player_1": 0},
+      "source_rewards": {"player_0": 83355, "player_1": 83355},
+      "package_rewards": {"player_0": 83355, "player_1": 83355}
+    },
+    "land_sequence": ["NW", "NE", "SW"],
+    "animal_cores": {
+      "NW": [34, 35, 44, 45],
+      "NE": [36, 37, 46, 47],
+      "SW": [54, 55, 64, 65],
+      "mix_per_quadrant": {"COW": 2, "SHEEP": 2}
+    },
+    "crop_policy": {
+      "crop_pairs": 3,
+      "managed_slots_per_quadrant": 6,
+      "crops": ["WHEAT", "CARROT", "TOMATO", "STRAWBERRY", "MELON"],
+      "strawberry_slots": 4,
+      "melon_locations": 2,
+      "strawberry_fertilizer_windows_per_plant": 2,
+      "same_turn_planting_water": true,
+      "quadrant_local_one_time_admission": true
+    },
+    "starter_development": {
+      "seeds": "30-34, both positions",
+      "games": 10,
+      "wins": 10,
+      "mean_coins": 72202,
+      "min_coins": 60571,
+      "max_coins": 83355,
+      "crop_cycles": 642,
+      "harvested_cycles": 642,
+      "weeded_cycles": 0,
+      "unfinished_cycles": 0,
+      "animal_losses": 0,
+      "report": "artifacts/benchmarks/v1327-center-out-diversified-development-seeds30-34.json"
+    },
+    "direct_lifecycle": {
+      "seeds": "30-34, both positions",
+      "wins": 0,
+      "losses": 10,
+      "mean_coins": 42203.5,
+      "opponent_mean": 50353.2,
+      "crop_cycles": 626,
+      "harvested_cycles": 626,
+      "weeded_cycles": 0,
+      "unfinished_cycles": 0,
+      "animal_losses": 0,
+      "report": "artifacts/benchmarks/v1327-center-out-vs-lifecycle-seeds30-34.json"
+    },
+    "review_replay": {
+      "score": 83355,
+      "opponent_score": 3393,
+      "records": 720,
+      "url": "http://127.0.0.1:8765/captioned_replay.html?replay=artifacts%2Fv1327-center-out-diversified-vs-starter-seed30-720.html&audit=artifacts%2Fv1327-center-out-diversified-vs-starter-seed30-720-audit.json"
+    },
+    "decision": "keep as a separate review-packaged research challenger; the center-out layout, diversified crops, NE/SW expansion, strawberry fertilization, and zero-loss lifecycle are validated, but do not submit until the shared-market matchup improves"
+  },
   "leaderboard_replay_scouting": {
     "checked_at": "2026-08-19",
     "leader_team": "カワシギ",

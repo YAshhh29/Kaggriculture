@@ -356,6 +356,32 @@ but is not submitted.
 Review replay:
 `http://127.0.0.1:8765/captioned_replay.html?replay=artifacts%2Fv1327-lifecycle-compact-vs-starter-seed30-720.html&audit=artifacts%2Fv1327-lifecycle-compact-vs-starter-seed30-720-audit.json`.
 
+`experimental_center_out_agent.py` is the next separate research challenger.
+It starts with the NW core blocks 34/35/44/45, buys NE and then SW, and repeats
+the central four-animal footprint in each owned quadrant. Each core holds two
+cows and two sheep. Three fixed crop pairs own six center-out blocks per
+quadrant, including carrots, tomatoes, four strawberries, and two melon
+locations across the farm. Strawberry production uses two timed
+`FERTILIZE`+`WATER` windows per plant.
+
+On seeds 30-34 in both positions against `starter`, it wins 10/10, averages
+72,202 coins, has a 60,571-83,355 range, harvests every admitted crop cycle,
+and records zero crop weeds, unfinished cycles, and animal losses. It buys both
+NE and SW in every game. Against lifecycle compact on the same seeds it loses
+0/10 (42,203.5 versus 50,353.2 mean), so it is **research-only and not a
+submission candidate** yet. A standalone review package is available at
+`submission-center-out/main.py`; source/package actions match across all 720
+records in both positions. Source SHA-256:
+`fb2d94b2e51ed81afb46d277d7ea8913f51cbf690ab42860591ec8c7decfc546`.
+Package SHA-256:
+`cd3d7e92b114dd1bcdef085a3b9fd36d4c37b36146e3c8bd40b58254efe51284`.
+
+Center-out replay (83,355 versus 3,393):
+`http://127.0.0.1:8765/captioned_replay.html?replay=artifacts%2Fv1327-center-out-diversified-vs-starter-seed30-720.html&audit=artifacts%2Fv1327-center-out-diversified-vs-starter-seed30-720-audit.json`.
+
+The complete simulator reference is `RULEBOOK.md`, and the interactive block
+map is `field_strategy_planner.html`.
+
 At the user's explicit request, the exact validated policy was submitted as
 Kaggle submission `55630744`. Its standalone package is
 `submission-zoned-expansion/main.py`, SHA-256

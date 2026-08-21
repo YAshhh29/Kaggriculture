@@ -1,0 +1,9 @@
+{
+  "created_at": "2026-08-21T01:10:55.587150+00:00",
+  "competition": "kaggriculture",
+  "agent": "main.py",
+  "sha256": "cd3d7e92b114dd1bcdef085a3b9fd36d4c37b36146e3c8bd40b58254efe51284",
+  "source_sha256": "fb2d94b2e51ed81afb46d277d7ea8913f51cbf690ab42860591ec8c7decfc546",
+  "policy": "NW-NE-SW center-out layout, balanced cow/sheep cores, six managed crop blocks per quadrant, four heavily fertilized strawberries, two melon positions",
+  "status": "research review package; not submitted; starter-safe but rejected for submission after 0-10 lifecycle direct gate"
+}
