@@ -946,6 +946,13 @@
       "source_rewards": {"player_0": 83355, "player_1": 83355},
       "package_rewards": {"player_0": 83355, "player_1": 83355}
     },
+    "live_submission": {
+      "submission_id": 55666322,
+      "submitted_at": "2026-08-21T09:46:47.587Z",
+      "status": "COMPLETE",
+      "initial_score": 600.0,
+      "package_sha256": "cd3d7e92b114dd1bcdef085a3b9fd36d4c37b36146e3c8bd40b58254efe51284"
+    },
     "land_sequence": ["NW", "NE", "SW"],
     "animal_cores": {
       "NW": [34, 35, 44, 45],
@@ -996,7 +1003,7 @@
       "records": 720,
       "url": "http://127.0.0.1:8765/captioned_replay.html?replay=artifacts%2Fv1327-center-out-diversified-vs-starter-seed30-720.html&audit=artifacts%2Fv1327-center-out-diversified-vs-starter-seed30-720-audit.json"
     },
-    "decision": "keep as a separate review-packaged research challenger; the center-out layout, diversified crops, NE/SW expansion, strawberry fertilization, and zero-loss lifecycle are validated, but do not submit until the shared-market matchup improves"
+    "decision": "submitted at explicit user request as 55666322; monitor live episodes and keep the 0-10 lifecycle direct loss as an unresolved economic warning before promotion"
   },
   "leaderboard_replay_scouting": {
     "checked_at": "2026-08-19",

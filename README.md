@@ -376,6 +376,11 @@ records in both positions. Source SHA-256:
 Package SHA-256:
 `cd3d7e92b114dd1bcdef085a3b9fd36d4c37b36146e3c8bd40b58254efe51284`.
 
+At the user's explicit request, this exact package was uploaded as Kaggle
+submission `55666322`. Kaggle completed validation with an initial public Score
+of 600.0. This is an early score snapshot; the failed 0/10 local direct gate
+remains a warning against assuming leaderboard superiority from one score.
+
 Center-out replay (83,355 versus 3,393):
 `http://127.0.0.1:8765/captioned_replay.html?replay=artifacts%2Fv1327-center-out-diversified-vs-starter-seed30-720.html&audit=artifacts%2Fv1327-center-out-diversified-vs-starter-seed30-720-audit.json`.
 

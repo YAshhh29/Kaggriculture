@@ -606,6 +606,20 @@ mismatches. Package SHA-256:
 The manifest remains explicitly review-only because the 0/10 direct gate has
 not been solved.
 
+At the user's explicit request, the exact package was then submitted to Kaggle:
+
+- submission ID: `55666322`;
+- submitted: `2026-08-21T09:46:47.587Z`;
+- status: `COMPLETE`;
+- initial public Score: `600.0`;
+- uploaded bytes: `84,971`; and
+- uploaded SHA-256:
+  `cd3d7e92b114dd1bcdef085a3b9fd36d4c37b36146e3c8bd40b58254efe51284`.
+
+The upload does not erase the local 0/10 direct-match result. Treat 600.0 as an
+initial leaderboard observation and monitor episodes before promoting this
+policy over the prior controls.
+
 The final seed-30 replay scores 83,355 versus 3,393 and shows all workers,
 market orders, bank changes, land unlocks, and crop/animal changes:
 
