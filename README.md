@@ -1,6 +1,6 @@
 # Kaggriculture Agent
 
-This repository is our learning lab and competition submission for
+This repository is my kaggle competition submission for
 Kaggriculture.
 
 See `progress.md` for the detailed experiment journal, decisions, failures,
