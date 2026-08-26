@@ -3,3 +3,31 @@
 .conda/
 __pycache__/
 *.py[cod]
+
+# Generated experiment outputs stay local. Curated models and small fixtures
+# belong in models/ and tests/fixtures/ instead.
+artifacts/benchmarks/
+artifacts/datasets/
+artifacts/diagnostics/
+artifacts/direct/
+artifacts/live-replays/
+artifacts/models/
+artifacts/top-replays/
+artifacts/*.json
+artifacts/*.html
+captioned_replay.html
+field_strategy_planner.html
+terminal_probe.txt
+
+# Standalone upload outputs are reproducible from packaging scripts. Keep the
+# currently validated packages locally without adding every generated bundle.
+submission/
+submission-adaptive/
+submission-center-out/
+submission-compact/
+submission-deadline/
+submission-goose/
+submission-investment/
+submission-lifecycle/
+submission-scale/
+submission-zoned-expansion/
