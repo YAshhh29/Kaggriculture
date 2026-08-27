@@ -1,0 +1,3538 @@
+{
+  "datasets": [
+    "artifacts\\datasets\\v1327-capacity-bandit-v3-train-seeds140-141.json",
+    "artifacts\\datasets\\v1327-capacity-bandit-v3-elite.json"
+  ],
+  "records": 28,
+  "model": {
+    "type": "knn",
+    "k": 13,
+    "distance_power": 2.0,
+    "features": [
+      "player",
+      "own_money_k",
+      "opponent_money_k",
+      "money_lead_k",
+      "opponent_hands",
+      "opponent_land",
+      "opponent_wheat",
+      "opponent_nonwheat",
+      "opponent_cows",
+      "opponent_sheep",
+      "opponent_geese",
+      "opponent_structures",
+      "opponent_weeds",
+      "price_wheat",
+      "price_strawberry",
+      "price_melon",
+      "price_milk",
+      "price_wool",
+      "price_fertilizer",
+      "shops_wheat",
+      "shops_strawberry",
+      "shops_milk",
+      "shops_wool"
+    ],
+    "means": {
+      "player": 0.5,
+      "own_money_k": 0.2526428571428571,
+      "opponent_money_k": 0.4955,
+      "money_lead_k": -0.24285714285714285,
+      "opponent_hands": 0.0,
+      "opponent_land": 1.0,
+      "opponent_wheat": 8.214285714285714,
+      "opponent_nonwheat": 5.142857142857143,
+      "opponent_cows": 2.2142857142857144,
+      "opponent_sheep": 2.0,
+      "opponent_geese": 0.0,
+      "opponent_structures": 4.5,
+      "opponent_weeds": 0.2857142857142857,
+      "price_wheat": 1.2428571428571427,
+      "price_strawberry": 1.1714285714285713,
+      "price_melon": 1.056,
+      "price_milk": 1.1151785714285714,
+      "price_wool": 1.0842857142857143,
+      "price_fertilizer": 0.9685714285714285,
+      "shops_wheat": 0.5,
+      "shops_strawberry": 0.35714285714285715,
+      "shops_milk": 0.14285714285714285,
+      "shops_wool": 0.2857142857142857
+    },
+    "scales": {
+      "player": 0.5,
+      "own_money_k": 0.1,
+      "opponent_money_k": 0.3912351777201461,
+      "money_lead_k": 0.39140641230291146,
+      "opponent_hands": 0.1,
+      "opponent_land": 0.1,
+      "opponent_wheat": 4.813353025380413,
+      "opponent_nonwheat": 5.303060340934453,
+      "opponent_cows": 0.41032590332414487,
+      "opponent_sheep": 0.1,
+      "opponent_geese": 0.1,
+      "opponent_structures": 0.5,
+      "opponent_weeds": 0.6998542122237652,
+      "price_wheat": 0.1,
+      "price_strawberry": 0.1,
+      "price_melon": 0.1,
+      "price_milk": 0.1,
+      "price_wool": 0.1,
+      "price_fertilizer": 0.1,
+      "shops_wheat": 0.5,
+      "shops_strawberry": 0.4791574237499549,
+      "shops_milk": 0.3499271061118826,
+      "shops_wool": 0.45175395145262565
+    },
+    "examples": [
+      {
+        "features": {
+          "player": 0.0,
+          "own_money_k": 0.253,
+          "opponent_money_k": 0.253,
+          "money_lead_k": 0.0,
+          "opponent_hands": 0.0,
+          "opponent_land": 1.0,
+          "opponent_wheat": 4.0,
+          "opponent_nonwheat": 12.0,
+          "opponent_cows": 2.0,
+          "opponent_sheep": 2.0,
+          "opponent_geese": 0.0,
+          "opponent_structures": 4.0,
+          "opponent_weeds": 0.0,
+          "price_wheat": 1.24,
+          "price_strawberry": 1.1416666666666666,
+          "price_melon": 1.056,
+          "price_milk": 1.10625,
+          "price_wool": 1.12,
+          "price_fertilizer": 0.97,
+          "shops_wheat": 0.0,
+          "shops_strawberry": 0.0,
+          "shops_milk": 0.0,
+          "shops_wool": 1.0
+        },
+        "outcomes": {
+          "0": {
+            "agent_reward": 72219.0,
+            "opponent_reward": 70561.0,
+            "margin": 1658.0,
+            "result": "win",
+            "utility": 1001.658
+          },
+          "1": {
+            "agent_reward": 86230.0,
+            "opponent_reward": 75512.0,
+            "margin": 10718.0,
+            "result": "win",
+            "utility": 1010.718
+          },
+          "2": {
+            "agent_reward": 62072.0,
+            "opponent_reward": 77650.0,
+            "margin": -15578.0,
+            "result": "loss",
+            "utility": -1015.578
+          },
+          "3": {
+            "agent_reward": 65078.0,
+            "opponent_reward": 72724.0,
+            "margin": -7646.0,
+            "result": "loss",
+            "utility": -1007.646
+          }
+        }
+      },
+      {
+        "features": {
+          "player": 1.0,
+          "own_money_k": 0.253,
+          "opponent_money_k": 0.253,
+          "money_lead_k": 0.0,
+          "opponent_hands": 0.0,
+          "opponent_land": 1.0,
+          "opponent_wheat": 4.0,
+          "opponent_nonwheat": 12.0,
+          "opponent_cows": 2.0,
+          "opponent_sheep": 2.0,
+          "opponent_geese": 0.0,
+          "opponent_structures": 4.0,
+          "opponent_weeds": 0.0,
+          "price_wheat": 1.24,
+          "price_strawberry": 1.1416666666666666,
+          "price_melon": 1.056,
+          "price_milk": 1.10625,
+          "price_wool": 1.12,
+          "price_fertilizer": 0.97,
+          "shops_wheat": 0.0,
+          "shops_strawberry": 0.0,
+          "shops_milk": 0.0,
+          "shops_wool": 1.0
+        },
+        "outcomes": {
+          "0": {
+            "agent_reward": 73175.0,
+            "opponent_reward": 70591.0,
+            "margin": 2584.0,
+            "result": "win",
+            "utility": 1002.584
+          },
+          "1": {
+            "agent_reward": 67975.0,
+            "opponent_reward": 62634.0,
+            "margin": 5341.0,
+            "result": "win",
+            "utility": 1005.341
+          },
+          "2": {
+            "agent_reward": 62589.0,
+            "opponent_reward": 78360.0,
+            "margin": -15771.0,
+            "result": "loss",
+            "utility": -1015.771
+          },
+          "3": {
+            "agent_reward": 67273.0,
+            "opponent_reward": 74957.0,
+            "margin": -7684.0,
+            "result": "loss",
+            "utility": -1007.684
+          }
+        }
+      },
+      {
+        "features": {
+          "player": 0.0,
+          "own_money_k": 0.253,
+          "opponent_money_k": 0.253,
+          "money_lead_k": 0.0,
+          "opponent_hands": 0.0,
+          "opponent_land": 1.0,
+          "opponent_wheat": 4.0,
+          "opponent_nonwheat": 12.0,
+          "opponent_cows": 2.0,
+          "opponent_sheep": 2.0,
+          "opponent_geese": 0.0,
+          "opponent_structures": 4.0,
+          "opponent_weeds": 0.0,
+          "price_wheat": 1.24,
+          "price_strawberry": 1.1416666666666666,
+          "price_melon": 1.056,
+          "price_milk": 1.10625,
+          "price_wool": 1.07,
+          "price_fertilizer": 0.97,
+          "shops_wheat": 0.0,
+          "shops_strawberry": 0.0,
+          "shops_milk": 0.0,
+          "shops_wool": 0.0
+        },
+        "outcomes": {
+          "0": {
+            "agent_reward": 47365.0,
+            "opponent_reward": 48561.0,
+            "margin": -1196.0,
+            "result": "loss",
+            "utility": -1001.196
+          },
+          "1": {
+            "agent_reward": 57200.0,
+            "opponent_reward": 57094.0,
+            "margin": 106.0,
+            "result": "win",
+            "utility": 1000.106
+          },
+          "2": {
+            "agent_reward": 33030.0,
+            "opponent_reward": 43533.0,
+            "margin": -10503.0,
+            "result": "loss",
+            "utility": -1010.503
+          },
+          "3": {
+            "agent_reward": 55214.0,
+            "opponent_reward": 62752.0,
+            "margin": -7538.0,
+            "result": "loss",
+            "utility": -1007.538
+          }
+        }
+      },
+      {
+        "features": {
+          "player": 1.0,
+          "own_money_k": 0.253,
+          "opponent_money_k": 0.253,
+          "money_lead_k": 0.0,
+          "opponent_hands": 0.0,
+          "opponent_land": 1.0,
+          "opponent_wheat": 4.0,
+          "opponent_nonwheat": 12.0,
+          "opponent_cows": 2.0,
+          "opponent_sheep": 2.0,
+          "opponent_geese": 0.0,
+          "opponent_structures": 4.0,
+          "opponent_weeds": 0.0,
+          "price_wheat": 1.24,
+          "price_strawberry": 1.1416666666666666,
+          "price_melon": 1.056,
+          "price_milk": 1.10625,
+          "price_wool": 1.07,
+          "price_fertilizer": 0.97,
+          "shops_wheat": 0.0,
+          "shops_strawberry": 0.0,
+          "shops_milk": 0.0,
+          "shops_wool": 0.0
+        },
+        "outcomes": {
+          "0": {
+            "agent_reward": 47414.0,
+            "opponent_reward": 48567.0,
+            "margin": -1153.0,
+            "result": "loss",
+            "utility": -1001.153
+          },
+          "1": {
+            "agent_reward": 55629.0,
+            "opponent_reward": 58363.0,
+            "margin": -2734.0,
+            "result": "loss",
+            "utility": -1002.734
+          },
+          "2": {
+            "agent_reward": 29699.0,
+            "opponent_reward": 38263.0,
+            "margin": -8564.0,
+            "result": "loss",
+            "utility": -1008.564
+          },
+          "3": {
+            "agent_reward": 54129.0,
+            "opponent_reward": 60938.0,
+            "margin": -6809.0,
+            "result": "loss",
+            "utility": -1006.809
+          }
+        }
+      },
+      {
+        "features": {
+          "player": 0.0,
+          "own_money_k": 0.253,
+          "opponent_money_k": 0.253,
+          "money_lead_k": 0.0,
+          "opponent_hands": 0.0,
+          "opponent_land": 1.0,
+          "opponent_wheat": 4.0,
+          "opponent_nonwheat": 12.0,
+          "opponent_cows": 2.0,
+          "opponent_sheep": 2.0,
+          "opponent_geese": 0.0,
+          "opponent_structures": 4.0,
+          "opponent_weeds": 0.0,
+          "price_wheat": 1.24,
+          "price_strawberry": 1.1416666666666666,
+          "price_melon": 1.056,
+          "price_milk": 1.10625,
+          "price_wool": 1.12,
+          "price_fertilizer": 0.97,
+          "shops_wheat": 0.0,
+          "shops_strawberry": 0.0,
+          "shops_milk": 0.0,
+          "shops_wool": 1.0
+        },
+        "outcomes": {
+          "0": {
+            "agent_reward": 67946.0,
+            "opponent_reward": 66084.0,
+            "margin": 1862.0,
+            "result": "win",
+            "utility": 1001.862
+          },
+          "1": {
+            "agent_reward": 80381.0,
+            "opponent_reward": 72212.0,
+            "margin": 8169.0,
+            "result": "win",
+            "utility": 1008.169
+          },
+          "2": {
+            "agent_reward": 65483.0,
+            "opponent_reward": 80810.0,
+            "margin": -15327.0,
+            "result": "loss",
+            "utility": -1015.327
+          },
+          "3": {
+            "agent_reward": 58627.0,
+            "opponent_reward": 66663.0,
+            "margin": -8036.0,
+            "result": "loss",
+            "utility": -1008.036
+          }
+        }
+      },
+      {
+        "features": {
+          "player": 1.0,
+          "own_money_k": 0.253,
+          "opponent_money_k": 0.253,
+          "money_lead_k": 0.0,
+          "opponent_hands": 0.0,
+          "opponent_land": 1.0,
+          "opponent_wheat": 4.0,
+          "opponent_nonwheat": 12.0,
+          "opponent_cows": 2.0,
+          "opponent_sheep": 2.0,
+          "opponent_geese": 0.0,
+          "opponent_structures": 4.0,
+          "opponent_weeds": 0.0,
+          "price_wheat": 1.24,
+          "price_strawberry": 1.1416666666666666,
+          "price_melon": 1.056,
+          "price_milk": 1.10625,
+          "price_wool": 1.12,
+          "price_fertilizer": 0.97,
+          "shops_wheat": 0.0,
+          "shops_strawberry": 0.0,
+          "shops_milk": 0.0,
+          "shops_wool": 1.0
+        },
+        "outcomes": {
+          "0": {
+            "agent_reward": 73540.0,
+            "opponent_reward": 69199.0,
+            "margin": 4341.0,
+            "result": "win",
+            "utility": 1004.341
+          },
+          "1": {
+            "agent_reward": 66793.0,
+            "opponent_reward": 61473.0,
+            "margin": 5320.0,
+            "result": "win",
+            "utility": 1005.32
+          },
+          "2": {
+            "agent_reward": 63779.0,
+            "opponent_reward": 79531.0,
+            "margin": -15752.0,
+            "result": "loss",
+            "utility": -1015.752
+          },
+          "3": {
+            "agent_reward": 64270.0,
+            "opponent_reward": 70633.0,
+            "margin": -6363.0,
+            "result": "loss",
+            "utility": -1006.363
+          }
+        }
+      },
+      {
+        "features": {
+          "player": 0.0,
+          "own_money_k": 0.253,
+          "opponent_money_k": 0.253,
+          "money_lead_k": 0.0,
+          "opponent_hands": 0.0,
+          "opponent_land": 1.0,
+          "opponent_wheat": 4.0,
+          "opponent_nonwheat": 12.0,
+          "opponent_cows": 2.0,
+          "opponent_sheep": 2.0,
+          "opponent_geese": 0.0,
+          "opponent_structures": 4.0,
+          "opponent_weeds": 0.0,
+          "price_wheat": 1.24,
+          "price_strawberry": 1.1416666666666666,
+          "price_melon": 1.056,
+          "price_milk": 1.10625,
+          "price_wool": 1.07,
+          "price_fertilizer": 0.97,
+          "shops_wheat": 0.0,
+          "shops_strawberry": 0.0,
+          "shops_milk": 0.0,
+          "shops_wool": 0.0
+        },
+        "outcomes": {
+          "0": {
+            "agent_reward": 55595.0,
+            "opponent_reward": 47133.0,
+            "margin": 8462.0,
+            "result": "win",
+            "utility": 1008.462
+          },
+          "1": {
+            "agent_reward": 58568.0,
+            "opponent_reward": 48197.0,
+            "margin": 10371.0,
+            "result": "win",
+            "utility": 1010.371
+          },
+          "2": {
+            "agent_reward": 31735.0,
+            "opponent_reward": 37135.0,
+            "margin": -5400.0,
+            "result": "loss",
+            "utility": -1005.4
+          },
+          "3": {
+            "agent_reward": 54250.0,
+            "opponent_reward": 58104.0,
+            "margin": -3854.0,
+            "result": "loss",
+            "utility": -1003.854
+          }
+        }
+      },
+      {
+        "features": {
+          "player": 1.0,
+          "own_money_k": 0.253,
+          "opponent_money_k": 0.253,
+          "money_lead_k": 0.0,
+          "opponent_hands": 0.0,
+          "opponent_land": 1.0,
+          "opponent_wheat": 4.0,
+          "opponent_nonwheat": 12.0,
+          "opponent_cows": 2.0,
+          "opponent_sheep": 2.0,
+          "opponent_geese": 0.0,
+          "opponent_structures": 4.0,
+          "opponent_weeds": 0.0,
+          "price_wheat": 1.24,
+          "price_strawberry": 1.1416666666666666,
+          "price_melon": 1.056,
+          "price_milk": 1.10625,
+          "price_wool": 1.07,
+          "price_fertilizer": 0.97,
+          "shops_wheat": 0.0,
+          "shops_strawberry": 0.0,
+          "shops_milk": 0.0,
+          "shops_wool": 0.0
+        },
+        "outcomes": {
+          "0": {
+            "agent_reward": 55872.0,
+            "opponent_reward": 47147.0,
+            "margin": 8725.0,
+            "result": "win",
+            "utility": 1008.725
+          },
+          "1": {
+            "agent_reward": 58014.0,
+            "opponent_reward": 47995.0,
+            "margin": 10019.0,
+            "result": "win",
+            "utility": 1010.019
+          },
+          "2": {
+            "agent_reward": 29112.0,
+            "opponent_reward": 35230.0,
+            "margin": -6118.0,
+            "result": "loss",
+            "utility": -1006.118
+          },
+          "3": {
+            "agent_reward": 54579.0,
+            "opponent_reward": 58850.0,
+            "margin": -4271.0,
+            "result": "loss",
+            "utility": -1004.271
+          }
+        }
+      },
+      {
+        "features": {
+          "player": 0.0,
+          "own_money_k": 0.255,
+          "opponent_money_k": 0.152,
+          "money_lead_k": 0.103,
+          "opponent_hands": 0.0,
+          "opponent_land": 1.0,
+          "opponent_wheat": 2.0,
+          "opponent_nonwheat": 3.0,
+          "opponent_cows": 2.0,
+          "opponent_sheep": 2.0,
+          "opponent_geese": 0.0,
+          "opponent_structures": 4.0,
+          "opponent_weeds": 0.0,
+          "price_wheat": 1.24,
+          "price_strawberry": 1.1416666666666666,
+          "price_melon": 1.056,
+          "price_milk": 1.16875,
+          "price_wool": 1.07,
+          "price_fertilizer": 0.97,
+          "shops_wheat": 1.0,
+          "shops_strawberry": 0.0,
+          "shops_milk": 1.0,
+          "shops_wool": 0.0
+        },
+        "outcomes": {
+          "0": {
+            "agent_reward": 59033.0,
+            "opponent_reward": 49989.0,
+            "margin": 9044.0,
+            "result": "win",
+            "utility": 1009.044
+          },
+          "1": {
+            "agent_reward": 70404.0,
+            "opponent_reward": 62996.0,
+            "margin": 7408.0,
+            "result": "win",
+            "utility": 1007.408
+          },
+          "2": {
+            "agent_reward": 60709.0,
+            "opponent_reward": 73947.0,
+            "margin": -13238.0,
+            "result": "loss",
+            "utility": -1013.238
+          },
+          "3": {
+            "agent_reward": 50978.0,
+            "opponent_reward": 55028.0,
+            "margin": -4050.0,
+            "result": "loss",
+            "utility": -1004.05
+          }
+        }
+      },
+      {
+        "features": {
+          "player": 1.0,
+          "own_money_k": 0.255,
+          "opponent_money_k": 0.152,
+          "money_lead_k": 0.103,
+          "opponent_hands": 0.0,
+          "opponent_land": 1.0,
+          "opponent_wheat": 2.0,
+          "opponent_nonwheat": 3.0,
+          "opponent_cows": 2.0,
+          "opponent_sheep": 2.0,
+          "opponent_geese": 0.0,
+          "opponent_structures": 4.0,
+          "opponent_weeds": 0.0,
+          "price_wheat": 1.24,
+          "price_strawberry": 1.1416666666666666,
+          "price_melon": 1.056,
+          "price_milk": 1.16875,
+          "price_wool": 1.07,
+          "price_fertilizer": 0.97,
+          "shops_wheat": 1.0,
+          "shops_strawberry": 0.0,
+          "shops_milk": 1.0,
+          "shops_wool": 0.0
+        },
+        "outcomes": {
+          "0": {
+            "agent_reward": 56570.0,
+            "opponent_reward": 48252.0,
+            "margin": 8318.0,
+            "result": "win",
+            "utility": 1008.318
+          },
+          "1": {
+            "agent_reward": 74144.0,
+            "opponent_reward": 62682.0,
+            "margin": 11462.0,
+            "result": "win",
+            "utility": 1011.462
+          },
+          "2": {
+            "agent_reward": 60229.0,
+            "opponent_reward": 71800.0,
+            "margin": -11571.0,
+            "result": "loss",
+            "utility": -1011.571
+          },
+          "3": {
+            "agent_reward": 50532.0,
+            "opponent_reward": 53529.0,
+            "margin": -2997.0,
+            "result": "loss",
+            "utility": -1002.997
+          }
+        }
+      },
+      {
+        "features": {
+          "player": 0.0,
+          "own_money_k": 0.255,
+          "opponent_money_k": 0.152,
+          "money_lead_k": 0.103,
+          "opponent_hands": 0.0,
+          "opponent_land": 1.0,
+          "opponent_wheat": 2.0,
+          "opponent_nonwheat": 3.0,
+          "opponent_cows": 2.0,
+          "opponent_sheep": 2.0,
+          "opponent_geese": 0.0,
+          "opponent_structures": 4.0,
+          "opponent_weeds": 0.0,
+          "price_wheat": 1.24,
+          "price_strawberry": 1.225,
+          "price_melon": 1.056,
+          "price_milk": 1.10625,
+          "price_wool": 1.07,
+          "price_fertilizer": 0.97,
+          "shops_wheat": 1.0,
+          "shops_strawberry": 1.0,
+          "shops_milk": 0.0,
+          "shops_wool": 0.0
+        },
+        "outcomes": {
+          "0": {
+            "agent_reward": 55957.0,
+            "opponent_reward": 41271.0,
+            "margin": 14686.0,
+            "result": "win",
+            "utility": 1014.686
+          },
+          "1": {
+            "agent_reward": 34847.0,
+            "opponent_reward": 19921.0,
+            "margin": 14926.0,
+            "result": "win",
+            "utility": 1014.926
+          },
+          "2": {
+            "agent_reward": 61426.0,
+            "opponent_reward": 69798.0,
+            "margin": -8372.0,
+            "result": "loss",
+            "utility": -1008.372
+          },
+          "3": {
+            "agent_reward": 48702.0,
+            "opponent_reward": 41558.0,
+            "margin": 7144.0,
+            "result": "win",
+            "utility": 1007.144
+          }
+        }
+      },
+      {
+        "features": {
+          "player": 1.0,
+          "own_money_k": 0.255,
+          "opponent_money_k": 0.152,
+          "money_lead_k": 0.103,
+          "opponent_hands": 0.0,
+          "opponent_land": 1.0,
+          "opponent_wheat": 2.0,
+          "opponent_nonwheat": 3.0,
+          "opponent_cows": 2.0,
+          "opponent_sheep": 2.0,
+          "opponent_geese": 0.0,
+          "opponent_structures": 4.0,
+          "opponent_weeds": 0.0,
+          "price_wheat": 1.24,
+          "price_strawberry": 1.225,
+          "price_melon": 1.056,
+          "price_milk": 1.10625,
+          "price_wool": 1.07,
+          "price_fertilizer": 0.97,
+          "shops_wheat": 1.0,
+          "shops_strawberry": 1.0,
+          "shops_milk": 0.0,
+          "shops_wool": 0.0
+        },
+        "outcomes": {
+          "0": {
+            "agent_reward": 63499.0,
+            "opponent_reward": 49139.0,
+            "margin": 14360.0,
+            "result": "win",
+            "utility": 1014.36
+          },
+          "1": {
+            "agent_reward": 52343.0,
+            "opponent_reward": 38477.0,
+            "margin": 13866.0,
+            "result": "win",
+            "utility": 1013.866
+          },
+          "2": {
+            "agent_reward": 59404.0,
+            "opponent_reward": 67560.0,
+            "margin": -8156.0,
+            "result": "loss",
+            "utility": -1008.156
+          },
+          "3": {
+            "agent_reward": 51425.0,
+            "opponent_reward": 46236.0,
+            "margin": 5189.0,
+            "result": "win",
+            "utility": 1005.189
+          }
+        }
+      },
+      {
+        "features": {
+          "player": 0.0,
+          "own_money_k": 0.253,
+          "opponent_money_k": 0.13,
+          "money_lead_k": 0.123,
+          "opponent_hands": 0.0,
+          "opponent_land": 1.0,
+          "opponent_wheat": 8.0,
+          "opponent_nonwheat": 0.0,
+          "opponent_cows": 2.0,
+          "opponent_sheep": 2.0,
+          "opponent_geese": 0.0,
+          "opponent_structures": 5.0,
+          "opponent_weeds": 0.0,
+          "price_wheat": 1.24,
+          "price_strawberry": 1.1416666666666666,
+          "price_melon": 1.056,
+          "price_milk": 1.16875,
+          "price_wool": 1.07,
+          "price_fertilizer": 0.97,
+          "shops_wheat": 1.0,
+          "shops_strawberry": 0.0,
+          "shops_milk": 1.0,
+          "shops_wool": 0.0
+        },
+        "outcomes": {
+          "0": {
+            "agent_reward": 47394.0,
+            "opponent_reward": 49302.0,
+            "margin": -1908.0,
+            "result": "loss",
+            "utility": -1001.908
+          },
+          "1": {
+            "agent_reward": 72287.0,
+            "opponent_reward": 74433.0,
+            "margin": -2146.0,
+            "result": "loss",
+            "utility": -1002.146
+          },
+          "2": {
+            "agent_reward": 50365.0,
+            "opponent_reward": 60988.0,
+            "margin": -10623.0,
+            "result": "loss",
+            "utility": -1010.623
+          },
+          "3": {
+            "agent_reward": 52517.0,
+            "opponent_reward": 73892.0,
+            "margin": -21375.0,
+            "result": "loss",
+            "utility": -1021.375
+          }
+        }
+      },
+      {
+        "features": {
+          "player": 1.0,
+          "own_money_k": 0.253,
+          "opponent_money_k": 0.13,
+          "money_lead_k": 0.123,
+          "opponent_hands": 0.0,
+          "opponent_land": 1.0,
+          "opponent_wheat": 8.0,
+          "opponent_nonwheat": 0.0,
+          "opponent_cows": 2.0,
+          "opponent_sheep": 2.0,
+          "opponent_geese": 0.0,
+          "opponent_structures": 5.0,
+          "opponent_weeds": 0.0,
+          "price_wheat": 1.24,
+          "price_strawberry": 1.1416666666666666,
+          "price_melon": 1.056,
+          "price_milk": 1.16875,
+          "price_wool": 1.07,
+          "price_fertilizer": 0.97,
+          "shops_wheat": 1.0,
+          "shops_strawberry": 0.0,
+          "shops_milk": 1.0,
+          "shops_wool": 0.0
+        },
+        "outcomes": {
+          "0": {
+            "agent_reward": 57384.0,
+            "opponent_reward": 50441.0,
+            "margin": 6943.0,
+            "result": "win",
+            "utility": 1006.943
+          },
+          "1": {
+            "agent_reward": 49658.0,
+            "opponent_reward": 49462.0,
+            "margin": 196.0,
+            "result": "win",
+            "utility": 1000.196
+          },
+          "2": {
+            "agent_reward": 51973.0,
+            "opponent_reward": 62365.0,
+            "margin": -10392.0,
+            "result": "loss",
+            "utility": -1010.392
+          },
+          "3": {
+            "agent_reward": 53499.0,
+            "opponent_reward": 73830.0,
+            "margin": -20331.0,
+            "result": "loss",
+            "utility": -1020.331
+          }
+        }
+      },
+      {
+        "features": {
+          "player": 0.0,
+          "own_money_k": 0.253,
+          "opponent_money_k": 0.13,
+          "money_lead_k": 0.123,
+          "opponent_hands": 0.0,
+          "opponent_land": 1.0,
+          "opponent_wheat": 8.0,
+          "opponent_nonwheat": 0.0,
+          "opponent_cows": 2.0,
+          "opponent_sheep": 2.0,
+          "opponent_geese": 0.0,
+          "opponent_structures": 5.0,
+          "opponent_weeds": 0.0,
+          "price_wheat": 1.24,
+          "price_strawberry": 1.225,
+          "price_melon": 1.056,
+          "price_milk": 1.10625,
+          "price_wool": 1.07,
+          "price_fertilizer": 0.97,
+          "shops_wheat": 1.0,
+          "shops_strawberry": 1.0,
+          "shops_milk": 0.0,
+          "shops_wool": 0.0
+        },
+        "outcomes": {
+          "0": {
+            "agent_reward": 31993.0,
+            "opponent_reward": 15519.0,
+            "margin": 16474.0,
+            "result": "win",
+            "utility": 1016.474
+          },
+          "1": {
+            "agent_reward": 28282.0,
+            "opponent_reward": 17916.0,
+            "margin": 10366.0,
+            "result": "win",
+            "utility": 1010.366
+          },
+          "2": {
+            "agent_reward": 39269.0,
+            "opponent_reward": 49930.0,
+            "margin": -10661.0,
+            "result": "loss",
+            "utility": -1010.661
+          },
+          "3": {
+            "agent_reward": 41137.0,
+            "opponent_reward": 41498.0,
+            "margin": -361.0,
+            "result": "loss",
+            "utility": -1000.361
+          }
+        }
+      },
+      {
+        "features": {
+          "player": 1.0,
+          "own_money_k": 0.253,
+          "opponent_money_k": 0.13,
+          "money_lead_k": 0.123,
+          "opponent_hands": 0.0,
+          "opponent_land": 1.0,
+          "opponent_wheat": 8.0,
+          "opponent_nonwheat": 0.0,
+          "opponent_cows": 2.0,
+          "opponent_sheep": 2.0,
+          "opponent_geese": 0.0,
+          "opponent_structures": 5.0,
+          "opponent_weeds": 0.0,
+          "price_wheat": 1.24,
+          "price_strawberry": 1.225,
+          "price_melon": 1.056,
+          "price_milk": 1.10625,
+          "price_wool": 1.07,
+          "price_fertilizer": 0.97,
+          "shops_wheat": 1.0,
+          "shops_strawberry": 1.0,
+          "shops_milk": 0.0,
+          "shops_wool": 0.0
+        },
+        "outcomes": {
+          "0": {
+            "agent_reward": 38419.0,
+            "opponent_reward": 26715.0,
+            "margin": 11704.0,
+            "result": "win",
+            "utility": 1011.704
+          },
+          "1": {
+            "agent_reward": 30162.0,
+            "opponent_reward": 20685.0,
+            "margin": 9477.0,
+            "result": "win",
+            "utility": 1009.477
+          },
+          "2": {
+            "agent_reward": 44208.0,
+            "opponent_reward": 56231.0,
+            "margin": -12023.0,
+            "result": "loss",
+            "utility": -1012.023
+          },
+          "3": {
+            "agent_reward": 43986.0,
+            "opponent_reward": 47657.0,
+            "margin": -3671.0,
+            "result": "loss",
+            "utility": -1003.671
+          }
+        }
+      },
+      {
+        "features": {
+          "player": 0.0,
+          "own_money_k": 0.253,
+          "opponent_money_k": 1.129,
+          "money_lead_k": -0.876,
+          "opponent_hands": 0.0,
+          "opponent_land": 1.0,
+          "opponent_wheat": 16.0,
+          "opponent_nonwheat": 0.0,
+          "opponent_cows": 2.0,
+          "opponent_sheep": 2.0,
+          "opponent_geese": 0.0,
+          "opponent_structures": 5.0,
+          "opponent_weeds": 2.0,
+          "price_wheat": 1.24,
+          "price_strawberry": 1.225,
+          "price_melon": 1.056,
+          "price_milk": 1.10625,
+          "price_wool": 1.07,
+          "price_fertilizer": 0.97,
+          "shops_wheat": 1.0,
+          "shops_strawberry": 1.0,
+          "shops_milk": 0.0,
+          "shops_wool": 0.0
+        },
+        "outcomes": {
+          "0": {
+            "agent_reward": 82204.0,
+            "opponent_reward": 55860.0,
+            "margin": 26344.0,
+            "result": "win",
+            "utility": 1026.344
+          },
+          "1": {
+            "agent_reward": 69843.0,
+            "opponent_reward": 48506.0,
+            "margin": 21337.0,
+            "result": "win",
+            "utility": 1021.337
+          },
+          "2": {
+            "agent_reward": 54506.0,
+            "opponent_reward": 52432.0,
+            "margin": 2074.0,
+            "result": "win",
+            "utility": 1002.074
+          },
+          "3": {
+            "agent_reward": 60662.0,
+            "opponent_reward": 50053.0,
+            "margin": 10609.0,
+            "result": "win",
+            "utility": 1010.609
+          }
+        }
+      },
+      {
+        "features": {
+          "player": 1.0,
+          "own_money_k": 0.253,
+          "opponent_money_k": 1.129,
+          "money_lead_k": -0.876,
+          "opponent_hands": 0.0,
+          "opponent_land": 1.0,
+          "opponent_wheat": 16.0,
+          "opponent_nonwheat": 0.0,
+          "opponent_cows": 2.0,
+          "opponent_sheep": 2.0,
+          "opponent_geese": 0.0,
+          "opponent_structures": 5.0,
+          "opponent_weeds": 2.0,
+          "price_wheat": 1.24,
+          "price_strawberry": 1.225,
+          "price_melon": 1.056,
+          "price_milk": 1.10625,
+          "price_wool": 1.07,
+          "price_fertilizer": 0.97,
+          "shops_wheat": 1.0,
+          "shops_strawberry": 1.0,
+          "shops_milk": 0.0,
+          "shops_wool": 0.0
+        },
+        "outcomes": {
+          "0": {
+            "agent_reward": 82204.0,
+            "opponent_reward": 55860.0,
+            "margin": 26344.0,
+            "result": "win",
+            "utility": 1026.344
+          },
+          "1": {
+            "agent_reward": 69843.0,
+            "opponent_reward": 48506.0,
+            "margin": 21337.0,
+            "result": "win",
+            "utility": 1021.337
+          },
+          "2": {
+            "agent_reward": 54506.0,
+            "opponent_reward": 52432.0,
+            "margin": 2074.0,
+            "result": "win",
+            "utility": 1002.074
+          },
+          "3": {
+            "agent_reward": 60662.0,
+            "opponent_reward": 50053.0,
+            "margin": 10609.0,
+            "result": "win",
+            "utility": 1010.609
+          }
+        }
+      },
+      {
+        "features": {
+          "player": 0.0,
+          "own_money_k": 0.253,
+          "opponent_money_k": 1.129,
+          "money_lead_k": -0.876,
+          "opponent_hands": 0.0,
+          "opponent_land": 1.0,
+          "opponent_wheat": 16.0,
+          "opponent_nonwheat": 0.0,
+          "opponent_cows": 2.0,
+          "opponent_sheep": 2.0,
+          "opponent_geese": 0.0,
+          "opponent_structures": 5.0,
+          "opponent_weeds": 2.0,
+          "price_wheat": 1.24,
+          "price_strawberry": 1.1416666666666666,
+          "price_melon": 1.056,
+          "price_milk": 1.10625,
+          "price_wool": 1.12,
+          "price_fertilizer": 0.97,
+          "shops_wheat": 0.0,
+          "shops_strawberry": 0.0,
+          "shops_milk": 0.0,
+          "shops_wool": 1.0
+        },
+        "outcomes": {
+          "0": {
+            "agent_reward": 78054.0,
+            "opponent_reward": 57098.0,
+            "margin": 20956.0,
+            "result": "win",
+            "utility": 1020.956
+          },
+          "1": {
+            "agent_reward": 86210.0,
+            "opponent_reward": 57843.0,
+            "margin": 28367.0,
+            "result": "win",
+            "utility": 1028.367
+          },
+          "2": {
+            "agent_reward": 59594.0,
+            "opponent_reward": 59153.0,
+            "margin": 441.0,
+            "result": "win",
+            "utility": 1000.441
+          },
+          "3": {
+            "agent_reward": 60268.0,
+            "opponent_reward": 53822.0,
+            "margin": 6446.0,
+            "result": "win",
+            "utility": 1006.446
+          }
+        }
+      },
+      {
+        "features": {
+          "player": 1.0,
+          "own_money_k": 0.253,
+          "opponent_money_k": 1.129,
+          "money_lead_k": -0.876,
+          "opponent_hands": 0.0,
+          "opponent_land": 1.0,
+          "opponent_wheat": 16.0,
+          "opponent_nonwheat": 0.0,
+          "opponent_cows": 2.0,
+          "opponent_sheep": 2.0,
+          "opponent_geese": 0.0,
+          "opponent_structures": 5.0,
+          "opponent_weeds": 2.0,
+          "price_wheat": 1.24,
+          "price_strawberry": 1.1416666666666666,
+          "price_melon": 1.056,
+          "price_milk": 1.10625,
+          "price_wool": 1.12,
+          "price_fertilizer": 0.97,
+          "shops_wheat": 0.0,
+          "shops_strawberry": 0.0,
+          "shops_milk": 0.0,
+          "shops_wool": 1.0
+        },
+        "outcomes": {
+          "0": {
+            "agent_reward": 78054.0,
+            "opponent_reward": 57098.0,
+            "margin": 20956.0,
+            "result": "win",
+            "utility": 1020.956
+          },
+          "1": {
+            "agent_reward": 86210.0,
+            "opponent_reward": 57843.0,
+            "margin": 28367.0,
+            "result": "win",
+            "utility": 1028.367
+          },
+          "2": {
+            "agent_reward": 59594.0,
+            "opponent_reward": 59153.0,
+            "margin": 441.0,
+            "result": "win",
+            "utility": 1000.441
+          },
+          "3": {
+            "agent_reward": 60268.0,
+            "opponent_reward": 53822.0,
+            "margin": 6446.0,
+            "result": "win",
+            "utility": 1006.446
+          }
+        }
+      },
+      {
+        "features": {
+          "player": 0.0,
+          "own_money_k": 0.253,
+          "opponent_money_k": 0.943,
+          "money_lead_k": -0.69,
+          "opponent_hands": 0.0,
+          "opponent_land": 1.0,
+          "opponent_wheat": 12.0,
+          "opponent_nonwheat": 0.0,
+          "opponent_cows": 3.0,
+          "opponent_sheep": 2.0,
+          "opponent_geese": 0.0,
+          "opponent_structures": 5.0,
+          "opponent_weeds": 0.0,
+          "price_wheat": 1.24,
+          "price_strawberry": 1.1416666666666666,
+          "price_melon": 1.056,
+          "price_milk": 1.10625,
+          "price_wool": 1.12,
+          "price_fertilizer": 0.97,
+          "shops_wheat": 0.0,
+          "shops_strawberry": 0.0,
+          "shops_milk": 0.0,
+          "shops_wool": 1.0
+        },
+        "outcomes": {
+          "0": {
+            "agent_reward": 59224.0,
+            "opponent_reward": 50137.0,
+            "margin": 9087.0,
+            "result": "win",
+            "utility": 1009.087
+          },
+          "1": {
+            "agent_reward": 77232.0,
+            "opponent_reward": 56559.0,
+            "margin": 20673.0,
+            "result": "win",
+            "utility": 1020.673
+          },
+          "2": {
+            "agent_reward": 37753.0,
+            "opponent_reward": 60173.0,
+            "margin": -22420.0,
+            "result": "loss",
+            "utility": -1022.42
+          },
+          "3": {
+            "agent_reward": 47103.0,
+            "opponent_reward": 54641.0,
+            "margin": -7538.0,
+            "result": "loss",
+            "utility": -1007.538
+          }
+        }
+      },
+      {
+        "features": {
+          "player": 1.0,
+          "own_money_k": 0.253,
+          "opponent_money_k": 0.943,
+          "money_lead_k": -0.69,
+          "opponent_hands": 0.0,
+          "opponent_land": 1.0,
+          "opponent_wheat": 12.0,
+          "opponent_nonwheat": 0.0,
+          "opponent_cows": 3.0,
+          "opponent_sheep": 2.0,
+          "opponent_geese": 0.0,
+          "opponent_structures": 5.0,
+          "opponent_weeds": 0.0,
+          "price_wheat": 1.24,
+          "price_strawberry": 1.1416666666666666,
+          "price_melon": 1.056,
+          "price_milk": 1.10625,
+          "price_wool": 1.12,
+          "price_fertilizer": 0.97,
+          "shops_wheat": 0.0,
+          "shops_strawberry": 0.0,
+          "shops_milk": 0.0,
+          "shops_wool": 1.0
+        },
+        "outcomes": {
+          "0": {
+            "agent_reward": 63010.0,
+            "opponent_reward": 54000.0,
+            "margin": 9010.0,
+            "result": "win",
+            "utility": 1009.01
+          },
+          "1": {
+            "agent_reward": 78457.0,
+            "opponent_reward": 56965.0,
+            "margin": 21492.0,
+            "result": "win",
+            "utility": 1021.492
+          },
+          "2": {
+            "agent_reward": 37809.0,
+            "opponent_reward": 59419.0,
+            "margin": -21610.0,
+            "result": "loss",
+            "utility": -1021.61
+          },
+          "3": {
+            "agent_reward": 47730.0,
+            "opponent_reward": 54684.0,
+            "margin": -6954.0,
+            "result": "loss",
+            "utility": -1006.954
+          }
+        }
+      },
+      {
+        "features": {
+          "player": 0.0,
+          "own_money_k": 0.253,
+          "opponent_money_k": 0.943,
+          "money_lead_k": -0.69,
+          "opponent_hands": 0.0,
+          "opponent_land": 1.0,
+          "opponent_wheat": 12.0,
+          "opponent_nonwheat": 0.0,
+          "opponent_cows": 3.0,
+          "opponent_sheep": 2.0,
+          "opponent_geese": 0.0,
+          "opponent_structures": 5.0,
+          "opponent_weeds": 0.0,
+          "price_wheat": 1.24,
+          "price_strawberry": 1.1416666666666666,
+          "price_melon": 1.056,
+          "price_milk": 1.10625,
+          "price_wool": 1.07,
+          "price_fertilizer": 0.97,
+          "shops_wheat": 0.0,
+          "shops_strawberry": 0.0,
+          "shops_milk": 0.0,
+          "shops_wool": 0.0
+        },
+        "outcomes": {
+          "0": {
+            "agent_reward": 49845.0,
+            "opponent_reward": 37835.0,
+            "margin": 12010.0,
+            "result": "win",
+            "utility": 1012.01
+          },
+          "1": {
+            "agent_reward": 42468.0,
+            "opponent_reward": 23794.0,
+            "margin": 18674.0,
+            "result": "win",
+            "utility": 1018.674
+          },
+          "2": {
+            "agent_reward": 44370.0,
+            "opponent_reward": 42506.0,
+            "margin": 1864.0,
+            "result": "win",
+            "utility": 1001.864
+          },
+          "3": {
+            "agent_reward": 28860.0,
+            "opponent_reward": 16649.0,
+            "margin": 12211.0,
+            "result": "win",
+            "utility": 1012.211
+          }
+        }
+      },
+      {
+        "features": {
+          "player": 1.0,
+          "own_money_k": 0.253,
+          "opponent_money_k": 0.943,
+          "money_lead_k": -0.69,
+          "opponent_hands": 0.0,
+          "opponent_land": 1.0,
+          "opponent_wheat": 12.0,
+          "opponent_nonwheat": 0.0,
+          "opponent_cows": 3.0,
+          "opponent_sheep": 2.0,
+          "opponent_geese": 0.0,
+          "opponent_structures": 5.0,
+          "opponent_weeds": 0.0,
+          "price_wheat": 1.24,
+          "price_strawberry": 1.1416666666666666,
+          "price_melon": 1.056,
+          "price_milk": 1.10625,
+          "price_wool": 1.07,
+          "price_fertilizer": 0.97,
+          "shops_wheat": 0.0,
+          "shops_strawberry": 0.0,
+          "shops_milk": 0.0,
+          "shops_wool": 0.0
+        },
+        "outcomes": {
+          "0": {
+            "agent_reward": 50226.0,
+            "opponent_reward": 39164.0,
+            "margin": 11062.0,
+            "result": "win",
+            "utility": 1011.062
+          },
+          "1": {
+            "agent_reward": 37764.0,
+            "opponent_reward": 20820.0,
+            "margin": 16944.0,
+            "result": "win",
+            "utility": 1016.944
+          },
+          "2": {
+            "agent_reward": 44370.0,
+            "opponent_reward": 42506.0,
+            "margin": 1864.0,
+            "result": "win",
+            "utility": 1001.864
+          },
+          "3": {
+            "agent_reward": 28860.0,
+            "opponent_reward": 16649.0,
+            "margin": 12211.0,
+            "result": "win",
+            "utility": 1012.211
+          }
+        }
+      },
+      {
+        "features": {
+          "player": 0.0,
+          "own_money_k": 0.246,
+          "opponent_money_k": 0.312,
+          "money_lead_k": -0.066,
+          "opponent_hands": 0.0,
+          "opponent_land": 1.0,
+          "opponent_wheat": 13.0,
+          "opponent_nonwheat": 7.0,
+          "opponent_cows": 3.0,
+          "opponent_sheep": 2.0,
+          "opponent_geese": 0.0,
+          "opponent_structures": 5.0,
+          "opponent_weeds": 0.0,
+          "price_wheat": 1.28,
+          "price_strawberry": 1.225,
+          "price_melon": 1.056,
+          "price_milk": 1.10625,
+          "price_wool": 1.07,
+          "price_fertilizer": 0.96,
+          "shops_wheat": 1.0,
+          "shops_strawberry": 1.0,
+          "shops_milk": 0.0,
+          "shops_wool": 0.0
+        },
+        "outcomes": {
+          "0": {
+            "agent_reward": 44859.0,
+            "opponent_reward": 82532.0,
+            "margin": -37673.0,
+            "result": "loss",
+            "utility": -1037.673
+          },
+          "1": {
+            "agent_reward": 49257.0,
+            "opponent_reward": 88765.0,
+            "margin": -39508.0,
+            "result": "loss",
+            "utility": -1039.508
+          },
+          "2": {
+            "agent_reward": 39174.0,
+            "opponent_reward": 101798.0,
+            "margin": -62624.0,
+            "result": "loss",
+            "utility": -1062.624
+          },
+          "3": {
+            "agent_reward": 38565.0,
+            "opponent_reward": 83612.0,
+            "margin": -45047.0,
+            "result": "loss",
+            "utility": -1045.047
+          }
+        }
+      },
+      {
+        "features": {
+          "player": 1.0,
+          "own_money_k": 0.246,
+          "opponent_money_k": 0.312,
+          "money_lead_k": -0.066,
+          "opponent_hands": 0.0,
+          "opponent_land": 1.0,
+          "opponent_wheat": 13.0,
+          "opponent_nonwheat": 7.0,
+          "opponent_cows": 3.0,
+          "opponent_sheep": 2.0,
+          "opponent_geese": 0.0,
+          "opponent_structures": 5.0,
+          "opponent_weeds": 0.0,
+          "price_wheat": 1.28,
+          "price_strawberry": 1.225,
+          "price_melon": 1.056,
+          "price_milk": 1.10625,
+          "price_wool": 1.07,
+          "price_fertilizer": 0.96,
+          "shops_wheat": 1.0,
+          "shops_strawberry": 1.0,
+          "shops_milk": 0.0,
+          "shops_wool": 0.0
+        },
+        "outcomes": {
+          "0": {
+            "agent_reward": 37339.0,
+            "opponent_reward": 63973.0,
+            "margin": -26634.0,
+            "result": "loss",
+            "utility": -1026.634
+          },
+          "1": {
+            "agent_reward": 50955.0,
+            "opponent_reward": 93265.0,
+            "margin": -42310.0,
+            "result": "loss",
+            "utility": -1042.31
+          },
+          "2": {
+            "agent_reward": 40981.0,
+            "opponent_reward": 103397.0,
+            "margin": -62416.0,
+            "result": "loss",
+            "utility": -1062.416
+          },
+          "3": {
+            "agent_reward": 39429.0,
+            "opponent_reward": 84670.0,
+            "margin": -45241.0,
+            "result": "loss",
+            "utility": -1045.241
+          }
+        }
+      },
+      {
+        "features": {
+          "player": 0.0,
+          "own_money_k": 0.251,
+          "opponent_money_k": 0.905,
+          "money_lead_k": -0.654,
+          "opponent_hands": 0.0,
+          "opponent_land": 1.0,
+          "opponent_wheat": 10.0,
+          "opponent_nonwheat": 11.0,
+          "opponent_cows": 2.0,
+          "opponent_sheep": 2.0,
+          "opponent_geese": 0.0,
+          "opponent_structures": 4.0,
+          "opponent_weeds": 0.0,
+          "price_wheat": 1.24,
+          "price_strawberry": 1.225,
+          "price_melon": 1.056,
+          "price_milk": 1.10625,
+          "price_wool": 1.07,
+          "price_fertilizer": 0.96,
+          "shops_wheat": 1.0,
+          "shops_strawberry": 1.0,
+          "shops_milk": 0.0,
+          "shops_wool": 0.0
+        },
+        "outcomes": {
+          "0": {
+            "agent_reward": 60781.0,
+            "opponent_reward": 159147.0,
+            "margin": -98366.0,
+            "result": "loss",
+            "utility": -1098.366
+          },
+          "1": {
+            "agent_reward": 67891.0,
+            "opponent_reward": 154233.0,
+            "margin": -86342.0,
+            "result": "loss",
+            "utility": -1086.342
+          },
+          "2": {
+            "agent_reward": 41287.0,
+            "opponent_reward": 109186.0,
+            "margin": -67899.0,
+            "result": "loss",
+            "utility": -1067.899
+          },
+          "3": {
+            "agent_reward": 63241.0,
+            "opponent_reward": 167327.0,
+            "margin": -104086.0,
+            "result": "loss",
+            "utility": -1104.086
+          }
+        }
+      },
+      {
+        "features": {
+          "player": 1.0,
+          "own_money_k": 0.251,
+          "opponent_money_k": 0.905,
+          "money_lead_k": -0.654,
+          "opponent_hands": 0.0,
+          "opponent_land": 1.0,
+          "opponent_wheat": 10.0,
+          "opponent_nonwheat": 11.0,
+          "opponent_cows": 2.0,
+          "opponent_sheep": 2.0,
+          "opponent_geese": 0.0,
+          "opponent_structures": 4.0,
+          "opponent_weeds": 0.0,
+          "price_wheat": 1.24,
+          "price_strawberry": 1.225,
+          "price_melon": 1.056,
+          "price_milk": 1.10625,
+          "price_wool": 1.07,
+          "price_fertilizer": 0.96,
+          "shops_wheat": 1.0,
+          "shops_strawberry": 1.0,
+          "shops_milk": 0.0,
+          "shops_wool": 0.0
+        },
+        "outcomes": {
+          "0": {
+            "agent_reward": 61304.0,
+            "opponent_reward": 160068.0,
+            "margin": -98764.0,
+            "result": "loss",
+            "utility": -1098.764
+          },
+          "1": {
+            "agent_reward": 65923.0,
+            "opponent_reward": 153958.0,
+            "margin": -88035.0,
+            "result": "loss",
+            "utility": -1088.035
+          },
+          "2": {
+            "agent_reward": 41241.0,
+            "opponent_reward": 108998.0,
+            "margin": -67757.0,
+            "result": "loss",
+            "utility": -1067.757
+          },
+          "3": {
+            "agent_reward": 62292.0,
+            "opponent_reward": 165367.0,
+            "margin": -103075.0,
+            "result": "loss",
+            "utility": -1103.075
+          }
+        }
+      }
+    ]
+  },
+  "cross_validation": {
+    "selected": {
+      "k": 13,
+      "distance_power": 2.0,
+      "wins": 44,
+      "games": 56,
+      "utility": 32076.057,
+      "folds": [
+        {
+          "field": "seed",
+          "value": 140,
+          "games": 12,
+          "wins": 11,
+          "utility": 10131.307,
+          "mean_margin": 10942.25
+        },
+        {
+          "field": "seed",
+          "value": 141,
+          "games": 12,
+          "wins": 11,
+          "utility": 10167.084,
+          "mean_margin": 13923.67
+        },
+        {
+          "field": "seed",
+          "value": 1192301511,
+          "games": 4,
+          "wins": 0,
+          "utility": -4256.195,
+          "mean_margin": -64048.75
+        },
+        {
+          "field": "opponent",
+          "value": "current_rank2_replay_agent.py",
+          "games": 2,
+          "wins": 0,
+          "utility": -2174.377,
+          "mean_margin": -87188.5
+        },
+        {
+          "field": "opponent",
+          "value": "current_top_replay_agent.py",
+          "games": 2,
+          "wins": 0,
+          "utility": -2081.818,
+          "mean_margin": -40909.0
+        },
+        {
+          "field": "opponent",
+          "value": "experimental_adaptive_counter_agent.py",
+          "games": 4,
+          "wins": 4,
+          "utility": 4033.879,
+          "mean_margin": 8469.75
+        },
+        {
+          "field": "opponent",
+          "value": "experimental_center_out_agent.py",
+          "games": 4,
+          "wins": 4,
+          "utility": 4047.662,
+          "mean_margin": 11915.5
+        },
+        {
+          "field": "opponent",
+          "value": "experimental_compact_macro_agent.py",
+          "games": 4,
+          "wins": 3,
+          "utility": 2013.431,
+          "mean_margin": 3357.75
+        },
+        {
+          "field": "opponent",
+          "value": "experimental_investment_agent.py",
+          "games": 4,
+          "wins": 4,
+          "utility": 4077.783,
+          "mean_margin": 19445.75
+        },
+        {
+          "field": "opponent",
+          "value": "experimental_lifecycle_agent.py",
+          "games": 4,
+          "wins": 3,
+          "utility": 2017.893,
+          "mean_margin": 4473.25
+        },
+        {
+          "field": "opponent",
+          "value": "experimental_scale_agent.py",
+          "games": 4,
+          "wins": 4,
+          "utility": 4099.408,
+          "mean_margin": 24852.0
+        }
+      ]
+    },
+    "candidates": [
+      {
+        "k": 1,
+        "distance_power": 0.0,
+        "wins": 44,
+        "games": 56,
+        "utility": 32023.509,
+        "folds": [
+          {
+            "field": "seed",
+            "value": 140,
+            "games": 12,
+            "wins": 11,
+            "utility": 10131.412,
+            "mean_margin": 10951.0
+          },
+          {
+            "field": "seed",
+            "value": 141,
+            "games": 12,
+            "wins": 11,
+            "utility": 10152.022,
+            "mean_margin": 12668.5
+          },
+          {
+            "field": "seed",
+            "value": 1192301511,
+            "games": 4,
+            "wins": 0,
+            "utility": -4249.413,
+            "mean_margin": -62353.25
+          },
+          {
+            "field": "opponent",
+            "value": "current_rank2_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2185.106,
+            "mean_margin": -92553.0
+          },
+          {
+            "field": "opponent",
+            "value": "current_top_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2064.307,
+            "mean_margin": -32153.5
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_adaptive_counter_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4032.585,
+            "mean_margin": 8146.25
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_center_out_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4046.408,
+            "mean_margin": 11602.0
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_compact_macro_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2013.431,
+            "mean_margin": 3357.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_investment_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4065.237,
+            "mean_margin": 16309.25
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_lifecycle_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2020.358,
+            "mean_margin": 5089.5
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_scale_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4060.882,
+            "mean_margin": 15220.5
+          }
+        ]
+      },
+      {
+        "k": 1,
+        "distance_power": 1.0,
+        "wins": 44,
+        "games": 56,
+        "utility": 32023.509,
+        "folds": [
+          {
+            "field": "seed",
+            "value": 140,
+            "games": 12,
+            "wins": 11,
+            "utility": 10131.412,
+            "mean_margin": 10951.0
+          },
+          {
+            "field": "seed",
+            "value": 141,
+            "games": 12,
+            "wins": 11,
+            "utility": 10152.022,
+            "mean_margin": 12668.5
+          },
+          {
+            "field": "seed",
+            "value": 1192301511,
+            "games": 4,
+            "wins": 0,
+            "utility": -4249.413,
+            "mean_margin": -62353.25
+          },
+          {
+            "field": "opponent",
+            "value": "current_rank2_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2185.106,
+            "mean_margin": -92553.0
+          },
+          {
+            "field": "opponent",
+            "value": "current_top_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2064.307,
+            "mean_margin": -32153.5
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_adaptive_counter_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4032.585,
+            "mean_margin": 8146.25
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_center_out_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4046.408,
+            "mean_margin": 11602.0
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_compact_macro_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2013.431,
+            "mean_margin": 3357.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_investment_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4065.237,
+            "mean_margin": 16309.25
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_lifecycle_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2020.358,
+            "mean_margin": 5089.5
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_scale_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4060.882,
+            "mean_margin": 15220.5
+          }
+        ]
+      },
+      {
+        "k": 1,
+        "distance_power": 2.0,
+        "wins": 44,
+        "games": 56,
+        "utility": 32023.509,
+        "folds": [
+          {
+            "field": "seed",
+            "value": 140,
+            "games": 12,
+            "wins": 11,
+            "utility": 10131.412,
+            "mean_margin": 10951.0
+          },
+          {
+            "field": "seed",
+            "value": 141,
+            "games": 12,
+            "wins": 11,
+            "utility": 10152.022,
+            "mean_margin": 12668.5
+          },
+          {
+            "field": "seed",
+            "value": 1192301511,
+            "games": 4,
+            "wins": 0,
+            "utility": -4249.413,
+            "mean_margin": -62353.25
+          },
+          {
+            "field": "opponent",
+            "value": "current_rank2_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2185.106,
+            "mean_margin": -92553.0
+          },
+          {
+            "field": "opponent",
+            "value": "current_top_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2064.307,
+            "mean_margin": -32153.5
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_adaptive_counter_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4032.585,
+            "mean_margin": 8146.25
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_center_out_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4046.408,
+            "mean_margin": 11602.0
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_compact_macro_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2013.431,
+            "mean_margin": 3357.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_investment_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4065.237,
+            "mean_margin": 16309.25
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_lifecycle_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2020.358,
+            "mean_margin": 5089.5
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_scale_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4060.882,
+            "mean_margin": 15220.5
+          }
+        ]
+      },
+      {
+        "k": 3,
+        "distance_power": 0.0,
+        "wins": 44,
+        "games": 56,
+        "utility": 32011.545,
+        "folds": [
+          {
+            "field": "seed",
+            "value": 140,
+            "games": 12,
+            "wins": 11,
+            "utility": 10135.148,
+            "mean_margin": 11262.33
+          },
+          {
+            "field": "seed",
+            "value": 141,
+            "games": 12,
+            "wins": 11,
+            "utility": 10167.084,
+            "mean_margin": 13923.67
+          },
+          {
+            "field": "seed",
+            "value": 1192301511,
+            "games": 4,
+            "wins": 0,
+            "utility": -4261.437,
+            "mean_margin": -65359.25
+          },
+          {
+            "field": "opponent",
+            "value": "current_rank2_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2197.13,
+            "mean_margin": -98565.0
+          },
+          {
+            "field": "opponent",
+            "value": "current_top_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2064.307,
+            "mean_margin": -32153.5
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_adaptive_counter_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4033.879,
+            "mean_margin": 8469.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_center_out_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4045.012,
+            "mean_margin": 11253.0
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_compact_macro_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2013.431,
+            "mean_margin": 3357.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_investment_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4052.755,
+            "mean_margin": 13188.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_lifecycle_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2026.228,
+            "mean_margin": 6557.0
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_scale_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4060.882,
+            "mean_margin": 15220.5
+          }
+        ]
+      },
+      {
+        "k": 3,
+        "distance_power": 1.0,
+        "wins": 44,
+        "games": 56,
+        "utility": 32011.545,
+        "folds": [
+          {
+            "field": "seed",
+            "value": 140,
+            "games": 12,
+            "wins": 11,
+            "utility": 10135.148,
+            "mean_margin": 11262.33
+          },
+          {
+            "field": "seed",
+            "value": 141,
+            "games": 12,
+            "wins": 11,
+            "utility": 10167.084,
+            "mean_margin": 13923.67
+          },
+          {
+            "field": "seed",
+            "value": 1192301511,
+            "games": 4,
+            "wins": 0,
+            "utility": -4261.437,
+            "mean_margin": -65359.25
+          },
+          {
+            "field": "opponent",
+            "value": "current_rank2_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2197.13,
+            "mean_margin": -98565.0
+          },
+          {
+            "field": "opponent",
+            "value": "current_top_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2064.307,
+            "mean_margin": -32153.5
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_adaptive_counter_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4033.879,
+            "mean_margin": 8469.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_center_out_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4045.012,
+            "mean_margin": 11253.0
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_compact_macro_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2013.431,
+            "mean_margin": 3357.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_investment_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4052.755,
+            "mean_margin": 13188.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_lifecycle_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2026.228,
+            "mean_margin": 6557.0
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_scale_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4060.882,
+            "mean_margin": 15220.5
+          }
+        ]
+      },
+      {
+        "k": 3,
+        "distance_power": 2.0,
+        "wins": 44,
+        "games": 56,
+        "utility": 32011.545,
+        "folds": [
+          {
+            "field": "seed",
+            "value": 140,
+            "games": 12,
+            "wins": 11,
+            "utility": 10135.148,
+            "mean_margin": 11262.33
+          },
+          {
+            "field": "seed",
+            "value": 141,
+            "games": 12,
+            "wins": 11,
+            "utility": 10167.084,
+            "mean_margin": 13923.67
+          },
+          {
+            "field": "seed",
+            "value": 1192301511,
+            "games": 4,
+            "wins": 0,
+            "utility": -4261.437,
+            "mean_margin": -65359.25
+          },
+          {
+            "field": "opponent",
+            "value": "current_rank2_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2197.13,
+            "mean_margin": -98565.0
+          },
+          {
+            "field": "opponent",
+            "value": "current_top_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2064.307,
+            "mean_margin": -32153.5
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_adaptive_counter_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4033.879,
+            "mean_margin": 8469.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_center_out_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4045.012,
+            "mean_margin": 11253.0
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_compact_macro_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2013.431,
+            "mean_margin": 3357.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_investment_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4052.755,
+            "mean_margin": 13188.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_lifecycle_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2026.228,
+            "mean_margin": 6557.0
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_scale_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4060.882,
+            "mean_margin": 15220.5
+          }
+        ]
+      },
+      {
+        "k": 5,
+        "distance_power": 0.0,
+        "wins": 44,
+        "games": 56,
+        "utility": 32061.232,
+        "folds": [
+          {
+            "field": "seed",
+            "value": 140,
+            "games": 12,
+            "wins": 11,
+            "utility": 10134.91,
+            "mean_margin": 11242.5
+          },
+          {
+            "field": "seed",
+            "value": 141,
+            "games": 12,
+            "wins": 11,
+            "utility": 10167.578,
+            "mean_margin": 13964.83
+          },
+          {
+            "field": "seed",
+            "value": 1192301511,
+            "games": 4,
+            "wins": 0,
+            "utility": -4266.924,
+            "mean_margin": -66731.0
+          },
+          {
+            "field": "opponent",
+            "value": "current_rank2_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2185.106,
+            "mean_margin": -92553.0
+          },
+          {
+            "field": "opponent",
+            "value": "current_top_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2081.818,
+            "mean_margin": -40909.0
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_adaptive_counter_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4033.879,
+            "mean_margin": 8469.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_center_out_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4047.662,
+            "mean_margin": 11915.5
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_compact_macro_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2013.431,
+            "mean_margin": 3357.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_investment_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4065.237,
+            "mean_margin": 16309.25
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_lifecycle_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2032.975,
+            "mean_margin": 8243.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_scale_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4099.408,
+            "mean_margin": 24852.0
+          }
+        ]
+      },
+      {
+        "k": 5,
+        "distance_power": 1.0,
+        "wins": 44,
+        "games": 56,
+        "utility": 32048.75,
+        "folds": [
+          {
+            "field": "seed",
+            "value": 140,
+            "games": 12,
+            "wins": 11,
+            "utility": 10134.91,
+            "mean_margin": 11242.5
+          },
+          {
+            "field": "seed",
+            "value": 141,
+            "games": 12,
+            "wins": 11,
+            "utility": 10167.578,
+            "mean_margin": 13964.83
+          },
+          {
+            "field": "seed",
+            "value": 1192301511,
+            "games": 4,
+            "wins": 0,
+            "utility": -4266.924,
+            "mean_margin": -66731.0
+          },
+          {
+            "field": "opponent",
+            "value": "current_rank2_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2185.106,
+            "mean_margin": -92553.0
+          },
+          {
+            "field": "opponent",
+            "value": "current_top_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2081.818,
+            "mean_margin": -40909.0
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_adaptive_counter_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4033.879,
+            "mean_margin": 8469.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_center_out_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4047.662,
+            "mean_margin": 11915.5
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_compact_macro_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2013.431,
+            "mean_margin": 3357.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_investment_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4052.755,
+            "mean_margin": 13188.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_lifecycle_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2032.975,
+            "mean_margin": 8243.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_scale_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4099.408,
+            "mean_margin": 24852.0
+          }
+        ]
+      },
+      {
+        "k": 5,
+        "distance_power": 2.0,
+        "wins": 44,
+        "games": 56,
+        "utility": 32051.079,
+        "folds": [
+          {
+            "field": "seed",
+            "value": 140,
+            "games": 12,
+            "wins": 11,
+            "utility": 10134.91,
+            "mean_margin": 11242.5
+          },
+          {
+            "field": "seed",
+            "value": 141,
+            "games": 12,
+            "wins": 11,
+            "utility": 10167.578,
+            "mean_margin": 13964.83
+          },
+          {
+            "field": "seed",
+            "value": 1192301511,
+            "games": 4,
+            "wins": 0,
+            "utility": -4265.089,
+            "mean_margin": -66272.25
+          },
+          {
+            "field": "opponent",
+            "value": "current_rank2_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2185.106,
+            "mean_margin": -92553.0
+          },
+          {
+            "field": "opponent",
+            "value": "current_top_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2081.818,
+            "mean_margin": -40909.0
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_adaptive_counter_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4033.879,
+            "mean_margin": 8469.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_center_out_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4048.156,
+            "mean_margin": 12039.0
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_compact_macro_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2013.431,
+            "mean_margin": 3357.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_investment_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4052.755,
+            "mean_margin": 13188.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_lifecycle_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2032.975,
+            "mean_margin": 8243.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_scale_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4099.408,
+            "mean_margin": 24852.0
+          }
+        ]
+      },
+      {
+        "k": 7,
+        "distance_power": 0.0,
+        "wins": 44,
+        "games": 56,
+        "utility": 32070.814,
+        "folds": [
+          {
+            "field": "seed",
+            "value": 140,
+            "games": 12,
+            "wins": 11,
+            "utility": 10138.054,
+            "mean_margin": 11504.5
+          },
+          {
+            "field": "seed",
+            "value": 141,
+            "games": 12,
+            "wins": 11,
+            "utility": 10167.578,
+            "mean_margin": 13964.83
+          },
+          {
+            "field": "seed",
+            "value": 1192301511,
+            "games": 4,
+            "wins": 0,
+            "utility": -4266.924,
+            "mean_margin": -66731.0
+          },
+          {
+            "field": "opponent",
+            "value": "current_rank2_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2185.106,
+            "mean_margin": -92553.0
+          },
+          {
+            "field": "opponent",
+            "value": "current_top_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2081.818,
+            "mean_margin": -40909.0
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_adaptive_counter_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4033.879,
+            "mean_margin": 8469.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_center_out_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4047.662,
+            "mean_margin": 11915.5
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_compact_macro_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2013.431,
+            "mean_margin": 3357.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_investment_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4077.783,
+            "mean_margin": 19445.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_lifecycle_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2026.867,
+            "mean_margin": 6716.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_scale_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4099.408,
+            "mean_margin": 24852.0
+          }
+        ]
+      },
+      {
+        "k": 7,
+        "distance_power": 1.0,
+        "wins": 44,
+        "games": 56,
+        "utility": 32064.932,
+        "folds": [
+          {
+            "field": "seed",
+            "value": 140,
+            "games": 12,
+            "wins": 11,
+            "utility": 10138.054,
+            "mean_margin": 11504.5
+          },
+          {
+            "field": "seed",
+            "value": 141,
+            "games": 12,
+            "wins": 11,
+            "utility": 10167.578,
+            "mean_margin": 13964.83
+          },
+          {
+            "field": "seed",
+            "value": 1192301511,
+            "games": 4,
+            "wins": 0,
+            "utility": -4266.924,
+            "mean_margin": -66731.0
+          },
+          {
+            "field": "opponent",
+            "value": "current_rank2_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2185.106,
+            "mean_margin": -92553.0
+          },
+          {
+            "field": "opponent",
+            "value": "current_top_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2081.818,
+            "mean_margin": -40909.0
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_adaptive_counter_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4033.879,
+            "mean_margin": 8469.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_center_out_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4047.662,
+            "mean_margin": 11915.5
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_compact_macro_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2013.431,
+            "mean_margin": 3357.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_investment_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4071.901,
+            "mean_margin": 17975.25
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_lifecycle_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2026.867,
+            "mean_margin": 6716.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_scale_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4099.408,
+            "mean_margin": 24852.0
+          }
+        ]
+      },
+      {
+        "k": 7,
+        "distance_power": 2.0,
+        "wins": 44,
+        "games": 56,
+        "utility": 32064.932,
+        "folds": [
+          {
+            "field": "seed",
+            "value": 140,
+            "games": 12,
+            "wins": 11,
+            "utility": 10138.054,
+            "mean_margin": 11504.5
+          },
+          {
+            "field": "seed",
+            "value": 141,
+            "games": 12,
+            "wins": 11,
+            "utility": 10167.578,
+            "mean_margin": 13964.83
+          },
+          {
+            "field": "seed",
+            "value": 1192301511,
+            "games": 4,
+            "wins": 0,
+            "utility": -4266.924,
+            "mean_margin": -66731.0
+          },
+          {
+            "field": "opponent",
+            "value": "current_rank2_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2185.106,
+            "mean_margin": -92553.0
+          },
+          {
+            "field": "opponent",
+            "value": "current_top_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2081.818,
+            "mean_margin": -40909.0
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_adaptive_counter_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4033.879,
+            "mean_margin": 8469.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_center_out_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4047.662,
+            "mean_margin": 11915.5
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_compact_macro_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2013.431,
+            "mean_margin": 3357.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_investment_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4071.901,
+            "mean_margin": 17975.25
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_lifecycle_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2026.867,
+            "mean_margin": 6716.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_scale_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4099.408,
+            "mean_margin": 24852.0
+          }
+        ]
+      },
+      {
+        "k": 9,
+        "distance_power": 0.0,
+        "wins": 44,
+        "games": 56,
+        "utility": 32069.949,
+        "folds": [
+          {
+            "field": "seed",
+            "value": 140,
+            "games": 12,
+            "wins": 11,
+            "utility": 10131.307,
+            "mean_margin": 10942.25
+          },
+          {
+            "field": "seed",
+            "value": 141,
+            "games": 12,
+            "wins": 11,
+            "utility": 10158.749,
+            "mean_margin": 13229.08
+          },
+          {
+            "field": "seed",
+            "value": 1192301511,
+            "games": 4,
+            "wins": 0,
+            "utility": -4256.195,
+            "mean_margin": -64048.75
+          },
+          {
+            "field": "opponent",
+            "value": "current_rank2_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2174.377,
+            "mean_margin": -87188.5
+          },
+          {
+            "field": "opponent",
+            "value": "current_top_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2081.818,
+            "mean_margin": -40909.0
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_adaptive_counter_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4033.879,
+            "mean_margin": 8469.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_center_out_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4047.662,
+            "mean_margin": 11915.5
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_compact_macro_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2013.431,
+            "mean_margin": 3357.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_investment_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4077.783,
+            "mean_margin": 19445.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_lifecycle_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2020.12,
+            "mean_margin": 5030.0
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_scale_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4099.408,
+            "mean_margin": 24852.0
+          }
+        ]
+      },
+      {
+        "k": 9,
+        "distance_power": 1.0,
+        "wins": 44,
+        "games": 56,
+        "utility": 32066.294,
+        "folds": [
+          {
+            "field": "seed",
+            "value": 140,
+            "games": 12,
+            "wins": 11,
+            "utility": 10131.307,
+            "mean_margin": 10942.25
+          },
+          {
+            "field": "seed",
+            "value": 141,
+            "games": 12,
+            "wins": 11,
+            "utility": 10160.976,
+            "mean_margin": 13414.67
+          },
+          {
+            "field": "seed",
+            "value": 1192301511,
+            "games": 4,
+            "wins": 0,
+            "utility": -4256.195,
+            "mean_margin": -64048.75
+          },
+          {
+            "field": "opponent",
+            "value": "current_rank2_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2174.377,
+            "mean_margin": -87188.5
+          },
+          {
+            "field": "opponent",
+            "value": "current_top_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2081.818,
+            "mean_margin": -40909.0
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_adaptive_counter_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4033.879,
+            "mean_margin": 8469.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_center_out_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4047.662,
+            "mean_margin": 11915.5
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_compact_macro_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2013.431,
+            "mean_margin": 3357.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_investment_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4071.901,
+            "mean_margin": 17975.25
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_lifecycle_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2020.12,
+            "mean_margin": 5030.0
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_scale_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4099.408,
+            "mean_margin": 24852.0
+          }
+        ]
+      },
+      {
+        "k": 9,
+        "distance_power": 2.0,
+        "wins": 44,
+        "games": 56,
+        "utility": 32072.402,
+        "folds": [
+          {
+            "field": "seed",
+            "value": 140,
+            "games": 12,
+            "wins": 11,
+            "utility": 10131.307,
+            "mean_margin": 10942.25
+          },
+          {
+            "field": "seed",
+            "value": 141,
+            "games": 12,
+            "wins": 11,
+            "utility": 10167.084,
+            "mean_margin": 13923.67
+          },
+          {
+            "field": "seed",
+            "value": 1192301511,
+            "games": 4,
+            "wins": 0,
+            "utility": -4256.195,
+            "mean_margin": -64048.75
+          },
+          {
+            "field": "opponent",
+            "value": "current_rank2_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2174.377,
+            "mean_margin": -87188.5
+          },
+          {
+            "field": "opponent",
+            "value": "current_top_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2081.818,
+            "mean_margin": -40909.0
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_adaptive_counter_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4033.879,
+            "mean_margin": 8469.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_center_out_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4047.662,
+            "mean_margin": 11915.5
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_compact_macro_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2013.431,
+            "mean_margin": 3357.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_investment_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4071.901,
+            "mean_margin": 17975.25
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_lifecycle_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2020.12,
+            "mean_margin": 5030.0
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_scale_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4099.408,
+            "mean_margin": 24852.0
+          }
+        ]
+      },
+      {
+        "k": 13,
+        "distance_power": 0.0,
+        "wins": 44,
+        "games": 56,
+        "utility": 32067.722,
+        "folds": [
+          {
+            "field": "seed",
+            "value": 140,
+            "games": 12,
+            "wins": 11,
+            "utility": 10131.307,
+            "mean_margin": 10942.25
+          },
+          {
+            "field": "seed",
+            "value": 141,
+            "games": 12,
+            "wins": 11,
+            "utility": 10158.749,
+            "mean_margin": 13229.08
+          },
+          {
+            "field": "seed",
+            "value": 1192301511,
+            "games": 4,
+            "wins": 0,
+            "utility": -4256.195,
+            "mean_margin": -64048.75
+          },
+          {
+            "field": "opponent",
+            "value": "current_rank2_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2174.377,
+            "mean_margin": -87188.5
+          },
+          {
+            "field": "opponent",
+            "value": "current_top_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2081.818,
+            "mean_margin": -40909.0
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_adaptive_counter_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4033.879,
+            "mean_margin": 8469.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_center_out_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4047.662,
+            "mean_margin": 11915.5
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_compact_macro_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2013.431,
+            "mean_margin": 3357.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_investment_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4077.783,
+            "mean_margin": 19445.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_lifecycle_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2017.893,
+            "mean_margin": 4473.25
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_scale_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4099.408,
+            "mean_margin": 24852.0
+          }
+        ]
+      },
+      {
+        "k": 13,
+        "distance_power": 1.0,
+        "wins": 44,
+        "games": 56,
+        "utility": 32067.722,
+        "folds": [
+          {
+            "field": "seed",
+            "value": 140,
+            "games": 12,
+            "wins": 11,
+            "utility": 10131.307,
+            "mean_margin": 10942.25
+          },
+          {
+            "field": "seed",
+            "value": 141,
+            "games": 12,
+            "wins": 11,
+            "utility": 10158.749,
+            "mean_margin": 13229.08
+          },
+          {
+            "field": "seed",
+            "value": 1192301511,
+            "games": 4,
+            "wins": 0,
+            "utility": -4256.195,
+            "mean_margin": -64048.75
+          },
+          {
+            "field": "opponent",
+            "value": "current_rank2_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2174.377,
+            "mean_margin": -87188.5
+          },
+          {
+            "field": "opponent",
+            "value": "current_top_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2081.818,
+            "mean_margin": -40909.0
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_adaptive_counter_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4033.879,
+            "mean_margin": 8469.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_center_out_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4047.662,
+            "mean_margin": 11915.5
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_compact_macro_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2013.431,
+            "mean_margin": 3357.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_investment_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4077.783,
+            "mean_margin": 19445.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_lifecycle_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2017.893,
+            "mean_margin": 4473.25
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_scale_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4099.408,
+            "mean_margin": 24852.0
+          }
+        ]
+      },
+      {
+        "k": 13,
+        "distance_power": 2.0,
+        "wins": 44,
+        "games": 56,
+        "utility": 32076.057,
+        "folds": [
+          {
+            "field": "seed",
+            "value": 140,
+            "games": 12,
+            "wins": 11,
+            "utility": 10131.307,
+            "mean_margin": 10942.25
+          },
+          {
+            "field": "seed",
+            "value": 141,
+            "games": 12,
+            "wins": 11,
+            "utility": 10167.084,
+            "mean_margin": 13923.67
+          },
+          {
+            "field": "seed",
+            "value": 1192301511,
+            "games": 4,
+            "wins": 0,
+            "utility": -4256.195,
+            "mean_margin": -64048.75
+          },
+          {
+            "field": "opponent",
+            "value": "current_rank2_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2174.377,
+            "mean_margin": -87188.5
+          },
+          {
+            "field": "opponent",
+            "value": "current_top_replay_agent.py",
+            "games": 2,
+            "wins": 0,
+            "utility": -2081.818,
+            "mean_margin": -40909.0
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_adaptive_counter_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4033.879,
+            "mean_margin": 8469.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_center_out_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4047.662,
+            "mean_margin": 11915.5
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_compact_macro_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2013.431,
+            "mean_margin": 3357.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_investment_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4077.783,
+            "mean_margin": 19445.75
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_lifecycle_agent.py",
+            "games": 4,
+            "wins": 3,
+            "utility": 2017.893,
+            "mean_margin": 4473.25
+          },
+          {
+            "field": "opponent",
+            "value": "experimental_scale_agent.py",
+            "games": 4,
+            "wins": 4,
+            "utility": 4099.408,
+            "mean_margin": 24852.0
+          }
+        ]
+      }
+    ]
+  },
+  "training": {
+    "games": 28,
+    "wins": 22,
+    "utility": 16116.825,
+    "mean_margin": 4172.32
+  }
+}

@@ -212,6 +212,9 @@ def analyze_route(
     completed = [
         cycle for cycle in crop_cycles if cycle["status"] == "harvested"
     ]
+    observed_cycles = [
+        cycle for cycle in crop_cycles if cycle.get("planted_hour") is not None
+    ]
     harvested_units = sum(cycle.get("harvest_units", 0) for cycle in completed)
     sold_units = sum(cycle.get("sold_units", 0) for cycle in completed)
     sale_delay_unit_turns = sum(
@@ -230,21 +233,23 @@ def analyze_route(
         "routes_by_day": routes_by_day,
         "task_visits": task_visits,
         "crop_cycles": crop_cycles,
-        "cycles_planted": len(crop_cycles),
-        "cycles_harvested": len(completed),
+        "cycles_planted": len(observed_cycles),
+        "cycles_harvested": sum(
+            cycle["status"] == "harvested" for cycle in observed_cycles
+        ),
         "cycles_weeded": sum(
-            cycle["status"] == "weeded" for cycle in crop_cycles
+            cycle["status"] == "weeded" for cycle in observed_cycles
         ),
         "cycles_unfinished": sum(
-            cycle["status"] == "unfinished" for cycle in crop_cycles
+            cycle["status"] == "unfinished" for cycle in observed_cycles
         ),
         "same_day_watered_cycles": sum(
             cycle.get("watered_on_planting_day", False)
-            for cycle in crop_cycles
+            for cycle in observed_cycles
         ),
         "missed_planting_day_water_cycles": sum(
             not cycle.get("watered_on_planting_day", False)
-            for cycle in crop_cycles
+            for cycle in observed_cycles
         ),
         "harvested_units": harvested_units,
         "matched_sold_units": sold_units,

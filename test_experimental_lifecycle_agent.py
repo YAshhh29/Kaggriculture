@@ -2,7 +2,7 @@ import ast
 import unittest
 from pathlib import Path
 
-from experimental_lifecycle_agent import (
+from agents.experimental_lifecycle_agent import (
     ANIMAL_CREW_SIZE,
     MAX_WHEAT_PER_PAIR,
     _assign_idle_current_animal_services,
@@ -14,14 +14,14 @@ from experimental_lifecycle_agent import (
     agent,
     decide,
 )
-from experimental_scale_agent import _staged_animal_plans
+from agents.experimental_scale_agent import _staged_animal_plans
 from test_experimental_scale_agent import scale_observation
 from test_main import wheat_tile
 
 
 class ExperimentalLifecycleAgentTests(unittest.TestCase):
     def test_agent_is_last_function_for_file_loader(self) -> None:
-        path = Path(__file__).with_name("experimental_lifecycle_agent.py")
+        path = Path(__file__).parent / "agents" / "experimental_lifecycle_agent.py"
         module = ast.parse(path.read_text(encoding="utf-8"))
         functions = [
             node.name
@@ -205,9 +205,10 @@ class ExperimentalLifecycleAgentTests(unittest.TestCase):
 
     def test_compact_wrapper_uses_ten_hands(self) -> None:
         state = scale_observation(day=7)
-        decision = __import__("experimental_lifecycle_compact_agent").agent(
-            state
-        )
+        decision = __import__(
+            "agents.experimental_lifecycle_compact_agent",
+            fromlist=["agent"],
+        ).agent(state)
 
         self.assertEqual(decision["market"].count(["HIRE"]), 7)
 
@@ -217,9 +218,10 @@ class ExperimentalLifecycleAgentTests(unittest.TestCase):
         state["private"]["inventories"] = [{} for _ in range(11)]
         state["private"]["shed"].update({"COW": 6, "SHEEP": 8})
 
-        decision = __import__("experimental_lifecycle_compact_agent").agent(
-            state
-        )
+        decision = __import__(
+            "agents.experimental_lifecycle_compact_agent",
+            fromlist=["agent"],
+        ).agent(state)
 
         self.assertIn(["BUY_SEED", "WHEAT", 10], decision["market"])
 

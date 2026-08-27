@@ -121,12 +121,48 @@ class AnalyzePublicReplayTests(unittest.TestCase):
         self.assertEqual(player["workforce"]["maximum_simultaneous_hands"], 1)
         self.assertEqual(player["market_units_requested"]["BUY_ANIMAL:COW"], 1)
         self.assertEqual(player["market_units_requested"]["SELL:MILK"], 3)
-        self.assertEqual(player["successful_board_transitions"]["plants"], {"MELON": 1})
+        self.assertEqual(
+            player["successful_board_transitions"]["plants"],
+            {"MELON": 1},
+        )
         self.assertEqual(
             player["successful_board_transitions"]["animal_placements"],
             {"COW": 1},
         )
+        self.assertEqual(player["crop_harvest_ages"], {})
         self.assertEqual(len(player["land_purchases"]), 1)
+        self.assertEqual(
+            player["board_utilization"]["maximum_concurrent_counts"],
+            {
+                "animals": 1,
+                "crops": 1,
+                "productive_tiles": 2,
+                "structures": 1,
+                "weeds": 0,
+            },
+        )
+        self.assertEqual(
+            player["board_utilization"]["peak_productive_utilization"][
+                "productive_tiles"
+            ],
+            2,
+        )
+        self.assertEqual(
+            player["actions_by_day"],
+            [
+                {
+                    "day": 0,
+                    "worker_actions": 3,
+                    "passes": 0,
+                    "pass_rate": 0.0,
+                    "counts": {
+                        "BUILD_PASTURE": 1,
+                        "PLACE": 1,
+                        "PLANT": 1,
+                    },
+                }
+            ],
+        )
         self.assertEqual(player["terminal"]["money"], 2060)
 
 

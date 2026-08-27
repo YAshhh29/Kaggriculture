@@ -11,7 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 BASE_PACKAGE = ROOT / "submission-lifecycle" / "main.py"
-SOURCE_PATH = ROOT / "experimental_center_out_agent.py"
+SOURCE_PATH = ROOT / "agents" / "experimental_center_out_agent.py"
 OUTPUT = ROOT / "submission-center-out" / "main.py"
 MANIFEST = ROOT / "submission-center-out" / "manifest.json"
 LOCAL_MODULES = {
@@ -33,6 +33,10 @@ def _source_body(path: Path) -> list[ast.stmt]:
             and (
                 node.module == "__future__"
                 or node.module in LOCAL_MODULES
+                or (
+                    node.module is not None
+                    and node.module.startswith(("agents.", "policies."))
+                )
             )
         )
     ]

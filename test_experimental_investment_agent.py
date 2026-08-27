@@ -2,7 +2,7 @@ import ast
 import unittest
 from pathlib import Path
 
-from experimental_investment_agent import (
+from agents.experimental_investment_agent import (
     _pressure_targets,
     _investment_market_orders,
     agent,
@@ -13,7 +13,7 @@ from test_experimental_scale_agent import scale_observation
 
 class ExperimentalInvestmentAgentTests(unittest.TestCase):
     def test_agent_is_last_function_for_file_loader(self) -> None:
-        path = Path(__file__).with_name("experimental_investment_agent.py")
+        path = Path(__file__).parent / "agents" / "experimental_investment_agent.py"
         module = ast.parse(path.read_text(encoding="utf-8"))
         functions = [
             node.name

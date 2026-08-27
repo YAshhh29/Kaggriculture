@@ -11,7 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 MAIN_PATH = ROOT / "main.py"
-GOOSE_PATH = ROOT / "experimental_goose_agent.py"
+GOOSE_PATH = ROOT / "agents" / "experimental_goose_agent.py"
 OUTPUT = ROOT / "submission-goose/main.py"
 MANIFEST = ROOT / "submission-goose/manifest.json"
 
@@ -20,7 +20,16 @@ def _without_future_import(module: ast.Module) -> list[ast.stmt]:
     return [
         node
         for node in module.body
-        if not isinstance(node, ast.ImportFrom) or node.module != "__future__"
+        if not (
+            isinstance(node, ast.ImportFrom)
+            and (
+                node.module == "__future__"
+                or (
+                    node.module is not None
+                    and node.module.startswith(("agents.", "policies."))
+                )
+            )
+        )
     ]
 
 
@@ -40,7 +49,13 @@ def main() -> None:
         for node in _without_future_import(goose)
         if not (
             isinstance(node, ast.ImportFrom)
-            and node.module == "main"
+            and (
+                node.module == "main"
+                or (
+                    node.module is not None
+                    and node.module.startswith(("agents.", "policies."))
+                )
+            )
         )
     ]
     combined = ast.Module(

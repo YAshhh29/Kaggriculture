@@ -2,13 +2,13 @@ import ast
 import unittest
 from pathlib import Path
 
-from experimental_cow_agent import (
+from agents.experimental_cow_agent import (
     LIVESTOCK_TILES,
     _collection_action,
     agent,
     decide,
 )
-from experimental_hands_agent import _task_groups
+from agents.experimental_hands_agent import _task_groups
 from test_experimental_goose_agent import goose_tile
 from test_main import observation, wheat_tile
 
@@ -49,7 +49,7 @@ def livestock_observation(*, day=0, hour=0, farmer=(4, 4), money=3_000):
 
 class ExperimentalCowAgentTests(unittest.TestCase):
     def test_agent_is_last_function_for_file_loader(self) -> None:
-        path = Path(__file__).with_name("experimental_cow_agent.py")
+        path = Path(__file__).parent / "agents" / "experimental_cow_agent.py"
         module = ast.parse(path.read_text(encoding="utf-8"))
         functions = [
             node.name

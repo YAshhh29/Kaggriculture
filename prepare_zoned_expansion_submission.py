@@ -11,8 +11,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 BASE_PACKAGE = ROOT / "submission-investment" / "main.py"
-ZONED_PATH = ROOT / "experimental_zoned_agent.py"
-EXPANSION_PATH = ROOT / "experimental_zoned_expansion_agent.py"
+ZONED_PATH = ROOT / "agents" / "experimental_zoned_agent.py"
+EXPANSION_PATH = ROOT / "agents" / "experimental_zoned_expansion_agent.py"
 OUTPUT = ROOT / "submission-zoned-expansion" / "main.py"
 MANIFEST = ROOT / "submission-zoned-expansion" / "manifest.json"
 LOCAL_MODULES = {
@@ -34,6 +34,10 @@ def _body(path: Path, *, keep_agent: bool) -> list[ast.stmt]:
             and (
                 node.module == "__future__"
                 or node.module in LOCAL_MODULES
+                or (
+                    node.module is not None
+                    and node.module.startswith(("agents.", "policies."))
+                )
             )
         )
         and not (

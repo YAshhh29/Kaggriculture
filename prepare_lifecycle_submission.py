@@ -11,8 +11,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 BASE_PACKAGE = ROOT / "submission-zoned-expansion" / "main.py"
-CORE_PATH = ROOT / "experimental_lifecycle_agent.py"
-WRAPPER_PATH = ROOT / "experimental_lifecycle_compact_agent.py"
+CORE_PATH = ROOT / "agents" / "experimental_lifecycle_agent.py"
+WRAPPER_PATH = ROOT / "agents" / "experimental_lifecycle_compact_agent.py"
 OUTPUT = ROOT / "submission-lifecycle" / "main.py"
 MANIFEST = ROOT / "submission-lifecycle" / "manifest.json"
 LOCAL_MODULES = {
@@ -35,6 +35,10 @@ def _body(path: Path, *, keep_agent: bool) -> list[ast.stmt]:
             and (
                 node.module == "__future__"
                 or node.module in LOCAL_MODULES
+                or (
+                    node.module is not None
+                    and node.module.startswith(("agents.", "policies."))
+                )
             )
         )
         and not (

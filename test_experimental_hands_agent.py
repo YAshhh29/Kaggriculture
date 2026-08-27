@@ -2,7 +2,7 @@ import ast
 import unittest
 from pathlib import Path
 
-from experimental_hands_agent import agent, decide
+from agents.experimental_hands_agent import agent, decide
 from test_experimental_goose_agent import goose_tile
 from test_main import observation, wheat_tile
 
@@ -16,7 +16,7 @@ def staffed_observation(**kwargs):
 
 class ExperimentalHandsAgentTests(unittest.TestCase):
     def test_agent_is_last_function_for_file_loader(self) -> None:
-        path = Path(__file__).with_name("experimental_hands_agent.py")
+        path = Path(__file__).parent / "agents" / "experimental_hands_agent.py"
         module = ast.parse(path.read_text(encoding="utf-8"))
         functions = [
             node.name

@@ -216,6 +216,39 @@ class BenchmarkTests(unittest.TestCase):
             ["hand_1", "hand_1", "hand_1"],
         )
 
+    def test_repeated_strawberry_harvests_do_not_infer_new_plantings(
+        self,
+    ) -> None:
+        empty = [[None]]
+        planted = [[{
+            "kind": "PLANT",
+            "crop": "STRAWBERRY",
+            "planted_day": 0,
+            "yield_units": 0,
+        }]]
+        harvestable = [[{
+            "kind": "PLANT",
+            "crop": "STRAWBERRY",
+            "planted_day": 0,
+            "yield_units": 1,
+        }]]
+        steps = [
+            [self._state(0, 0, 0, (0, 0), empty, ["PASS"])],
+            [self._state(1, 0, 1, (0, 0), planted, ["PLANT", "STRAWBERRY"])],
+            [self._state(2, 0, 2, (0, 0), planted, ["WATER"])],
+            [self._state(240, 10, 0, (0, 0), harvestable, ["PASS"])],
+            [self._state(241, 10, 1, (0, 0), planted, ["HARVEST"])],
+            [self._state(288, 12, 0, (0, 0), harvestable, ["PASS"])],
+            [self._state(289, 12, 1, (0, 0), planted, ["HARVEST"])],
+        ]
+
+        analysis = analyze_route(steps, 0)
+
+        self.assertEqual(analysis["cycles_planted"], 1)
+        self.assertEqual(analysis["cycles_harvested"], 1)
+        self.assertEqual(analysis["same_day_watered_cycles"], 1)
+        self.assertEqual(analysis["missed_planting_day_water_cycles"], 0)
+
     def test_checkpoints_an_incomplete_report(self) -> None:
         records = [self._record(0, "win", 100, 90, {"WATER": 2})]
 
@@ -247,8 +280,10 @@ class BenchmarkTests(unittest.TestCase):
         self.assertEqual(decision["market"], [["BUY_SEED", "WHEAT", 8]])
 
     def test_loads_parameterized_lifecycle_capacity(self) -> None:
-        agent_path = Path(__file__).with_name(
-            "experimental_lifecycle_agent.py"
+        agent_path = (
+            Path(__file__).parent
+            / "agents"
+            / "experimental_lifecycle_agent.py"
         )
         experiment_agent = load_parameterized_agent(
             agent_path,
@@ -263,7 +298,7 @@ class BenchmarkTests(unittest.TestCase):
         self.assertIn(["BUY_SEED", "WHEAT", 15], decision["market"])
 
     def test_loads_a_file_opponent_callable(self) -> None:
-        opponent_path = Path(__file__).with_name("leader_replay_agent.py")
+        opponent_path = Path(__file__).parent / "agents" / "leader_replay_agent.py"
 
         opponent = load_agent_callable(opponent_path)
 

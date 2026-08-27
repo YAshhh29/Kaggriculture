@@ -1,0 +1,131 @@
+{
+  "datasets": [
+    "artifacts\\datasets\\v1327-service-bandit-train-seeds140-149.json"
+  ],
+  "features": [
+    "player",
+    "own_money_k",
+    "opponent_money_k",
+    "money_lead_k",
+    "opponent_hands",
+    "opponent_land",
+    "opponent_wheat",
+    "opponent_nonwheat",
+    "opponent_cows",
+    "opponent_sheep",
+    "opponent_geese",
+    "opponent_structures",
+    "opponent_weeds",
+    "price_wheat",
+    "price_strawberry",
+    "price_melon",
+    "price_milk",
+    "price_wool",
+    "price_fertilizer",
+    "shops_wheat",
+    "shops_strawberry",
+    "shops_milk",
+    "shops_wool"
+  ],
+  "max_depth": 2,
+  "min_leaf": 8,
+  "training_score": 68056750.589,
+  "model": {
+    "feature": "player",
+    "threshold": 0.5,
+    "left": {
+      "arm": 1,
+      "samples": 40,
+      "arm_wins": {
+        "0": 33,
+        "1": 34
+      },
+      "arm_utilities": {
+        "0": 26378.387,
+        "1": 28401.136
+      }
+    },
+    "right": {
+      "feature": "opponent_wheat",
+      "threshold": 8.0,
+      "left": {
+        "arm": 0,
+        "samples": 30,
+        "arm_wins": {
+          "0": 24,
+          "1": 23
+        },
+        "arm_utilities": {
+          "0": 18130.453,
+          "1": 16167.703
+        }
+      },
+      "right": {
+        "arm": 1,
+        "samples": 10,
+        "arm_wins": {
+          "0": 10,
+          "1": 10
+        },
+        "arm_utilities": {
+          "0": 10219.0,
+          "1": 10231.97
+        }
+      },
+      "samples": 40
+    },
+    "samples": 80
+  },
+  "training": {
+    "records": 80,
+    "utility": 56763.559,
+    "wins": 68,
+    "arm_counts": {
+      "0": 30,
+      "1": 50
+    },
+    "label_accuracy": 0.5375
+  },
+  "leave_one_opponent_out": {
+    "experimental_adaptive_counter_agent.py": {
+      "records": 20,
+      "utility": 20189.517,
+      "wins": 20,
+      "arm_counts": {
+        "0": 10,
+        "1": 10
+      },
+      "label_accuracy": 0.4
+    },
+    "experimental_compact_macro_agent.py": {
+      "records": 20,
+      "utility": 16100.389,
+      "wins": 18,
+      "arm_counts": {
+        "0": 10,
+        "1": 10
+      },
+      "label_accuracy": 0.4
+    },
+    "experimental_deadline_tapered_wheat_agent.py": {
+      "records": 20,
+      "utility": -1987.689,
+      "wins": 9,
+      "arm_counts": {
+        "0": 0,
+        "1": 20
+      },
+      "label_accuracy": 0.6
+    },
+    "experimental_scale_agent.py": {
+      "records": 20,
+      "utility": 20450.659,
+      "wins": 20,
+      "arm_counts": {
+        "0": 10,
+        "1": 10
+      },
+      "label_accuracy": 0.45
+    }
+  }
+}

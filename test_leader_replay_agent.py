@@ -2,12 +2,12 @@ import ast
 import unittest
 from pathlib import Path
 
-from leader_replay_agent import ACTIONS, agent
+from agents.leader_replay_agent import ACTIONS, agent
 
 
 class LeaderReplayAgentTests(unittest.TestCase):
     def test_agent_is_last_function_for_file_loader(self) -> None:
-        path = Path(__file__).with_name("leader_replay_agent.py")
+        path = Path(__file__).parent / "agents" / "leader_replay_agent.py"
         module = ast.parse(path.read_text(encoding="utf-8"))
         functions = [
             node.name

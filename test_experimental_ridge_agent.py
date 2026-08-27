@@ -2,7 +2,7 @@ import ast
 import unittest
 from pathlib import Path
 
-from experimental_ridge_agent import (
+from agents.experimental_ridge_agent import (
     MINIMUM_PREDICTED_SELL_ADVANTAGE,
     _predicted_sell_advantage,
     agent,
@@ -12,7 +12,7 @@ from test_main import observation, wheat_tile
 
 class ExperimentalRidgeAgentTests(unittest.TestCase):
     def test_agent_is_last_function_for_file_loader(self) -> None:
-        path = Path(__file__).with_name("experimental_ridge_agent.py")
+        path = Path(__file__).parent / "agents" / "experimental_ridge_agent.py"
         module = ast.parse(path.read_text(encoding="utf-8"))
         functions = [
             node.name

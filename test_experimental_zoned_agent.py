@@ -3,7 +3,7 @@ import importlib.util
 import unittest
 from pathlib import Path
 
-from experimental_zoned_agent import (
+from agents.experimental_zoned_agent import (
     _assign_zoned_crops,
     _zoned_task_groups,
     agent,
@@ -13,7 +13,7 @@ from test_experimental_scale_agent import scale_observation
 
 class ExperimentalZonedAgentTests(unittest.TestCase):
     def test_agent_is_last_function_for_file_loader(self) -> None:
-        path = Path(__file__).with_name("experimental_zoned_agent.py")
+        path = Path(__file__).parent / "agents" / "experimental_zoned_agent.py"
         module = ast.parse(path.read_text(encoding="utf-8"))
         functions = [
             node.name
@@ -23,8 +23,10 @@ class ExperimentalZonedAgentTests(unittest.TestCase):
         self.assertEqual(functions[-1], "agent")
 
     def test_expansion_file_loads_as_measured_bundle(self) -> None:
-        path = Path(__file__).with_name(
-            "experimental_zoned_expansion_agent.py"
+        path = (
+            Path(__file__).parent
+            / "agents"
+            / "experimental_zoned_expansion_agent.py"
         )
         spec = importlib.util.spec_from_file_location("zoned_expansion", path)
         self.assertIsNotNone(spec)
@@ -47,7 +49,9 @@ class ExperimentalZonedAgentTests(unittest.TestCase):
         self.assertNotIn(["BUY_LAND"], decision["market"])
 
     def test_can_reduce_near_animals_for_far_crop_crew(self) -> None:
-        decision = __import__("experimental_zoned_agent").decide(
+        decision = __import__(
+            "agents.experimental_zoned_agent", fromlist=["decide"]
+        ).decide(
             scale_observation(),
             target_cows=2,
             target_sheep=2,
@@ -57,7 +61,9 @@ class ExperimentalZonedAgentTests(unittest.TestCase):
         self.assertIn(["BUY_ANIMAL", "SHEEP", 2], decision["market"])
 
     def test_land_bundle_respects_staged_opening_and_order_cap(self) -> None:
-        decision = __import__("experimental_zoned_agent").decide(
+        decision = __import__(
+            "agents.experimental_zoned_agent", fromlist=["decide"]
+        ).decide(
             scale_observation(),
             target_wheat_tiles=24,
             target_daily_hands=10,
@@ -73,7 +79,9 @@ class ExperimentalZonedAgentTests(unittest.TestCase):
         state["farms"][0]["hands"] = [[4, 4] for _ in range(8)]
         state["private"]["inventories"] = [{} for _ in range(9)]
 
-        decision = __import__("experimental_zoned_agent").decide(
+        decision = __import__(
+            "agents.experimental_zoned_agent", fromlist=["decide"]
+        ).decide(
             state,
             target_wheat_tiles=24,
             target_daily_hands=10,

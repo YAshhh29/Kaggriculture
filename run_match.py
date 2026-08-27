@@ -8,6 +8,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+from benchmark import load_agent_callable
+
 
 PROJECT_ROOT = Path(__file__).resolve().parent
 
@@ -22,9 +24,8 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--opponent",
-        choices=("pass", "random", "starter"),
         default="pass",
-        help="built-in agent to play against (default: pass)",
+        help="built-in opponent or agent file (default: pass)",
     )
     parser.add_argument(
         "--steps",
@@ -69,12 +70,20 @@ def main() -> None:
         raise SystemExit(f"Agent file does not exist: {agent_path}")
     make = load_make()
     configuration = {"episodeSteps": args.steps, "seed": args.seed}
+    opponent_input: Any = args.opponent
+    if args.opponent not in ("pass", "random", "starter"):
+        opponent_path = Path(args.opponent).resolve()
+        if not opponent_path.is_file():
+            raise SystemExit(
+                f"Opponent file does not exist: {opponent_path}"
+            )
+        opponent_input = load_agent_callable(opponent_path)
     environment = make(
         "kaggriculture",
         configuration=configuration,
         debug=True,
     )
-    environment.run([str(agent_path), args.opponent])
+    environment.run([str(agent_path), opponent_input])
 
     final_states = environment.steps[-1]
     failed = False

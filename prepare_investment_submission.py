@@ -12,7 +12,7 @@ import prepare_scale_submission
 
 
 ROOT = Path(__file__).resolve().parent
-INVESTMENT_PATH = ROOT / "experimental_investment_agent.py"
+INVESTMENT_PATH = ROOT / "agents" / "experimental_investment_agent.py"
 OUTPUT = ROOT / "submission-investment" / "main.py"
 MANIFEST = ROOT / "submission-investment" / "manifest.json"
 PACKAGE_RENAMES = {
@@ -31,11 +31,17 @@ def _investment_body() -> list[ast.stmt]:
     body = [
         node
         for node in module.body
-        if not isinstance(node, ast.ImportFrom)
-        or (
-            node.module != "__future__"
-            and node.module != "experimental_scale_agent"
-            and node.module != "main"
+        if not (
+            isinstance(node, ast.ImportFrom)
+            and (
+                node.module == "__future__"
+                or node.module == "experimental_scale_agent"
+                or node.module == "main"
+                or (
+                    node.module is not None
+                    and node.module.startswith(("agents.", "policies."))
+                )
+            )
         )
     ]
     return [_RenamePackageSymbols().visit(node) for node in body]

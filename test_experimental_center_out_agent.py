@@ -1,6 +1,6 @@
 import unittest
 
-from experimental_center_out_agent import (
+from agents.experimental_center_out_agent import (
     ANIMAL_PLANS,
     CENTER_OUT_BLOCKS,
     CORE_ANIMAL_BLOCKS,
@@ -355,7 +355,7 @@ class ExperimentalCenterOutAgentTests(unittest.TestCase):
         self.assertEqual(actions[0], ["NORTH"])
 
     def test_one_time_admission_closes_before_endgame_taper(self) -> None:
-        from experimental_center_out_agent import CROP_DATA
+        from agents.experimental_center_out_agent import CROP_DATA
 
         self.assertEqual(CROP_DATA["WHEAT"]["last_plant_day"], 22)
         self.assertEqual(CROP_DATA["CARROT"]["last_plant_day"], 22)

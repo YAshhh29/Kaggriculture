@@ -12,9 +12,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 SOURCE_PATHS = (
     ROOT / "main.py",
-    ROOT / "experimental_goose_agent.py",
-    ROOT / "experimental_hands_agent.py",
-    ROOT / "experimental_scale_agent.py",
+    ROOT / "agents" / "experimental_goose_agent.py",
+    ROOT / "agents" / "experimental_hands_agent.py",
+    ROOT / "agents" / "experimental_scale_agent.py",
 )
 OUTPUT = ROOT / "submission-scale" / "main.py"
 MANIFEST = ROOT / "submission-scale" / "manifest.json"
@@ -59,6 +59,10 @@ def _module_body(
             continue
         if isinstance(node, ast.ImportFrom) and (
             node.module == "__future__" or node.module in LOCAL_MODULES
+            or (
+                node.module is not None
+                and node.module.startswith(("agents.", "policies."))
+            )
         ):
             continue
         if (
