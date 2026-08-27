@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import patch
 
 from policies.capacity_policy import ARM_STRAWBERRY, ARM_WHEAT_RESERVE3
-from collect_capacity_counterfactuals import _arm_decision, _utility
+from research.collection.collect_capacity_counterfactuals import _arm_decision, _utility
 from test_experimental_scale_agent import scale_observation
 
 
@@ -11,7 +11,7 @@ class CapacityCounterfactualTests(unittest.TestCase):
         state = scale_observation(day=3)
 
         with patch(
-            "collect_capacity_counterfactuals.decide_capacity_arm"
+            "research.collection.collect_capacity_counterfactuals.decide_capacity_arm"
         ) as decide:
             _arm_decision(state, ARM_WHEAT_RESERVE3)
 
@@ -21,7 +21,7 @@ class CapacityCounterfactualTests(unittest.TestCase):
         state = scale_observation(day=4)
 
         with patch(
-            "collect_capacity_counterfactuals.decide_capacity_arm"
+            "research.collection.collect_capacity_counterfactuals.decide_capacity_arm"
         ) as decide:
             _arm_decision(state, ARM_WHEAT_RESERVE3)
 

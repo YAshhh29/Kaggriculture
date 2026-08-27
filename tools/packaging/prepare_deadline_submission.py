@@ -1,4 +1,4 @@
-"""Prepare the learned service policy as one Kaggle-loadable file."""
+"""Prepare deadline-tapered wheat capacity for Kaggle."""
 
 from __future__ import annotations
 
@@ -8,33 +8,25 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
-from prepare_adaptive_submission import LOCAL_MODULES
-from prepare_deadline_submission import (
-    SOURCE_PATHS as DEADLINE_SOURCE_PATHS,
-    build_source as build_deadline,
+from tools.packaging.prepare_adaptive_submission import (
+    ADAPTIVE_PATH,
+    LOCAL_MODULES,
+    PREMIUM_PATH,
+    THROUGHPUT_PATH,
+    build_source as build_adaptive,
 )
 
 
-ROOT = Path(__file__).resolve().parent
-MACRO_PATH = ROOT / "policies" / "macro_policy.py"
-SERVICE_PATH = ROOT / "policies" / "service_policy.py"
-RUNTIME_PATH = ROOT / "agents" / "experimental_learned_service_agent.py"
-MODEL_PATH = ROOT / "models" / "v1327-service-bandit-depth2.json"
+ROOT = Path(__file__).resolve().parents[2]
+DEADLINE_PATH = ROOT / "agents" / "experimental_deadline_tapered_wheat_agent.py"
 SOURCE_PATHS = (
-    *DEADLINE_SOURCE_PATHS,
-    MACRO_PATH,
-    SERVICE_PATH,
-    RUNTIME_PATH,
-    MODEL_PATH,
+    THROUGHPUT_PATH,
+    PREMIUM_PATH,
+    ADAPTIVE_PATH,
+    DEADLINE_PATH,
 )
-OUTPUT = ROOT / "submission-learned-service" / "main.py"
-MANIFEST = ROOT / "submission-learned-service" / "manifest.json"
-LEARNED_MODULES = {
-    *LOCAL_MODULES,
-    "learned_service_model",
-    "macro_policy",
-    "service_policy",
-}
+OUTPUT = ROOT / "submission-deadline" / "main.py"
+MANIFEST = ROOT / "submission-deadline" / "manifest.json"
 
 
 def _source_body(path: Path) -> list[ast.stmt]:
@@ -46,7 +38,7 @@ def _source_body(path: Path) -> list[ast.stmt]:
             isinstance(node, ast.ImportFrom)
             and (
                 node.module == "__future__"
-                or node.module in LEARNED_MODULES
+                or node.module in LOCAL_MODULES
                 or (
                     node.module is not None
                     and node.module.startswith("experimental_")
@@ -61,7 +53,7 @@ def _source_body(path: Path) -> list[ast.stmt]:
 
 
 def build_source() -> str:
-    base = ast.parse(build_deadline())
+    base = ast.parse(build_adaptive())
     base.body = [
         node
         for node in base.body
@@ -70,16 +62,7 @@ def build_source() -> str:
             and node.name == "agent"
         )
     ]
-    base.body.extend(_source_body(MACRO_PATH))
-    base.body.extend(_source_body(SERVICE_PATH))
-    model = json.loads(MODEL_PATH.read_text(encoding="utf-8"))["model"]
-    base.body.append(
-        ast.Assign(
-            targets=[ast.Name(id="SERVICE_MODEL", ctx=ast.Store())],
-            value=ast.parse(repr(model), mode="eval").body,
-        )
-    )
-    base.body.extend(_source_body(RUNTIME_PATH))
+    base.body.extend(_source_body(DEADLINE_PATH))
     return ast.unparse(ast.fix_missing_locations(base)) + "\n"
 
 
@@ -108,26 +91,23 @@ def main() -> None:
                     f"../{path.name}" for path in SOURCE_PATHS
                 ],
                 "policy": (
-                    "deadline-safe three-quadrant capacity with a frozen "
-                    "day-1 contextual selector over baseline and zero-travel "
-                    "colocated FEED+CARE service"
+                    "three-quadrant wheat capacity, paired planting, "
+                    "mature-crop deadline priority, stable crews, and "
+                    "deadline-safe workforce taper"
                 ),
                 "promotion_evidence": {
-                    "training_contexts": 80,
-                    "validation_contexts": 40,
-                    "validation": "37-3 learned vs 35-5 baseline",
-                    "direct_spent_seed_league": "37-3",
-                    "fresh_six_policy_league": "23-1",
-                    "fresh_vs_deadline": "3-1",
-                    "elite_replay_controls": "0-4 with exact deadline fallback",
+                    "development_vs_compact": "10-0",
+                    "fresh_six_policy_league": "60-0",
+                    "elite_replay_controls": "0-4",
+                    "current_top_mean_coins": 50463.5,
+                    "rank_two_mean_coins": 68335.0,
                 },
                 "kaggle": {
-                    "submission_id": 55803952,
-                    "uploaded_bytes": 133479,
-                    "validation_episode_id": 100394606,
-                    "validation_rewards": [60004, 57984],
+                    "submission_id": 55795843,
+                    "uploaded_bytes": 112839,
+                    "validation_episode_id": 100091628,
+                    "validation_rewards": [41908, 39495],
                     "initial_score": 600.0,
-                    "status": "COMPLETE",
                 },
                 "status": "submitted to Kaggle; validation complete",
             },

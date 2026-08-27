@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from benchmark import load_agent_callable
-from collect_market_counterfactuals import (
+from research.collection.collect_market_counterfactuals import (
     _joint_actions,
     _run_to_completion,
     _terminal_outcome,
@@ -25,7 +25,7 @@ from policies.service_policy import (
 )
 
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[2]
 SELECTION_DAY = 1
 BUILTIN_OPPONENTS = {"pass", "random", "starter"}
 DEFAULT_OPPONENTS = (

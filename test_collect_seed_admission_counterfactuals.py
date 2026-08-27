@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 
-from collect_seed_admission_counterfactuals import (
+from research.collection.collect_seed_admission_counterfactuals import (
     _outcome_utility,
     add_extra_wheat_seed,
     extra_seed_agent,
@@ -44,7 +44,7 @@ class SeedAdmissionCounterfactualTests(unittest.TestCase):
 
     def test_extra_policy_requests_one_incremental_wheat_seed(self) -> None:
         with patch(
-            "collect_seed_admission_counterfactuals.decide_premium"
+            "research.collection.collect_seed_admission_counterfactuals.decide_premium"
         ) as premium:
             extra_seed_agent(scale_observation(day=12))
 

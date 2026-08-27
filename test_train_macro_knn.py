@@ -1,7 +1,7 @@
 import unittest
 
 from policies.macro_policy import select_macro_arm
-from train_macro_knn import build_model
+from research.training.train_macro_knn import build_model
 
 
 def _record(value: float, best_arm: int) -> dict:

@@ -1,6 +1,6 @@
 import unittest
 
-from analyze_public_replay import analyze_replay
+from research.analysis.analyze_public_replay import analyze_replay
 
 
 def state(

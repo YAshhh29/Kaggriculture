@@ -7,8 +7,8 @@ import json
 from pathlib import Path
 from typing import Any
 
-from train_market_ridge import evaluate_leave_one_seed_out as evaluate_ridge
-from train_market_value_tree import (
+from research.training.train_market_ridge import evaluate_leave_one_seed_out as evaluate_ridge
+from research.training.train_market_value_tree import (
     evaluate_leave_one_seed_out as evaluate_tree,
 )
 

@@ -1,6 +1,6 @@
 import unittest
 
-from train_macro_selector import evaluate_tree, train_tree
+from research.training.train_macro_selector import evaluate_tree, train_tree
 
 
 def _record(value: float, compact: float, expanded: float) -> dict:

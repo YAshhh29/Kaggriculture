@@ -1,14 +1,17 @@
 import unittest
 from unittest.mock import patch
 
-from evaluate_market_models import evaluate_grid
+from research.evaluation.evaluate_market_models import evaluate_grid
 
 
 class EvaluateMarketModelsTests(unittest.TestCase):
-    @patch("evaluate_market_models.RIDGE_ALPHAS", (1.0,))
-    @patch("evaluate_market_models.TREE_CONFIGURATIONS", [(1, 2)])
-    @patch("evaluate_market_models.evaluate_ridge")
-    @patch("evaluate_market_models.evaluate_tree")
+    @patch("research.evaluation.evaluate_market_models.RIDGE_ALPHAS", (1.0,))
+    @patch(
+        "research.evaluation.evaluate_market_models.TREE_CONFIGURATIONS",
+        [(1, 2)],
+    )
+    @patch("research.evaluation.evaluate_market_models.evaluate_ridge")
+    @patch("research.evaluation.evaluate_market_models.evaluate_tree")
     def test_selects_only_model_beating_total_and_worst_seed_regret(
         self,
         tree_evaluator,

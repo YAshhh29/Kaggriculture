@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
-PROJECT_ROOT = Path(__file__).resolve().parent
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 SOURCE = PROJECT_ROOT / "main.py"
 OUTPUT_DIRECTORY = PROJECT_ROOT / "submission"
 OUTPUT_AGENT = OUTPUT_DIRECTORY / "main.py"

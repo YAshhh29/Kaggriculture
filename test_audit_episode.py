@@ -1,6 +1,6 @@
 import unittest
 
-from audit_episode import build_audit
+from research.analysis.audit_episode import build_audit
 
 
 class AuditEpisodeTests(unittest.TestCase):

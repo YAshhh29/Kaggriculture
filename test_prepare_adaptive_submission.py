@@ -1,7 +1,7 @@
 import ast
 import unittest
 
-import prepare_adaptive_submission
+from tools.packaging import prepare_adaptive_submission
 
 
 class PrepareAdaptiveSubmissionTests(unittest.TestCase):

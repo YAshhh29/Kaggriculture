@@ -35,7 +35,7 @@ artifacts/               ignored local benchmark/replay/dataset output
 | Market affordability | `experimental_throughput_agent.py` | `core/economics.py` |
 | Safe service arms | `service_policy.py` | `policies/service.py` |
 | Learned selection | `experimental_learned_service_agent.py` | `agents/learned_service.py` |
-| Replay measurement | `analyze_public_replay.py`, `benchmark.py` | `research/analysis/` |
+| Replay measurement | `research/analysis/analyze_public_replay.py`, `benchmark.py` | `research/analysis/` |
 
 ## Experiment Contract
 

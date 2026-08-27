@@ -1,6 +1,6 @@
 import unittest
 
-from train_market_ridge import (
+from research.training.train_market_ridge import (
     _solve_linear_system,
     evaluate_leave_one_seed_out,
     fit_ridge,

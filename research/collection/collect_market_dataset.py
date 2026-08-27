@@ -9,12 +9,12 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from audit_episode import build_audit
+from research.analysis.audit_episode import build_audit
 from benchmark import load_simulator
-from export_market_dataset import build_dataset, summarize_rows
+from research.collection.export_market_dataset import build_dataset, summarize_rows
 
 
-PROJECT_ROOT = Path(__file__).resolve().parent
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 V9_MARKET_POLICY = [
     "sell shed wheat when its market price is at least 35",
     "sell shed wheat when holdings reach 72 units",

@@ -1,6 +1,6 @@
 import unittest
 
-from analyze_wheat_trades import analyze_wheat_trades
+from research.analysis.analyze_wheat_trades import analyze_wheat_trades
 
 
 def record(*, day, hour, price, action=None):

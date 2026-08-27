@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[2]
 BASE_PACKAGE = ROOT / "submission-zoned-expansion" / "main.py"
 CORE_PATH = ROOT / "agents" / "experimental_lifecycle_agent.py"
 WRAPPER_PATH = ROOT / "agents" / "experimental_lifecycle_compact_agent.py"

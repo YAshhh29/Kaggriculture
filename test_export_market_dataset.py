@@ -1,6 +1,6 @@
 import unittest
 
-from export_market_dataset import build_dataset
+from research.collection.export_market_dataset import build_dataset
 
 
 class MarketDatasetTests(unittest.TestCase):

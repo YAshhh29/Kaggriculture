@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from benchmark import load_agent_callable
-from collect_market_counterfactuals import (
+from research.collection.collect_market_counterfactuals import (
     _joint_actions,
     _run_to_completion,
     _terminal_outcome,
@@ -24,7 +24,7 @@ from agents.experimental_premium_throughput_agent import decide as decide_premiu
 from policies.macro_policy import extract_macro_features
 
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[2]
 Agent = Callable[[dict[str, Any]], dict[str, Any]]
 SAMPLE_DAYS = (10, 12, 14, 16, 18)
 BUILTIN_OPPONENTS = {"pass", "random", "starter"}

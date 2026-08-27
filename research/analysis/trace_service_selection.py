@@ -17,7 +17,7 @@ from agents.experimental_learned_service_agent import (
 from policies.macro_policy import extract_macro_features
 
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[2]
 
 
 def trace_match(

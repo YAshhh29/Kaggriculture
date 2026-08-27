@@ -14,7 +14,7 @@ from typing import Any, Callable
 from benchmark import load_simulator
 
 
-PROJECT_ROOT = Path(__file__).resolve().parent
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 Agent = Callable[[dict[str, Any]], dict[str, Any]]
 
 

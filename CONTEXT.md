@@ -60,8 +60,8 @@ observation
 
 ```powershell
 .\.conda\python.exe -m unittest -v
-.\.conda\python.exe validate_submission.py submission-learned-service\main.py --seed 184
-.\.conda\python.exe validate_learned_service_equivalence.py submission-learned-service\main.py --seed 184
+.\.conda\python.exe -m tools.validation.validate_submission submission-learned-service\main.py --seed 184
+.\.conda\python.exe -m tools.validation.validate_learned_service_equivalence submission-learned-service\main.py --seed 184
 ```
 
 Never regenerate a submitted package and assume it is the uploaded artifact.

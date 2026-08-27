@@ -5,10 +5,10 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from compare_benchmarks import compare_reports
+from research.evaluation.compare_benchmarks import compare_reports
 
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[2]
 CANDIDATE = ROOT / "artifacts/benchmarks/v1327-goose-cutoff21-holdout-seeds50-59.json"
 CONTROL = ROOT / "artifacts/benchmarks/v1327-v9-goose-holdout-seeds50-59.json"
 OUTPUT = ROOT / "artifacts/benchmarks/v1327-goose-cutoff21-vs-v9-holdout-paired.json"

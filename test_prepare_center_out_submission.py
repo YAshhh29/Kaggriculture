@@ -1,7 +1,7 @@
 import ast
 import unittest
 
-from prepare_center_out_submission import (
+from tools.packaging.prepare_center_out_submission import (
     LOCAL_MODULES,
     build_source,
 )

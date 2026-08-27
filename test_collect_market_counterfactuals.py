@@ -2,7 +2,7 @@ import unittest
 import tempfile
 from pathlib import Path
 
-from collect_market_counterfactuals import (
+from research.collection.collect_market_counterfactuals import (
     clone_for_counterfactual,
     force_wheat_choice,
     load_or_create_report,

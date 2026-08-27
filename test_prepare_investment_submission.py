@@ -4,8 +4,8 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-import prepare_investment_submission
-import prepare_scale_submission
+from tools.packaging import prepare_investment_submission
+from tools.packaging import prepare_scale_submission
 
 
 class PrepareInvestmentSubmissionTests(unittest.TestCase):

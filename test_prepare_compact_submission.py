@@ -1,7 +1,7 @@
 import ast
 import unittest
 
-import prepare_compact_submission
+from tools.packaging import prepare_compact_submission
 
 
 class PrepareCompactSubmissionTests(unittest.TestCase):

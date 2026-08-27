@@ -1,7 +1,7 @@
 import ast
 import unittest
 
-import prepare_deadline_submission
+from tools.packaging import prepare_deadline_submission
 
 
 class PrepareDeadlineSubmissionTests(unittest.TestCase):

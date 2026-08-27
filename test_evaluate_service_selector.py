@@ -1,6 +1,6 @@
 import unittest
 
-from evaluate_service_selector import evaluate
+from research.evaluation.evaluate_service_selector import evaluate
 
 
 class EvaluateServiceSelectorTests(unittest.TestCase):

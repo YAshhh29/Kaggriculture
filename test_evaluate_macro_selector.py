@@ -2,7 +2,7 @@ import unittest
 import json
 from pathlib import Path
 
-from evaluate_macro_selector import evaluate
+from research.evaluation.evaluate_macro_selector import evaluate
 
 
 def _record(nonwheat: float, compact: float, expanded: float) -> dict:

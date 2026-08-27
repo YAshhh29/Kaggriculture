@@ -1,7 +1,7 @@
 import ast
 import unittest
 
-import prepare_zoned_expansion_submission
+from tools.packaging import prepare_zoned_expansion_submission
 
 
 class PrepareZonedExpansionSubmissionTests(unittest.TestCase):

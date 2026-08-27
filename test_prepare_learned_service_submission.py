@@ -1,7 +1,7 @@
 import ast
 import unittest
 
-import prepare_learned_service_submission
+from tools.packaging import prepare_learned_service_submission
 
 
 class PrepareLearnedServiceSubmissionTests(unittest.TestCase):

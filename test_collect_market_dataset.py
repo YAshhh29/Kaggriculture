@@ -3,7 +3,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from collect_market_dataset import load_or_create_report, write_checkpoint
+from research.collection.collect_market_dataset import load_or_create_report, write_checkpoint
 
 
 class CollectMarketDatasetTests(unittest.TestCase):

@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[2]
 MAIN_PATH = ROOT / "main.py"
 GOOSE_PATH = ROOT / "agents" / "experimental_goose_agent.py"
 OUTPUT = ROOT / "submission-goose/main.py"

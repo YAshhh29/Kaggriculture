@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from benchmark import load_agent_callable
-from collect_capacity_counterfactuals import (
+from research.collection.collect_capacity_counterfactuals import (
     _same_features,
     _utility,
     _write_report,
@@ -24,7 +24,7 @@ from policies.economic_policy import (
 from policies.macro_policy import extract_macro_features
 
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[2]
 SELECTION_DAY = 4
 DEFAULT_OPPONENTS = (
     "agents/experimental_compact_macro_agent.py",

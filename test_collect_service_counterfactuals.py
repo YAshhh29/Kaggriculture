@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 
-from collect_service_counterfactuals import _arm_decision, _utility
+from research.collection.collect_service_counterfactuals import _arm_decision, _utility
 from policies.service_policy import ARM_BASELINE, ARM_PAIRED
 from test_experimental_scale_agent import scale_observation
 
@@ -9,7 +9,7 @@ from test_experimental_scale_agent import scale_observation
 class ServiceCounterfactualTests(unittest.TestCase):
     def test_arms_share_day_zero_opening(self) -> None:
         with patch(
-            "collect_service_counterfactuals.decide_service_arm"
+            "research.collection.collect_service_counterfactuals.decide_service_arm"
         ) as decide:
             _arm_decision(scale_observation(day=0), ARM_PAIRED)
 
@@ -17,7 +17,7 @@ class ServiceCounterfactualTests(unittest.TestCase):
 
     def test_paired_arm_starts_after_shop_unlocks(self) -> None:
         with patch(
-            "collect_service_counterfactuals.decide_service_arm"
+            "research.collection.collect_service_counterfactuals.decide_service_arm"
         ) as decide:
             _arm_decision(scale_observation(day=1), ARM_PAIRED)
 

@@ -1,6 +1,6 @@
 import unittest
 
-from compare_benchmarks import compare_reports
+from research.evaluation.compare_benchmarks import compare_reports
 
 
 class CompareBenchmarksTests(unittest.TestCase):

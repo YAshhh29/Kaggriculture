@@ -2,389 +2,163 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "Git status and recent history",
-			"type": "shell",
-			"command": "C:\\Progra~1\\Git\\cmd\\git.exe status --short --branch; C:\\Progra~1\\Git\\cmd\\git.exe log -12 --oneline --decorate",
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "build"
-		},
-		{
-			"label": "Commit overnight results",
-			"type": "shell",
-			"command": "C:\\Progra~1\\Git\\cmd\\git.exe add .vscode/tasks.json; C:\\Progra~1\\Git\\cmd\\git.exe commit -m 'chore: add repository maintenance tasks'; C:\\Progra~1\\Git\\cmd\\git.exe add train_market_ridge.py test_train_market_ridge.py evaluate_market_models.py test_evaluate_market_models.py evaluate_ridge_thresholds.py; C:\\Progra~1\\Git\\cmd\\git.exe commit -m 'feat: evaluate regularized market models'; C:\\Progra~1\\Git\\cmd\\git.exe add experimental_ridge_agent.py test_experimental_ridge_agent.py trace_market_decisions.py; C:\\Progra~1\\Git\\cmd\\git.exe commit -m 'feat: gate learned market decisions safely'; C:\\Progra~1\\Git\\cmd\\git.exe add artifacts/benchmarks artifacts/datasets artifacts/diagnostics artifacts/models; C:\\Progra~1\\Git\\cmd\\git.exe commit -m 'data: preserve learned policy experiments'; C:\\Progra~1\\Git\\cmd\\git.exe add README.md progress.md strategy.json; C:\\Progra~1\\Git\\cmd\\git.exe commit -m 'docs: record guarded ridge holdout results'",
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Analyze captured leader replays",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe analyze_public_replay.py artifacts\\top-replays\\episode-94173913-replay.json --output artifacts\\top-replays\\episode-94173913-strategy.json; ${workspaceFolder}\\.conda\\python.exe analyze_public_replay.py artifacts\\top-replays\\episode-94247823-replay.json --output artifacts\\top-replays\\episode-94247823-strategy.json",
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Compare cow development and holdout",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe compare_benchmarks.py artifacts\\benchmarks\\v1327-hands2-wheat12-goose1-cow1-plain-development-seeds30-39.json artifacts\\benchmarks\\v1327-hands2-wheat12-goose1-current-development-seeds30-39.json --output artifacts\\benchmarks\\v1327-hands2-wheat12-goose1-cow1-plain-vs-hands2-current-development-paired.json; ${workspaceFolder}\\.conda\\python.exe compare_benchmarks.py artifacts\\benchmarks\\v1327-hands2-wheat12-goose1-cow1-plain-holdout-seeds60-69.json artifacts\\benchmarks\\v1327-hands2-wheat12-goose1-holdout-seeds60-69.json --output artifacts\\benchmarks\\v1327-hands2-wheat12-goose1-cow1-plain-vs-hands2-holdout-paired.json",
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
 			"label": "Run all tests",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe -m unittest -v",
+			"type": "process",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"-m",
+				"unittest",
+				"-v"
+			],
 			"isBackground": false,
 			"problemMatcher": [],
 			"group": "test"
 		},
 		{
-			"label": "Publish main",
-			"type": "shell",
-			"command": "C:\\Progra~1\\Git\\cmd\\git.exe add .vscode/tasks.json; C:\\Progra~1\\Git\\cmd\\git.exe commit -m 'chore: add validation and publish tasks'; C:\\Progra~1\\Git\\cmd\\git.exe push origin main",
+			"label": "Validate deadline Kaggle loader",
+			"type": "process",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"-m",
+				"tools.validation.validate_submission",
+				"submission-deadline\\main.py",
+				"--seed",
+				"174"
+			],
 			"isBackground": false,
 			"problemMatcher": []
 		},
 		{
-			"label": "Publish Linguist fix",
-			"type": "shell",
-			"command": "C:\\Progra~1\\Git\\cmd\\git.exe add .gitattributes .vscode/tasks.json; C:\\Progra~1\\Git\\cmd\\git.exe commit -m 'chore: exclude generated evidence from language stats'; C:\\Progra~1\\Git\\cmd\\git.exe push origin main",
+			"label": "Validate deadline equivalence",
+			"type": "process",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"-m",
+				"tools.validation.validate_deadline_equivalence",
+				"submission-deadline\\main.py",
+				"--seed",
+				"174"
+			],
 			"isBackground": false,
 			"problemMatcher": []
 		},
 		{
-			"label": "Run goose smoke benchmark",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_goose_agent.py --opponent starter --seed-start 30 --seed-count 1 --steps 120 --output artifacts\\benchmarks\\v1327-goose-smoke-seed30-120.json",
+			"label": "Prepare learned service submission",
+			"type": "process",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"-m",
+				"tools.packaging.prepare_learned_service_submission"
+			],
 			"isBackground": false,
 			"problemMatcher": []
 		},
 		{
-			"label": "Run goose full gate",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_goose_agent.py --opponent starter --seed-start 30 --seed-count 1 --steps 720 --output artifacts\\benchmarks\\v1327-goose-cutoff21-gate-seed30.json",
+			"label": "Validate learned service Kaggle loader",
+			"type": "process",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"-m",
+				"tools.validation.validate_submission",
+				"submission-learned-service\\main.py",
+				"--seed",
+				"184"
+			],
 			"isBackground": false,
 			"problemMatcher": []
 		},
 		{
-			"label": "Run goose development suite",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_goose_agent.py --opponent starter --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-goose-cutoff21-development-seeds30-39.json",
+			"label": "Validate learned service equivalence",
+			"type": "process",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"-m",
+				"tools.validation.validate_learned_service_equivalence",
+				"submission-learned-service\\main.py",
+				"--seed",
+				"184"
+			],
 			"isBackground": false,
 			"problemMatcher": []
 		},
 		{
-			"label": "Analyze goose cycles",
+			"label": "Routing nearest-slot regression",
 			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe analyze_goose_cycles.py artifacts\\benchmarks\\v1327-goose-development-seeds30-39.json | Out-File -Encoding utf8 artifacts\\diagnostics\\goose-cycle-summary.txt",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"-m",
+				"unittest",
+				"test_experimental_premium_throughput_agent.ExperimentalPremiumThroughputAgentTests.test_paired_planting_routes_to_nearest_equal_priority_slot"
+			],
 			"isBackground": false,
 			"problemMatcher": []
 		},
 		{
-			"label": "Compare goose to v9 development",
+			"label": "Routing nearest-slot red check",
 			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe compare_benchmarks.py artifacts\\benchmarks\\v1327-goose-cutoff21-development-seeds30-39.json artifacts\\benchmarks\\v1327-v9-threshold35-train-seeds30-39.json --output artifacts\\benchmarks\\v1327-goose-cutoff21-vs-v9-development-paired.json",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"-m",
+				"unittest",
+				"test_experimental_premium_throughput_agent.ExperimentalPremiumThroughputAgentTests.test_paired_planting_routes_to_nearest_equal_priority_slot"
+			],
 			"isBackground": false,
 			"problemMatcher": []
 		},
 		{
-			"label": "Run v9 goose holdout control",
+			"label": "Routing nearest-slot green check",
 			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent main.py --opponent starter --seed-start 50 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-v9-goose-holdout-seeds50-59.json",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"-m",
+				"unittest",
+				"test_experimental_premium_throughput_agent.ExperimentalPremiumThroughputAgentTests.test_paired_planting_routes_to_nearest_equal_priority_slot",
+				"test_experimental_premium_throughput_agent.ExperimentalPremiumThroughputAgentTests.test_paired_planting_uses_same_transition"
+			],
 			"isBackground": false,
 			"problemMatcher": []
 		},
 		{
-			"label": "Run goose fresh holdout",
+			"label": "Route-aware source versus submitted package",
 			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_goose_agent.py --opponent starter --seed-start 50 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-goose-cutoff21-holdout-seeds50-59.json",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"benchmark.py",
+				"--agent",
+				"experimental_learned_service_agent.py",
+				"--opponent",
+				"submission-learned-service\\main.py",
+				"--seed-start",
+				"159",
+				"--seed-count",
+				"5",
+				"--steps",
+				"720",
+				"--output",
+				"artifacts\\benchmarks\\v1327-route-aware-vs-submitted-learned-seeds159-163.json"
+			],
 			"isBackground": false,
 			"problemMatcher": []
 		},
 		{
-			"label": "Compare goose fresh holdout",
+			"label": "Route-aware broad differential",
 			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe compare_goose_holdout.py",
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Prepare goose submission",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe prepare_goose_submission.py; ${workspaceFolder}\\.conda\\python.exe -c \"import hashlib,pathlib; from kaggle_environments import make; p=pathlib.Path('submission-goose/main.py'); e=make('kaggriculture',configuration={'episodeSteps':720,'seed':50},debug=False); e.run([str(p),str(p)]); print('statuses',[str(s.status) for s in e.steps[-1]]); print('rewards',[s.reward for s in e.steps[-1]]); print('hash',hashlib.sha256(p.read_bytes()).hexdigest())\"",
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Build goose submission file",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe prepare_goose_submission.py",
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Validate goose submission file",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe validate_submission.py submission-goose\\main.py --seed 50",
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Publish goose research",
-			"type": "shell",
-			"command": "C:\\Progra~1\\Git\\cmd\\git.exe add experimental_goose_agent.py test_experimental_goose_agent.py analyze_goose_cycles.py compare_goose_holdout.py prepare_submission.py prepare_goose_submission.py validate_submission.py; C:\\Progra~1\\Git\\cmd\\git.exe commit -m 'feat: add guarded one-goose strategy'; C:\\Progra~1\\Git\\cmd\\git.exe add artifacts/benchmarks artifacts/diagnostics submission submission-goose; C:\\Progra~1\\Git\\cmd\\git.exe commit -m 'data: preserve goose promotion evidence'; C:\\Progra~1\\Git\\cmd\\git.exe add README.md progress.md strategy.json .vscode/tasks.json; C:\\Progra~1\\Git\\cmd\\git.exe commit -m 'docs: record Kaggle baseline and goose results'; C:\\Progra~1\\Git\\cmd\\git.exe push origin main",
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Run plain cow development suite",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_cow_agent.py --opponent starter --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-hands2-wheat12-goose1-cow1-plain-development-seeds30-39.json",
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "test"
-		},
-		{
-			"label": "Run frozen cow holdout suite",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_cow_agent.py --opponent starter --seed-start 60 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-hands2-wheat12-goose1-cow1-plain-holdout-seeds60-69.json",
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "test"
-		},
-		{
-			"label": "Run frozen hands holdout control",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_hands_agent.py --opponent starter --seed-start 60 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-hands2-wheat12-goose1-holdout-seeds60-69.json",
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "test"
-		},
-		{
-			"label": "Run current hands development control",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_hands_agent.py --opponent starter --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-hands2-wheat12-goose1-current-development-seeds30-39.json",
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "test"
-		},
-		{
-			"label": "Run promoted scale development suite",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_scale_agent.py --opponent starter --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-scale-promoted-development-seeds30-39.json",
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "test"
-		},
-		{
-			"label": "Run scale versus leader replay script",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_scale_agent.py --opponent leader_replay_agent.py --seed-start 1507302619 --seed-count 1 --one-position --steps 720 --output artifacts\\benchmarks\\v1327-scale-vs-leader-replay-script-original-seed.json",
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "test"
-		},
-		{
-			"label": "Run frozen scale development suite",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_scale_agent.py --opponent starter --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-scale-frozen-development-seeds30-39.json",
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "test"
-		},
-		{
-			"label": "Run frozen scale holdout suite",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_scale_agent.py --opponent starter --seed-start 70 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-scale-frozen-holdout-seeds70-79.json",
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "test"
-		},
-		{
-			"label": "Run plain cow scale holdout control",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_cow_agent.py --opponent starter --seed-start 70 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-plain-cow-control-holdout-seeds70-79.json",
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "test"
-		},
-		{
-			"label": "Run scale leader script both positions",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_scale_agent.py --opponent leader_replay_agent.py --seed-start 1507302619 --seed-count 1 --steps 720 --output artifacts\\benchmarks\\v1327-scale-vs-leader-replay-script-both-positions.json",
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "test"
-		},
-		{
-			"label": "Run scale versus active v9",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_scale_agent.py --opponent main.py --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-scale-frozen-vs-active-v9-seeds30-39.json",
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "test"
-		},
-		{
-			"label": "Run scale versus active goose",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_scale_agent.py --opponent experimental_goose_agent.py --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-scale-frozen-vs-active-goose-seeds30-39.json",
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "test"
-		},
-		{
-			"label": "Run investment development suite",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_investment_agent.py --opponent starter --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-investment-development-seeds30-39.json",
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "test"
-		},
-		{
-			"label": "Run investment versus frozen scale",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_investment_agent.py --opponent experimental_scale_agent.py --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-investment-vs-frozen-scale-seeds30-39.json",
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "test"
-		},
-		{
-			"label": "Run stable investment development",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_investment_agent.py --opponent starter --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-investment-stable-development-seeds30-39.json",
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "test"
-		},
-		{
-			"label": "Run stable investment versus scale",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_investment_agent.py --opponent experimental_scale_agent.py --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-investment-stable-vs-scale-seeds30-39.json",
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "test"
-		},
-		{
-			"label": "Run pressure investment versus scale",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_investment_agent.py --opponent experimental_scale_agent.py --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-investment-pressure-vs-scale-seeds30-39.json",
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "test"
-		},
-		{
-			"label": "Run pressure investment standalone",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_investment_agent.py --opponent starter --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-investment-pressure-development-seeds30-39.json",
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "test"
-		},
-		{
-			"label": "Run frozen investment holdout",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_investment_agent.py --opponent starter --seed-start 80 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-investment-frozen-holdout-seeds80-89.json",
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "test"
-		},
-		{
-			"label": "Run investment versus leader script",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_investment_agent.py --opponent leader_replay_agent.py --seed-start 1507302619 --seed-count 1 --steps 720 --output artifacts\\benchmarks\\v1327-investment-vs-leader-script-both-positions.json",
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "test"
-		},
-		{
-			"label": "Run final zoned no-land development",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_zoned_agent.py --opponent starter --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-zoned-paired-stagedhire-no-land-development-final-seeds30-39.json",
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "test"
-		},
-		{
-			"label": "Run final zoned expansion development",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_zoned_expansion_agent.py --opponent starter --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-zoned-expansion-development-final-seeds30-39.json",
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "test"
-		},
-		{
-			"label": "Run zoned expansion direct comparisons",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_zoned_expansion_agent.py --opponent experimental_scale_agent.py --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-zoned-expansion-vs-scale-final-seeds30-39.json; ${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_zoned_expansion_agent.py --opponent experimental_investment_agent.py --seed-start 30 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-zoned-expansion-vs-investment-final-seeds30-39.json",
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "test"
-		},
-		{
-			"label": "Generate captioned zoned expansion replay",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe run_match.py --agent experimental_zoned_expansion_agent.py --opponent starter --steps 720 --seed 30 --replay artifacts\\v1327-zoned-expansion-vs-starter-seed30-720-replay.json --html artifacts\\v1327-zoned-expansion-vs-starter-seed30-720.html; ${workspaceFolder}\\.conda\\python.exe audit_episode.py artifacts\\v1327-zoned-expansion-vs-starter-seed30-720-replay.json --player 0 --agent experimental_zoned_expansion_agent.py --output artifacts\\v1327-zoned-expansion-vs-starter-seed30-720-audit.json",
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "test"
-		},
-		{
-			"label": "Run lifecycle submitted holdout control",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_zoned_expansion_agent.py --opponent starter --seed-start 80 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-submitted-ne-holdout-seeds80-89.json",
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "test"
-		},
-		{
-			"label": "Run final lifecycle holdout",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe benchmark.py --agent experimental_lifecycle_compact_agent.py --opponent starter --seed-start 80 --seed-count 10 --steps 720 --output artifacts\\benchmarks\\v1327-lifecycle-compact-final-holdout-seeds80-89.json",
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "test"
-		},
-		{
-			"label": "Generate captioned lifecycle replay",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe run_match.py --agent experimental_lifecycle_compact_agent.py --opponent starter --steps 720 --seed 30 --replay artifacts\\v1327-lifecycle-compact-vs-starter-seed30-720-replay.json --html artifacts\\v1327-lifecycle-compact-vs-starter-seed30-720.html; ${workspaceFolder}\\.conda\\python.exe audit_episode.py artifacts\\v1327-lifecycle-compact-vs-starter-seed30-720-replay.json --player 0 --agent experimental_lifecycle_compact_agent.py --output artifacts\\v1327-lifecycle-compact-vs-starter-seed30-720-audit.json",
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "test"
-		},
-		{
-			"label": "Build lifecycle review package",
-			"type": "shell",
-			"command": "${workspaceFolder}\\.conda\\python.exe prepare_lifecycle_submission.py; ${workspaceFolder}\\.conda\\python.exe validate_submission.py submission-lifecycle\\main.py --seed 30",
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "test"
-		},
-		{
-			"label": "Commit lifecycle implementation",
-			"type": "shell",
-			"command": "C:\\Progra~1\\Git\\cmd\\git.exe add experimental_lifecycle_agent.py experimental_lifecycle_compact_agent.py test_experimental_lifecycle_agent.py benchmark.py test_benchmark.py prepare_lifecycle_submission.py test_prepare_lifecycle_submission.py submission-lifecycle\\main.py submission-lifecycle\\manifest.json; C:\\Progra~1\\Git\\cmd\\git.exe diff --cached --check; C:\\Progra~1\\Git\\cmd\\git.exe commit -m 'feat: add deterministic lifecycle crews'",
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Commit lifecycle evidence",
-			"type": "shell",
-			"command": "C:\\Progra~1\\Git\\cmd\\git.exe add artifacts\\benchmarks\\v1327-lifecycle-compact-final-holdout-seeds80-89.json artifacts\\benchmarks\\v1327-submitted-ne-holdout-seeds80-89.json artifacts\\benchmarks\\v1327-lifecycle-compact-nearassist-vs-submitted-ne-seeds30-39.json artifacts\\benchmarks\\v1327-lifecycle-compact-nearassist-vs-investment-seeds30-39.json artifacts\\benchmarks\\v1327-lifecycle-compact-vs-rank-one-script-original-seed.json artifacts\\benchmarks\\v1327-lifecycle-cap6-land2-seed30-gate.json artifacts\\benchmarks\\v1327-lifecycle-melon4-sell-land2-seed30-gate.json artifacts\\benchmarks\\v1327-lifecycle-animal7-pairs6-valid-seed30-gate.json artifacts\\benchmarks\\v1327-lifecycle-animal7-pairs7-valid-seed30-gate.json artifacts\\benchmarks\\v1327-lifecycle-animal7-pairs8-valid-seed30-gate.json artifacts\\v1327-lifecycle-compact-vs-starter-seed30-720-replay.json artifacts\\v1327-lifecycle-compact-vs-starter-seed30-720.html artifacts\\v1327-lifecycle-compact-vs-starter-seed30-720-audit.json; C:\\Progra~1\\Git\\cmd\\git.exe commit -m 'data: preserve lifecycle strategy evidence'",
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Commit lifecycle docs",
-			"type": "shell",
-			"command": "C:\\Progra~1\\Git\\cmd\\git.exe add README.md progress.md strategy.json .vscode\\tasks.json; C:\\Progra~1\\Git\\cmd\\git.exe diff --cached --check; C:\\Progra~1\\Git\\cmd\\git.exe commit -m 'docs: record lifecycle strategy results'",
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Push lifecycle research",
-			"type": "shell",
-			"command": "C:\\Progra~1\\Git\\cmd\\git.exe push origin main",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"benchmark.py",
+				"--agent",
+				"experimental_learned_service_agent.py",
+				"--opponent",
+				"submission-learned-service\\main.py",
+				"--seed-start",
+				"140",
+				"--seed-count",
+				"10",
+				"--steps",
+				"720",
+				"--output",
+				"artifacts\\benchmarks\\v1327-route-aware-vs-submitted-learned-seeds140-149.json"
+			],
 			"isBackground": false,
 			"problemMatcher": []
 		}

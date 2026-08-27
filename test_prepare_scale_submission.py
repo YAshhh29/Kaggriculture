@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-import prepare_scale_submission
+from tools.packaging import prepare_scale_submission
 
 
 class PrepareScaleSubmissionTests(unittest.TestCase):

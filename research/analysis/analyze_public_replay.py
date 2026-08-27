@@ -135,13 +135,18 @@ def analyze_player(
     team_name: str,
 ) -> dict[str, Any]:
     steps = replay["steps"]
-    turns_per_day = int(replay.get("configuration", {}).get("turnsPerDay", 24))
+    configuration = replay.get("configuration", {})
+    turns_per_day = int(configuration.get("turnsPerDay", 24))
+    board_size = int(configuration.get("boardSize", 10))
+    quadrant_tiles = (board_size // 2) ** 2
     action_counts = {
         "farmer": Counter(),
         "hands": Counter(),
         "all_workers": Counter(),
     }
+    daily_action_counts: dict[int, Counter[str]] = {}
     targeted_actions: Counter[str] = Counter()
+    harvest_ages: Counter[str] = Counter()
     market_orders: Counter[str] = Counter()
     market_units: Counter[str] = Counter()
     daily_hires: Counter[int] = Counter()
@@ -160,6 +165,10 @@ def analyze_player(
         "structures": Counter(),
         "weeds": Counter(),
     }
+    maximum_concurrent_board = Counter()
+    peak_productive_utilization: dict[str, Any] = {}
+    daily_peak_productive: dict[int, dict[str, Any]] = {}
+    tile_turns = Counter()
     maximum_hands = 0
     market_order_entries_per_turn = 0
 
@@ -189,6 +198,7 @@ def analyze_player(
             category = "farmer" if unit_index == 0 else "hands"
             action_counts[category][operation] += 1
             action_counts["all_workers"][operation] += 1
+            daily_action_counts.setdefault(day, Counter())[operation] += 1
             position = _position(
                 positions[unit_index]
                 if unit_index < len(positions)
@@ -200,6 +210,16 @@ def analyze_player(
             )
             if target is not None:
                 targeted_actions[f"{operation}:{target}"] += 1
+            tile = _tile_at(before_farm, position)
+            if (
+                operation == "HARVEST"
+                and isinstance(tile, dict)
+                and tile.get("kind") == "PLANT"
+                and isinstance(tile.get("planted_day"), int)
+            ):
+                harvest_ages[
+                    f"{tile.get('crop', 'UNKNOWN')}:{day - tile['planted_day']}"
+                ] += 1
 
         orders = action.get("market", [])
         orders = orders if isinstance(orders, list) else []
@@ -287,6 +307,54 @@ def analyze_player(
                     maximum_board[category][item],
                     quantity,
                 )
+        concurrent = {
+            category: sum(values.values())
+            for category, values in counts.items()
+        }
+        productive_tiles = concurrent["crops"] + concurrent["structures"]
+        unlocked_quadrants = after_farm.get("unlocked_quadrants", [])
+        owned_tiles = quadrant_tiles * len(unlocked_quadrants)
+        utilization = productive_tiles / owned_tiles if owned_tiles else 0.0
+        snapshot = {
+            "step": decision_step,
+            "day": day,
+            "hour": hour,
+            **concurrent,
+            "productive_tiles": productive_tiles,
+            "owned_tiles": owned_tiles,
+            "productive_utilization": round(utilization, 4),
+        }
+        for category, quantity in concurrent.items():
+            maximum_concurrent_board[category] = max(
+                maximum_concurrent_board[category],
+                quantity,
+            )
+        maximum_concurrent_board["productive_tiles"] = max(
+            maximum_concurrent_board["productive_tiles"],
+            productive_tiles,
+        )
+        if (
+            not peak_productive_utilization
+            or utilization
+            > peak_productive_utilization["productive_utilization"]
+        ):
+            peak_productive_utilization = snapshot
+        if (
+            day not in daily_peak_productive
+            or productive_tiles
+            > daily_peak_productive[day]["productive_tiles"]
+        ):
+            daily_peak_productive[day] = snapshot
+        tile_turns.update(
+            {
+                "crops": concurrent["crops"],
+                "animals": concurrent["animals"],
+                "structures": concurrent["structures"],
+                "weeds": concurrent["weeds"],
+                "productive_tiles": productive_tiles,
+                "owned_tiles": owned_tiles,
+            }
+        )
         maximum_hands = max(
             maximum_hands,
             len(after_farm.get("hands", [])),
@@ -297,6 +365,22 @@ def analyze_player(
     final_farm = _farm(final_observation, player)
     final_board = _board_counts(final_farm)
     terminal_reward = final_state.get("reward")
+    actions_by_day = []
+    for day in sorted(daily_action_counts):
+        counts = daily_action_counts[day]
+        worker_actions = sum(counts.values())
+        passes = counts["PASS"]
+        actions_by_day.append(
+            {
+                "day": day,
+                "worker_actions": worker_actions,
+                "passes": passes,
+                "pass_rate": round(passes / worker_actions, 4)
+                if worker_actions
+                else 0.0,
+                "counts": dict(sorted(counts.items())),
+            }
+        )
     return {
         "player": player,
         "team_name": team_name,
@@ -306,7 +390,9 @@ def analyze_player(
             category: dict(sorted(values.items()))
             for category, values in action_counts.items()
         },
+        "actions_by_day": actions_by_day,
         "targeted_actions": dict(sorted(targeted_actions.items())),
+        "crop_harvest_ages": dict(sorted(harvest_ages.items())),
         "market_order_counts": dict(sorted(market_orders.items())),
         "market_units_requested": dict(sorted(market_units.items())),
         "maximum_market_order_entries_in_turn": market_order_entries_per_turn,
@@ -331,6 +417,24 @@ def analyze_player(
         "maximum_board_counts": {
             category: dict(sorted(values.items()))
             for category, values in maximum_board.items()
+        },
+        "board_utilization": {
+            "maximum_concurrent_counts": dict(
+                sorted(maximum_concurrent_board.items())
+            ),
+            "peak_productive_utilization": peak_productive_utilization,
+            "daily_peak_productive_tiles": [
+                daily_peak_productive[day]
+                for day in sorted(daily_peak_productive)
+            ],
+            "tile_days": {
+                category: round(quantity / turns_per_day, 2)
+                for category, quantity in sorted(tile_turns.items())
+            },
+            "season_productive_capacity_utilization": round(
+                tile_turns["productive_tiles"] / tile_turns["owned_tiles"],
+                4,
+            ) if tile_turns["owned_tiles"] else 0.0,
         },
         "bank_at_day_start": [
             {"day": day, "money": day_start_bank[day]}

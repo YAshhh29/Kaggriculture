@@ -1,7 +1,7 @@
 import unittest
 
 from policies.seed_admission_policy import BASELINE, EXTRA, select_seed_admission
-from train_seed_admission_selector import evaluate, train, train_tree
+from research.training.train_seed_admission_selector import evaluate, train, train_tree
 
 
 def row(value: float, delta: float) -> dict:

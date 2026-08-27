@@ -1,7 +1,7 @@
 import ast
 import unittest
 
-import prepare_lifecycle_submission
+from tools.packaging import prepare_lifecycle_submission
 
 
 class PrepareLifecycleSubmissionTests(unittest.TestCase):

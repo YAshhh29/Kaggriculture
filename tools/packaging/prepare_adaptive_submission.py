@@ -1,4 +1,4 @@
-"""Prepare the compact macro policy as one Kaggle-loadable file."""
+"""Prepare the adaptive counterpolicy as one Kaggle-loadable file."""
 
 from __future__ import annotations
 
@@ -8,28 +8,28 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
-from prepare_adaptive_submission import (
-    ADAPTIVE_PATH,
-    LOCAL_MODULES,
-    PREMIUM_PATH,
-    THROUGHPUT_PATH,
-    build_source as build_adaptive,
-)
+from tools.packaging.prepare_center_out_submission import build_source as build_center_out
 
 
-ROOT = Path(__file__).resolve().parent
-COMPACT_PATH = ROOT / "agents" / "experimental_compact_macro_agent.py"
-SOURCE_PATHS = (
-    THROUGHPUT_PATH,
-    PREMIUM_PATH,
-    ADAPTIVE_PATH,
-    COMPACT_PATH,
-)
-OUTPUT = ROOT / "submission-compact" / "main.py"
-MANIFEST = ROOT / "submission-compact" / "manifest.json"
+ROOT = Path(__file__).resolve().parents[2]
+THROUGHPUT_PATH = ROOT / "agents" / "experimental_throughput_agent.py"
+PREMIUM_PATH = ROOT / "agents" / "experimental_premium_throughput_agent.py"
+ADAPTIVE_PATH = ROOT / "agents" / "experimental_adaptive_counter_agent.py"
+SOURCE_PATHS = (THROUGHPUT_PATH, PREMIUM_PATH, ADAPTIVE_PATH)
+OUTPUT = ROOT / "submission-adaptive" / "main.py"
+MANIFEST = ROOT / "submission-adaptive" / "manifest.json"
+LOCAL_MODULES = {
+    "experimental_center_out_agent",
+    "experimental_hands_agent",
+    "experimental_lifecycle_agent",
+    "experimental_premium_throughput_agent",
+    "experimental_scale_agent",
+    "experimental_throughput_agent",
+    "experimental_zoned_agent",
+}
 
 
-def _source_body(path: Path) -> list[ast.stmt]:
+def _source_body(path: Path, *, keep_agent: bool) -> list[ast.stmt]:
     module = ast.parse(path.read_text(encoding="utf-8"))
     return [
         node
@@ -41,19 +41,20 @@ def _source_body(path: Path) -> list[ast.stmt]:
                 or node.module in LOCAL_MODULES
                 or (
                     node.module is not None
-                    and node.module.startswith("experimental_")
-                )
-                or (
-                    node.module is not None
                     and node.module.startswith(("agents.", "policies."))
                 )
             )
+        )
+        and not (
+            isinstance(node, ast.FunctionDef)
+            and node.name == "agent"
+            and not keep_agent
         )
     ]
 
 
 def build_source() -> str:
-    base = ast.parse(build_adaptive())
+    base = ast.parse(build_center_out())
     base.body = [
         node
         for node in base.body
@@ -62,7 +63,15 @@ def build_source() -> str:
             and node.name == "agent"
         )
     ]
-    base.body.extend(_source_body(COMPACT_PATH))
+    base.body.extend(_source_body(THROUGHPUT_PATH, keep_agent=False))
+    base.body.extend(_source_body(PREMIUM_PATH, keep_agent=False))
+    base.body.append(
+        ast.Assign(
+            targets=[ast.Name(id="decide_premium", ctx=ast.Store())],
+            value=ast.Name(id="decide", ctx=ast.Load()),
+        )
+    )
+    base.body.extend(_source_body(ADAPTIVE_PATH, keep_agent=True))
     return ast.unparse(ast.fix_missing_locations(base)) + "\n"
 
 
@@ -91,31 +100,11 @@ def main() -> None:
                     f"../{path.name}" for path in SOURCE_PATHS
                 ],
                 "policy": (
-                    "shared safe opening through day 8, fixed one-extra-land "
-                    "animal macro from day 9, paired crop admission, stable "
-                    "quadrant crews, affordability-filtered orders, protected "
-                    "animal service, exact crop cleanup"
+                    "opponent-aware one/two-land selection, paired crop "
+                    "admission, stable quadrant crews, affordability-filtered "
+                    "orders, protected animal service, exact crop cleanup"
                 ),
-                "promotion_evidence": {
-                    "versus_submitted_adaptive": "20-0",
-                    "fresh_incumbent_suite": "44-6",
-                    "top_replay_controls": "0-4",
-                },
-                "kaggle": {
-                    "submission_id": 55778351,
-                    "validation_episode_id": 99509927,
-                    "validation_rewards": [70494, 71744],
-                    "initial_score": 600.0,
-                    "public_snapshot": {
-                        "games": 3,
-                        "wins": 1,
-                        "losses": 2,
-                        "score": 542.3,
-                        "episode_ids": [99514128, 99516420, 99518695],
-                    },
-                    "failed_predecessor_id": 55778248,
-                },
-                "status": "submitted to Kaggle; validation complete",
+                "status": "exploratory submission approved by user",
             },
             indent=2,
         )
