@@ -107,6 +107,8 @@ def run_gate(
     seed_count: int,
     opponents: tuple[str, ...],
     output: Path,
+    control_path: str = VARIANTS["submitted_control"],
+    candidate_path: str = VARIANTS["future_labor"],
 ) -> dict[str, Any]:
     make, simulator_version = load_simulator()
     report: dict[str, Any] = {
@@ -117,7 +119,12 @@ def run_gate(
         "opponents": list(opponents),
         "variants": {},
     }
-    for variant, agent_path in VARIANTS.items():
+    variant_paths = {
+        **VARIANTS,
+        "submitted_control": control_path,
+        "future_labor": candidate_path,
+    }
+    for variant, agent_path in variant_paths.items():
         agent: Agent = load_agent_callable((ROOT / agent_path).resolve())
         report["variants"][variant] = {}
         for opponent_path in opponents:
@@ -159,6 +166,14 @@ def main() -> None:
     parser.add_argument("--seed-count", type=int, default=1)
     parser.add_argument("--opponent", action="append", dest="opponents")
     parser.add_argument(
+        "--control",
+        default=VARIANTS["submitted_control"],
+    )
+    parser.add_argument(
+        "--candidate",
+        default=VARIANTS["future_labor"],
+    )
+    parser.add_argument(
         "--output",
         type=Path,
         default=(
@@ -174,6 +189,8 @@ def main() -> None:
         seed_count=args.seed_count,
         opponents=tuple(args.opponents or DEFAULT_OPPONENTS),
         output=args.output,
+        control_path=args.control,
+        candidate_path=args.candidate,
     )
     print(json.dumps(report["totals"], indent=2))
     print(json.dumps(report["promotion"], indent=2))
