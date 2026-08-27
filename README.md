@@ -78,6 +78,18 @@ exact submitted control, with zero errors and no opponent-level win regression.
 Its exact package is `submissions/demand-animal/main.py`, SHA-256
 `53cbab96eaf7eba10a55adac2208b273636ba45274b5cac34967bedae335f5ac`.
 
+The next packaged challenger is
+`agents/experimental_future_labor_agent.py`. At day 6 it reinvests cheaper
+cow/goose herd capital in one extra hand during days 9-22 only when the
+opponent has more non-wheat crops than wheat crops. Two untouched broad gates
+finished 22-10 versus 19-13 for the exact control, with zero errors and no
+opponent-level win regression. The package is
+`submissions/future-labor/main.py`, SHA-256
+`200fef67c5a8e8b001b4a54986bb853d22b80f869af7460b67ec8eda169c70e3`.
+It is not submitted, and both candidate and control remain 0-8 against the
+captured elite schedules. Full evidence is in
+[docs/experiments/opponent-aware-future-labor.md](docs/experiments/opponent-aware-future-labor.md).
+
 The related three-arm tree is not promoted. Held-out wins were 35, 34, 35, 33,
 33, and 35 as training grew from 8 to 80 contexts; fixed cows stayed at 35 and
 the oracle reached 37. The learning curve is visible in

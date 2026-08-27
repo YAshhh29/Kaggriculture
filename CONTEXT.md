@@ -26,6 +26,13 @@ The exact submitted standalone file is
 The latest-two tracked pair is demand animal `55817911` plus learned service
 `55803952`.
 
+The packaged challenger is `agents/experimental_future_labor_agent.py`. At day
+6 it adds one peak-production hand only when a cheaper cow/goose demand choice
+coincides with an opponent whose non-wheat footprint exceeds its wheat
+footprint. Otherwise it executes the submitted labor schedule. Its standalone
+package is `submissions/future-labor/main.py`, SHA-256
+`200fef67c5a8e8b001b4a54986bb853d22b80f869af7460b67ec8eda169c70e3`.
+
 ## Decision Flow
 
 ```text
@@ -52,6 +59,9 @@ observation
 - A global nearest-empty-slot planting experiment lost 6-14 against the frozen
   submitted package. Route distance must be optimized after urgency, lifecycle,
   and economic value, not instead of them.
+- A second worker-relative nearest-vacancy experiment lost 0-2 and created
+  seven weeds because the selected target changed while workers approached it.
+  The live loss gap was crop throughput and idle capacity, not path length.
 
 ## Demand Facts
 
@@ -69,6 +79,8 @@ observation
 .\.conda\python.exe -m unittest -v
 .\.conda\python.exe -m tools.validation.validate_submission submissions\demand-animal\main.py --seed 186
 .\.conda\python.exe -m tools.validation.validate_demand_animal_equivalence submissions\demand-animal\main.py --seed 186
+.\.conda\python.exe -m tools.validation.validate_submission submissions\future-labor\main.py --seed 214
+.\.conda\python.exe -m tools.validation.validate_future_labor_equivalence submissions\future-labor\main.py --seed 214
 ```
 
 Never regenerate a submitted package and assume it is the uploaded artifact.

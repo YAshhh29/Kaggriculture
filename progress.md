@@ -1949,12 +1949,49 @@ initialized at 600.0. Its SHA-256 remains
 The tracked pair is now demand animal `55817911` plus learned service
 `55803952`.
 
+### Opponent-Aware Future Labor
+
+Three live demand-animal losses exposed a capacity gap rather than a pathfinding
+bug. Our peak crop footprint was 35-41 versus 50-55, plantings were 79-83 versus
+84-194, and PASS load was 1,378-1,567 versus 213 for the 115k opponent. The
+board remains obstacle-free and every movement step is an exact shortest step.
+
+Worker-relative nearest-vacancy planting lost 0-2 at -5,426.5 margin with seven
+weeds because targets changed during travel. Stable center ordering went 1-1 at
+-1,020. Dynamic crop slots, demand-gated fertilizer, and larger crop-worker
+reserves also failed direct gates. Those axes were removed from production
+interfaces rather than retained as misleading options.
+
+A fixed 13-hand peak schedule beat the exact package 6-0 on seeds 206-208 but
+hurt an all-wheat scale matchup. The final day-6 rule adds that hand only when
+the demand-selected herd replaces sheep with cheaper cows/geese and the
+opponent has more non-wheat crops than wheat. It otherwise falls back to the
+submitted schedule for the full episode.
+
+Untouched broad gates across eight opponent families and both positions:
+
+| Gate | Future labor | Exact control | Margin delta | Decision |
+| --- | ---: | ---: | ---: | --- |
+| Seed 212 | **12-4** | 10-6 | +227.81 | Promote |
+| Seed 213 | **10-6** | 9-7 | +598.74 | Promote |
+| Combined | **22-10** | 19-13 | +413.27 | Package |
+
+Both gates completed without errors or opponent-level win regression. Direct
+incumbent games improved from 2-2 to 3-1 and learned-service games from 2-2 to
+4-0. Both policies remain 0-8 against the elite replay schedules.
+
+The standalone package is `submissions/future-labor/main.py`, SHA-256
+`200fef67c5a8e8b001b4a54986bb853d22b80f869af7460b67ec8eda169c70e3`.
+Kaggle path-loader self-play completed 92,478-90,174 and all 1,438 compared
+decisions matched source and replay. It is packaged but not submitted.
+
 ## What Comes Next
 
-1. Measure demand-animal submission `55817911` without tuning from 600.0.
-2. Compare its matchmaking record with learned service `55803952`.
-3. Build route-value diagnostics from current public losses, not visual motion.
-4. Treat the 0-4 top-replay control as the main remaining throughput gap.
+1. Decide whether to live-test the exact future-labor package.
+2. Keep its hash fixed while measuring matchmaking.
+3. Build a service scheduler capable of profitable fertilizer timing without
+  starving animal CARE.
+4. Treat the 0-8 elite-replay result as the main remaining throughput gap.
 
 ## Experiment Log
 

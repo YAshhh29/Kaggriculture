@@ -1225,6 +1225,27 @@
     },
     "status": "submitted to Kaggle; validation complete"
   },
+  "future_labor_candidate": {
+    "policy": "at day 6, reinvest cheaper cow/goose substitution capital in a 13th hand on days 9-22 only when opponent non-wheat crops exceed opponent wheat crops",
+    "routing_diagnosis": "Manhattan steps are exact shortest paths; nearest-vacancy retargeting lost 0-2 with seven weeds, while stable center ordering tied 1-1 at negative margin",
+    "rejected_axes": {
+      "bounded_demand_crops": "one slot 1-3 and two slots 0-4 on seeds 203-204",
+      "demand_fertilizer": "0-2 at mean margin -14031.5 on seed 205",
+      "labor_plus_fertilizer": "0-2 at mean margin -12362.5 on seed 205",
+      "crop_worker_reserve_3": "0-2 at mean margin -4435.5 on seed 210",
+      "crop_worker_reserve_4": "0-2 at mean margin -21201.0 on seed 210"
+    },
+    "development_vs_submitted": "6-0 on seeds 206-208",
+    "first_broad_holdout": "12-4 versus control 10-6 on seed 212",
+    "second_broad_holdout": "10-6 versus control 9-7 on seed 213",
+    "combined_broad_holdout": "22-10 versus control 19-13; zero errors and no opponent-level win regression",
+    "elite_replay_controls": "0-8 combined; throughput gap remains",
+    "package": "submissions/future-labor/main.py",
+    "sha256": "200fef67c5a8e8b001b4a54986bb853d22b80f869af7460b67ec8eda169c70e3",
+    "loader_validation": "DONE/DONE at 92478-90174",
+    "equivalence": "0 mismatches over 1438 decisions",
+    "status": "packaged; not submitted"
+  },
   "do_not_do": [
     "do not treat one favorable game as proof",
     "do not compare reports from different simulator versions",
