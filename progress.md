@@ -1983,15 +1983,65 @@ incumbent games improved from 2-2 to 3-1 and learned-service games from 2-2 to
 The standalone package is `submissions/future-labor/main.py`, SHA-256
 `200fef67c5a8e8b001b4a54986bb853d22b80f869af7460b67ec8eda169c70e3`.
 Kaggle path-loader self-play completed 92,478-90,174 and all 1,438 compared
-decisions matched source and replay. It is packaged but not submitted.
+decisions matched source and replay. The exact file was uploaded as submission
+`55821334`; validation episode `100974134` completed 52,718-52,990.
+
+At 24 ladder games the submission is 13-11 at Score 674.8 with mean reward
+68,738.58. At the same 23-game count, demand animal was 12-11 at Score
+658.9609 with mean reward 67,795.91; it now displays 655.8. Future labor is the
+stronger tracked submission, but it is not a 1000-level result.
+
+Branch-level replay inspection explains the limited gain. The 13-hand branch
+activated six times and went 5-1; the fallback branch went 7-10. Episode
+`100978351` reproduced exactly at 73,394-79,127 and showed the fallback's
+capacity gap: 39 versus 48 peak crops, 572 versus 877 crop tile-days, zero
+versus 32 fertilizer actions, and 12 versus 13 hands.
+
+We compacted all 11 live-loss opponent schedules and verified that the frozen
+package reproduces every original reward before counterfactual evaluation.
+Pressure labor, lean herd, late strawberries, pressure plus late strawberries,
+and fertilizer holding are rejected on own-reward deltas of -3,040, -4,105.73,
+-2,822.73, -2,924.18, and -1,902.64. Replay wins caused only by changing the
+fixed opponent's market return are explicitly not promotion evidence.
+
+A zero-travel strawberry service bundle improved seven of the 11 loss contexts
+and tied four, for +217.82 mean own reward with no negative context. It performs
+ordered `HARVEST`/`FERTILIZE`/`WATER` only when all workers and carried
+fertilizer are already on the tile. The unconditional version had one -14,602
+own-reward cascade on the win set. A frozen fertilizer-price guard removed that
+case: across 24 ladder contexts it improved 15, tied nine, regressed none, and
+preserved every incumbent win. Broad seeds 215-216 stayed 23-9 for both
+candidate and control, though candidate margin improved by 178.28. It was
+rejected because wins did not improve.
+
+Full-capacity, center-out, pressure-aware investment, and dynamic-replacement
+arms were then screened over the 11 losses. Their own-reward deltas were
+-6,623.27, -24,771.00, -33,160.64, and -10,944.36. Richer day-6 own workload
+and herd features did not help leave-one-episode-out selection; always-control
+still won validation.
+
+A bounded carried-fertilizer arm created the first real replay conversion.
+Episode `100989827` changed from 91,939-93,752 to 95,691-94,332, with 23 more
+harvested units, the same one weed, zero animal losses, and no sellable terminal
+inventory. Unconditional routing still regressed five of 11 losses. A frozen
+contextual guard routes only with normalized wheat price above 1.30, no wool
+shop, at most three opponent wheat crops, and the existing low fertilizer-price
+guard. It otherwise uses guarded zero-travel service.
+
+The contextual arm improved eight losses, tied three, regressed none, and
+gained 1,303.09 mean own reward. The separate 12-win set remained 12-0 with
+seven improvements, five ties, and +364.17 mean reward; the next live win also
+improved by 395. Untouched seeds 217-218 were 22-10 for both candidate and
+control. Candidate mean margin improved by 226.72, with zero errors and no
+opponent-level regression, but no extra broad-gate win. It is research-only and
+was not packaged or submitted.
 
 ## What Comes Next
 
-1. Decide whether to live-test the exact future-labor package.
-2. Keep its hash fixed while measuring matchmaking.
-3. Build a service scheduler capable of profitable fertilizer timing without
-  starving animal CARE.
-4. Treat the 0-8 elite-replay result as the main remaining throughput gap.
+1. Keep submission `55821334` frozen while matchmaking accumulates.
+2. Add genuinely new ladder losses to the exact replay league.
+3. Require a fresh broad-gate win, not only positive reward or margin.
+4. Continue bounded fertilizer/service work without displacing animal care.
 
 ## Experiment Log
 

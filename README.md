@@ -39,12 +39,12 @@ than one unusually profitable game against `starter`.
 
 The two tracked Kaggle policies are deliberately separate:
 
+- `submissions/future-labor/main.py` is submission `55821334`: opponent-aware
+  peak labor over demand-animal safety. At 24 ladder games it is 13-11 at Score
+  674.8.
 - `submissions/demand-animal/main.py` is submission `55817911`: the day-6
-  shop-demand selector over safe expansion-animal plans. Validation episode
-  `100869093` completed 58,100-59,301 and initialized at 600.0.
-- `submissions/learned-service/main.py` is submission `55803952`: the promoted
-  day-1 contextual service selector. Its validation episode `100394606`
-  completed 60,004-57,984 and initialized at 600.0.
+  shop-demand selector over safe expansion-animal plans. It currently displays
+  Score 655.8.
 
 Deadline submission `55795843`, compact submission `55778351`, and adaptive
 submission `55770236` remain immutable historical controls but are no longer
@@ -68,7 +68,7 @@ Its standalone package is loader-valid and action-equivalent over 1,438
 decisions at SHA-256
 `684693161aebb51bd6293a497033d630218af5eabf92870899efabef69d158b2`.
 
-The current live candidate is `agents/experimental_demand_animal_agent.py`. It
+The demand-animal policy in `agents/experimental_demand_animal_agent.py`
 keeps wheat rotation and deterministic safety, waits for two shop draws, then
 changes at most one expansion sheep per new quadrant when public milk or egg
 demand supports it. It scored 13-7 and 7-3 against the exact submitted package,
@@ -78,17 +78,34 @@ exact submitted control, with zero errors and no opponent-level win regression.
 Its exact package is `submissions/demand-animal/main.py`, SHA-256
 `53cbab96eaf7eba10a55adac2208b273636ba45274b5cac34967bedae335f5ac`.
 
-The next packaged challenger is
-`agents/experimental_future_labor_agent.py`. At day 6 it reinvests cheaper
+The current live incumbent is `agents/experimental_future_labor_agent.py`. At
+day 6 it reinvests cheaper
 cow/goose herd capital in one extra hand during days 9-22 only when the
 opponent has more non-wheat crops than wheat crops. Two untouched broad gates
 finished 22-10 versus 19-13 for the exact control, with zero errors and no
 opponent-level win regression. The package is
 `submissions/future-labor/main.py`, SHA-256
 `200fef67c5a8e8b001b4a54986bb853d22b80f869af7460b67ec8eda169c70e3`.
-It is not submitted, and both candidate and control remain 0-8 against the
-captured elite schedules. Full evidence is in
+Before upload, both candidate and control remained 0-8 against the captured
+elite schedules. Full evidence is in
 [docs/experiments/opponent-aware-future-labor.md](docs/experiments/opponent-aware-future-labor.md).
+
+That package was submitted unchanged as Kaggle submission `55821334`.
+Validation episode `100974134` completed 52,718-52,990. At 24 live games it is
+13-11 at 674.8, versus demand animal's matched 12-11 at 658.9609 and current
+655.8 display. The activated 13-hand branch went 5-1 in the first 23 games,
+while fallback games went 7-10, so research targets the fallback.
+
+All 11 live losses are now captured as compact opponent schedules. Five fixed
+macro responses each reduced our own mean reward, and a shallow learned
+selector rejected to always-control under leave-one-episode-out validation.
+A fertilizer-price guard made zero-travel strawberry service monotonic over all
+24 ladder contexts: 15 improved, nine tied, and zero worse. It still added no
+wins on broad seeds 215-216. A contextual carried-fertilizer arm converted one
+captured loss from 91,939-93,752 to 95,691-94,332 and remained monotonic on the
+24 ladder contexts. Untouched seeds 217-218 stayed 22-10 for both candidate and
+control, though candidate margin improved by 226.72. It remains research-only;
+no package or upload was created.
 
 The related three-arm tree is not promoted. Held-out wins were 35, 34, 35, 33,
 33, and 35 as training grew from 8 to 80 contexts; fixed cows stayed at 35 and
@@ -97,8 +114,8 @@ the oracle reached 37. The learning curve is visible in
 
 Earlier economic and daily seed-admission learners remain rejected. Dynamic
 expansion was neutral, removing lifecycle windows overloaded crop service,
-bounded wheat trading lost 2-8, and broader anticipatory CARE lost 4-6. Demand
-animal `55817911` and learned service `55803952` are the current latest-two live
+bounded wheat trading lost 2-8, and broader anticipatory CARE lost 4-6. Future
+labor `55821334` and demand animal `55817911` are the current latest-two live
 pair. The shadow tree remains research-only.
 
 Initial 600.0 ratings are not proof of ladder strength. Submitting more agents

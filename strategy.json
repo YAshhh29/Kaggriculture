@@ -1244,7 +1244,34 @@
     "sha256": "200fef67c5a8e8b001b4a54986bb853d22b80f869af7460b67ec8eda169c70e3",
     "loader_validation": "DONE/DONE at 92478-90174",
     "equivalence": "0 mismatches over 1438 decisions",
-    "status": "packaged; not submitted"
+    "kaggle": {
+      "submission_id": 55821334,
+      "validation_episode_id": 100974134,
+      "validation_rewards": [52718, 52990],
+      "live_snapshot": "13-11 over 24 games at displayed Score 674.8; mean reward 68738.58",
+      "matched_demand_animal_snapshot": "12-11 at 658.9609370608813; mean reward 67795.91",
+      "activated_branch": "5-1 across 6 games; approximately 84.7k mean reward and +22.3k margin",
+      "fallback_branch": "7-10 across 17 games; approximately 64.3k mean reward and -5.6k margin",
+      "status": "COMPLETE"
+    },
+    "live_loss_counterfactuals": {
+      "dataset": "11 compact public opponent schedules with exact control reward reproduction",
+      "pressure_labor": "rejected: mean own reward delta -3040; improved/tied/worse 1/6/4",
+      "lean_herd": "rejected: mean own reward delta -4105.73; improved/tied/worse 1/5/5",
+      "late_strawberry": "rejected: mean own reward delta -2822.73; improved/tied/worse 0/9/2",
+      "pressure_late_strawberry": "rejected: mean own reward delta -2924.18; improved/tied/worse 1/6/4",
+      "fertilizer_70": "rejected: mean own reward delta -1902.64; improved/tied/worse 4/0/7",
+      "safe_arm_oracle": "mean own reward headroom +1843.55 across 11 losses",
+      "learned_safe_arm_tree": "rejected: leave-one-episode-out selected always-control",
+      "colocated_crop_service_loss_set": "+217.82 mean own reward; improved/tied/worse 7/4/0",
+      "unguarded_colocated_crop_service_win_set": "-1054.50 mean own reward; improved/tied/worse 7/4/1; minimum delta -14602",
+      "guarded_colocated_crop_service": "24 ladder contexts improved/tied/worse 15/9/0; broad seeds 215-216 tied control at 23-9 with +178.28 mean-margin delta; rejected for no extra wins",
+      "contextual_carried_crop_service": "11 losses improved/tied/worse 8/3/0 at +1303.09 mean own reward; converted episode 100989827 to 95691-94332; 12 wins stayed 12-0; next live win +395",
+      "contextual_carried_broad_gate": "seeds 217-218 tied control at 22-10 with +226.72 mean-margin delta, zero errors, and no opponent regression; rejected for no extra wins",
+      "high_throughput_arms": "full capacity -6623.27, center-out -24771, investment -33160.64, dynamic replacement -10944.36 mean own-reward delta; all rejected",
+      "promotion_rule": "fixed-opponent wins do not count without positive own reward delta and separate win-context validation"
+    },
+    "status": "submitted incumbent at displayed Score 674.8; carried-service research rejected at broad win gate"
   },
   "do_not_do": [
     "do not treat one favorable game as proof",

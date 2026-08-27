@@ -8,30 +8,33 @@ Only the latest two submissions are actively tracked.
 
 ## Current Agent
 
-The current live candidate is
-`agents/experimental_demand_animal_agent.py`. It first selects one of two
-deterministic service templates on day 1:
+The current tracked incumbent is
+`agents/experimental_future_labor_agent.py`. It inherits two deterministic
+service templates selected on day 1:
 
 1. frozen deadline capacity;
 2. deadline capacity plus zero-travel co-located FEED+CARE pairing.
 
-On day 6 it uses public shop demand to keep the balanced herd or substitute at
-most two expansion sheep with cows or geese. Neither selector can issue raw
-actions. Movement, crop lifecycle, feeding, market affordability, land
-purchase, and final liquidation remain deterministic.
+On day 6 it uses public shop demand to choose a bounded expansion herd, then
+adds one peak-production hand only when a cheaper cow/goose choice coincides
+with an opponent whose non-wheat footprint exceeds its wheat footprint.
+Movement, lifecycle, feeding, affordability, land purchase, and liquidation
+remain deterministic.
 
-The exact submitted standalone file is
-`submissions/demand-animal/main.py`, Kaggle submission `55817911`, SHA-256
-`53cbab96eaf7eba10a55adac2208b273636ba45274b5cac34967bedae335f5ac`.
-The latest-two tracked pair is demand animal `55817911` plus learned service
-`55803952`.
-
-The packaged challenger is `agents/experimental_future_labor_agent.py`. At day
-6 it adds one peak-production hand only when a cheaper cow/goose demand choice
-coincides with an opponent whose non-wheat footprint exceeds its wheat
-footprint. Otherwise it executes the submitted labor schedule. Its standalone
-package is `submissions/future-labor/main.py`, SHA-256
+Its exact standalone package is `submissions/future-labor/main.py`, SHA-256
 `200fef67c5a8e8b001b4a54986bb853d22b80f869af7460b67ec8eda169c70e3`.
+It was uploaded unchanged as Kaggle submission `55821334`; validation episode
+`100974134` completed 52,718-52,990. Its 24-game snapshot is 13-11 at Score
+674.8. The first 23 games split 5-1 for the 13-hand branch and 7-10 for the
+inherited fallback. The latest-two tracked pair is future labor `55821334` plus
+demand animal `55817911`, currently displayed at 655.8.
+
+The active research arm is
+`agents/experimental_contextual_carried_crop_service_agent.py`. It combines
+guarded zero-travel strawberry service with bounded carried-fertilizer routing
+in a narrow day-6 context. It converted one captured live loss and had no
+own-reward regression over 24 ladder contexts, but untouched seeds 217-218
+added no wins. It is not packaged or submitted.
 
 ## Decision Flow
 
@@ -85,3 +88,22 @@ observation
 
 Never regenerate a submitted package and assume it is the uploaded artifact.
 Compare its full SHA-256 first.
+
+The current live-loss feedback loop is:
+
+```powershell
+.\.conda\python.exe -m research.collection.collect_live_replay_league ...
+.\.conda\python.exe -m research.evaluation.evaluate_live_macro_arms ...
+```
+
+The evaluator first requires the frozen package to reproduce every live reward
+exactly, then ranks safe arms by our own reward delta rather than fixed-opponent
+win status.
+
+Guarded zero-travel strawberry service improved 15 of 24 ladder contexts and
+tied nine, with no own-reward regression. Broad seeds 215-216 tied control at
+23-9, so it was not promoted. Contextual carried-fertilizer service improved
+eight of 11 losses, tied three, and converted one fixed replay; all 12 captured
+wins and the next live win were preserved. Broad seeds 217-218 again tied
+control at 22-10 despite +226.72 mean-margin improvement. No new submission is
+justified without a fresh broad-gate win.

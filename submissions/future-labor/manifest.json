@@ -27,5 +27,23 @@
     "combined_broad_holdout": "22-10 versus control 19-13; zero errors and no opponent-level win regression",
     "elite_replay_controls": "0-8 combined; top-throughput gap remains"
   },
-  "status": "packaged; not submitted"
+  "kaggle": {
+    "submission_id": 55821334,
+    "submitted_at": "2026-08-27T15:19:53Z",
+    "validation_episode_id": 100974134,
+    "validation_rewards": [
+      52718,
+      52990
+    ],
+    "initial_score": 600.0,
+    "live_snapshot": {
+      "games": 24,
+      "wins": 13,
+      "losses": 11,
+      "score": 674.8,
+      "mean_reward": 68738.58
+    },
+    "status": "COMPLETE"
+  },
+  "status": "submitted to Kaggle; validation complete"
 }

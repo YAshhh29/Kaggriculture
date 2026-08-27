@@ -92,14 +92,6 @@
 			"problemMatcher": []
 		},
 		{
-			"label": "Prepare future labor submission",
-			"type": "process",
-			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": ["-m", "tools.packaging.prepare_future_labor_submission"],
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
 			"label": "Validate future labor Kaggle loader",
 			"type": "process",
 			"command": "${workspaceFolder}\\.conda\\python.exe",
@@ -114,6 +106,228 @@
 			"args": ["-m", "tools.validation.validate_future_labor_equivalence", "submissions\\future-labor\\main.py", "--seed", "214"],
 			"isBackground": false,
 			"problemMatcher": []
-		}
+		},
+		{
+			"label": "Collect future labor live loss league",
+			"type": "process",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"-m", "research.collection.collect_live_replay_league",
+				"--episode", "100978351:0",
+				"--episode", "100987550:1",
+				"--episode", "100989827:0",
+				"--episode", "100996743:1",
+				"--episode", "101001315:0",
+				"--episode", "101001339:1",
+				"--episode", "101003632:1",
+				"--episode", "101005953:0",
+				"--episode", "101012841:0",
+				"--episode", "101062971:1",
+				"--episode", "101108726:1",
+				"--output", "artifacts\\datasets\\v1327-future-labor-live-loss-league.json"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Evaluate future labor live macro arms",
+			"type": "process",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"-m", "research.evaluation.evaluate_live_macro_arms",
+				"artifacts\\datasets\\v1327-future-labor-live-loss-league.json",
+				"--output", "artifacts\\benchmarks\\v1327-future-labor-live-macro-arms.json"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Screen high-throughput live macro arms",
+			"type": "process",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"-m", "research.evaluation.evaluate_live_macro_arms",
+				"artifacts\\datasets\\v1327-future-labor-live-loss-league.json",
+				"--arm", "center_out",
+				"--arm", "investment",
+				"--arm", "dynamic_replacement",
+				"--output", "artifacts\\benchmarks\\v1327-high-throughput-live-losses.json"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Evaluate colocated crop service live losses",
+			"type": "process",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"-m", "research.evaluation.evaluate_live_macro_arms",
+				"artifacts\\datasets\\v1327-future-labor-live-loss-league.json",
+				"--arm", "colocated_crop_service",
+				"--output", "artifacts\\benchmarks\\v1327-colocated-crop-service-live-losses.json"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Evaluate guarded carried service live losses",
+			"type": "process",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"-m", "research.evaluation.evaluate_live_macro_arms",
+				"artifacts\\datasets\\v1327-future-labor-live-loss-league.json",
+				"--arm", "guarded_carried_crop_service",
+				"--output", "artifacts\\benchmarks\\v1327-guarded-carried-crop-service-live-losses.json"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Evaluate contextual carried service live losses",
+			"type": "process",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"-m", "research.evaluation.evaluate_live_macro_arms",
+				"artifacts\\datasets\\v1327-future-labor-live-loss-league.json",
+				"--arm", "contextual_carried_crop_service",
+				"--output", "artifacts\\benchmarks\\v1327-contextual-carried-crop-service-live-losses.json"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Collect future labor live win league",
+			"type": "process",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"-m", "research.collection.collect_live_replay_league",
+				"--episode", "100980670:0",
+				"--episode", "100982965:1",
+				"--episode", "100985256:1",
+				"--episode", "100992124:0",
+				"--episode", "100994441:1",
+				"--episode", "100999028:1",
+				"--episode", "101008260:1",
+				"--episode", "101010534:0",
+				"--episode", "101015186:1",
+				"--episode", "101017422:1",
+				"--episode", "101035736:0",
+				"--episode", "101056283:0",
+				"--output", "artifacts\\datasets\\v1327-future-labor-live-win-league.json"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Validate colocated crop service live wins",
+			"type": "process",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"-m", "research.evaluation.evaluate_live_macro_arms",
+				"artifacts\\datasets\\v1327-future-labor-live-win-league.json",
+				"--arm", "colocated_crop_service",
+				"--output", "artifacts\\benchmarks\\v1327-colocated-crop-service-live-wins.json"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Validate guarded crop service live wins",
+			"type": "process",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"-m", "research.evaluation.evaluate_live_macro_arms",
+				"artifacts\\datasets\\v1327-future-labor-live-win-league.json",
+				"--arm", "guarded_colocated_crop_service",
+				"--output", "artifacts\\benchmarks\\v1327-guarded-colocated-crop-service-live-wins.json"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Validate contextual carried service live wins",
+			"type": "process",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"-m", "research.evaluation.evaluate_live_macro_arms",
+				"artifacts\\datasets\\v1327-future-labor-live-win-league.json",
+				"--arm", "contextual_carried_crop_service",
+				"--output", "artifacts\\benchmarks\\v1327-contextual-carried-crop-service-live-wins.json"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Analyze closest guarded live loss",
+			"type": "process",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"-m", "research.analysis.compare_live_macro_episode",
+				"artifacts\\datasets\\v1327-future-labor-live-loss-league.json",
+				"100989827",
+				"--candidate", "agents\\experimental_guarded_colocated_crop_service_agent.py",
+				"--output", "artifacts\\benchmarks\\v1327-guarded-service-episode-100989827.json"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Analyze guarded carried-service live loss",
+			"type": "process",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"-m", "research.analysis.compare_live_macro_episode",
+				"artifacts\\datasets\\v1327-future-labor-live-loss-league.json",
+				"100989827",
+				"--candidate", "agents\\experimental_guarded_carried_crop_service_agent.py",
+				"--output", "artifacts\\benchmarks\\v1327-guarded-carried-service-episode-100989827.json"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Analyze contextual carried-service live loss",
+			"type": "process",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"-m", "research.analysis.compare_live_macro_episode",
+				"artifacts\\datasets\\v1327-future-labor-live-loss-league.json",
+				"100989827",
+				"--candidate", "agents\\experimental_contextual_carried_crop_service_agent.py",
+				"--output", "artifacts\\benchmarks\\v1327-contextual-carried-service-episode-100989827.json"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Run guarded crop service gate",
+			"type": "process",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"-m", "research.evaluation.evaluate_future_labor",
+				"--seed-start", "216",
+				"--seed-count", "1",
+				"--control", "submissions\\future-labor\\main.py",
+				"--candidate", "agents\\experimental_guarded_colocated_crop_service_agent.py",
+				"--output", "artifacts\\benchmarks\\v1327-guarded-crop-service-broad-gate-seed216.json"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Run contextual carried service gate",
+			"type": "process",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"-m", "research.evaluation.evaluate_future_labor",
+				"--seed-start", "218",
+				"--seed-count", "1",
+				"--control", "submissions\\future-labor\\main.py",
+				"--candidate", "agents\\experimental_contextual_carried_crop_service_agent.py",
+				"--output", "artifacts\\benchmarks\\v1327-contextual-carried-service-broad-gate-seed218.json"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
 	]
 }
