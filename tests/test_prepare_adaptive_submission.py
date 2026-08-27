@@ -12,7 +12,11 @@ class PrepareAdaptiveSubmissionTests(unittest.TestCase):
             node.module
             for node in module.body
             if isinstance(node, ast.ImportFrom)
-            and node.module in prepare_adaptive_submission.LOCAL_MODULES
+            and node.module is not None
+            and (
+                node.module in prepare_adaptive_submission.LOCAL_MODULES
+                or node.module.startswith(("agents.", "policies.", "core."))
+            )
         ]
         functions = [
             node.name

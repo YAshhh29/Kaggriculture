@@ -31,7 +31,7 @@ artifacts/               ignored local benchmark/replay/dataset output
 | Decision | Owning module today | Planned home |
 | --- | --- | --- |
 | Crop and animal plan | `experimental_premium_throughput_agent.py` | `core/scheduling.py` |
-| Shortest movement step | `experimental_hands_agent.py` | `core/routing.py` |
+| Shortest movement step | `core/routing.py` | implemented |
 | Market affordability | `experimental_throughput_agent.py` | `core/economics.py` |
 | Safe service arms | `service_policy.py` | `policies/service.py` |
 | Learned selection | `experimental_learned_service_agent.py` | `agents/learned_service.py` |

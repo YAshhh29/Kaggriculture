@@ -39,7 +39,8 @@ observation
 - The board has no impassable movement tiles. Manhattan distance is the exact
   shortest-path distance, so Dijkstra or A* would return the same path at more
   runtime cost.
-- `_act_at_or_move` already takes one shortest-path step.
+- `core.routing.step_toward` takes one exact shortest-path step; legacy agents
+  use compatibility aliases so submitted behavior remains unchanged.
 - Most visible routing failures come from choosing the wrong target or fixing a
   worker to the wrong quadrant, not from path search.
 - A global nearest-empty-slot planting experiment lost 6-14 against the frozen

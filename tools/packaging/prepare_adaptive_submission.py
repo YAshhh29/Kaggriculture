@@ -41,7 +41,7 @@ def _source_body(path: Path, *, keep_agent: bool) -> list[ast.stmt]:
                 or node.module in LOCAL_MODULES
                 or (
                     node.module is not None
-                    and node.module.startswith(("agents.", "policies."))
+                    and node.module.startswith(("agents.", "policies.", "core."))
                 )
             )
         )

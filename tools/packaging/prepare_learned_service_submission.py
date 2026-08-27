@@ -53,7 +53,7 @@ def _source_body(path: Path) -> list[ast.stmt]:
                 )
                 or (
                     node.module is not None
-                    and node.module.startswith(("agents.", "policies."))
+                    and node.module.startswith(("agents.", "policies.", "core."))
                 )
             )
         )

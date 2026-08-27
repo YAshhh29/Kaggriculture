@@ -14,7 +14,9 @@ class PrepareLearnedServiceSubmissionTests(unittest.TestCase):
             if isinstance(node, ast.ImportFrom)
             and node.module is not None
             and (
-                node.module.startswith("experimental_")
+                node.module.startswith(
+                    ("experimental_", "agents.", "policies.", "core.")
+                )
                 or node.module
                 in {"learned_service_model", "macro_policy", "service_policy"}
             )

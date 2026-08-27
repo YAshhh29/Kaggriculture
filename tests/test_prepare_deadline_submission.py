@@ -13,7 +13,9 @@ class PrepareDeadlineSubmissionTests(unittest.TestCase):
             for node in module.body
             if isinstance(node, ast.ImportFrom)
             and node.module is not None
-            and node.module.startswith("experimental_")
+            and node.module.startswith(
+                ("experimental_", "agents.", "policies.", "core.")
+            )
         ]
         functions = [
             node.name

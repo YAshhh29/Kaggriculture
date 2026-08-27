@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from core.routing import distance as _distance
+from core.routing import step_toward as _act_at_or_move
 from agents.experimental_goose_agent import (
     _animal_market_orders,
     _service_action,
@@ -31,29 +33,6 @@ def _is_mature_wheat(tile: Any, day: int) -> bool:
         and day - int(tile["planted_day"]) >= 4
         and int(tile.get("yield_units", 0)) > 0
     )
-
-
-def _distance(
-    origin: tuple[int, int],
-    target: tuple[int, int],
-) -> int:
-    return abs(origin[0] - target[0]) + abs(origin[1] - target[1])
-
-
-def _act_at_or_move(
-    origin: tuple[int, int],
-    target: tuple[int, int],
-    action: list[str],
-) -> list[str]:
-    if origin == target:
-        return action
-    if target[0] < origin[0]:
-        return ["WEST"]
-    if target[0] > origin[0]:
-        return ["EAST"]
-    if target[1] < origin[1]:
-        return ["NORTH"]
-    return ["SOUTH"]
 
 
 def _task_groups(

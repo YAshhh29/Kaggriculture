@@ -1,0 +1,1 @@
+"""Shared game mechanics, routing, scheduling, and economic modules."""

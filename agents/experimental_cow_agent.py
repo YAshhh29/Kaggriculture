@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from core.routing import distance as _distance
 from agents.experimental_goose_agent import (
     _carried,
     _move_toward,
@@ -43,13 +44,6 @@ LIVESTOCK_TILES = {
     plan["position"]
     for plan in ANIMAL_PLANS
 }
-
-
-def _distance(
-    origin: tuple[int, int],
-    target: tuple[int, int],
-) -> int:
-    return abs(origin[0] - target[0]) + abs(origin[1] - target[1])
 
 
 def _animal_position(

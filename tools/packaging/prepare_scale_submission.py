@@ -61,7 +61,7 @@ def _module_body(
             node.module == "__future__" or node.module in LOCAL_MODULES
             or (
                 node.module is not None
-                and node.module.startswith(("agents.", "policies."))
+                and node.module.startswith(("agents.", "policies.", "core."))
             )
         ):
             continue
