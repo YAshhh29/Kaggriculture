@@ -32,7 +32,8 @@ artifacts/               ignored local benchmark/replay/dataset output
 | --- | --- | --- |
 | Crop and animal plan | `experimental_premium_throughput_agent.py` | `core/scheduling.py` |
 | Shortest movement step | `core/routing.py` | implemented |
-| Market affordability | `experimental_throughput_agent.py` | `core/economics.py` |
+| Demand and opportunity | `core/economics.py` | implemented |
+| Market affordability | `agents/experimental_throughput_agent.py` | future core extraction |
 | Safe service arms | `service_policy.py` | `policies/service.py` |
 | Learned selection | `experimental_learned_service_agent.py` | `agents/learned_service.py` |
 | Replay measurement | `research/analysis/analyze_public_replay.py`, `benchmark.py` | `research/analysis/` |

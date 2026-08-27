@@ -298,6 +298,7 @@ class ExperimentalPremiumThroughputAgentTests(unittest.TestCase):
             {
                 "MELON": 7,
                 "STRAWBERRY": 11,
+                "TOMATO": 17,
                 "WHEAT": 22,
                 "CARROT": 22,
             },

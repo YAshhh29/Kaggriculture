@@ -67,6 +67,7 @@ DENSE_CROP_TYPES = {
 LAST_PLANT_DAYS = {
     "MELON": 7,
     "STRAWBERRY": 11,
+    "TOMATO": 17,
     "WHEAT": 22,
     "CARROT": 22,
 }
@@ -247,13 +248,15 @@ def _crop_priority(day: int, crop: str) -> int:
             "MELON": 0,
             "WHEAT": 1,
             "CARROT": 1,
-            "STRAWBERRY": 2,
+            "TOMATO": 2,
+            "STRAWBERRY": 3,
         }[crop]
     return {
         "STRAWBERRY": 0,
-        "MELON": 1,
-        "CARROT": 2,
-        "WHEAT": 3,
+        "TOMATO": 1,
+        "MELON": 2,
+        "CARROT": 3,
+        "WHEAT": 4,
     }[crop]
 
 
@@ -327,7 +330,7 @@ def _seed_orders(
         needed = Counter(str(plan["crop"]) for plan in plantable)
         total_needed.update(needed)
         crops = sorted(
-            ("MELON", "STRAWBERRY", "CARROT", "WHEAT"),
+            ("MELON", "STRAWBERRY", "TOMATO", "CARROT", "WHEAT"),
             key=lambda crop: _crop_priority(day, crop),
         )
         for crop in crops:
@@ -367,7 +370,7 @@ def _seed_orders(
             reserved_targets["WHEAT"] + remaining_wheat_extra,
         )
         crops = sorted(
-            ("MELON", "STRAWBERRY", "CARROT", "WHEAT"),
+            ("MELON", "STRAWBERRY", "TOMATO", "CARROT", "WHEAT"),
             key=lambda crop: _crop_priority(day, crop),
         )
         return [
