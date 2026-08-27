@@ -53,6 +53,7 @@ def decide_demand(
     *,
     use_crop_demand: bool = True,
     use_animal_demand: bool = True,
+    hand_targets: tuple[int, ...] = DEADLINE_HAND_TARGETS,
 ) -> dict[str, Any]:
     """Execute selected demand axes through the deterministic scheduler."""
     animal, crop = _choices(observation)
@@ -73,7 +74,7 @@ def decide_demand(
         late_rotation_last_plant_day=deadline,
         release_idle_crop_reserve=True,
         prioritize_mature_harvest=True,
-        hand_targets=DEADLINE_HAND_TARGETS,
+        hand_targets=hand_targets,
         pair_colocated_feed_care=service_arm == ARM_PAIRED,
     )
 

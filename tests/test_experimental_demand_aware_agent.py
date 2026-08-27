@@ -82,6 +82,22 @@ class ExperimentalDemandAwareAgentTests(unittest.TestCase):
             0,
         )
 
+    def test_future_hand_targets_are_forwarded(self) -> None:
+        state = scale_observation(day=9)
+        custom_hands = tuple(13 for _ in range(30))
+        with patch(
+            "agents.experimental_demand_aware_agent.decide_premium"
+        ) as premium:
+            decide_demand(
+                state,
+                use_crop_demand=False,
+                hand_targets=custom_hands,
+            )
+
+        self.assertEqual(
+            premium.call_args.kwargs["hand_targets"],
+            custom_hands,
+        )
     def test_unsupported_opening_falls_back_to_balanced_animals(self) -> None:
         state = scale_observation(day=6)
         state["farms"][1]["money"] = 177
