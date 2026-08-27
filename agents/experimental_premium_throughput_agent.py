@@ -121,6 +121,9 @@ def _dense_crop_plans(
     late_rotation_last_plant_day: int | None = None,
     lifecycle_windows: bool = False,
     lifecycle_deadlines_only: bool = False,
+    selective_late_rotation_crop: str | None = None,
+    selective_late_rotation_slots: int = 0,
+    selective_late_rotation_source_crop: str = "MELON",
 ) -> tuple[dict[str, Any], ...]:
     managed = _managed_crop_plans(
         farm,
@@ -139,6 +142,29 @@ def _dense_crop_plans(
         and late_rotation_last_plant_day is None
         else late_rotation_last_plant_day
     )
+    selective_late_deadline = (
+        LAST_PLANT_DAYS[selective_late_rotation_crop]
+        if selective_late_rotation_crop is not None
+        else None
+    )
+    selective_late_ids = {
+        str(plan["id"])
+        for plan in sorted(
+            (
+                plan
+                for plan in DENSE_CROP_PLANS
+                if plan["crop"] == selective_late_rotation_source_crop
+            ),
+            key=lambda plan: (
+                min(
+                    _distance(tuple(plan["position"]), access)
+                    for access in ((4, 4), (5, 4), (4, 5), (5, 5))
+                ),
+                int(plan["position"][1]),
+                int(plan["position"][0]),
+            ),
+        )[:max(0, selective_late_rotation_slots)]
+    }
     plans: list[dict[str, Any]] = []
     for plan in managed:
         if tuple(plan["position"]) in reserved_positions:
@@ -149,6 +175,28 @@ def _dense_crop_plans(
             if isinstance(tile, dict) and tile.get("kind") == "PLANT"
             else None
         )
+        selective_late_active = (
+            str(plan["id"]) in selective_late_ids
+            and current_crop == selective_late_rotation_crop
+        )
+        selective_late_due = (
+            str(plan["id"]) in selective_late_ids
+            and selective_late_rotation_crop is not None
+            and tile is None
+            and day > int(plan["last_plant_day"])
+            and selective_late_deadline is not None
+            and day <= selective_late_deadline
+        )
+        if selective_late_active or selective_late_due:
+            plans.append(
+                {
+                    **plan,
+                    "crop": selective_late_rotation_crop,
+                    "first_plant_day": 0,
+                    "last_plant_day": selective_late_deadline,
+                }
+            )
+            continue
         late_rotation_active = (
             late_rotation_crop is not None
             and current_crop == late_rotation_crop
@@ -762,6 +810,77 @@ def _assign_crop_fertilization(
         )
 
 
+def _assign_colocated_strawberry_service(
+    day: int,
+    farm: dict[str, Any],
+    crop_plans: tuple[dict[str, Any], ...],
+    positions: list[tuple[int, int]],
+    inventories: list[dict[str, Any]],
+    actions: list[list[str] | None],
+    excluded_targets: set[tuple[int, int]] | None = None,
+) -> set[tuple[int, int]]:
+    """Bundle ongoing crop service only when every worker is co-located."""
+    assigned: set[tuple[int, int]] = set()
+    excluded = excluded_targets or set()
+    for plan in crop_plans:
+        target = tuple(plan["position"])
+        if target in excluded or target in assigned:
+            continue
+        tile = _tile_at(farm["tiles"], target)
+        if not _is_crop(tile, "STRAWBERRY"):
+            continue
+        operations = _crop_operations(day, tile)
+        if not {"FERTILIZE", "WATER"}.issubset(operations):
+            continue
+        colocated = [
+            worker
+            for worker, position in enumerate(positions)
+            if actions[worker] is None and position == target
+        ]
+        selected: tuple[int, ...] | None = None
+        if "HARVEST" in operations:
+            for fertilizer_worker in colocated:
+                if int(inventories[fertilizer_worker].get("FERTILIZER", 0)) <= 0:
+                    continue
+                harvesters = [
+                    worker for worker in colocated
+                    if worker < fertilizer_worker
+                ]
+                waterers = [
+                    worker for worker in colocated
+                    if worker > fertilizer_worker
+                ]
+                if harvesters and waterers:
+                    selected = (
+                        max(harvesters),
+                        fertilizer_worker,
+                        min(waterers),
+                    )
+                    break
+        else:
+            for fertilizer_worker in colocated:
+                if int(inventories[fertilizer_worker].get("FERTILIZER", 0)) <= 0:
+                    continue
+                waterers = [
+                    worker for worker in colocated
+                    if worker > fertilizer_worker
+                ]
+                if waterers:
+                    selected = (fertilizer_worker, min(waterers))
+                    break
+        if selected is None:
+            continue
+        if len(selected) == 3:
+            actions[selected[0]] = ["HARVEST"]
+            actions[selected[1]] = ["FERTILIZE"]
+            actions[selected[2]] = ["WATER"]
+        else:
+            actions[selected[0]] = ["FERTILIZE"]
+            actions[selected[1]] = ["WATER"]
+        assigned.add(target)
+    return assigned
+
+
 def _effective_crop_worker_reserve(
     day: int,
     farm: dict[str, Any],
@@ -833,6 +952,7 @@ def _worker_actions(
     prioritize_mature_harvest: bool,
     fertilize_strawberries: bool,
     fertilized_strawberries_per_quadrant: int | None,
+    pair_colocated_strawberry_service: bool,
     cross_quadrant_crop_rescue: bool,
     crop_before_routine_animals: bool = False,
     crops_before_care_only: bool = False,
@@ -966,6 +1086,20 @@ def _worker_actions(
                 fertilized_strawberries_per_quadrant,
                 carried_fertilizer_only,
             )
+        paired_crop_targets = (
+            _assign_colocated_strawberry_service(
+                day,
+                farm,
+                local_crops,
+                local_positions,
+                local_inventories,
+                local_actions,
+                assigned_crop_targets,
+            )
+            if pair_colocated_strawberry_service
+            else set()
+        )
+        assigned_crop_targets.update(paired_crop_targets)
         effective_reserve = (
             _effective_crop_worker_reserve(
                 day,
@@ -998,6 +1132,7 @@ def _worker_actions(
                 local_positions,
                 local_actions,
                 critical=False,
+                excluded_targets=paired_crop_targets,
             ))
         if crops_before_care_only and plant_before_care:
             _assign_paired_planting(
@@ -1036,6 +1171,7 @@ def _worker_actions(
                 local_positions,
                 local_actions,
                 critical=False,
+                excluded_targets=paired_crop_targets,
             ))
         if not (crops_before_care_only and plant_before_care):
             _assign_paired_planting(
@@ -1073,7 +1209,6 @@ def _worker_actions(
             prioritize_mature_harvest=prioritize_mature_harvest,
             excluded_targets=assigned_crop_targets,
         )
-
     resolved = [action or ["PASS"] for action in actions]
     return resolved[0], resolved[1:]
 
@@ -1150,6 +1285,10 @@ def _sales_orders(
     wheat_market_price: int | None = None,
     wheat_trade_target: int = 0,
     wheat_trade_sell_price: int | None = None,
+    fertilizer_market_price: int | None = None,
+    minimum_fertilizer_sale_price: int | None = None,
+    maximum_fertilizer_holdings: int | None = None,
+    fertilizer_liquidation_day: int | None = None,
 ) -> list[list[Any]]:
     items = (
         "MELON",
@@ -1207,6 +1346,25 @@ def _sales_orders(
         0,
         quantities["FERTILIZER"] - fertilizer_reserve,
     )
+    fertilizer_price_is_good = (
+        minimum_fertilizer_sale_price is None
+        or fertilizer_market_price is not None
+        and fertilizer_market_price >= minimum_fertilizer_sale_price
+    )
+    fertilizer_stock_is_full = (
+        maximum_fertilizer_holdings is not None
+        and quantities["FERTILIZER"] >= maximum_fertilizer_holdings
+    )
+    fertilizer_liquidation_started = (
+        fertilizer_liquidation_day is not None
+        and day >= fertilizer_liquidation_day
+    )
+    if not (
+        fertilizer_price_is_good
+        or fertilizer_stock_is_full
+        or fertilizer_liquidation_started
+    ):
+        quantities["FERTILIZER"] = 0
     return [
         ["SELL", item, quantities[item]]
         for item in items
@@ -1252,11 +1410,15 @@ def decide(
     late_rotation_crop: str | None = None,
     rotation_last_plant_day: int | None = None,
     late_rotation_last_plant_day: int | None = None,
+    selective_late_rotation_crop: str | None = None,
+    selective_late_rotation_slots: int = 0,
+    selective_late_rotation_source_crop: str = "MELON",
     release_idle_crop_reserve: bool = False,
     actionable_crop_reserve: bool = False,
     prioritize_mature_harvest: bool = False,
     fertilize_strawberries: bool = False,
     fertilized_strawberries_per_quadrant: int | None = None,
+    pair_colocated_strawberry_service: bool = False,
     cross_quadrant_crop_rescue: bool = False,
     crop_before_routine_animals: bool = False,
     crops_before_care_only: bool = False,
@@ -1280,6 +1442,9 @@ def decide(
     wheat_trade_buy_price: int | None = None,
     wheat_trade_sell_price: int | None = None,
     wheat_trade_cash_reserve: int = 3000,
+    minimum_fertilizer_sale_price: int | None = None,
+    maximum_fertilizer_holdings: int | None = None,
+    fertilizer_liquidation_day: int | None = None,
     pair_colocated_feed_care: bool = False,
     anticipate_daily_feed_for_care: bool = False,
 ) -> dict[str, Any]:
@@ -1305,6 +1470,9 @@ def decide(
         late_rotation_last_plant_day,
         dynamic_lifecycle_windows,
         dynamic_lifecycle_deadlines_only,
+        selective_late_rotation_crop,
+        selective_late_rotation_slots,
+        selective_late_rotation_source_crop,
     )
     animal_crew_size = _animal_crew_size(day)
     pair_quadrants = _pair_quadrants(day, farm)
@@ -1330,6 +1498,7 @@ def decide(
             prioritize_mature_harvest,
             fertilize_strawberries,
             fertilized_strawberries_per_quadrant,
+            pair_colocated_strawberry_service,
             cross_quadrant_crop_rescue,
             crop_before_routine_animals,
             crops_before_care_only,
@@ -1360,6 +1529,10 @@ def decide(
         int(market_state.get("prices", {}).get("WHEAT", 0)),
         wheat_trade_target,
         wheat_trade_sell_price,
+        int(market_state.get("prices", {}).get("FERTILIZER", 0)),
+        minimum_fertilizer_sale_price,
+        maximum_fertilizer_holdings,
+        fertilizer_liquidation_day,
     )
     market = _affordable_market_orders(
         observation,

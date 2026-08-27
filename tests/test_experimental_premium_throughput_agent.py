@@ -14,6 +14,7 @@ from agents.experimental_premium_throughput_agent import (
     _assign_limited_animal_services,
     _assign_crop_tasks,
     _assign_crop_fertilization,
+    _assign_colocated_strawberry_service,
     _effective_crop_worker_reserve,
     _worker_actions,
     _sales_orders,
@@ -383,6 +384,64 @@ class ExperimentalPremiumThroughputAgentTests(unittest.TestCase):
                 if plan["crop"] == "MELON"
             )
         )
+
+    def test_selective_late_rotation_uses_spent_melon_slots(self) -> None:
+        state = scale_observation(day=10)
+        state["farms"][0]["unlocked_quadrants"].append("NE")
+        plans = _dense_crop_plans(
+            state["farms"][0],
+            10,
+            rotation_crop="WHEAT",
+            late_rotation_crop="WHEAT",
+            selective_late_rotation_crop="STRAWBERRY",
+            selective_late_rotation_slots=4,
+            selective_late_rotation_source_crop="MELON",
+        )
+        melon_ids = {
+            str(plan["id"])
+            for plan in DENSE_CROP_PLANS
+            if plan["crop"] == "MELON"
+        }
+        melon_slot_plans = [
+            plan for plan in plans if str(plan["id"]) in melon_ids
+        ]
+
+        self.assertEqual(
+            sum(plan["crop"] == "STRAWBERRY" for plan in melon_slot_plans),
+            4,
+        )
+        self.assertTrue(
+            all(
+                plan["crop"] in {"STRAWBERRY", "WHEAT"}
+                for plan in melon_slot_plans
+            )
+        )
+
+    def test_selective_late_rotation_preserves_active_melon(self) -> None:
+        state = scale_observation(day=9)
+        farm = state["farms"][0]
+        melon = next(
+            plan for plan in DENSE_CROP_PLANS
+            if plan["quadrant"] == "NW" and plan["crop"] == "MELON"
+        )
+        x, y = melon["position"]
+        farm["tiles"][y][x] = {
+            "kind": "PLANT",
+            "crop": "MELON",
+            "planted_day": 0,
+        }
+        plans = _dense_crop_plans(
+            farm,
+            9,
+            rotation_crop="WHEAT",
+            late_rotation_crop="WHEAT",
+            selective_late_rotation_crop="STRAWBERRY",
+            selective_late_rotation_slots=4,
+            selective_late_rotation_source_crop="MELON",
+        )
+
+        active = next(plan for plan in plans if plan["id"] == melon["id"])
+        self.assertEqual(active["crop"], "MELON")
 
     def test_unsafe_wheat_cohorts_are_not_admitted(self) -> None:
         sw_wheat = [
@@ -759,6 +818,7 @@ class ExperimentalPremiumThroughputAgentTests(unittest.TestCase):
             True,
             False,
             None,
+            False,
             True,
         )
 
@@ -811,6 +871,7 @@ class ExperimentalPremiumThroughputAgentTests(unittest.TestCase):
             False,
             False,
             None,
+            False,
             False,
             True,
         )
@@ -880,6 +941,73 @@ class ExperimentalPremiumThroughputAgentTests(unittest.TestCase):
 
         self.assertEqual(actions, [["FERTILIZE"], ["WATER"]])
 
+    def test_colocated_strawberry_pairs_fertilizer_before_water(self) -> None:
+        state = scale_observation(day=9)
+        farm = state["farms"][0]
+        plan = next(
+            plan for plan in _dense_crop_plans(farm, 9)
+            if plan["crop"] == "STRAWBERRY"
+        )
+        target = tuple(plan["position"])
+        x, y = target
+        farm["tiles"][y][x] = {
+            "kind": "PLANT",
+            "crop": "STRAWBERRY",
+            "planted_day": 0,
+            "watered_today": False,
+            "consecutive_unwatered": 0,
+            "yield_units": 0,
+            "fertilized_until_day": -1,
+        }
+        actions = [None, None]
+
+        assigned = _assign_colocated_strawberry_service(
+            9,
+            farm,
+            (plan,),
+            [target, target],
+            [{"FERTILIZER": 1}, {}],
+            actions,
+        )
+
+        self.assertEqual(actions, [["FERTILIZE"], ["WATER"]])
+        self.assertEqual(assigned, {target})
+
+    def test_colocated_strawberry_harvests_before_fertilized_water(self) -> None:
+        state = scale_observation(day=9)
+        farm = state["farms"][0]
+        plan = next(
+            plan for plan in _dense_crop_plans(farm, 9)
+            if plan["crop"] == "STRAWBERRY"
+        )
+        target = tuple(plan["position"])
+        x, y = target
+        farm["tiles"][y][x] = {
+            "kind": "PLANT",
+            "crop": "STRAWBERRY",
+            "planted_day": 0,
+            "watered_today": False,
+            "consecutive_unwatered": 0,
+            "yield_units": 2,
+            "fertilized_until_day": -1,
+        }
+        actions = [None, None, None]
+
+        assigned = _assign_colocated_strawberry_service(
+            9,
+            farm,
+            (plan,),
+            [target, target, target],
+            [{}, {"FERTILIZER": 1}, {}],
+            actions,
+        )
+
+        self.assertEqual(
+            actions,
+            [["HARVEST"], ["FERTILIZE"], ["WATER"]],
+        )
+        self.assertEqual(assigned, {target})
+
     def test_fertilization_limit_caps_selected_strawberries(self) -> None:
         state = scale_observation(day=11)
         farm = state["farms"][0]
@@ -944,6 +1072,30 @@ class ExperimentalPremiumThroughputAgentTests(unittest.TestCase):
         )
 
         self.assertIn(["SELL", "FERTILIZER", 1], orders)
+
+    def test_fertilizer_hold_releases_on_price_cap_or_liquidation(self) -> None:
+        state = scale_observation(day=20)
+        farm = state["farms"][0]
+        state["private"]["shed"]["FERTILIZER"] = 40
+
+        def orders(day: int, price: int, quantity: int = 40) -> list:
+            state["private"]["shed"]["FERTILIZER"] = quantity
+            return _sales_orders(
+                day,
+                farm,
+                state["private"],
+                (),
+                set(),
+                fertilizer_market_price=price,
+                minimum_fertilizer_sale_price=60,
+                maximum_fertilizer_holdings=72,
+                fertilizer_liquidation_day=28,
+            )
+
+        self.assertNotIn(["SELL", "FERTILIZER", 40], orders(20, 55))
+        self.assertIn(["SELL", "FERTILIZER", 40], orders(20, 60))
+        self.assertIn(["SELL", "FERTILIZER", 72], orders(20, 55, 72))
+        self.assertIn(["SELL", "FERTILIZER", 40], orders(28, 20))
 
     def test_land_gate_uses_projected_sales_but_keeps_reserve(self) -> None:
         state = scale_observation(day=5, money=100)

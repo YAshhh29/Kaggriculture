@@ -54,6 +54,13 @@ def decide_demand(
     use_crop_demand: bool = True,
     use_animal_demand: bool = True,
     hand_targets: tuple[int, ...] = DEADLINE_HAND_TARGETS,
+    minimum_fertilizer_sale_price: int | None = None,
+    maximum_fertilizer_holdings: int | None = None,
+    fertilizer_liquidation_day: int | None = None,
+    pair_colocated_strawberry_service: bool = False,
+    fertilize_strawberries: bool = False,
+    fertilized_strawberries_per_quadrant: int | None = None,
+    carried_fertilizer_only: bool = False,
 ) -> dict[str, Any]:
     """Execute selected demand axes through the deterministic scheduler."""
     animal, crop = _choices(observation)
@@ -75,6 +82,15 @@ def decide_demand(
         release_idle_crop_reserve=True,
         prioritize_mature_harvest=True,
         hand_targets=hand_targets,
+        minimum_fertilizer_sale_price=minimum_fertilizer_sale_price,
+        maximum_fertilizer_holdings=maximum_fertilizer_holdings,
+        fertilizer_liquidation_day=fertilizer_liquidation_day,
+        pair_colocated_strawberry_service=pair_colocated_strawberry_service,
+        fertilize_strawberries=fertilize_strawberries,
+        fertilized_strawberries_per_quadrant=(
+            fertilized_strawberries_per_quadrant
+        ),
+        carried_fertilizer_only=carried_fertilizer_only,
         pair_colocated_feed_care=service_arm == ARM_PAIRED,
     )
 
