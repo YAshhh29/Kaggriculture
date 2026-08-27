@@ -82,6 +82,38 @@
 			"args": ["-m", "research.analysis.run_overnight_shadow", "--seed-start", "188", "--seed-count", "10", "--output", "artifacts\\benchmarks\\overnight-shadow.json"],
 			"isBackground": false,
 			"problemMatcher": []
+		},
+		{
+			"label": "Run future labor gate",
+			"type": "process",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": ["-m", "research.evaluation.evaluate_future_labor", "--seed-start", "213", "--seed-count", "1", "--output", "artifacts\\benchmarks\\v1327-opponent-aware-future-labor-broad-gate-seed213.json"],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Prepare future labor submission",
+			"type": "process",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": ["-m", "tools.packaging.prepare_future_labor_submission"],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Validate future labor Kaggle loader",
+			"type": "process",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": ["-m", "tools.validation.validate_submission", "submissions\\future-labor\\main.py", "--seed", "214"],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Validate future labor equivalence",
+			"type": "process",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": ["-m", "tools.validation.validate_future_labor_equivalence", "submissions\\future-labor\\main.py", "--seed", "214"],
+			"isBackground": false,
+			"problemMatcher": []
 		}
 	]
 }

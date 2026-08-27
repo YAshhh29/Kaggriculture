@@ -10,6 +10,8 @@ The tracked standalone Kaggle packages are:
   submission `55803952`.
 - `demand-animal/` contains the demand-aware animal policy uploaded as
   submission `55817911`.
+- `future-labor/` contains the opponent-aware labor candidate built above the
+  demand-animal policy.
 
 After a package is uploaded, its exact `main.py` is immutable. Each package's
 `manifest.json` records its hashes and supporting evidence.
