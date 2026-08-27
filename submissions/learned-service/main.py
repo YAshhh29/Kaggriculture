@@ -932,9 +932,17 @@ def _active_plans(plans: tuple[dict[str, Any], ...], farm: dict[str, Any]) -> tu
 def _is_crop(tile: Any, crop: str | None=None) -> bool:
     return isinstance(tile, dict) and tile.get('kind') == 'PLANT' and (crop is None or tile.get('crop') == crop)
 
-def _managed_crop_plans(farm: dict[str, Any]) -> tuple[dict[str, Any], ...]:
+def _managed_crop_plans(farm: dict[str, Any], *, crop_plans: tuple[dict[str, Any], ...]=CROP_PLANS, max_slots_per_quadrant: int | None=MAX_CROP_SLOTS_PER_QUADRANT) -> tuple[dict[str, Any], ...]:
     unlocked = set(farm.get('unlocked_quadrants', []))
-    return tuple((plan for quadrant in LAND_SEQUENCE if quadrant in unlocked for plan in tuple((candidate for candidate in CROP_PLANS if candidate['quadrant'] == quadrant))[:MAX_CROP_SLOTS_PER_QUADRANT]))
+    managed: list[dict[str, Any]] = []
+    for quadrant in LAND_SEQUENCE:
+        if quadrant not in unlocked:
+            continue
+        quadrant_plans = tuple((candidate for candidate in crop_plans if candidate['quadrant'] == quadrant))
+        if max_slots_per_quadrant is not None:
+            quadrant_plans = quadrant_plans[:max_slots_per_quadrant]
+        managed.extend(quadrant_plans)
+    return tuple(managed)
 
 def _crop_operations(day: int, tile: dict[str, Any]) -> set[str]:
     if not _is_crop(tile):
@@ -959,7 +967,7 @@ def _crop_operations(day: int, tile: dict[str, Any]) -> set[str]:
         operations.add('HARVEST')
     return operations
 
-def _crop_task_groups(day: int, farm: dict[str, Any], plans: tuple[dict[str, Any], ...]) -> dict[str, list[dict[str, Any]]]:
+def _crop_task_groups(day: int, farm: dict[str, Any], plans: tuple[dict[str, Any], ...], *, unrestricted_one_time: bool=False) -> dict[str, list[dict[str, Any]]]:
     groups: dict[str, list[dict[str, Any]]] = {'urgent_water': [], 'deadline_harvest': [], 'harvest': [], 'dig': [], 'fertilize_water': [], 'productive_water': [], 'plant': []}
     active_one_time = sum((_is_crop(_tile_at(farm['tiles'], plan['position']), str(plan['crop'])) and (not CROP_DATA[str(plan['crop'])]['ongoing']) for plan in plans))
     for plan in plans:
@@ -968,8 +976,9 @@ def _crop_task_groups(day: int, farm: dict[str, Any], plans: tuple[dict[str, Any
         crop = str(plan['crop'])
         data = CROP_DATA[crop]
         if tile is None:
-            capacity_open = not (plan['quadrant'] == 'NW' and crop in {'WHEAT', 'CARROT'} and (active_one_time >= 2)) and (not (crop == 'CARROT' and active_one_time >= 3))
-            if day <= int(data['last_plant_day']) and capacity_open:
+            capacity_open = unrestricted_one_time or (not (plan['quadrant'] == 'NW' and crop in {'WHEAT', 'CARROT'} and (active_one_time >= 2)) and (not (crop == 'CARROT' and active_one_time >= 3)))
+            last_plant_day = int(plan.get('last_plant_day', data['last_plant_day']))
+            if day <= last_plant_day and capacity_open:
                 groups['plant'].append(plan)
             continue
         if not _is_crop(tile, crop):
@@ -1044,18 +1053,19 @@ def _assign_dual_crop_operation(workers: list[int], plan: dict[str, Any], positi
             actions[worker] = _act_at_or_move(positions[worker], target, ['PASS'])
     return True
 
-def _assign_center_out_crops(day: int, farm: dict[str, Any], private: dict[str, Any], positions: list[tuple[int, int]], inventories: list[dict[str, Any]], actions: list[list[str] | None], *, animal_crew_size: int) -> None:
+def _assign_center_out_crops(day: int, farm: dict[str, Any], private: dict[str, Any], positions: list[tuple[int, int]], inventories: list[dict[str, Any]], actions: list[list[str] | None], *, animal_crew_size: int, crop_plans: tuple[dict[str, Any], ...] | None=None, unrestricted_one_time: bool=False, pair_quadrants: tuple[str, ...]=LAND_SEQUENCE) -> None:
     crop_workers = list(range(animal_crew_size, len(positions)))
-    pair_count = min(len(LAND_SEQUENCE), len(crop_workers) // 2)
+    pair_count = min(len(pair_quadrants), len(crop_workers) // 2)
     reserved: set[tuple[int, int]] = set()
     seed_budget = Counter(private.get('seeds', {}))
+    managed_plans = crop_plans or _managed_crop_plans(farm)
     for pair in range(pair_count):
-        quadrant = LAND_SEQUENCE[pair]
+        quadrant = pair_quadrants[pair]
         if quadrant not in farm.get('unlocked_quadrants', []):
             continue
         workers = crop_workers[2 * pair:2 * pair + 2]
-        plans = tuple((plan for plan in _managed_crop_plans(farm) if plan['quadrant'] == quadrant))
-        groups = _crop_task_groups(day, farm, plans)
+        plans = tuple((plan for plan in managed_plans if plan['quadrant'] == quadrant))
+        groups = _crop_task_groups(day, farm, plans, unrestricted_one_time=unrestricted_one_time)
         for group_name, operation in (('deadline_harvest', ['HARVEST']), ('dig', ['DIG'])):
             _assign_group(workers, positions, actions, groups[group_name], operation, reserved)
         tomato_dual = [plan for plan in groups['harvest'] if plan['crop'] == 'TOMATO' and plan in groups['urgent_water'] and (tuple(plan['position']) not in reserved)]
@@ -1082,7 +1092,7 @@ def _assign_center_out_crops(day: int, farm: dict[str, Any], private: dict[str, 
         else:
             for worker in workers:
                 actions[worker] = _act_at_or_move(positions[worker], target, ['PASS'])
-    urgent_targets = [tuple(plan['position']) for plan in _managed_crop_plans(farm) if _is_crop(_tile_at(farm['tiles'], plan['position'])) and (not _tile_at(farm['tiles'], plan['position']).get('watered_today', False)) and (int(_tile_at(farm['tiles'], plan['position']).get('consecutive_unwatered', 0)) >= 1)]
+    urgent_targets = [tuple(plan['position']) for plan in managed_plans if _is_crop(_tile_at(farm['tiles'], plan['position'])) and (not _tile_at(farm['tiles'], plan['position']).get('watered_today', False)) and (int(_tile_at(farm['tiles'], plan['position']).get('consecutive_unwatered', 0)) >= 1)]
     for worker, action in enumerate(actions):
         if action is not None:
             continue
@@ -1093,9 +1103,9 @@ def _assign_center_out_crops(day: int, farm: dict[str, Any], private: dict[str, 
         reserved.add(target)
         actions[worker] = _act_at_or_move(positions[worker], target, ['WATER'])
 
-def _assign_global_crop_deadlines(day: int, farm: dict[str, Any], positions: list[tuple[int, int]], actions: list[list[str] | None]) -> None:
+def _assign_global_crop_deadlines(day: int, farm: dict[str, Any], positions: list[tuple[int, int]], actions: list[list[str] | None], crop_plans: tuple[dict[str, Any], ...] | None=None) -> None:
     tasks: list[tuple[int, tuple[int, int], list[str]]] = []
-    for plan in _managed_crop_plans(farm):
+    for plan in crop_plans or _managed_crop_plans(farm):
         position = tuple(plan['position'])
         tile = _tile_at(farm['tiles'], position)
         if not _is_crop(tile, str(plan['crop'])):
@@ -1165,7 +1175,7 @@ def _assign_generic_setup(animal_plans: tuple[dict[str, Any], ...], farm: dict[s
         virtual_shed[str(plan['animal'])] -= 1
         reserved.add(str(plan['id']))
 
-def _worker_actions(animal_plans: tuple[dict[str, Any], ...], day: int, farm: dict[str, Any], private: dict[str, Any]) -> tuple[list[str], list[list[str]]]:
+def _worker_actions(animal_plans: tuple[dict[str, Any], ...], day: int, farm: dict[str, Any], private: dict[str, Any], *, animal_crew_size: int=ANIMAL_CREW_SIZE, crop_plans: tuple[dict[str, Any], ...] | None=None, unrestricted_one_time: bool=False, pair_quadrants: tuple[str, ...]=LAND_SEQUENCE) -> tuple[list[str], list[list[str]]]:
     positions = [tuple(farm['farmer']), *(tuple(position) for position in farm.get('hands', []))]
     inventories = _inventories(private, len(positions))
     actions: list[list[str] | None] = [None for _ in positions]
@@ -1173,7 +1183,7 @@ def _worker_actions(animal_plans: tuple[dict[str, Any], ...], day: int, farm: di
     emergency = tuple((plan for plan in animal_plans if _plan_is_active(plan, tiles) and _feed_due(day, _tile_at(tiles, plan['position']), False)))
     emergency_ids = {str(plan['id']) for plan in emergency}
     _assign_urgent_feeding(emergency, day, farm, private, positions, inventories, actions, False)
-    crew_count = min(ANIMAL_CREW_SIZE, len(positions))
+    crew_count = min(animal_crew_size, len(positions))
     crew_positions = positions[:crew_count]
     crew_inventories = inventories[:crew_count]
     crew_actions = actions[:crew_count]
@@ -1182,8 +1192,8 @@ def _worker_actions(animal_plans: tuple[dict[str, Any], ...], day: int, farm: di
     _assign_generic_setup(animal_plans, farm, private, crew_positions, crew_inventories, crew_actions)
     _assign_animal_services(animal_plans, day, farm, crew_positions, crew_actions, True)
     actions[:crew_count] = crew_actions
-    _assign_global_crop_deadlines(day, farm, positions, actions)
-    _assign_center_out_crops(day, farm, private, positions, inventories, actions, animal_crew_size=ANIMAL_CREW_SIZE)
+    _assign_global_crop_deadlines(day, farm, positions, actions, crop_plans)
+    _assign_center_out_crops(day, farm, private, positions, inventories, actions, animal_crew_size=animal_crew_size, crop_plans=crop_plans, unrestricted_one_time=unrestricted_one_time, pair_quadrants=pair_quadrants)
     _assign_idle_current_animal_services(animal_plans, day, farm, positions, actions, first_assistant=crew_count)
     resolved = [action or ['PASS'] for action in actions]
     return (resolved[0], resolved[1:])
@@ -1227,14 +1237,15 @@ def _livestock_orders(animal_plans: tuple[dict[str, Any], ...], day: int, farm: 
         orders.insert(0, ['BUY_PRODUCT', 'WHEAT', feed_needed - available_feed])
     return orders
 
-def _crop_seed_orders(day: int, farm: dict[str, Any], private: dict[str, Any]) -> list[list[Any]]:
+def _crop_seed_orders(day: int, farm: dict[str, Any], private: dict[str, Any], *, crop_plans: tuple[dict[str, Any], ...] | None=None, unrestricted_one_time: bool=False) -> list[list[Any]]:
     seeds = Counter(private.get('seeds', {}))
     orders: list[list[Any]] = []
+    managed_plans = crop_plans or _managed_crop_plans(farm)
     for quadrant in LAND_SEQUENCE:
         if quadrant not in farm.get('unlocked_quadrants', []):
             continue
-        plans = [plan for plan in _managed_crop_plans(farm) if plan['quadrant'] == quadrant]
-        next_plan = next(iter(_crop_task_groups(day, farm, tuple(plans))['plant']), None)
+        plans = [plan for plan in managed_plans if plan['quadrant'] == quadrant]
+        next_plan = next(iter(_crop_task_groups(day, farm, tuple(plans), unrestricted_one_time=unrestricted_one_time)['plant']), None)
         if next_plan is None:
             continue
         crop = str(next_plan['crop'])
@@ -1322,7 +1333,662 @@ def decide(observation: dict[str, Any], *, target_daily_hands: int=TARGET_DAILY_
     drop_workers = {worker for worker, action in enumerate(worker_actions) if action == ['DROP']}
     market = _investment_market_orders(_sales_orders(day, farm, private, active_animals, drop_workers), _livestock_orders(active_animals, day, farm, private), _land_orders(day, farm, target_extra_land), _zoned_hire_orders(farm, _daily_hand_target(day, farm, target_daily_hands)), _crop_seed_orders(day, farm, private))
     return {'farmer': farmer_action, 'hands': hands_actions, 'market': market[:MAX_MARKET_ORDERS]}
+'Replay-grounded dense crop throughput challenger.'
+from typing import Any
+MAX_WHEAT_PER_PAIR = 18
+TARGET_COWS = 6
+TARGET_SHEEP = 6
+TARGET_EXTRA_LAND = 2
+MAX_MARKET_ORDERS = 10
+HAND_TARGETS = (4, 4, 4, 4, 4, 4, 8, 8, 9, 10, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 10, 8)
+HIRE_COSTS = (1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233)
+LAND_COSTS = (1000, 2000, 4000)
+ANIMAL_COSTS = {'COW': 400, 'SHEEP': 500, 'GOOSE': 300}
+SEED_COSTS = {'WHEAT': 10, 'CARROT': 20, 'TOMATO': 50, 'STRAWBERRY': 100, 'MELON': 80}
+
+def _hand_target(day: int) -> int:
+    return HAND_TARGETS[min(max(day, 0), len(HAND_TARGETS) - 1)]
+
+def _animal_crew_size(day: int) -> int:
+    if day < 6:
+        return 3
+    if day < 9:
+        return 4
+    if day < 11:
+        return 5
+    return 6
+
+def _purchase_cost(order: list[Any], observation: dict[str, Any], hire_index: int) -> int:
+    operation = str(order[0])
+    if operation == 'HIRE':
+        return HIRE_COSTS[min(hire_index, len(HIRE_COSTS) - 1)]
+    if operation == 'BUY_LAND':
+        player = int(observation['player'])
+        unlocked = len(observation['farms'][player].get('unlocked_quadrants', []))
+        return LAND_COSTS[min(max(0, unlocked - 1), len(LAND_COSTS) - 1)]
+    if len(order) < 3:
+        return 0
+    item = str(order[1])
+    quantity = int(order[2])
+    if operation == 'BUY_ANIMAL':
+        return ANIMAL_COSTS[item] * quantity
+    if operation == 'BUY_SEED':
+        return SEED_COSTS[item] * quantity
+    if operation == 'BUY_PRODUCT':
+        price = int(observation.get('market', {}).get('prices', {}).get(item, 0))
+        return price * quantity
+    return 0
+
+def _affordable_market_orders(observation: dict[str, Any], orders: list[list[Any]]) -> list[list[Any]]:
+    player = int(observation['player'])
+    farm = observation['farms'][player]
+    current_hands = len(farm.get('hands', []))
+    prices = observation.get('market', {}).get('prices', {})
+    priority = {'SELL': 0, 'BUY_PRODUCT': 1, 'HIRE': 2, 'BUY_LAND': 3, 'BUY_SEED': 4, 'BUY_ANIMAL': 5}
+    ranked = sorted(enumerate(orders), key=lambda entry: (priority.get(str(entry[1][0]), 99), entry[0]))
+    budget = float(farm.get('money', 0))
+    selected: list[list[Any]] = []
+    selected_hires = 0
+    for _, order in ranked:
+        if len(selected) >= MAX_MARKET_ORDERS:
+            break
+        operation = str(order[0])
+        if operation == 'SELL':
+            selected.append(order)
+            if len(order) >= 3:
+                item = str(order[1])
+                quantity = int(order[2])
+                budget += 0.75 * int(prices.get(item, 0)) * quantity
+            continue
+        hire_index = current_hands + selected_hires
+        cost = _purchase_cost(order, observation, hire_index)
+        if cost <= budget:
+            selected.append(order)
+            budget -= cost
+            if operation == 'HIRE':
+                selected_hires += 1
+            continue
+        if operation not in {'BUY_ANIMAL', 'BUY_SEED', 'BUY_PRODUCT'}:
+            continue
+        unit_order = [operation, order[1], 1]
+        unit_cost = _purchase_cost(unit_order, observation, hire_index)
+        affordable_quantity = min(int(order[2]), int(budget // unit_cost) if unit_cost > 0 else 0)
+        if affordable_quantity <= 0:
+            continue
+        selected.append([operation, order[1], affordable_quantity])
+        budget -= unit_cost * affordable_quantity
+    return selected
+
+def decide(observation: dict[str, Any]) -> dict[str, Any]:
+    """Scale crop pairs, workers, livestock, and land on explicit day gates."""
+    day = int(observation['day'])
+    decision = decide_lifecycle(observation, max_wheat_per_pair=MAX_WHEAT_PER_PAIR, target_daily_hands=_hand_target(day), target_extra_land=TARGET_EXTRA_LAND, target_cows=TARGET_COWS, target_sheep=TARGET_SHEEP, animal_crew_size=_animal_crew_size(day))
+    decision['market'] = _affordable_market_orders(observation, decision['market'])
+    return decision
+'Premium-crop throughput challenger derived from current top replays.'
+from collections import Counter
+from typing import Any
+TARGET_EXTRA_LAND = 2
+FERTILIZER_RESERVE = 0
+HAND_TARGETS = (5, 4, 4, 4, 4, 4, 9, 9, 9, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 10, 8)
+DENSE_CROP_TYPES = {'NW': (*('MELON' for _ in range(5)), *('STRAWBERRY' for _ in range(8)), *('WHEAT' for _ in range(8))), 'NE': (*('MELON' for _ in range(5)), *('STRAWBERRY' for _ in range(14)), *('WHEAT' for _ in range(2))), 'SW': (*('STRAWBERRY' for _ in range(13)), *('WHEAT' for _ in range(8)))}
+LAST_PLANT_DAYS = {'MELON': 7, 'STRAWBERRY': 11, 'WHEAT': 22, 'CARROT': 22}
+DENSE_CROP_PLANS = tuple(({'id': f'dense_{quadrant.lower()}_{crop.lower()}_{index}', 'quadrant': quadrant, 'block': block, 'position': block_to_position(block), 'crop': crop, 'first_plant_day': 23 if quadrant == 'SW' and crop == 'WHEAT' else 23 if quadrant == 'NE' and crop == 'WHEAT' else 4 if quadrant == 'NW' and crop == 'WHEAT' and (block in {1, 3, 4, 11}) else 0, **({'rotation_crop': 'STRAWBERRY', 'opening_last_plant_day': 1} if quadrant == 'NW' and crop == 'WHEAT' else {}), 'last_plant_day': 0 if crop == 'MELON' and quadrant == 'NW' else LAST_PLANT_DAYS[crop]} for quadrant in LAND_SEQUENCE for index, (block, crop) in enumerate(zip(CENTER_OUT_BLOCKS[quadrant], DENSE_CROP_TYPES[quadrant]), start=1)))
+
+def _dense_crop_plans(farm: dict[str, Any], day: int=0, reserved_positions: set[tuple[int, int]] | None=None, rotation_crop: str='STRAWBERRY', late_rotation_crop: str | None=None, rotation_last_plant_day: int | None=None, late_rotation_last_plant_day: int | None=None, lifecycle_windows: bool=False, lifecycle_deadlines_only: bool=False) -> tuple[dict[str, Any], ...]:
+    managed = _managed_crop_plans(farm, crop_plans=DENSE_CROP_PLANS, max_slots_per_quadrant=None)
+    reserved_positions = reserved_positions or set()
+    rotation_deadline = LAST_PLANT_DAYS[rotation_crop] if rotation_last_plant_day is None else rotation_last_plant_day
+    late_rotation_deadline = LAST_PLANT_DAYS[late_rotation_crop] if late_rotation_crop is not None and late_rotation_last_plant_day is None else late_rotation_last_plant_day
+    plans: list[dict[str, Any]] = []
+    for plan in managed:
+        if tuple(plan['position']) in reserved_positions:
+            continue
+        tile = _tile_at(farm['tiles'], plan['position'])
+        current_crop = str(tile.get('crop')) if isinstance(tile, dict) and tile.get('kind') == 'PLANT' else None
+        late_rotation_active = late_rotation_crop is not None and current_crop == late_rotation_crop
+        late_rotation_due = late_rotation_crop is not None and tile is None and (day > int(plan['last_plant_day']) or int(plan.get('first_plant_day', 0)) > int(plan['last_plant_day']) or (plan.get('rotation_crop') is not None and day > rotation_deadline)) and (late_rotation_deadline is not None) and (day <= late_rotation_deadline)
+        if late_rotation_active or late_rotation_due:
+            plans.append({**plan, 'crop': late_rotation_crop, 'first_plant_day': 0, 'last_plant_day': late_rotation_deadline})
+            continue
+        if plan.get('rotation_crop') is None:
+            plans.append(plan)
+            continue
+        if current_crop in {str(plan['crop']), str(rotation_crop)}:
+            crop = current_crop
+        elif 4 <= day <= rotation_deadline:
+            crop = rotation_crop
+        else:
+            crop = str(plan['crop'])
+        plans.append({**plan, 'crop': crop, 'last_plant_day': int(plan['opening_last_plant_day']) if crop == str(plan['crop']) and 'opening_last_plant_day' in plan else rotation_deadline if crop == rotation_crop else LAST_PLANT_DAYS[crop]})
+    if not lifecycle_windows and (not lifecycle_deadlines_only):
+        return tuple(plans)
+    cashable_day = 28
+    return tuple(({**plan, 'first_plant_day': int(plan.get('first_plant_day', 0)) if lifecycle_deadlines_only else 0, 'last_plant_day': cashable_day - int(CROP_DATA[str(plan['crop'])]['harvest_age'])} for plan in plans))
+
+def _hand_target(day: int, hand_targets: tuple[int, ...]=HAND_TARGETS) -> int:
+    return hand_targets[min(max(day, 0), len(hand_targets) - 1)]
+
+def _pair_quadrants(day: int, farm: dict[str, Any]) -> tuple[str, ...]:
+    unlocked = set(farm.get('unlocked_quadrants', []))
+    if 'SW' in unlocked:
+        return ('NW', 'NE', 'SW')
+    if 'NE' in unlocked:
+        if day <= 7:
+            return ('NW', 'NW', 'NE')
+        return ('NW', 'NE', 'NE')
+    return ('NW', 'NW', 'NW')
+
+def _crop_priority(day: int, crop: str) -> int:
+    if day <= 1:
+        return {'MELON': 0, 'WHEAT': 1, 'CARROT': 1, 'STRAWBERRY': 2}[crop]
+    return {'STRAWBERRY': 0, 'MELON': 1, 'CARROT': 2, 'WHEAT': 3}[crop]
+
+def _projected_sale_value(sales: list[list[Any]], market: dict[str, Any]) -> float:
+    prices = market.get('prices', {})
+    return sum((0.75 * int(prices.get(str(order[1]), 0)) * int(order[2]) for order in sales if len(order) >= 3 and order[0] == 'SELL'))
+
+def _seed_orders(day: int, farm: dict[str, Any], private: dict[str, Any], crop_plans: tuple[dict[str, Any], ...], animal_crew_size: int, pair_quadrants: tuple[str, ...], seed_buffer_multiplier: int=1, wheat_seed_buffer_multiplier: int | None=None, extra_wheat_seed_buffer: int=0, reserve_seeds_per_quadrant: bool=False, max_active_crops_per_quadrant: int | None=None) -> list[list[Any]]:
+    available_crop_workers = max(0, 1 + len(farm.get('hands', [])) - animal_crew_size)
+    pair_count = min(len(pair_quadrants), available_crop_workers // 2)
+    pairs_by_quadrant = Counter(pair_quadrants[:pair_count])
+    seeds = Counter(private.get('seeds', {}))
+    orders: list[list[Any]] = []
+    remaining_wheat_extra = max(0, extra_wheat_seed_buffer)
+    reserved_targets: Counter[str] = Counter()
+    total_needed: Counter[str] = Counter()
+    for quadrant in LAND_SEQUENCE:
+        pair_capacity = pairs_by_quadrant[quadrant]
+        if pair_capacity <= 0:
+            continue
+        plans = tuple((plan for plan in crop_plans if plan['quadrant'] == quadrant))
+        remaining_capacity = None if max_active_crops_per_quadrant is None else max(0, max_active_crops_per_quadrant - sum((_is_crop(_tile_at(farm['tiles'], plan['position'])) for plan in plans)))
+        plantable = [plan for plan in plans if _tile_at(farm['tiles'], plan['position']) is None and day >= int(plan.get('first_plant_day', 0)) and (day <= int(plan['last_plant_day']))]
+        if remaining_capacity is not None:
+            plantable = plantable[:remaining_capacity]
+        needed = Counter((str(plan['crop']) for plan in plantable))
+        total_needed.update(needed)
+        crops = sorted(('MELON', 'STRAWBERRY', 'CARROT', 'WHEAT'), key=lambda crop: _crop_priority(day, crop))
+        for crop in crops:
+            if crop == 'STRAWBERRY' and day < 2:
+                continue
+            base_target = pair_capacity * (wheat_seed_buffer_multiplier if crop == 'WHEAT' and wheat_seed_buffer_multiplier is not None else seed_buffer_multiplier)
+            extra_target = min(remaining_wheat_extra, needed[crop]) if crop == 'WHEAT' else 0
+            target_buffer = min(needed[crop], base_target + extra_target)
+            if crop == 'WHEAT':
+                remaining_wheat_extra -= max(0, target_buffer - base_target)
+            if reserve_seeds_per_quadrant:
+                reserved_targets[crop] += target_buffer
+                continue
+            missing = max(0, target_buffer - seeds[crop])
+            if missing <= 0:
+                continue
+            orders.append(['BUY_SEED', crop, missing])
+            seeds[crop] += missing
+    if reserve_seeds_per_quadrant:
+        reserved_targets['WHEAT'] = min(total_needed['WHEAT'], reserved_targets['WHEAT'] + remaining_wheat_extra)
+        crops = sorted(('MELON', 'STRAWBERRY', 'CARROT', 'WHEAT'), key=lambda crop: _crop_priority(day, crop))
+        return [['BUY_SEED', crop, reserved_targets[crop] - seeds[crop]] for crop in crops if reserved_targets[crop] > seeds[crop]]
+    return orders
+
+def _assign_crop_tasks(day: int, farm: dict[str, Any], crop_plans: tuple[dict[str, Any], ...], positions: list[tuple[int, int]], actions: list[list[str] | None], *, critical: bool, prioritize_mature_harvest: bool=False, excluded_targets: set[tuple[int, int]] | None=None) -> set[tuple[int, int]]:
+    tasks: list[tuple[int, tuple[int, int], list[str]]] = []
+    for plan in crop_plans:
+        target = tuple(plan['position'])
+        tile = _tile_at(farm['tiles'], target)
+        if tile is None:
+            continue
+        if not _is_crop(tile, str(plan['crop'])):
+            if critical:
+                tasks.append((0, target, ['DIG']))
+            continue
+        operations = _crop_operations(day, tile)
+        age = day - int(tile['planted_day'])
+        data = CROP_DATA[str(plan['crop'])]
+        final_ongoing_age = bool(data['ongoing']) and age >= int(data['spent_age']) - 1
+        proactive_dig = final_ongoing_age and int(tile.get('yield_units', 0)) <= 0
+        overdue_harvest = 'HARVEST' in operations and (not bool(str(plan['crop']) in {'STRAWBERRY', 'TOMATO'})) and (age > 4)
+        urgent_water = 'WATER' in operations and int(tile.get('consecutive_unwatered', 0)) >= 1
+        if critical:
+            if 'DIG' in operations or proactive_dig:
+                tasks.append((0, target, ['DIG']))
+            elif prioritize_mature_harvest and 'HARVEST' in operations and (not bool(data['ongoing'])) or overdue_harvest or (final_ongoing_age and 'HARVEST' in operations):
+                tasks.append((0, target, ['HARVEST']))
+            elif urgent_water:
+                tasks.append((1, target, ['WATER']))
+            continue
+        if 'HARVEST' in operations:
+            tasks.append((0, target, ['HARVEST']))
+        elif 'WATER' in operations:
+            tasks.append((1, target, ['WATER']))
+    reserved = set(excluded_targets or ())
+    for worker, action in enumerate(actions):
+        if action is not None:
+            continue
+        available = [task for task in tasks if task[1] not in reserved]
+        if not available:
+            break
+        _, target, operation = min(available, key=lambda task: (task[0], _distance(positions[worker], task[1]), task[1][1], task[1][0]))
+        reserved.add(target)
+        actions[worker] = _act_at_or_move(positions[worker], target, operation)
+    return reserved
+
+def _assign_paired_planting(day: int, farm: dict[str, Any], private: dict[str, Any], crop_plans: tuple[dict[str, Any], ...], positions: list[tuple[int, int]], actions: list[list[str] | None], seed_budget: Counter[str] | None=None, max_active_crops: int | None=None) -> None:
+    free_workers = [worker for worker, action in enumerate(actions) if action is None]
+    if seed_budget is None:
+        seed_budget = Counter(private.get('seeds', {}))
+    candidates = [plan for plan in crop_plans if _tile_at(farm['tiles'], plan['position']) is None and day >= int(plan.get('first_plant_day', 0)) and (day <= int(plan['last_plant_day'])) and (seed_budget[str(plan['crop'])] > 0)]
+    plan_order = {str(plan['id']): index for index, plan in enumerate(crop_plans)}
+    candidates.sort(key=lambda plan: (_crop_priority(day, str(plan['crop'])), plan_order[str(plan['id'])]))
+    active_crops = sum((_is_crop(_tile_at(farm['tiles'], plan['position'])) for plan in crop_plans))
+    remaining_capacity = len(candidates) if max_active_crops is None else max(0, max_active_crops - active_crops)
+    reserved: set[tuple[int, int]] = set()
+    while len(free_workers) >= 2 and remaining_capacity > 0:
+        available = [plan for plan in candidates if tuple(plan['position']) not in reserved and seed_budget[str(plan['crop'])] > 0]
+        if not available:
+            break
+        plan = available[0]
+        target = tuple(plan['position'])
+        workers = sorted(free_workers, key=lambda worker: (_distance(positions[worker], target), worker))[:2]
+        if all((positions[worker] == target for worker in workers)):
+            actions[workers[0]] = ['PLANT', str(plan['crop'])]
+            actions[workers[1]] = ['WATER']
+            seed_budget[str(plan['crop'])] -= 1
+            remaining_capacity -= 1
+        else:
+            for worker in workers:
+                actions[worker] = _act_at_or_move(positions[worker], target, ['PASS'])
+        reserved.add(target)
+        free_workers = [worker for worker in free_workers if worker not in workers]
+
+def _assign_limited_animal_services(animal_plans: tuple[dict[str, Any], ...], day: int, farm: dict[str, Any], positions: list[tuple[int, int]], actions: list[list[str] | None], *, crop_worker_reserve: int=2, care_enabled: bool=True, anticipate_daily_feed: bool=False) -> None:
+    free_workers = [worker for worker, action in enumerate(actions) if action is None]
+    service_count = max(0, len(free_workers) - crop_worker_reserve)
+    if service_count <= 0:
+        return
+    active_plans = tuple((plan for plan in animal_plans if _plan_is_active(plan, farm['tiles'])))
+    if not active_plans:
+        return
+    service_workers = sorted(free_workers, key=lambda worker: (min((_distance(positions[worker], plan['position']) for plan in active_plans)), worker))[:service_count]
+    service_positions = [positions[worker] for worker in service_workers]
+    service_actions = [actions[worker] for worker in service_workers]
+    _assign_animal_services(active_plans, day, farm, service_positions, service_actions, care_enabled)
+    if care_enabled and anticipate_daily_feed and (day <= LAST_FEEDING_DAY):
+        for plan in active_plans:
+            tile = _tile_at(farm['tiles'], plan['position'])
+            if not tile.get('cared_today', False):
+                _assign_nearest(service_positions, service_actions, plan['position'], ['CARE'])
+    for service_worker, worker in enumerate(service_workers):
+        actions[worker] = service_actions[service_worker]
+
+def _assign_colocated_feed_care(animal_plans: tuple[dict[str, Any], ...], day: int, farm: dict[str, Any], positions: list[tuple[int, int]], inventories: list[dict[str, Any]], actions: list[list[str] | None]) -> set[str]:
+    paired: set[str] = set()
+    if day > LAST_FEEDING_DAY:
+        return paired
+    for plan in animal_plans:
+        tile = _tile_at(farm['tiles'], plan['position'])
+        if not _plan_is_active(plan, farm['tiles']) or tile.get('fed_today', False) or tile.get('cared_today', False):
+            continue
+        target = tuple(plan['position'])
+        colocated = [worker for worker, position in enumerate(positions) if actions[worker] is None and position == target]
+        feeder = next((worker for worker in colocated if int(inventories[worker].get('WHEAT', 0)) > 0), None)
+        if feeder is None:
+            continue
+        caregiver = next((worker for worker in colocated if worker != feeder), None)
+        if caregiver is None:
+            continue
+        actions[feeder] = ['FEED']
+        actions[caregiver] = ['CARE']
+        paired.add(str(plan['id']))
+    return paired
+
+def _assign_animal_care(animal_plans: tuple[dict[str, Any], ...], day: int, farm: dict[str, Any], positions: list[tuple[int, int]], actions: list[list[str] | None]) -> None:
+    if day > LAST_FEEDING_DAY:
+        return
+    tiles = farm['tiles']
+    for plan in animal_plans:
+        if not _plan_is_active(plan, tiles):
+            continue
+        tile = _tile_at(tiles, plan['position'])
+        if tile.get('fed_today', False) and (not tile.get('cared_today', False)):
+            _assign_nearest(positions, actions, plan['position'], ['CARE'])
+
+def _assign_crop_fertilization(day: int, farm: dict[str, Any], private: dict[str, Any], crop_plans: tuple[dict[str, Any], ...], positions: list[tuple[int, int]], inventories: list[dict[str, Any]], actions: list[list[str] | None], limit: int | None=None, carried_only: bool=False) -> None:
+    candidates = []
+    for plan in crop_plans:
+        tile = _tile_at(farm['tiles'], plan['position'])
+        if not _is_crop(tile, 'STRAWBERRY'):
+            continue
+        operations = _crop_operations(day, tile)
+        if {'FERTILIZE', 'WATER'}.issubset(operations):
+            candidates.append(plan)
+    candidates.sort(key=lambda plan: (min((_distance(tuple(plan['position']), access) for access in ((4, 4), (5, 4), (4, 5), (5, 5)))), int(plan['position'][1]), int(plan['position'][0])))
+    if limit is not None:
+        candidates = candidates[:max(0, limit)]
+    for plan in candidates:
+        free_workers = [worker for worker, action in enumerate(actions) if action is None]
+        if len(free_workers) < 2:
+            return
+        target = tuple(plan['position'])
+        carriers = [worker for worker in free_workers if int(inventories[worker].get('FERTILIZER', 0)) > 0]
+        if carried_only and (not carriers):
+            continue
+        if carriers:
+            fertilizer_worker = min(carriers, key=lambda worker: (_distance(positions[worker], target), worker))
+            water_worker = min((worker for worker in free_workers if worker != fertilizer_worker), key=lambda worker: (_distance(positions[worker], target), worker))
+            workers = [fertilizer_worker, water_worker]
+        else:
+            workers = sorted(free_workers, key=lambda worker: (_distance(positions[worker], target), worker))[:2]
+        _assign_fertilized_strawberry(workers, plan, farm, private, positions, inventories, actions)
+
+def _effective_crop_worker_reserve(day: int, farm: dict[str, Any], private: dict[str, Any], crop_plans: tuple[dict[str, Any], ...], configured_reserve: int, *, actionable_only: bool=False, scale_to_due_work: bool=False) -> int:
+    due_work = sum((bool(_crop_operations(day, tile)) for plan in crop_plans if _is_crop((tile := _tile_at(farm['tiles'], plan['position'])), str(plan['crop']))))
+    if scale_to_due_work and due_work > 0:
+        return min(configured_reserve + 1, max(1, due_work))
+    if not actionable_only:
+        plantable = any((_tile_at(farm['tiles'], plan['position']) is None and day >= int(plan.get('first_plant_day', 0)) and (day <= int(plan['last_plant_day'])) for plan in crop_plans))
+        if plantable:
+            return configured_reserve
+        active_crops = any((_is_crop(_tile_at(farm['tiles'], plan['position'])) for plan in crop_plans))
+        return min(configured_reserve, 1) if active_crops else 0
+    seeds = Counter(private.get('seeds', {}))
+    plantable = any((_tile_at(farm['tiles'], plan['position']) is None and day >= int(plan.get('first_plant_day', 0)) and (day <= int(plan['last_plant_day'])) and (seeds[str(plan['crop'])] > 0) for plan in crop_plans))
+    if plantable:
+        return min(configured_reserve, 2)
+    actionable_crops = sum((bool(_crop_operations(day, tile)) for plan in crop_plans if _is_crop((tile := _tile_at(farm['tiles'], plan['position'])), str(plan['crop']))))
+    return min(configured_reserve, actionable_crops)
+
+def _worker_actions(animal_plans: tuple[dict[str, Any], ...], day: int, farm: dict[str, Any], private: dict[str, Any], crop_plans: tuple[dict[str, Any], ...], crop_worker_reserve: int, release_idle_crop_reserve: bool, actionable_crop_reserve: bool, prioritize_mature_harvest: bool, fertilize_strawberries: bool, fertilized_strawberries_per_quadrant: int | None, cross_quadrant_crop_rescue: bool, crop_before_routine_animals: bool=False, crops_before_care_only: bool=False, plant_before_care: bool=False, scale_crop_reserve_to_due_work: bool=False, cross_quadrant_routine_rescue: bool=False, carried_fertilizer_only: bool=False, max_active_crops_per_quadrant: int | None=None, pair_colocated_feed_care: bool=False, anticipate_daily_feed_for_care: bool=False) -> tuple[list[str], list[list[str]]]:
+    positions = [tuple(farm['farmer']), *(tuple(position) for position in farm.get('hands', []))]
+    inventories = _inventories(private, len(positions))
+    actions: list[list[str] | None] = [None for _ in positions]
+    unlocked = [quadrant for quadrant in LAND_SEQUENCE if quadrant in farm.get('unlocked_quadrants', [])]
+    worker_groups = {quadrant: list(range(index, len(positions), len(unlocked))) for index, quadrant in enumerate(unlocked)}
+    seed_budget = Counter(private.get('seeds', {}))
+    assigned_crop_targets: set[tuple[int, int]] = set()
+    for quadrant in unlocked:
+        workers = worker_groups[quadrant]
+        local_positions = [positions[worker] for worker in workers]
+        local_inventories = [inventories[worker] for worker in workers]
+        local_actions = [actions[worker] for worker in workers]
+        local_animals = tuple((plan for plan in animal_plans if plan['quadrant'] == quadrant))
+        local_crops = tuple((plan for plan in crop_plans if plan['quadrant'] == quadrant))
+        emergency = tuple((plan for plan in local_animals if _plan_is_active(plan, farm['tiles']) and _feed_due(day, _tile_at(farm['tiles'], plan['position']), False)))
+        emergency_ids = {str(plan['id']) for plan in emergency}
+        normal = tuple((plan for plan in local_animals if str(plan['id']) not in emergency_ids))
+        paired_feed_care = _assign_colocated_feed_care(local_animals, day, farm, local_positions, local_inventories, local_actions) if pair_colocated_feed_care else set()
+        emergency = tuple((plan for plan in emergency if str(plan['id']) not in paired_feed_care))
+        normal = tuple((plan for plan in normal if str(plan['id']) not in paired_feed_care))
+        _assign_urgent_feeding(emergency, day, farm, private, local_positions, local_inventories, local_actions, False)
+        assigned_crop_targets.update(_assign_crop_tasks(day, farm, local_crops, local_positions, local_actions, critical=True, prioritize_mature_harvest=prioritize_mature_harvest))
+        _assign_urgent_feeding(normal, day, farm, private, local_positions, local_inventories, local_actions, True)
+        _assign_generic_setup(local_animals, farm, private, local_positions, local_inventories, local_actions)
+        if fertilize_strawberries:
+            _assign_crop_fertilization(day, farm, private, local_crops, local_positions, local_inventories, local_actions, fertilized_strawberries_per_quadrant, carried_fertilizer_only)
+        effective_reserve = _effective_crop_worker_reserve(day, farm, private, local_crops, crop_worker_reserve, actionable_only=actionable_crop_reserve, scale_to_due_work=scale_crop_reserve_to_due_work) if release_idle_crop_reserve else crop_worker_reserve
+        if crops_before_care_only:
+            _assign_limited_animal_services(local_animals, day, farm, local_positions, local_actions, crop_worker_reserve=effective_reserve, care_enabled=False, anticipate_daily_feed=anticipate_daily_feed_for_care)
+        if crop_before_routine_animals or crops_before_care_only:
+            assigned_crop_targets.update(_assign_crop_tasks(day, farm, local_crops, local_positions, local_actions, critical=False))
+        if crops_before_care_only and plant_before_care:
+            _assign_paired_planting(day, farm, private, local_crops, local_positions, local_actions, seed_budget, max_active_crops_per_quadrant)
+        if crops_before_care_only:
+            _assign_animal_care(local_animals, day, farm, local_positions, local_actions)
+        else:
+            _assign_limited_animal_services(local_animals, day, farm, local_positions, local_actions, crop_worker_reserve=effective_reserve, anticipate_daily_feed=anticipate_daily_feed_for_care)
+        if not crop_before_routine_animals and (not crops_before_care_only):
+            assigned_crop_targets.update(_assign_crop_tasks(day, farm, local_crops, local_positions, local_actions, critical=False))
+        if not (crops_before_care_only and plant_before_care):
+            _assign_paired_planting(day, farm, private, local_crops, local_positions, local_actions, seed_budget, max_active_crops_per_quadrant)
+        for local_worker, worker in enumerate(workers):
+            actions[worker] = local_actions[local_worker]
+    if cross_quadrant_crop_rescue:
+        _assign_crop_tasks(day, farm, crop_plans, positions, actions, critical=True, prioritize_mature_harvest=prioritize_mature_harvest, excluded_targets=assigned_crop_targets)
+    if cross_quadrant_routine_rescue:
+        _assign_crop_tasks(day, farm, crop_plans, positions, actions, critical=False, prioritize_mature_harvest=prioritize_mature_harvest, excluded_targets=assigned_crop_targets)
+    resolved = [action or ['PASS'] for action in actions]
+    return (resolved[0], resolved[1:])
+
+def _land_orders(day: int, farm: dict[str, Any], market: dict[str, Any], sales: list[list[Any]], target_extra_land: int=TARGET_EXTRA_LAND, reserves: tuple[int, int]=(300, 700), dynamic_expansion: bool=False, expansion_occupancy_threshold: float=0.64) -> list[list[str]]:
+    unlocked_extra = max(0, len(farm.get('unlocked_quadrants', [])) - 1)
+    if unlocked_extra >= target_extra_land:
+        return []
+    costs = (1000, 2000)
+    if dynamic_expansion:
+        frontier = LAND_SEQUENCE[unlocked_extra]
+        half = len(farm['tiles']) // 2
+        x_start = half if frontier.endswith('E') else 0
+        y_start = half if frontier.startswith('S') else 0
+        tiles = [farm['tiles'][y][x] for y in range(y_start, y_start + half) for x in range(x_start, x_start + half)]
+        productive = sum((isinstance(tile, dict) and tile.get('kind') in {'PLANT', 'COOP', 'PASTURE'} for tile in tiles))
+        occupancy = productive / len(tiles)
+        degraded = any((isinstance(tile, dict) and tile.get('kind') == 'WEED' for tile in tiles))
+        animal_emergency = any((tile.get('kind') in {'COOP', 'PASTURE'} and tile.get('animal') is not None and (int(tile.get('consecutive_unfed', 0)) >= 2) for tile in tiles if isinstance(tile, dict)))
+        if occupancy < expansion_occupancy_threshold or degraded or animal_emergency:
+            return []
+    else:
+        earliest_days = (5, 9)
+        if day < earliest_days[unlocked_extra]:
+            return []
+    available = float(farm.get('money', 0)) + _projected_sale_value(sales, market)
+    if available < costs[unlocked_extra] + reserves[unlocked_extra]:
+        return []
+    return [['BUY_LAND']]
+
+def _sales_orders(day: int, farm: dict[str, Any], private: dict[str, Any], animal_plans: tuple[dict[str, Any], ...], projected_drop_workers: set[int], crop_plans: tuple[dict[str, Any], ...]=(), fertilizer_reserve_per_strawberry: int=0, fertilizer_reserve_limit: int | None=None, wheat_market_price: int | None=None, wheat_trade_target: int=0, wheat_trade_sell_price: int | None=None) -> list[list[Any]]:
+    items = ('MELON', 'STRAWBERRY', 'WOOL', 'MILK', 'EGG', 'TOMATO', 'CARROT', 'FERTILIZER', 'WHEAT')
+    shed = private.get('shed', {})
+    quantities = Counter({item: int(shed.get(item, 0)) for item in items})
+    inventories = private.get('inventories', [])
+    for worker in projected_drop_workers:
+        if worker < len(inventories) and isinstance(inventories[worker], dict):
+            quantities.update(inventories[worker])
+    active_animals = sum((_plan_is_active(plan, farm['tiles']) for plan in animal_plans))
+    feed_reserve = 0 if day >= 28 else 2 * active_animals
+    wheat_reserve = feed_reserve
+    if day < 28 and wheat_trade_target > 0 and (wheat_trade_sell_price is not None) and (wheat_market_price is not None) and (wheat_market_price < wheat_trade_sell_price):
+        wheat_reserve = max(wheat_reserve, wheat_trade_target)
+    quantities['WHEAT'] = max(0, quantities['WHEAT'] - wheat_reserve)
+    active_strawberries = sum((_is_crop(_tile_at(farm['tiles'], plan['position']), 'STRAWBERRY') for plan in crop_plans))
+    fertilizer_reserve = 0 if day >= 28 else max(FERTILIZER_RESERVE, fertilizer_reserve_per_strawberry * active_strawberries)
+    if fertilizer_reserve_limit is not None:
+        fertilizer_reserve = min(fertilizer_reserve, max(0, fertilizer_reserve_limit))
+    quantities['FERTILIZER'] = max(0, quantities['FERTILIZER'] - fertilizer_reserve)
+    return [['SELL', item, quantities[item]] for item in items if quantities[item] > 0]
+
+def _wheat_trade_orders(day: int, farm: dict[str, Any], private: dict[str, Any], market: dict[str, Any], sales: list[list[Any]], target: int, buy_price: int | None, cash_reserve: int) -> list[list[Any]]:
+    if target <= 0 or buy_price is None or day >= 27 or (len(farm.get('unlocked_quadrants', [])) < 3) or any((order[:2] == ['SELL', 'WHEAT'] for order in sales)):
+        return []
+    price = int(market.get('prices', {}).get('WHEAT', 0))
+    if price <= 0 or price > buy_price:
+        return []
+    shed_wheat = int(private.get('shed', {}).get('WHEAT', 0))
+    missing = max(0, target - shed_wheat)
+    spendable = max(0, int(farm.get('money', 0)) - cash_reserve)
+    quantity = min(missing, spendable // price)
+    return [['BUY_PRODUCT', 'WHEAT', quantity]] if quantity > 0 else []
+
+def decide(observation: dict[str, Any], target_extra_land: int=TARGET_EXTRA_LAND, animal_plans: tuple[dict[str, Any], ...]=ANIMAL_PLANS, rotation_crop: str='STRAWBERRY', land_reserves: tuple[int, int]=(300, 700), crop_worker_reserve: int=2, late_rotation_crop: str | None=None, rotation_last_plant_day: int | None=None, late_rotation_last_plant_day: int | None=None, release_idle_crop_reserve: bool=False, actionable_crop_reserve: bool=False, prioritize_mature_harvest: bool=False, fertilize_strawberries: bool=False, fertilized_strawberries_per_quadrant: int | None=None, cross_quadrant_crop_rescue: bool=False, crop_before_routine_animals: bool=False, crops_before_care_only: bool=False, plant_before_care: bool=False, scale_crop_reserve_to_due_work: bool=False, cross_quadrant_routine_rescue: bool=False, carried_fertilizer_only: bool=False, fertilizer_reserve_per_strawberry: int=0, fertilizer_reserve_limit: int | None=None, hand_targets: tuple[int, ...]=HAND_TARGETS, seed_buffer_multiplier: int=1, wheat_seed_buffer_multiplier: int | None=None, extra_wheat_seed_buffer: int=0, reserve_seeds_per_quadrant: bool=False, dynamic_land_expansion: bool=False, expansion_occupancy_threshold: float=0.64, dynamic_lifecycle_windows: bool=False, dynamic_lifecycle_deadlines_only: bool=False, max_active_crops_per_quadrant: int | None=None, wheat_trade_target: int=0, wheat_trade_buy_price: int | None=None, wheat_trade_sell_price: int | None=None, wheat_trade_cash_reserve: int=3000, pair_colocated_feed_care: bool=False, anticipate_daily_feed_for_care: bool=False) -> dict[str, Any]:
+    """Fill paid land with replay-grounded premium crops and stable crews."""
+    player = int(observation['player'])
+    farm = observation['farms'][player]
+    private = observation['private']
+    market_state = observation.get('market', {})
+    day = int(observation['day'])
+    desired_animals = tuple((plan for plan in animal_plans if day >= int(plan.get('activation_day', 0))))
+    active_animals = _active_plans(desired_animals, farm)
+    crop_plans = _dense_crop_plans(farm, day, {tuple(plan['position']) for plan in desired_animals}, rotation_crop, late_rotation_crop, rotation_last_plant_day, late_rotation_last_plant_day, dynamic_lifecycle_windows, dynamic_lifecycle_deadlines_only)
+    animal_crew_size = _animal_crew_size(day)
+    pair_quadrants = _pair_quadrants(day, farm)
+    if day == 29:
+        farmer_action, hands_actions = _final_day_actions(active_animals, int(observation['hour']), farm, private, market_state)
+    else:
+        farmer_action, hands_actions = _worker_actions(active_animals, day, farm, private, crop_plans, crop_worker_reserve, release_idle_crop_reserve, actionable_crop_reserve, prioritize_mature_harvest, fertilize_strawberries, fertilized_strawberries_per_quadrant, cross_quadrant_crop_rescue, crop_before_routine_animals, crops_before_care_only, plant_before_care, scale_crop_reserve_to_due_work, cross_quadrant_routine_rescue, carried_fertilizer_only, max_active_crops_per_quadrant, pair_colocated_feed_care, anticipate_daily_feed_for_care)
+    worker_actions = [farmer_action, *hands_actions]
+    drop_workers = {worker for worker, action in enumerate(worker_actions) if action == ['DROP']}
+    sales = _sales_orders(day, farm, private, active_animals, drop_workers, crop_plans, fertilizer_reserve_per_strawberry, fertilizer_reserve_limit, int(market_state.get('prices', {}).get('WHEAT', 0)), wheat_trade_target, wheat_trade_sell_price)
+    market = _affordable_market_orders(observation, [*sales, *_livestock_orders(active_animals, day, farm, private), *_wheat_trade_orders(day, farm, private, market_state, sales, wheat_trade_target, wheat_trade_buy_price, wheat_trade_cash_reserve), *_land_orders(day, farm, market_state, sales, target_extra_land, land_reserves, dynamic_land_expansion, expansion_occupancy_threshold), *_zoned_hire_orders(farm, _hand_target(day, hand_targets)), *_seed_orders(day, farm, private, crop_plans, animal_crew_size, pair_quadrants, seed_buffer_multiplier, wheat_seed_buffer_multiplier, extra_wheat_seed_buffer, reserve_seeds_per_quadrant, max_active_crops_per_quadrant)])
+    return {'farmer': farmer_action, 'hands': hands_actions, 'market': market}
+decide_premium = decide
+'Opponent- and demand-aware counterpolicy for direct market matchups.'
+from collections import Counter
+from typing import Any
+ONE_LAND_ANIMAL_PLANS: tuple[dict[str, Any], ...] = tuple((plan for plan in ANIMAL_PLANS if plan['quadrant'] in {'NW', 'NE'}))
+
+def _opponent_crop_counts(observation: dict[str, Any]) -> Counter[str]:
+    player = int(observation['player'])
+    farms = observation.get('farms', [])
+    opponent = farms[1 - player] if len(farms) == 2 else {}
+    counts: Counter[str] = Counter()
+    for row in opponent.get('tiles', []):
+        for tile in row:
+            if isinstance(tile, dict) and tile.get('kind') == 'PLANT':
+                counts[str(tile.get('crop', 'UNKNOWN'))] += 1
+    return counts
+
+def _is_wheat_specialist(observation: dict[str, Any]) -> bool:
+    if int(observation.get('day', 0)) < 4:
+        return False
+    crops = _opponent_crop_counts(observation)
+    return sum((quantity for crop, quantity in crops.items() if crop != 'WHEAT')) == 0
+
+def _strategy_parameters(observation: dict[str, Any]) -> tuple[int, tuple[dict[str, Any], ...], str]:
+    if not _is_wheat_specialist(observation):
+        return (2, ANIMAL_PLANS, 'STRAWBERRY')
+    return (1, ONE_LAND_ANIMAL_PLANS, 'STRAWBERRY')
+
+def decide(observation: dict[str, Any]) -> dict[str, Any]:
+    """Select land and livestock pressure from the opponent footprint."""
+    target_extra_land, animal_plans, rotation_crop = _strategy_parameters(observation)
+    return decide_premium(observation, target_extra_land=target_extra_land, animal_plans=animal_plans, rotation_crop=rotation_crop)
+'Wheat-capacity policy tapered around the final harvest deadline.'
+from typing import Any
+DEADLINE_HAND_TARGETS = (*HAND_TARGETS[:23], 10, 10, 10, 10, 8, 4, 3)
+
+def decide(observation: dict[str, Any]) -> dict[str, Any]:
+    """Protect the last wheat cohort, then taper for liquidation."""
+    return decide_premium(observation, target_extra_land=2, rotation_crop='WHEAT', land_reserves=(300, 300), late_rotation_crop='WHEAT', release_idle_crop_reserve=True, prioritize_mature_harvest=True, hand_targets=DEADLINE_HAND_TARGETS)
+'Public observation features and inference for learned macro policies.'
+from collections import Counter
+from math import sqrt
+from typing import Any
+ARM_COMPACT = 0
+ARM_EXPANDED = 1
+ARM_COMPACT_CROP = 2
+ARM_EXPANDED_CROP = 3
+MACRO_ARMS = (ARM_COMPACT, ARM_EXPANDED, ARM_COMPACT_CROP, ARM_EXPANDED_CROP)
+FEATURE_NAMES = ('player', 'own_money_k', 'opponent_money_k', 'money_lead_k', 'opponent_hands', 'opponent_land', 'opponent_wheat', 'opponent_nonwheat', 'opponent_cows', 'opponent_sheep', 'opponent_geese', 'opponent_structures', 'opponent_weeds', 'price_wheat', 'price_strawberry', 'price_melon', 'price_milk', 'price_wool', 'price_fertilizer', 'shops_wheat', 'shops_strawberry', 'shops_milk', 'shops_wool')
+WHEAT_SHOPS = {'BAKERY', 'BRUNCH_SPOT', 'FARMERS_MARKET', 'ICE_CREAM_SHOP', 'PIZZA_SHOP'}
+STRAWBERRY_SHOPS = {'BRUNCH_SPOT', 'FARMERS_MARKET', 'ICE_CREAM_SHOP', 'SMOOTHIE_SHOP'}
+MILK_SHOPS = {'ICE_CREAM_SHOP', 'PIZZA_SHOP', 'SMOOTHIE_SHOP'}
+
+def _public_counts(farm: dict[str, Any]) -> dict[str, Counter[str]]:
+    counts = {'crops': Counter(), 'animals': Counter(), 'structures': Counter(), 'terrain': Counter()}
+    for row in farm.get('tiles', []):
+        for tile in row:
+            if not isinstance(tile, dict):
+                continue
+            if tile.get('kind') == 'PLANT':
+                counts['crops'][str(tile.get('crop', 'UNKNOWN'))] += 1
+            if tile.get('animal'):
+                counts['animals'][str(tile['animal'])] += 1
+            if tile.get('kind') in {'COOP', 'PASTURE'}:
+                counts['structures'][str(tile['kind'])] += 1
+            if tile.get('kind') == 'WEED':
+                counts['terrain']['WEED'] += 1
+    return counts
+
+def extract_macro_features(observation: dict[str, Any]) -> dict[str, float]:
+    """Extract only state that is public to both players."""
+    player = int(observation['player'])
+    farms = observation['farms']
+    own = farms[player]
+    opponent = farms[1 - player]
+    counts = _public_counts(opponent)
+    crops = counts['crops']
+    animals = counts['animals']
+    prices = observation.get('market', {}).get('prices', {})
+    shops = Counter(observation.get('town', {}).get('unlocked_shops', []))
+    own_money = float(own.get('money', 0))
+    opponent_money = float(opponent.get('money', 0))
+    features = {'player': float(player), 'own_money_k': own_money / 1000.0, 'opponent_money_k': opponent_money / 1000.0, 'money_lead_k': (own_money - opponent_money) / 1000.0, 'opponent_hands': float(len(opponent.get('hands', []))), 'opponent_land': float(len(opponent.get('unlocked_quadrants', []))), 'opponent_wheat': float(crops['WHEAT']), 'opponent_nonwheat': float(sum(crops.values()) - crops['WHEAT']), 'opponent_cows': float(animals['COW']), 'opponent_sheep': float(animals['SHEEP']), 'opponent_geese': float(animals['GOOSE']), 'opponent_structures': float(sum(counts['structures'].values())), 'opponent_weeds': float(counts['terrain']['WEED']), 'price_wheat': float(prices.get('WHEAT', 0)) / 25.0, 'price_strawberry': float(prices.get('STRAWBERRY', 0)) / 120.0, 'price_melon': float(prices.get('MELON', 0)) / 250.0, 'price_milk': float(prices.get('MILK', 0)) / 160.0, 'price_wool': float(prices.get('WOOL', 0)) / 200.0, 'price_fertilizer': float(prices.get('FERTILIZER', 0)) / 100.0, 'shops_wheat': float(sum((shops[shop] for shop in WHEAT_SHOPS))), 'shops_strawberry': float(sum((shops[shop] for shop in STRAWBERRY_SHOPS))), 'shops_milk': float(sum((shops[shop] for shop in MILK_SHOPS))), 'shops_wool': float(shops['YARN_STORE'])}
+    return {name: features[name] for name in FEATURE_NAMES}
+
+def select_macro_arm(model: dict[str, Any], features: dict[str, float]) -> int:
+    """Evaluate a learned macro policy."""
+    if model.get('type') == 'knn':
+        return _select_knn_arm(model, features)
+    node = model
+    while 'arm' not in node:
+        feature = str(node['feature'])
+        branch = 'left' if features[feature] <= float(node['threshold']) else 'right'
+        node = node[branch]
+    arm = int(node['arm'])
+    if arm not in MACRO_ARMS:
+        raise ValueError(f'Unknown macro arm: {arm}')
+    return arm
+
+def _select_knn_arm(model: dict[str, Any], features: dict[str, float]) -> int:
+    names = [str(name) for name in model['features']]
+    means = model['means']
+    scales = model['scales']
+    distances = []
+    for example in model['examples']:
+        squared = sum((((features[name] - float(example['features'][name])) / float(scales[name])) ** 2 for name in names))
+        distances.append((sqrt(squared), example))
+    neighbors = sorted(distances, key=lambda item: item[0])[:int(model['k'])]
+    power = float(model.get('distance_power', 1.0))
+    scores = {}
+    for arm in MACRO_ARMS:
+        weighted = 0.0
+        weight_sum = 0.0
+        for distance, example in neighbors:
+            if str(arm) not in example['outcomes']:
+                continue
+            weight = 1.0 if power == 0 else 1.0 / (distance + 0.1) ** power
+            weighted += weight * float(example['outcomes'][str(arm)]['utility'])
+            weight_sum += weight
+        if weight_sum > 0:
+            scores[arm] = weighted / weight_sum
+    if not scores:
+        raise ValueError('KNN macro model has no compatible arm outcomes')
+    return max(scores, key=lambda arm: (scores[arm], arm))
+'Safe animal-service templates for contextual policy selection.'
+from typing import Any
+ARM_BASELINE = 0
+ARM_PAIRED = 1
+SERVICE_ARMS = (ARM_BASELINE, ARM_PAIRED)
+ARM_NAMES = {ARM_BASELINE: 'deadline-baseline', ARM_PAIRED: 'colocated-feed-care'}
+
+def decide_service_arm(observation: dict[str, Any], arm: int) -> dict[str, Any]:
+    """Execute one service template through deterministic safety."""
+    if arm not in SERVICE_ARMS:
+        raise ValueError(f'Unknown service arm: {arm}')
+    return decide_premium(observation, target_extra_land=2, rotation_crop='WHEAT', land_reserves=(300, 300), late_rotation_crop='WHEAT', release_idle_crop_reserve=True, prioritize_mature_harvest=True, hand_targets=DEADLINE_HAND_TARGETS, pair_colocated_feed_care=arm == ARM_PAIRED)
+SERVICE_MODEL = {'feature': 'player', 'threshold': 0.5, 'left': {'arm': 1, 'samples': 40, 'arm_wins': {'0': 33, '1': 34}, 'arm_utilities': {'0': 26378.387, '1': 28401.136}}, 'right': {'feature': 'opponent_wheat', 'threshold': 8.0, 'left': {'arm': 0, 'samples': 30, 'arm_wins': {'0': 24, '1': 23}, 'arm_utilities': {'0': 18130.453, '1': 16167.703}}, 'right': {'arm': 1, 'samples': 10, 'arm_wins': {'0': 10, '1': 10}, 'arm_utilities': {'0': 10219.0, '1': 10231.97}}, 'samples': 40}, 'samples': 80}
+'Learned day-1 selector over safe animal-service templates.'
+from typing import Any
+SELECTION_DAY = 1
+MIN_MODELED_OPPONENT_MONEY_K = 0.5
+_SELECTED_ARMS: dict[int, int] = {}
+
+def _selected_arm(observation: dict[str, Any]) -> int:
+    player = int(observation['player'])
+    day = int(observation.get('day', 0))
+    hour = int(observation.get('hour', 0))
+    if day == 0 and hour == 0:
+        _SELECTED_ARMS.pop(player, None)
+    if day < SELECTION_DAY:
+        return ARM_BASELINE
+    if player not in _SELECTED_ARMS:
+        features = extract_macro_features(observation)
+        _SELECTED_ARMS[player] = ARM_BASELINE if features['opponent_money_k'] < MIN_MODELED_OPPONENT_MONEY_K else select_macro_arm(SERVICE_MODEL, features)
+    return _SELECTED_ARMS[player]
+
+def decide(observation: dict[str, Any]) -> dict[str, Any]:
+    """Select one service template, then execute deterministic safety."""
+    return decide_service_arm(observation, _selected_arm(observation))
 
 def agent(observation: dict[str, Any]) -> dict[str, Any]:
-    """Run the separate center-out diversified research challenger."""
+    """Run the learned service policy."""
     return decide(observation)

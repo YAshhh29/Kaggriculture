@@ -25,8 +25,8 @@ SOURCE_PATHS = (
     ADAPTIVE_PATH,
     DEADLINE_PATH,
 )
-OUTPUT = ROOT / "submission-deadline" / "main.py"
-MANIFEST = ROOT / "submission-deadline" / "manifest.json"
+OUTPUT = ROOT / "submissions" / "deadline" / "main.py"
+MANIFEST = ROOT / "submissions" / "deadline" / "manifest.json"
 
 
 def _source_body(path: Path) -> list[ast.stmt]:

@@ -25,7 +25,7 @@ class PrepareCompactSubmissionTests(unittest.TestCase):
 
         self.assertEqual(local_imports, [])
         self.assertEqual(functions[-2:], ["decide", "agent"])
-        compile(source, "submission-compact/main.py", "exec")
+        compile(source, "submissions/legacy/compact/main.py", "exec")
 
 
 if __name__ == "__main__":

@@ -16,8 +16,8 @@ SOURCE_PATHS = (
     ROOT / "agents" / "experimental_hands_agent.py",
     ROOT / "agents" / "experimental_scale_agent.py",
 )
-OUTPUT = ROOT / "submission-scale" / "main.py"
-MANIFEST = ROOT / "submission-scale" / "manifest.json"
+OUTPUT = ROOT / "submissions" / "legacy" / "scale" / "main.py"
+MANIFEST = ROOT / "submissions" / "legacy" / "scale" / "manifest.json"
 LOCAL_MODULES = {
     "main",
     "experimental_goose_agent",
@@ -119,9 +119,9 @@ def main() -> None:
                 "sha256": digest,
                 "candidate_source_sha256": candidate_digest,
                 "source_files": [
-                    f"../{path.name}"
+                    "../../../main.py"
                     if path.name == "main.py"
-                    else f"../{path.name}"
+                    else f"../../../agents/{path.name}"
                     for path in SOURCE_PATHS
                 ],
                 "policy": (

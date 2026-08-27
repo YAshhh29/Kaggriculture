@@ -37,7 +37,7 @@ class PrepareLearnedServiceSubmissionTests(unittest.TestCase):
         self.assertEqual(local_imports, [])
         self.assertIn("SERVICE_MODEL", assignments)
         self.assertEqual(functions[-2:], ["decide", "agent"])
-        compile(source, "submission-learned-service/main.py", "exec")
+        compile(source, "submissions/learned-service/main.py", "exec")
 
 
 if __name__ == "__main__":

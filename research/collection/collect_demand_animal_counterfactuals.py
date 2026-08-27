@@ -28,7 +28,7 @@ from research.collection.collect_market_counterfactuals import (
 ROOT = Path(__file__).resolve().parents[2]
 SELECTION_DAY = 6
 DEFAULT_OPPONENTS = (
-    "submission-learned-service/main.py",
+    "submissions/learned-service/main.py",
     "agents/experimental_compact_macro_agent.py",
     "agents/experimental_adaptive_counter_agent.py",
     "agents/experimental_lifecycle_agent.py",

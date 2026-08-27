@@ -8,24 +8,30 @@ Only the latest two submissions are actively tracked.
 
 ## Current Agent
 
-The promoted source is `experimental_learned_service_agent.py`. It selects one
-of two deterministic service templates on day 1:
+The current live candidate is
+`agents/experimental_demand_animal_agent.py`. It first selects one of two
+deterministic service templates on day 1:
 
 1. frozen deadline capacity;
 2. deadline capacity plus zero-travel co-located FEED+CARE pairing.
 
-The learned policy cannot issue raw actions. Movement, crop lifecycle, feeding,
-market affordability, land purchase, and final liquidation remain deterministic.
+On day 6 it uses public shop demand to keep the balanced herd or substitute at
+most two expansion sheep with cows or geese. Neither selector can issue raw
+actions. Movement, crop lifecycle, feeding, market affordability, land
+purchase, and final liquidation remain deterministic.
 
 The exact submitted standalone file is
-`submission-learned-service/main.py`, Kaggle submission `55803952`, SHA-256
-`684693161aebb51bd6293a497033d630218af5eabf92870899efabef69d158b2`.
+`submissions/demand-animal/main.py`, Kaggle submission `55817911`, SHA-256
+`53cbab96eaf7eba10a55adac2208b273636ba45274b5cac34967bedae335f5ac`.
+The latest-two tracked pair is demand animal `55817911` plus learned service
+`55803952`.
 
 ## Decision Flow
 
 ```text
 observation
   -> day-1 service arm selection
+  -> day-6 expansion-animal demand selection
   -> active animal and crop plans
   -> urgent feed / crop-deadline assignments
   -> setup and routine animal service
@@ -61,8 +67,8 @@ observation
 
 ```powershell
 .\.conda\python.exe -m unittest -v
-.\.conda\python.exe -m tools.validation.validate_submission submission-learned-service\main.py --seed 184
-.\.conda\python.exe -m tools.validation.validate_learned_service_equivalence submission-learned-service\main.py --seed 184
+.\.conda\python.exe -m tools.validation.validate_submission submissions\demand-animal\main.py --seed 186
+.\.conda\python.exe -m tools.validation.validate_demand_animal_equivalence submissions\demand-animal\main.py --seed 186
 ```
 
 Never regenerate a submitted package and assume it is the uploaded artifact.

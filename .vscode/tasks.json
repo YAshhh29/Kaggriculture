@@ -5,40 +5,16 @@
 			"label": "Run all tests",
 			"type": "process",
 			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": [
-				"-m",
-				"unittest",
-				"-v"
-			],
+			"args": ["-m", "unittest", "-v"],
 			"isBackground": false,
 			"problemMatcher": [],
 			"group": "test"
 		},
 		{
-			"label": "Validate deadline Kaggle loader",
+			"label": "Validate all package builders",
 			"type": "process",
 			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": [
-				"-m",
-				"tools.validation.validate_submission",
-				"submission-deadline\\main.py",
-				"--seed",
-				"174"
-			],
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Validate deadline equivalence",
-			"type": "process",
-			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": [
-				"-m",
-				"tools.validation.validate_deadline_equivalence",
-				"submission-deadline\\main.py",
-				"--seed",
-				"174"
-			],
+			"args": ["-m", "unittest", "discover", "-s", "tests", "-p", "test_prepare_*.py", "-v"],
 			"isBackground": false,
 			"problemMatcher": []
 		},
@@ -46,10 +22,7 @@
 			"label": "Prepare learned service submission",
 			"type": "process",
 			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": [
-				"-m",
-				"tools.packaging.prepare_learned_service_submission"
-			],
+			"args": ["-m", "tools.packaging.prepare_learned_service_submission"],
 			"isBackground": false,
 			"problemMatcher": []
 		},
@@ -57,13 +30,7 @@
 			"label": "Validate learned service Kaggle loader",
 			"type": "process",
 			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": [
-				"-m",
-				"tools.validation.validate_submission",
-				"submission-learned-service\\main.py",
-				"--seed",
-				"184"
-			],
+			"args": ["-m", "tools.validation.validate_submission", "submissions\\learned-service\\main.py", "--seed", "184"],
 			"isBackground": false,
 			"problemMatcher": []
 		},
@@ -71,94 +38,48 @@
 			"label": "Validate learned service equivalence",
 			"type": "process",
 			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": [
-				"-m",
-				"tools.validation.validate_learned_service_equivalence",
-				"submission-learned-service\\main.py",
-				"--seed",
-				"184"
-			],
+			"args": ["-m", "tools.validation.validate_learned_service_equivalence", "submissions\\learned-service\\main.py", "--seed", "184"],
 			"isBackground": false,
 			"problemMatcher": []
 		},
 		{
-			"label": "Routing nearest-slot regression",
-			"type": "shell",
+			"label": "Prepare demand animal submission",
+			"type": "process",
 			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": [
-				"-m",
-				"unittest",
-				"tests.test_experimental_premium_throughput_agent.ExperimentalPremiumThroughputAgentTests.test_paired_planting_routes_to_nearest_equal_priority_slot"
-			],
+			"args": ["-m", "tools.packaging.prepare_demand_animal_submission"],
 			"isBackground": false,
 			"problemMatcher": []
 		},
 		{
-			"label": "Routing nearest-slot red check",
-			"type": "shell",
+			"label": "Validate demand animal Kaggle loader",
+			"type": "process",
 			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": [
-				"-m",
-				"unittest",
-				"tests.test_experimental_premium_throughput_agent.ExperimentalPremiumThroughputAgentTests.test_paired_planting_routes_to_nearest_equal_priority_slot"
-			],
+			"args": ["-m", "tools.validation.validate_submission", "submissions\\demand-animal\\main.py", "--seed", "186"],
 			"isBackground": false,
 			"problemMatcher": []
 		},
 		{
-			"label": "Routing nearest-slot green check",
-			"type": "shell",
+			"label": "Validate demand animal equivalence",
+			"type": "process",
 			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": [
-				"-m",
-				"unittest",
-				"tests.test_experimental_premium_throughput_agent.ExperimentalPremiumThroughputAgentTests.test_paired_planting_routes_to_nearest_equal_priority_slot",
-				"tests.test_experimental_premium_throughput_agent.ExperimentalPremiumThroughputAgentTests.test_paired_planting_uses_same_transition"
-			],
+			"args": ["-m", "tools.validation.validate_demand_animal_equivalence", "submissions\\demand-animal\\main.py", "--seed", "186"],
 			"isBackground": false,
 			"problemMatcher": []
 		},
 		{
-			"label": "Route-aware source versus submitted package",
-			"type": "shell",
+			"label": "Smoke test shadow suite",
+			"type": "process",
 			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": [
-				"benchmark.py",
-				"--agent",
-				"experimental_learned_service_agent.py",
-				"--opponent",
-				"submission-learned-service\\main.py",
-				"--seed-start",
-				"159",
-				"--seed-count",
-				"5",
-				"--steps",
-				"720",
-				"--output",
-				"artifacts\\benchmarks\\v1327-route-aware-vs-submitted-learned-seeds159-163.json"
-			],
+			"args": ["-m", "research.analysis.run_overnight_shadow", "--seed-start", "188", "--seed-count", "1", "--opponent", "agents\\experimental_lifecycle_agent.py", "--output", "artifacts\\benchmarks\\shadow-smoke.json"],
 			"isBackground": false,
-			"problemMatcher": []
+			"problemMatcher": [],
+			"group": "test"
 		},
 		{
-			"label": "Route-aware broad differential",
-			"type": "shell",
+			"label": "Run overnight shadow suite",
+			"type": "process",
 			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": [
-				"benchmark.py",
-				"--agent",
-				"experimental_learned_service_agent.py",
-				"--opponent",
-				"submission-learned-service\\main.py",
-				"--seed-start",
-				"140",
-				"--seed-count",
-				"10",
-				"--steps",
-				"720",
-				"--output",
-				"artifacts\\benchmarks\\v1327-route-aware-vs-submitted-learned-seeds140-149.json"
-			],
+			"args": ["-m", "research.analysis.run_overnight_shadow", "--seed-start", "188", "--seed-count", "10", "--output", "artifacts\\benchmarks\\overnight-shadow.json"],
 			"isBackground": false,
 			"problemMatcher": []
 		}

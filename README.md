@@ -10,6 +10,12 @@ fixes, current work, and next steps.
 replay findings, hands and livestock experiments, learning roadmap, and
 promotion guardrails.
 
+Start with [CONTEXT.md](CONTEXT.md) for the active decision flow and
+[docs/REPOSITORY_MAP.md](docs/REPOSITORY_MAP.md) for the workspace layout.
+Runnable agents are in `agents/`, shared mechanics in `core/`, strategy
+interfaces in `policies/`, experiments in `research/`, tests in `tests/`, and
+exact standalone packages in `submissions/`.
+
 ## What The Competition Is
 
 Kaggriculture is a two-player, turn-based resource-management game. The
@@ -31,19 +37,61 @@ than one unusually profitable game against `starter`.
 
 ## Current Status
 
-There are four deliberately separate policy states:
+The two tracked Kaggle policies are deliberately separate:
 
-- `main.py` is the frozen v9 submission control: six wheat plots and guarded
-  price-aware selling.
-- `submission-goose/main.py` is the second active Kaggle submission.
-- `experimental_cow_agent.py` is the superseded plain-cow research control.
-- `experimental_scale_agent.py` is the strongest frozen candidate: eight daily
-  hands, sixteen wheat plots, four cows, four sheep, daily feed, CARE, staged
-  expansion, and no land. Its package is `submission-scale/main.py`; it has not
-  been uploaded.
+- `submissions/demand-animal/main.py` is submission `55817911`: the day-6
+  shop-demand selector over safe expansion-animal plans. Validation episode
+  `100869093` completed 58,100-59,301 and initialized at 600.0.
+- `submissions/learned-service/main.py` is submission `55803952`: the promoted
+  day-1 contextual service selector. Its validation episode `100394606`
+  completed 60,004-57,984 and initialized at 600.0.
 
-No third Kaggle agent should be submitted without an explicit decision. Local
-profit against `starter` is diagnostic evidence, not proof of ladder strength.
+Deadline submission `55795843`, compact submission `55778351`, and adaptive
+submission `55770236` remain immutable historical controls but are no longer
+in the latest-two tracked pair.
+
+`experimental_learned_macro_agent.py` remains research-only. Both day-5 and
+day-9 learned selectors failed their untouched promotion gates. The fixed
+compact policy advanced because it won 20-0 against adaptive and 44-6 across a
+fresh five-opponent local suite, not because of starter profit or an initial
+Kaggle rating. It still lost 0-4 against the two recorded top-agent controls.
+The newer deadline policy also loses all four elite replay controls, so a 1000
+rating is a target rather than a demonstrated expectation.
+
+The learned service selector is the first later learner to clear promotion. It
+chooses on day 1 between the frozen deadline service order and a zero-travel
+same-transition FEED+CARE optimization, while deterministic safety still owns
+all actions. It trained on 80 cloned contexts, finished 37-3 on 40 separate
+validation contexts versus 35-5 for baseline, went 37-3 in direct spent-seed
+rollouts, and went 23-1 across six policy styles on untouched seeds 184-185.
+Its standalone package is loader-valid and action-equivalent over 1,438
+decisions at SHA-256
+`684693161aebb51bd6293a497033d630218af5eabf92870899efabef69d158b2`.
+
+The current live candidate is `agents/experimental_demand_animal_agent.py`. It
+keeps wheat rotation and deterministic safety, waits for two shop draws, then
+changes at most one expansion sheep per new quadrant when public milk or egg
+demand supports it. It scored 13-7 and 7-3 against the exact submitted package,
+47-3 across five other policy styles, and 23-1 on untouched seeds 186-187. A
+final unseen overnight gate scored 92-8 across 100 games versus 89-11 for the
+exact submitted control, with zero errors and no opponent-level win regression.
+Its exact package is `submissions/demand-animal/main.py`, SHA-256
+`53cbab96eaf7eba10a55adac2208b273636ba45274b5cac34967bedae335f5ac`.
+
+The related three-arm tree is not promoted. Held-out wins were 35, 34, 35, 33,
+33, and 35 as training grew from 8 to 80 contexts; fixed cows stayed at 35 and
+the oracle reached 37. The learning curve is visible in
+[docs/experiments/demand-animal-learning.md](docs/experiments/demand-animal-learning.md).
+
+Earlier economic and daily seed-admission learners remain rejected. Dynamic
+expansion was neutral, removing lifecycle windows overloaded crop service,
+bounded wheat trading lost 2-8, and broader anticipatory CARE lost 4-6. Demand
+animal `55817911` and learned service `55803952` are the current latest-two live
+pair. The shadow tree remains research-only.
+
+Initial 600.0 ratings are not proof of ladder strength. Submitting more agents
+does not directly raise Score: only the latest two are tracked, newer agents
+receive games more frequently, wins raise rating, and losses lower it.
 
 ## Submitted Baseline
 
@@ -124,7 +172,7 @@ UI; replay HTML is preferred for repeatable agent comparisons.
 Create a concise but complete turn-by-turn audit from a saved replay:
 
 ```powershell
-./.conda/python.exe audit_episode.py artifacts/full-replay.json `
+./.conda/python.exe -m research.analysis.audit_episode artifacts/full-replay.json `
   --player 0 --agent main.py --output artifacts/full-audit.json
 ```
 
@@ -139,7 +187,8 @@ step, serve the repository root and open the captioned wrapper:
 ./.conda/python.exe -m http.server 8765 --bind 127.0.0.1
 ```
 
-Then open `http://127.0.0.1:8765/captioned_replay.html`. Kaggle's official
+Then open `http://127.0.0.1:8765/artifacts/ui/captioned_replay.html?replay=%2Fartifacts%2Fv1327-agent-v9-vs-starter-seed11-720.html&audit=%2Fartifacts%2Fv1327-agent-v9-vs-starter-seed11-720-audit.json`.
+Kaggle's official
 visualizer is followed by a caption panel underneath. The panel tracks its
 slider and reports every farmer/hand action and position, market orders issued,
 observed hires/land/animal changes, bank change, inventory, and board changes
@@ -173,9 +222,10 @@ experiment parameter:
   --output artifacts/benchmarks/candidate-wheat-6.json
 ```
 
-For reproducible paired analysis, use `compare_benchmarks.py`. Market-learning
-data are handled separately: `collect_market_dataset.py` records compact
-observed trajectories, while `collect_market_counterfactuals.py` clones a live
+For reproducible paired analysis, use
+`research.evaluation.compare_benchmarks`. Market-learning data are handled
+separately: `research.collection.collect_market_dataset` records compact
+observed trajectories, while `research.collection.collect_market_counterfactuals` clones a live
 state and evaluates one forced HOLD and SELL choice before returning both
 branches to v9. The latter explicitly restores Kaggriculture's resolved seed in
 each clone; the generic environment `clone()` does not preserve that metadata.
@@ -191,7 +241,7 @@ https://www.kaggle.com/competitions/episodes/<episode-id>/replay.json
 After saving a replay, produce a compact strategy report with:
 
 ```powershell
-./.conda/python.exe analyze_public_replay.py `
+./.conda/python.exe -m research.analysis.analyze_public_replay `
   artifacts/top-replays/episode-94173913-replay.json `
   --output artifacts/top-replays/episode-94173913-strategy.json
 ```
@@ -296,8 +346,8 @@ not a solved leaderboard strategy.
 Build and validate the single-file candidate with:
 
 ```powershell
-./.conda/python.exe prepare_scale_submission.py
-./.conda/python.exe validate_submission.py submission-scale/main.py --seed 70
+./.conda/python.exe -m tools.packaging.prepare_scale_submission
+./.conda/python.exe -m tools.validation.validate_submission submissions/legacy/scale/main.py --seed 70
 ```
 
 The packaged SHA-256 is
@@ -329,7 +379,7 @@ scored only 48,039, so more acreage is rejected until capital allocation and cro
 diversification improve.
 
 The captioned seed-30 expansion replay scored 87,623:
-`http://127.0.0.1:8765/captioned_replay.html?replay=artifacts%2Fv1327-zoned-expansion-vs-starter-seed30-720.html&audit=artifacts%2Fv1327-zoned-expansion-vs-starter-seed30-720-audit.json`.
+`http://127.0.0.1:8765/artifacts/ui/captioned_replay.html?replay=%2Fartifacts%2Fv1327-zoned-expansion-vs-starter-seed30-720.html&audit=%2Fartifacts%2Fv1327-zoned-expansion-vs-starter-seed30-720-audit.json`.
 All 64 plant actions were watered in the same turn. Row 0 had five harvested
 crop cycles and three later-lifecycle failures; measured harvest-priority and
 row-reservation alternatives reduced profit and were rejected.
@@ -349,12 +399,12 @@ admitted cycle (1,144/1,144) versus 818/1,276, and uses 29% fewer movement
 turns. The final version improves all 20 paired holdout games over its
 farmer-only endgame and wins 19/20 direct games against the submitted NE source
 and 20/20 against investment. It is packaged for review at
-`submission-lifecycle/main.py`, SHA-256
+`submissions/legacy/lifecycle/main.py`, SHA-256
 `aeb70a14f97d9c9778a1eadad9f424b97adc333470071432f7ca030b28de85a7`,
 but is not submitted.
 
 Review replay:
-`http://127.0.0.1:8765/captioned_replay.html?replay=artifacts%2Fv1327-lifecycle-compact-vs-starter-seed30-720.html&audit=artifacts%2Fv1327-lifecycle-compact-vs-starter-seed30-720-audit.json`.
+`http://127.0.0.1:8765/artifacts/ui/captioned_replay.html?replay=%2Fartifacts%2Fv1327-lifecycle-compact-vs-starter-seed30-720.html&audit=%2Fartifacts%2Fv1327-lifecycle-compact-vs-starter-seed30-720-audit.json`.
 
 `experimental_center_out_agent.py` is the next separate research challenger.
 It starts with the NW core blocks 34/35/44/45, buys NE and then SW, and repeats
@@ -370,7 +420,7 @@ and records zero crop weeds, unfinished cycles, and animal losses. It buys both
 NE and SW in every game. Against lifecycle compact on the same seeds it loses
 0/10 (42,203.5 versus 50,353.2 mean), so it is **research-only and not a
 submission candidate** yet. A standalone review package is available at
-`submission-center-out/main.py`; source/package actions match across all 720
+`submissions/legacy/center-out/main.py`; source/package actions match across all 720
 records in both positions. Source SHA-256:
 `fb2d94b2e51ed81afb46d277d7ea8913f51cbf690ab42860591ec8c7decfc546`.
 Package SHA-256:
@@ -382,14 +432,14 @@ of 600.0. This is an early score snapshot; the failed 0/10 local direct gate
 remains a warning against assuming leaderboard superiority from one score.
 
 Center-out replay (83,355 versus 3,393):
-`http://127.0.0.1:8765/captioned_replay.html?replay=artifacts%2Fv1327-center-out-diversified-vs-starter-seed30-720.html&audit=artifacts%2Fv1327-center-out-diversified-vs-starter-seed30-720-audit.json`.
+`http://127.0.0.1:8765/artifacts/ui/captioned_replay.html?replay=%2Fartifacts%2Fv1327-center-out-diversified-vs-starter-seed30-720.html&audit=%2Fartifacts%2Fv1327-center-out-diversified-vs-starter-seed30-720-audit.json`.
 
 The complete simulator reference is `RULEBOOK.md`, and the interactive block
-map is `field_strategy_planner.html`.
+map is `artifacts/ui/field_strategy_planner.html`.
 
 At the user's explicit request, the exact validated policy was submitted as
 Kaggle submission `55630744`. Its standalone package is
-`submission-zoned-expansion/main.py`, SHA-256
+`submissions/legacy/zoned-expansion/main.py`, SHA-256
 `3414e23178a61b162fbbc1910b215aac3bee973d8f259216b81fa101fe788283`.
 Kaggle completed validation at an initial Score of 600.0. This is an early Score
 snapshot, not a stable ranking guarantee.

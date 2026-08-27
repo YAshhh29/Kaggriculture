@@ -1,0 +1,32 @@
+{
+  "created_at": "2026-08-26T13:32:07.928025+00:00",
+  "competition": "kaggriculture",
+  "agent": "main.py",
+  "sha256": "d76bd22843350319b44c9543e72ab261abb42a6c4077a0a6dd0c92735305f0d7",
+  "combined_source_sha256": "2e85bbacb12b52b8036498b13c4b223cf741713e1b4f458e8b94a296f5300298",
+  "source_files": [
+    "../experimental_throughput_agent.py",
+    "../experimental_premium_throughput_agent.py",
+    "../experimental_adaptive_counter_agent.py",
+    "../experimental_deadline_tapered_wheat_agent.py"
+  ],
+  "policy": "three-quadrant wheat capacity, paired planting, mature-crop deadline priority, stable crews, and deadline-safe workforce taper",
+  "promotion_evidence": {
+    "development_vs_compact": "10-0",
+    "fresh_six_policy_league": "60-0",
+    "elite_replay_controls": "0-4",
+    "current_top_mean_coins": 50463.5,
+    "rank_two_mean_coins": 68335.0
+  },
+  "kaggle": {
+    "submission_id": 55795843,
+    "uploaded_bytes": 112839,
+    "validation_episode_id": 100091628,
+    "validation_rewards": [
+      41908,
+      39495
+    ],
+    "initial_score": 600.0
+  },
+  "status": "submitted to Kaggle; validation complete"
+}

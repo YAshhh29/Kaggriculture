@@ -25,7 +25,7 @@ class PrepareDeadlineSubmissionTests(unittest.TestCase):
 
         self.assertEqual(local_imports, [])
         self.assertEqual(functions[-2:], ["decide", "agent"])
-        compile(source, "submission-deadline/main.py", "exec")
+        compile(source, "submissions/deadline/main.py", "exec")
 
 
 if __name__ == "__main__":

@@ -12,8 +12,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 MAIN_PATH = ROOT / "main.py"
 GOOSE_PATH = ROOT / "agents" / "experimental_goose_agent.py"
-OUTPUT = ROOT / "submission-goose/main.py"
-MANIFEST = ROOT / "submission-goose/manifest.json"
+OUTPUT = ROOT / "submissions" / "legacy" / "goose" / "main.py"
+MANIFEST = ROOT / "submissions" / "legacy" / "goose" / "manifest.json"
 
 
 def _without_future_import(module: ast.Module) -> list[ast.stmt]:
@@ -81,7 +81,10 @@ def main() -> None:
                 "competition": "kaggriculture",
                 "agent": "main.py",
                 "sha256": digest,
-                "source_files": ["../main.py", "../experimental_goose_agent.py"],
+                "source_files": [
+                    "../../../main.py",
+                    "../../../agents/experimental_goose_agent.py",
+                ],
                 "candidate_source_sha256": hashlib.sha256(
                     GOOSE_PATH.read_bytes()
                 ).hexdigest(),

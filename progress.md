@@ -139,8 +139,8 @@ Untouched seeds 60-69 were then used once, in both positions:
 Every development and holdout game bought exactly one goose and one cow and
 sold exactly 25 eggs, 11 milk, and 56 fertilizer. No game used CARE, repurchased
 an animal, or ended with sellable shed/carried inventory. The candidate remains
-development-only: `main.py`, `submission/main.py`, and
-`submission-goose/main.py` are unchanged, and no third Kaggle agent was
+development-only: `main.py`, `submissions/legacy/baseline/main.py`, and
+`submissions/legacy/goose/main.py` are unchanged, and no third Kaggle agent was
 submitted.
 
 Decision: promote the plain cow policy as the strongest validated local
@@ -243,7 +243,7 @@ Two direct attempts to copy that topology were rejected:
   activated only 6 cows and 2 sheep before service/crop churn dominated.
 
 Decision: the no-land 4-cow/4-sheep policy is the strongest safe candidate from
-this run. `submission-scale/main.py` is built and ready but was not uploaded.
+this run. `submissions/legacy/scale/main.py` is built and ready but was not uploaded.
 Kaggle's real loader completed full self-play with both statuses `DONE`.
 Packaged and source agents both scored 55,138 against `starter` on seed 70 and
 18,389-18,389 in self-play, proving behavioral equivalence.
@@ -252,8 +252,8 @@ Packaged and source agents both scored 55,138 against `starter` on seed 70 and
   `acfc19dd312dcd281428e62ff8d4c2919150b1aed0776d093e14470a0380cfb5`;
 - packaged file hash:
   `a478741d32205b1ec772aced6879796c718249b695b0a8b5d85bb65ad893dac2`;
-- package: `submission-scale/main.py`;
-- manifest: `submission-scale/manifest.json`; and
+- package: `submissions/legacy/scale/main.py`;
+- manifest: `submissions/legacy/scale/manifest.json`; and
 - full suite: 98 tests passed.
 
 Recommended live action: replace the weaker active submission with this frozen
@@ -319,7 +319,7 @@ cutting the earlier scale candidate's scripted deficit from 71,330 to 32,454.
 
 The investment package was validated through Kaggle's real loader:
 
-- package: `submission-investment/main.py`;
+- package: `submissions/legacy/investment/main.py`;
 - package SHA-256:
   `305db546dbef37b266833df3853633989ec7e9ea1d03255e9077cb258abe3287`;
 - self-play: both `DONE`, 48,433 versus 48,085 on seed 80; and
@@ -429,10 +429,10 @@ later in their lifecycle. The captioned viewer places every farmer/hand action,
 readable market order, observed hire/land/animal change, bank delta, and board
 delta underneath the official visualizer:
 
-`http://127.0.0.1:8765/captioned_replay.html?replay=artifacts%2Fv1327-zoned-expansion-vs-starter-seed30-720.html&audit=artifacts%2Fv1327-zoned-expansion-vs-starter-seed30-720-audit.json`.
+`http://127.0.0.1:8765/artifacts/ui/captioned_replay.html?replay=%2Fartifacts%2Fv1327-zoned-expansion-vs-starter-seed30-720.html&audit=%2Fartifacts%2Fv1327-zoned-expansion-vs-starter-seed30-720-audit.json`.
 
 At the user's explicit request, the exact NE policy was packaged as
-`submission-zoned-expansion/main.py`. The package produced zero action
+`submissions/legacy/zoned-expansion/main.py`. The package produced zero action
 mismatches against the source across all 719 seed-30 transitions and both
 finished at 87,623. Kaggle's real file loader completed 720-step self-play with
 both agents `DONE`.
@@ -539,9 +539,9 @@ return route raised seed 30 to 90,058; five hands raised it to 90,673; the full
 the lowest Fibonacci wage. Ten hands fell to 90,541. The final review replay
 scores 90,685 versus 3,602 and is captioned at:
 
-`http://127.0.0.1:8765/captioned_replay.html?replay=artifacts%2Fv1327-lifecycle-compact-vs-starter-seed30-720.html&audit=artifacts%2Fv1327-lifecycle-compact-vs-starter-seed30-720-audit.json`.
+`http://127.0.0.1:8765/artifacts/ui/captioned_replay.html?replay=%2Fartifacts%2Fv1327-lifecycle-compact-vs-starter-seed30-720.html&audit=%2Fartifacts%2Fv1327-lifecycle-compact-vs-starter-seed30-720-audit.json`.
 
-The review package `submission-lifecycle/main.py` is Kaggle-loader valid and
+The review package `submissions/legacy/lifecycle/main.py` is Kaggle-loader valid and
 source-equivalent across all 720 records in both player positions. Source and
 package scored 90,685 as player 0 and 90,440 as player 1 with zero action
 mismatches. Package SHA-256:
@@ -598,7 +598,7 @@ and overlapping milk/wool/fertilizer sales. A premium-price holding screen did
 not recover the matchup. This agent is therefore a successful spatial and
 diversification prototype, not an approved submission candidate.
 
-The standalone review package `submission-center-out/main.py` is Kaggle-loader
+The standalone review package `submissions/legacy/center-out/main.py` is Kaggle-loader
 valid and source-equivalent across all 720 records in both player positions.
 Source and package each score 83,355 versus starter on seed 30 with zero action
 mismatches. Package SHA-256:
@@ -623,12 +623,12 @@ policy over the prior controls.
 The final seed-30 replay scores 83,355 versus 3,393 and shows all workers,
 market orders, bank changes, land unlocks, and crop/animal changes:
 
-`http://127.0.0.1:8765/captioned_replay.html?replay=artifacts%2Fv1327-center-out-diversified-vs-starter-seed30-720.html&audit=artifacts%2Fv1327-center-out-diversified-vs-starter-seed30-720-audit.json`.
+`http://127.0.0.1:8765/artifacts/ui/captioned_replay.html?replay=%2Fartifacts%2Fv1327-center-out-diversified-vs-starter-seed30-720.html&audit=%2Fartifacts%2Fv1327-center-out-diversified-vs-starter-seed30-720-audit.json`.
 
 Source SHA-256:
 `fb2d94b2e51ed81afb46d277d7ea8913f51cbf690ab42860591ec8c7decfc546`.
 The durable rules and planning tools are `RULEBOOK.md` and
-`field_strategy_planner.html`.
+`artifacts/ui/field_strategy_planner.html`.
 
 ### One-Goose Candidate: Promotion Evidence
 
@@ -691,7 +691,7 @@ Kaggriculture competition under the signed-in YASH JAIN account.
 
 - description: `v9 verified baseline: six wheat plots, daily watering,
   day-24 planting cutoff, guarded price-aware selling`;
-- submitted file: `submission/main.py`;
+- submitted file: `submissions/legacy/baseline/main.py`;
 - SHA-256: `eee28ea012df8880c834e59d761a2551d0e9dd26f2ac55535fd1585586eba38a`;
 - daily quota before submission: 5 remaining;
 - daily quota consumed: 1;
@@ -946,7 +946,7 @@ was tested and rejected because it caused nine late, unwatered plantings across
 two games and did not improve mean cash.
 
 Captioned visual replay: serve the repository root and open
-`http://127.0.0.1:8765/captioned_replay.html`. It places the official Kaggle
+`http://127.0.0.1:8765/artifacts/ui/captioned_replay.html`. It places the official Kaggle
 1.32.7 visualizer beside a synchronized explanation of each record's farmer
 action, destination, market order, cash, inventory, and board changes.
 
@@ -1011,7 +1011,7 @@ official replay records against `starter`:
   `artifacts/v1327-agent-v9-vs-starter-seed11-720.html`;
 - exact turn audit:
   `artifacts/v1327-agent-v9-vs-starter-seed11-720-audit.json`; and
-- synchronized explanation wrapper: `captioned_replay.html`.
+- synchronized explanation wrapper: `artifacts/ui/captioned_replay.html`.
 
 The seed-11 ledger also reconciles exactly:
 
@@ -1102,7 +1102,7 @@ can inspect and a clean comparison against the rule it may replace.
 | `analyze_public_replay.py` | Extracts workforce, land, crop, livestock, and market strategy from public replays. |
 | `experimental_hands_agent.py` | Development-only two-hand, twelve-wheat labor policy. |
 | `experimental_cow_agent.py` | Development-only goose, cow, and two-hand policy. |
-| `captioned_replay.html` | Explains each official visualizer step in plain language. |
+| `artifacts/ui/captioned_replay.html` | Explains each official visualizer step in plain language. |
 | `requirements-simulator.txt` | Minimal Windows runtime dependencies. |
 | `README.md` | Setup and usage guide. |
 | `progress.md` | This experiment and problem-solving journal. |
@@ -1738,18 +1738,223 @@ turns, sold only 288 units versus the baseline pair's 296, and scored 7,491 as
 player 0 and 7,824 as player 1. Mean 7,657.5 was below the 7,663 baseline, so the
 candidate was rejected.
 
+### Day-9 Macro Selection And Compact Kaggle Submission
+
+Day-5 tree and KNN selectors failed promotion at 23-7 and 22-8 versus a 24-6
+fixed baseline. Day-9 recollection produced 54 fresh four-arm training contexts
+and a separate 30-game validation set. The day-9 tree went 26-4, grouped-CV KNN
+went 27-3, and fixed compact went 28-2. The oracle also went 28-2, so the
+validation features contained no recoverable win beyond the compact policy.
+
+The learned candidates were rejected. A fixed day-9 compact agent advanced on
+direct evidence: 20-0 versus the submitted adaptive agent and 44-6 over fresh
+center-out, lifecycle, scale, investment, and starter games. It remained 0-4
+against the exact current-top and rank-two replay controls.
+
+The first Kaggle upload, `55778248`, failed at the first action because the
+standalone package retained a workspace-only import. A red structural test now
+rejects all `experimental_*` imports. The corrected package passed Kaggle's
+path loader (`DONE/DONE`), 1,438-decision equivalence, and all 213 tests.
+
+Corrected submission `55778351` is `COMPLETE`. Validation episode `99509927`
+finished 70,494-71,744. Its initial 600.0 is not ladder evidence. Kaggle tracks
+it alongside adaptive submission `55770236`, currently rated 654.0.
+
+The first public sequence was loss/win/loss: 71,293-104,910 against
+zulfikar.khalwaniev, 59,107-28,908 against Marc Dakuginow, and 57,916-86,410
+against Kshitiz2002. Compact is therefore 1-2 at 542.3. The sample is small,
+but the direction is clear enough to keep adaptive as the measured incumbent.
+
+### Full Capacity, Learned Templates, And Deadline Taper
+
+Replay feedback identified two explicit limits in compact: it hardcoded one
+extra land, and crop admission stopped melons after day 7, strawberries after
+day 11, and wheat after day 22. Two wheat slots also had an impossible day
+23-through-22 admission window. Full-capacity v1 exposed a rotation bug that
+oscillated PLANT and DIG; after fixing active-crop identity, v3 bought both land
+expansions and beat compact 16-4 on development and 60-0 across a fresh
+six-policy league.
+
+The day-level replay showed why workers appeared idle: PASS rose from 11% on
+day 20 to 32-79% on days 21-29 while the policy continued hiring 12 hands.
+Blindly releasing every idle crop reserve reduced PASS slightly but lost 2,853
+coins per game through route churn. A deadline-aligned workforce taper instead
+kept ten hands through day 26, then used 8/4/3 on days 27-29. It preserved the
+last wheat cohort and improved development mean from 76,129 to 76,981 coins.
+
+A real day-4 contextual bandit was trained over paired terminal outcomes. It
+selected crop rotation and crop-service reserve templates above deterministic
+safety. KNN reached 24-0 on untouched counterfactual contexts, but direct
+rollout versus fixed wheat was 5-5 with exactly symmetric rewards: it selected
+wheat every time. The learned policy is implemented but rejected; this is not
+claimed as an RL improvement.
+
+Deadline taper validation:
+
+- fresh six-policy league, seeds 169-173, both positions: **60-0**;
+- current-top replay control: 0-2, own mean 50,463.5;
+- rank-two replay control: 0-2, own mean 68,335.0;
+- package SHA-256:
+  `d76bd22843350319b44c9543e72ab261abb42a6c4077a0a6dd0c92735305f0d7`;
+- source/package/replay equivalence: 0 mismatches over 1,438 decisions; and
+- Kaggle submission `55795843`, validation episode `100091628`, `COMPLETE`.
+
+Before the learned upload, the tracked pair was deadline `55795843` plus
+compact `55778351`. Deadline's current verified snapshot is 12-13 over 25
+games at 604.1882; its three newest ladder games were losses. Compact is still
+displayed at 631.6 but is no longer one of the latest two tracked submissions.
+
+### Post-Submission Learning And Service-Capacity Gates
+
+The broader economic contextual portfolio did not beat its fixed controls on
+untouched validation: the tree finished 21-5, KNN 19-7, and fixed wheat and
+fixed melon each 24-2. A daily state-cloned seed-admission collector found
+decisive examples in both directions, including one extra seed flipping a win
+to a loss and another flipping a loss to a win. The first frozen tree lost
+11.547 win-first utility versus baseline on holdout. After augmentation and
+hard worst-seed/worst-opponent constraints, model selection correctly chose
+the always-baseline fallback. This is real counterfactual learning evidence,
+but not an RL promotion.
+
+The next deterministic experiments isolated serviceable occupancy:
+
+- per-quadrant seed reservation: 3-7, with 89.1 plantings and 34 weeds/game;
+- crop-first reservation: 0-10, with 93.2 plantings and 42 weeds/game;
+- critical cross-quadrant rescue: 5-5, position-symmetric and neutral;
+- crop-before-CARE plus reservation: 8-2 on seeds 159-163, then 6-14 on the
+  broader spent-seed 140-149 gate;
+- crop-before-CARE without reservation: 7-3, then 9-11 on the broader gate;
+- admission before CARE and due-work reserve scaling: each 0-10;
+- replay-grounded 13th hands on days 19, 21, and 26: 4-6;
+- routine cross-quadrant assistance using only otherwise-idle workers: 4-6;
+  and
+- carried-only strawberry fertilization: 1-9.
+
+These failures sharpened the constraint. Animal CARE and collection are not
+incidental overhead: reducing them also raises the opponent's milk/wool market
+value. More crops, more worker actions, or fewer PASS actions are not promotion
+metrics unless terminal wins improve.
+
+### Learned Service Selector Promotion
+
+The simulator executes farmer and hand actions sequentially. Two workers on an
+animal tile can therefore FEED and CARE in the same transition. The deadline
+scheduler previously waited for a later observation before assigning CARE. A
+strict optimization now pairs FEED+CARE only when two free workers are already
+co-located and one carries wheat, so it adds no travel and does not consume the
+protected crop pair. Fixed pairing improved the first direct gate to 7-3 but
+was mixed at 9-11 on broader seeds, proving that context mattered.
+
+A real contextual bandit now selects between frozen deadline service and
+co-located pairing. Both arms share the opening through day 0. At day 1, the
+collector clones the exact simulator state and rolls both safe arms to terminal
+reward. Opponent identity is not a feature. The frozen depth-2 tree uses public
+position and opponent crop state, locks one arm for the episode, and falls back
+to baseline outside the observed day-1 opponent-bank range.
+
+Promotion evidence:
+
+- training: 80 cloned contexts, 68 wins learned versus 67 for either fixed arm;
+- separate validation: 37-3 learned, 35-5 baseline, 36-4 fixed pairing, and
+  37-3 oracle;
+- direct spent-seed league: 37-3 across deadline, compact, adaptive, and scale;
+- untouched seeds 184-185: **23-1** across deadline, compact, adaptive,
+  center-out, lifecycle, and scale;
+- untouched direct deadline matchup: **3-1**, mean margin +1,391;
+- captured elite scripts: still 0-4, with exact deadline fallback in unsupported
+  opening states;
+- Kaggle path loader: `DONE/DONE`, rewards 82,365-82,229;
+- source/package/replay equivalence: zero mismatches over 1,438 decisions; and
+- package SHA-256:
+  `684693161aebb51bd6293a497033d630218af5eabf92870899efabef69d158b2`.
+
+Fresh seeds 184-185 are now spent. The exact package was uploaded as Kaggle
+submission `55803952` (133,479 bytes). Validation episode `100394606`
+completed 60,004-57,984, status `COMPLETE`, and initialized the agent at 600.0.
+The tracked pair is now learned service `55803952` plus deadline `55795843`.
+
+### Overnight Routing, Demand, And Workspace Pass
+
+The workspace is now organized into `agents/`, `core/`, `policies/`,
+`research/`, `tests/`, `tools/`, `models/`, `submissions/`, and `docs/`.
+Generated datasets, replays, diagnostics, and benchmark matrices remain local
+under ignored `artifacts/`; promoted models and exact packages are versioned.
+
+Routing diagnosis showed that the farm grid has no blocked movement tiles, so
+Manhattan distance is the exact Dijkstra/A* path length. The one-step movement
+code was already shortest-path optimal. The visible outer-layer behavior came
+from target valuation and static cohort order. Globally choosing the nearest
+equal-priority planting slot lost 6-14 against the submitted package, so it was
+rejected. Exact shortest-path primitives now live in `core/routing.py`, while
+urgency and economic value continue to choose targets.
+
+Shop demand is modeled explicitly in `core/economics.py`. Every shop instance
+consumes its products six times per day; duplicate and single-product shops
+compound demand. This explains the melon case: melon has high nominal value but
+no specialist shop, only one guaranteed town-center unit per day, a long cash
+delay, and a severe nonlinear glut curve.
+
+A bounded demand-aware candidate keeps the proven wheat crop schedule but waits
+until day 6, after two shop draws, to choose expansion livestock. It replaces at
+most one sheep in each new quadrant with cows or geese and locks the choice.
+Unsupported low-bank openings fall back to the balanced herd.
+
+Evidence against exact learned-service package
+`684693161aebb51bd6293a497033d630218af5eabf92870899efabef69d158b2`:
+
+- development seeds 140-149: 13-7, mean margin +1,057.45;
+- validation seeds 159-163: 7-3, mean margin +2,628;
+- five-policy validation league: 47-3;
+- untouched seeds 186-187 across six policy styles: **23-1**;
+- untouched direct submitted-agent gate: 3-1, mean margin +1,399;
+- elite scripts: 0-4, with exact submitted-baseline rewards through fallback;
+- standalone loader: `DONE/DONE`, 74,624-71,607;
+- source/package/simulator equivalence: zero mismatches over 1,438 decisions;
+- package SHA-256:
+  `53cbab96eaf7eba10a55adac2208b273636ba45274b5cac34967bedae335f5ac`.
+
+A three-arm contextual bandit was trained on 80 cloned day-6 contexts and
+evaluated on 40 separate contexts. Its validation curve was 35, 34, 35, 33,
+33, and 35 wins as training grew. Fixed cows scored 35 and the oracle 37. The
+tree is rejected; the curve is versioned at
+`docs/experiments/demand-animal-learning-curve.svg` rather than claiming an RL
+gain that did not generalize.
+
+Seeds 186-187 are now spent. The demand-animal heuristic is the clean candidate
+for live measurement; its learned sibling is research-only.
+
+### Overnight Shadow Gate And Live Submission
+
+The deterministic seeds 188-197 suite ran five variants against learned
+service, compact, adaptive, lifecycle, and scale in both player positions: 500
+full 720-turn games. Every game completed `DONE/DONE` with zero errors.
+
+| Variant | W-L | Mean margin | Decision |
+| --- | ---: | ---: | --- |
+| Exact submitted learned-service control | 89-11 | +11,185.60 | Control |
+| Demand-animal heuristic | **92-8** | +11,234.75 | Promote |
+| Rejected shadow tree | 91-9 | +11,741.24 | Research-only |
+| Fixed cows | 85-15 | +11,012.25 | Reject |
+| Fixed geese | 79-21 | +8,847.82 | Reject |
+
+Demand improved the direct control matchup from 10-10 to 13-7 and did not
+regress any opponent-level win count. The shadow tree remains rejected because
+its held-out learning curve did not improve with more training contexts; this
+single matrix does not retroactively make that training result generalize.
+
+The exact frozen package was uploaded as Kaggle submission `55817911`.
+Validation episode `100869093` completed 58,100-59,301, status `COMPLETE`, and
+initialized at 600.0. Its SHA-256 remains
+`53cbab96eaf7eba10a55adac2208b273636ba45274b5cac34967bedae335f5ac`.
+The tracked pair is now demand animal `55817911` plus learned service
+`55803952`.
+
 ## What Comes Next
 
-1. Keep v9 threshold 35 frozen; do not retune against spent seeds 20-29.
-2. Investigate sequence-aware market labels: one-step interventions can change
-  future inventory and make individually good-looking sales interact badly.
-3. Keep model validation grouped by seed, never by individual row or player
-  position.
-4. Require the next candidate to beat v9 on seed-grouped regret and on every
-  development seed before any full policy rollout.
-5. Retain deterministic legality, capacity, liquidation, and v9 fallback rules.
-6. Treat seeds 40-49 as spent; reserve seeds 50-59 for the next truly frozen
-  candidate only.
+1. Measure demand-animal submission `55817911` without tuning from 600.0.
+2. Compare its matchmaking record with learned service `55803952`.
+3. Build route-value diagnostics from current public losses, not visual motion.
+4. Treat the 0-4 top-replay control as the main remaining throughput gap.
 
 ## Experiment Log
 

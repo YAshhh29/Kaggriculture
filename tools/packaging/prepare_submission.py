@@ -11,7 +11,7 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 SOURCE = PROJECT_ROOT / "main.py"
-OUTPUT_DIRECTORY = PROJECT_ROOT / "submission"
+OUTPUT_DIRECTORY = PROJECT_ROOT / "submissions" / "legacy" / "baseline"
 OUTPUT_AGENT = OUTPUT_DIRECTORY / "main.py"
 MANIFEST = OUTPUT_DIRECTORY / "manifest.json"
 
@@ -25,7 +25,7 @@ def main() -> None:
         "competition": "kaggriculture",
         "agent": "main.py",
         "sha256": digest,
-        "source": "../main.py",
+        "source": "../../../main.py",
         "policy": "v9 six-wheat price-aware baseline",
     }
     MANIFEST.write_text(

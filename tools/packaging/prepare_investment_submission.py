@@ -13,8 +13,8 @@ from tools.packaging import prepare_scale_submission
 
 ROOT = Path(__file__).resolve().parents[2]
 INVESTMENT_PATH = ROOT / "agents" / "experimental_investment_agent.py"
-OUTPUT = ROOT / "submission-investment" / "main.py"
-MANIFEST = ROOT / "submission-investment" / "manifest.json"
+OUTPUT = ROOT / "submissions" / "legacy" / "investment" / "main.py"
+MANIFEST = ROOT / "submissions" / "legacy" / "investment" / "manifest.json"
 PACKAGE_RENAMES = {
     "_hire_orders": "_scale_hire_orders",
 }

@@ -7,6 +7,7 @@ import hashlib
 import importlib
 import importlib.util
 import json
+import sys
 from collections import Counter
 from collections.abc import Callable
 from datetime import datetime, timezone
@@ -980,6 +981,7 @@ def load_parameterized_agent(
         raise SystemExit(f"Could not load agent module: {agent_path}")
 
     module = importlib.util.module_from_spec(spec)
+    sys.modules[module_name] = module
     spec.loader.exec_module(module)
     decision_function = getattr(module, "decide", None)
     if not callable(decision_function):
@@ -1000,6 +1002,7 @@ def load_agent_callable(agent_path: Path) -> AgentInput:
     if spec is None or spec.loader is None:
         raise SystemExit(f"Could not load opponent module: {agent_path}")
     module = importlib.util.module_from_spec(spec)
+    sys.modules[module_name] = module
     spec.loader.exec_module(module)
     opponent_agent = getattr(module, "agent", None)
     if not callable(opponent_agent):

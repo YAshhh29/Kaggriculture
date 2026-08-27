@@ -37,7 +37,7 @@ class PrepareAdaptiveSubmissionTests(unittest.TestCase):
         self.assertEqual(local_imports, [])
         self.assertEqual(len(aliases), 1)
         self.assertEqual(functions[-1], "agent")
-        compile(source, "submission-adaptive/main.py", "exec")
+        compile(source, "submissions/legacy/adaptive/main.py", "exec")
 
 
 if __name__ == "__main__":

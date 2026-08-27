@@ -27,8 +27,8 @@ SOURCE_PATHS = (
     RUNTIME_PATH,
     MODEL_PATH,
 )
-OUTPUT = ROOT / "submission-learned-service" / "main.py"
-MANIFEST = ROOT / "submission-learned-service" / "manifest.json"
+OUTPUT = ROOT / "submissions" / "learned-service" / "main.py"
+MANIFEST = ROOT / "submissions" / "learned-service" / "manifest.json"
 LEARNED_MODULES = {
     *LOCAL_MODULES,
     "learned_service_model",

@@ -71,6 +71,7 @@ def train_tree(
     max_depth: int,
     min_leaf: int,
     depth: int = 0,
+    feature_names: tuple[str, ...] = FEATURE_NAMES,
 ) -> tuple[dict[str, Any], float]:
     leaf, leaf_score = _leaf(records)
     if depth >= max_depth or len(records) < 2 * min_leaf:
@@ -84,7 +85,7 @@ def train_tree(
     ] | None = None
     available_features = [
         feature
-        for feature in FEATURE_NAMES
+        for feature in feature_names
         if all(feature in record["features"] for record in records)
     ]
     for feature in available_features:
@@ -128,12 +129,14 @@ def train_tree(
         max_depth=max_depth,
         min_leaf=min_leaf,
         depth=depth + 1,
+        feature_names=feature_names,
     )
     right, _ = train_tree(
         right_records,
         max_depth=max_depth,
         min_leaf=min_leaf,
         depth=depth + 1,
+        feature_names=feature_names,
     )
     return {
         "feature": feature,

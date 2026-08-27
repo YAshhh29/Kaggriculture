@@ -25,8 +25,8 @@ SOURCE_PATHS = (
     ADAPTIVE_PATH,
     COMPACT_PATH,
 )
-OUTPUT = ROOT / "submission-compact" / "main.py"
-MANIFEST = ROOT / "submission-compact" / "manifest.json"
+OUTPUT = ROOT / "submissions" / "legacy" / "compact" / "main.py"
+MANIFEST = ROOT / "submissions" / "legacy" / "compact" / "manifest.json"
 
 
 def _source_body(path: Path) -> list[ast.stmt]:
@@ -88,7 +88,7 @@ def main() -> None:
                 "sha256": package_hash,
                 "combined_source_sha256": combined_source_hash(),
                 "source_files": [
-                    f"../{path.name}" for path in SOURCE_PATHS
+                    f"../../../agents/{path.name}" for path in SOURCE_PATHS
                 ],
                 "policy": (
                     "shared safe opening through day 8, fixed one-extra-land "

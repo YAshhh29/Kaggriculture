@@ -1,25 +1,19 @@
 import ast
 import unittest
 
-from tools.packaging.prepare_center_out_submission import (
-    LOCAL_MODULES,
-    build_source,
-)
+from tools.packaging import prepare_demand_animal_submission
 
 
-class PrepareCenterOutSubmissionTests(unittest.TestCase):
+class PrepareDemandAnimalSubmissionTests(unittest.TestCase):
     def test_built_source_is_standalone_and_ends_with_agent(self) -> None:
-        source = build_source()
+        source = prepare_demand_animal_submission.build_source()
         module = ast.parse(source)
         local_imports = [
             node.module
             for node in module.body
             if isinstance(node, ast.ImportFrom)
             and node.module is not None
-            and (
-                node.module in LOCAL_MODULES
-                or node.module.startswith(("agents.", "policies.", "core."))
-            )
+            and node.module.startswith(("agents.", "policies.", "core."))
         ]
         functions = [
             node.name
@@ -28,8 +22,8 @@ class PrepareCenterOutSubmissionTests(unittest.TestCase):
         ]
 
         self.assertEqual(local_imports, [])
-        self.assertEqual(functions[-1], "agent")
-        compile(source, "submissions/legacy/center-out/main.py", "exec")
+        self.assertEqual(functions[-2:], ["decide", "agent"])
+        compile(source, "submissions/demand-animal/main.py", "exec")
 
 
 if __name__ == "__main__":

@@ -1,8 +1,0 @@
-{
-  "created_at": "2026-08-18T09:08:55.642503+00:00",
-  "competition": "kaggriculture",
-  "agent": "main.py",
-  "sha256": "eee28ea012df8880c834e59d761a2551d0e9dd26f2ac55535fd1585586eba38a",
-  "source": "../main.py",
-  "policy": "v9 six-wheat price-aware baseline"
-}

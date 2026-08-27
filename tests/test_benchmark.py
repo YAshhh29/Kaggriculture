@@ -304,6 +304,23 @@ class BenchmarkTests(unittest.TestCase):
 
         self.assertTrue(callable(opponent))
 
+    def test_file_loader_supports_dataclass_agents(self) -> None:
+        source = """from dataclasses import dataclass
+
+@dataclass
+class Policy:
+    action: str = \"PASS\"
+
+def agent(observation):
+    return {\"farmer\": [Policy().action], \"hands\": [], \"market\": []}
+"""
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "dataclass_agent.py"
+            path.write_text(source, encoding="utf-8")
+            loaded = load_agent_callable(path)
+
+        self.assertEqual(loaded({})["farmer"], ["PASS"])
+
     def test_classifies_results_and_invalid_games(self) -> None:
         self.assertEqual(classify_result(10, 9, "DONE", "DONE"), "win")
         self.assertEqual(classify_result(9, 10, "DONE", "DONE"), "loss")

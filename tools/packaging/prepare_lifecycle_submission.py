@@ -10,11 +10,11 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-BASE_PACKAGE = ROOT / "submission-zoned-expansion" / "main.py"
+BASE_PACKAGE = ROOT / "submissions" / "legacy" / "zoned-expansion" / "main.py"
 CORE_PATH = ROOT / "agents" / "experimental_lifecycle_agent.py"
 WRAPPER_PATH = ROOT / "agents" / "experimental_lifecycle_compact_agent.py"
-OUTPUT = ROOT / "submission-lifecycle" / "main.py"
-MANIFEST = ROOT / "submission-lifecycle" / "manifest.json"
+OUTPUT = ROOT / "submissions" / "legacy" / "lifecycle" / "main.py"
+MANIFEST = ROOT / "submissions" / "legacy" / "lifecycle" / "manifest.json"
 LOCAL_MODULES = {
     "experimental_hands_agent",
     "experimental_investment_agent",

@@ -89,7 +89,7 @@
     "turn_audit": "artifacts/v1327-agent-v9-vs-starter-seed11-720-audit.json",
     "raw_replay": "artifacts/v1327-agent-v9-vs-starter-seed11-720-replay.json",
     "visual_replay": "artifacts/v1327-agent-v9-vs-starter-seed11-720.html",
-    "captioned_replay": "captioned_replay.html"
+    "captioned_replay": "artifacts/ui/captioned_replay.html"
   },
   "generalization_validation": {
     "simulator_version": "1.32.7",
@@ -399,7 +399,7 @@
     },
     "kaggle_submission": {
       "submitted_at": "2026-08-18T14:16:34Z",
-      "file": "submission-goose/main.py",
+      "file": "submissions/legacy/goose/main.py",
       "file_sha256": "e236f9c5222df88f21aeae6d3ca9618e3e9dd9177921de68fafa82ea5acaf035",
       "description": "One-goose candidate: six wheat plots, near-shed coop, urgent feeding, egg and fertilizer sales, day-21 planting cutoff",
       "status_at_last_check": "Complete",
@@ -559,9 +559,9 @@
     "agent": "experimental_scale_agent.py",
     "candidate_sha256": "acfc19dd312dcd281428e62ff8d4c2919150b1aed0776d093e14470a0380cfb5",
     "package": {
-      "file": "submission-scale/main.py",
+      "file": "submissions/legacy/scale/main.py",
       "sha256": "a478741d32205b1ec772aced6879796c718249b695b0a8b5d85bb65ad893dac2",
-      "manifest": "submission-scale/manifest.json",
+      "manifest": "submissions/legacy/scale/manifest.json",
       "kaggle_self_play_statuses": ["DONE", "DONE"],
       "self_play_rewards_seed_70": [18389, 18389],
       "starter_reward_seed_70": 55138,
@@ -682,7 +682,7 @@
     "agent": "experimental_investment_agent.py",
     "candidate_sha256": "d93dd956bfb6951cc9c958bc93caf090dcb77c1b6f897e52ab4707699fe0beac",
     "package": {
-      "file": "submission-investment/main.py",
+      "file": "submissions/legacy/investment/main.py",
       "sha256": "305db546dbef37b266833df3853633989ec7e9ea1d03255e9077cb258abe3287",
       "kaggle_self_play_statuses": ["DONE", "DONE"],
       "self_play_rewards_seed_80": [48433, 48085],
@@ -821,7 +821,7 @@
     "ne_expansion": {
       "agent": "experimental_zoned_expansion_agent.py",
       "agent_sha256": "b0cb1a2748ed8aaff29c7f10d0a9d7cdf7a2fec76f59cf278cac684f01bc1ac4",
-      "package": "submission-zoned-expansion/main.py",
+      "package": "submissions/legacy/zoned-expansion/main.py",
       "package_sha256": "3414e23178a61b162fbbc1910b215aac3bee973d8f259216b81fa101fe788283",
       "capital_policy": "one NE quadrant, ten hands, sixteen wheat, six cows, eight sheep",
       "development": {
@@ -839,7 +839,7 @@
       "direct_vs_investment": {"wins": 18, "losses": 2, "mean_coins": 49506.4, "opponent_mean": 38135.55},
       "rank_one_script": {"wins": 0, "losses": 2, "mean_coins": 67444.5, "script_mean": 117806},
       "market_risk": "seed 38 had no milk or wool demand; late milk fell to 3 and wool to 5 despite zero mechanical losses",
-      "captioned_replay": "http://127.0.0.1:8765/captioned_replay.html?replay=artifacts%2Fv1327-zoned-expansion-vs-starter-seed30-720.html&audit=artifacts%2Fv1327-zoned-expansion-vs-starter-seed30-720-audit.json",
+      "captioned_replay": "http://127.0.0.1:8765/artifacts/ui/captioned_replay.html?replay=%2Fartifacts%2Fv1327-zoned-expansion-vs-starter-seed30-720.html&audit=%2Fartifacts%2Fv1327-zoned-expansion-vs-starter-seed30-720-audit.json",
       "live_submission": {
         "submission_id": 55630744,
         "status": "Complete",
@@ -864,7 +864,7 @@
     "core_agent": "experimental_lifecycle_agent.py",
     "agent": "experimental_lifecycle_compact_agent.py",
     "combined_source_sha256": "98d1725c4297ae046e0ba98cb6f50e106bdf62cc24af9f46dbc71af85dcc0f91",
-    "package": "submission-lifecycle/main.py",
+    "package": "submissions/legacy/lifecycle/main.py",
     "package_sha256": "aeb70a14f97d9c9778a1eadad9f424b97adc333470071432f7ca030b28de85a7",
     "package_equivalence": {
       "records_per_position": 720,
@@ -931,14 +931,14 @@
       "five_animal_specialists": {"seed_30_mean": 52479, "reason": "insufficient milk and wool service"},
       "eleven_hands": {"seed_30_mean": 82211, "reason": "good midpoint but ten-hand nearby-assist candidate was cheaper and stronger on seed 30"}
     },
-    "review_replay": "http://127.0.0.1:8765/captioned_replay.html?replay=artifacts%2Fv1327-lifecycle-compact-vs-starter-seed30-720.html&audit=artifacts%2Fv1327-lifecycle-compact-vs-starter-seed30-720-audit.json",
+    "review_replay": "http://127.0.0.1:8765/artifacts/ui/captioned_replay.html?replay=%2Fartifacts%2Fv1327-lifecycle-compact-vs-starter-seed30-720.html&audit=%2Fartifacts%2Fv1327-lifecycle-compact-vs-starter-seed30-720-audit.json",
     "decision": "keep submitted NE live; retain lifecycle compact as a separate packaged challenger because it completes every admitted holdout crop, wins 19-1 versus submitted NE and 20-0 versus investment, and trails submitted NE by only 254.5 mean coins on fresh standalone holdout; do not submit without explicit review"
   },
   "center_out_research": {
     "status": "starter-validated spatial prototype; packaged for review; direct shared-market gate failed; not submitted",
     "agent": "experimental_center_out_agent.py",
     "source_sha256": "fb2d94b2e51ed81afb46d277d7ea8913f51cbf690ab42860591ec8c7decfc546",
-    "package": "submission-center-out/main.py",
+    "package": "submissions/legacy/center-out/main.py",
     "package_sha256": "cd3d7e92b114dd1bcdef085a3b9fd36d4c37b36146e3c8bd40b58254efe51284",
     "package_equivalence": {
       "records_per_position": 720,
@@ -1001,7 +1001,7 @@
       "score": 83355,
       "opponent_score": 3393,
       "records": 720,
-      "url": "http://127.0.0.1:8765/captioned_replay.html?replay=artifacts%2Fv1327-center-out-diversified-vs-starter-seed30-720.html&audit=artifacts%2Fv1327-center-out-diversified-vs-starter-seed30-720-audit.json"
+      "url": "http://127.0.0.1:8765/artifacts/ui/captioned_replay.html?replay=%2Fartifacts%2Fv1327-center-out-diversified-vs-starter-seed30-720.html&audit=%2Fartifacts%2Fv1327-center-out-diversified-vs-starter-seed30-720-audit.json"
     },
     "decision": "submitted at explicit user request as 55666322; monitor live episodes and keep the 0-10 lifecycle direct loss as an unresolved economic warning before promotion"
   },
@@ -1081,6 +1081,150 @@
     },
     "interpretation": "A large cheap workforce is the stable backbone across the leader win and loss; animal mix and land timing are adaptive. The frozen scale candidate reaches 57k against starter and beats both active local policies, but loses 41,702 to 113,032 against the captured rank-one script. The next gain must be selected under representative opponent pressure, not starter profit alone."
   },
+  "day9_macro_and_compact_submission": {
+    "selection_day": 9,
+    "training_contexts": 54,
+    "validation_contexts": 30,
+    "validation_wins": {
+      "tree": 26,
+      "knn": 27,
+      "handwritten": 27,
+      "fixed_compact": 28,
+      "oracle": 28
+    },
+    "learning_decision": "reject both learned selectors; the oracle recovers no validation win beyond fixed compact",
+    "compact_direct_gates": {
+      "versus_adaptive": "20-0",
+      "fresh_five_opponent_suite": "44-6",
+      "top_replay_controls": "0-4"
+    },
+    "failed_upload": {
+      "submission_id": 55778248,
+      "status": "ERROR",
+      "root_cause": "standalone package retained a workspace-only experimental_adaptive_counter_agent import"
+    },
+    "corrected_upload": {
+      "submission_id": 55778351,
+      "package": "submissions/legacy/compact/main.py",
+      "sha256": "7782c6c35870411960014fe5154bafe904c69f539c75ee8d5c2277d73f79e367",
+      "uploaded_bytes": 108480,
+      "status": "COMPLETE",
+      "initial_score": 600.0,
+      "validation_episode_id": 99509927,
+      "validation_rewards": [70494, 71744],
+      "public_snapshot": {
+        "games": 3,
+        "wins": 1,
+        "losses": 2,
+        "score": 542.3,
+        "episodes": [99514128, 99516420, 99518695]
+      }
+    },
+    "tracked_submission_pair": [55795843, 55803952],
+    "adaptive_snapshot_score": 654.0,
+    "live_decision": "learned service and deadline are the tracked pair; compact is still displayed but no longer actively tracked",
+    "next_constraint": "improve target valuation and demand-aware capital without regressing elite-script fallback; top replay throughput remains unsolved"
+  },
+  "deadline_capacity_submission": {
+    "idle_diagnosis": "one-land cap, expired crop admission, impossible wheat windows, and 12-hand hiring through day 27",
+    "policy": "three-quadrant wheat capacity with deadline-safe workforce taper",
+    "development_vs_compact": "10-0",
+    "fresh_six_policy_league": "60-0",
+    "elite_replay_controls": "0-4",
+    "learned_capacity_result": "rejected after 5-5 symmetric direct rollout versus fixed wheat",
+    "submission_id": 55795843,
+    "sha256": "d76bd22843350319b44c9543e72ab261abb42a6c4077a0a6dd0c92735305f0d7",
+    "uploaded_bytes": 112839,
+    "validation_episode_id": 100091628,
+    "status": "COMPLETE",
+    "initial_score": 600.0,
+    "last_verified_public_snapshot": {
+      "games": 25,
+      "wins": 12,
+      "losses": 13,
+      "score": 604.1882144915837
+    },
+    "post_submission_learning": {
+      "economic_portfolio": "rejected: tree 21-5 and KNN 19-7 versus fixed wheat and melon at 24-2 on untouched validation",
+      "daily_seed_admission": "rejected: hard worst-seed and worst-opponent robustness selected always-baseline",
+      "fresh_seeds_remaining": []
+    },
+    "service_capacity_result": "learned co-located FEED+CARE selector promoted after 37-3 validation and 23-1 untouched six-policy league"
+  },
+  "learned_service_submission": {
+    "policy": "day-1 contextual selector over frozen deadline service and zero-travel co-located FEED+CARE pairing",
+    "deterministic_safety": "all movement, crop lifecycle, feeding, market affordability, and liquidation remain deterministic",
+    "training_contexts": 80,
+    "validation": {
+      "contexts": 40,
+      "learned": "37-3",
+      "baseline": "35-5",
+      "fixed_paired": "36-4",
+      "oracle": "37-3"
+    },
+    "direct_spent_seed_league": "37-3",
+    "fresh_six_policy_league": "23-1 on seeds 184-185",
+    "fresh_vs_deadline": "3-1 with mean margin +1391",
+    "elite_replay_controls": "0-4 with exact deadline fallback outside modeled opening support",
+    "package": "submissions/learned-service/main.py",
+    "sha256": "684693161aebb51bd6293a497033d630218af5eabf92870899efabef69d158b2",
+    "loader_validation": "DONE/DONE at 82365-82229",
+    "equivalence": "0 mismatches over 1438 decisions",
+    "kaggle": {
+      "submission_id": 55803952,
+      "uploaded_bytes": 133479,
+      "validation_episode_id": 100394606,
+      "validation_rewards": [60004, 57984],
+      "initial_score": 600.0,
+      "status": "COMPLETE"
+    },
+    "status": "submitted to Kaggle; validation complete"
+  },
+  "demand_animal_candidate": {
+    "policy": "day-6 shop-demand selection for at most two expansion animal substitutions over learned safe service and wheat rotation",
+    "routing_result": "Manhattan movement is exact shortest path; global nearest planting target rejected 6-14 because it broke value-aware cohort order",
+    "development_vs_submitted": "13-7 on seeds 140-149",
+    "validation_vs_submitted": "7-3 on seeds 159-163",
+    "spent_five_policy_league": "47-3",
+    "fresh_six_policy_league": "23-1 on seeds 186-187",
+    "fresh_vs_submitted": "3-1 with mean margin +1399",
+    "elite_replay_controls": "0-4 with exact submitted baseline fallback",
+    "learned_selector": {
+      "training_contexts": 80,
+      "validation_contexts": 40,
+      "curve_wins": [35, 34, 35, 33, 33, 35],
+      "fixed_balanced_wins": 33,
+      "fixed_cow_wins": 35,
+      "fixed_goose_wins": 34,
+      "oracle_wins": 37,
+      "status": "rejected; does not beat fixed cows"
+    },
+    "package": "submissions/demand-animal/main.py",
+    "sha256": "53cbab96eaf7eba10a55adac2208b273636ba45274b5cac34967bedae335f5ac",
+    "loader_validation": "DONE/DONE at 74624-71607",
+    "equivalence": "0 mismatches over 1438 decisions",
+    "overnight_shadow_gate": {
+      "seeds": "188-197",
+      "opponents": 5,
+      "games_per_variant": 100,
+      "submitted_control": "89-11, mean margin +11185.60",
+      "demand_heuristic": "92-8, mean margin +11234.75",
+      "shadow_tree": "91-9, mean margin +11741.24; research-only",
+      "fixed_cows": "85-15",
+      "fixed_geese": "79-21",
+      "promotion_checks": "zero errors, more wins, positive margin delta, and no opponent-level win regression"
+    },
+    "kaggle": {
+      "submission_id": 55817911,
+      "submitted_at": "2026-08-27T12:15:52.800Z",
+      "validation_episode_id": 100869093,
+      "validation_rewards": [58100, 59301],
+      "initial_score": 600.0,
+      "status": "COMPLETE",
+      "latest_tracked_pair": [55803952, 55817911]
+    },
+    "status": "submitted to Kaggle; validation complete"
+  },
   "do_not_do": [
     "do not treat one favorable game as proof",
     "do not compare reports from different simulator versions",
@@ -1096,7 +1240,7 @@
     "do not reuse seeds 60-69 as a fresh holdout",
     "do not reuse seeds 70-79 as a fresh holdout",
     "do not reuse seeds 80-89 as a fresh holdout",
-    "do not submit a third Kaggle bot without explicit approval",
+    "do not submit another Kaggle bot without explicit approval and fresh promotion evidence",
     "do not submit without loading main.py by file",
     "do not move agent above another callable in main.py",
     "do not install competition packages into the global Python environment"

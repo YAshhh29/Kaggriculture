@@ -1,8 +1,0 @@
-{
-  "created_at": "2026-08-19T14:07:44.824909+00:00",
-  "competition": "kaggriculture",
-  "agent": "main.py",
-  "sha256": "305db546dbef37b266833df3853633989ec7e9ea1d03255e9077cb258abe3287",
-  "candidate_source_sha256": "d93dd956bfb6951cc9c958bc93caf090dcb77c1b6f897e52ab4707699fe0beac",
-  "policy": "pressure-aware investment: up to 10 hands, 12 wheat, all land, 6 cows, 12 sheep, daily feed and CARE"
-}

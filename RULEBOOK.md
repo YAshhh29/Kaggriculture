@@ -316,4 +316,4 @@ For a proposed block strategy, specify:
 10. Final return, `DROP`, and sale plan.
 
 The interactive numbering reference is
-[`field_strategy_planner.html`](field_strategy_planner.html).
+[`artifacts/ui/field_strategy_planner.html`](artifacts/ui/field_strategy_planner.html).

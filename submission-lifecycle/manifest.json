@@ -1,9 +1,0 @@
-{
-  "created_at": "2026-08-20T13:56:47.954705+00:00",
-  "competition": "kaggriculture",
-  "agent": "main.py",
-  "sha256": "aeb70a14f97d9c9778a1eadad9f424b97adc333470071432f7ca030b28de85a7",
-  "combined_source_sha256": "98d1725c4297ae046e0ba98cb6f50e106bdf62cc24af9f46dbc71af85dcc0f91",
-  "policy": "ten hands, six animal specialists, two fixed crop pairs, one floater, demand-aware wheat admission, nearby-only assistance, lifecycle deadlines, two-hand final-day animal liquidation",
-  "status": "research package; not submitted"
-}

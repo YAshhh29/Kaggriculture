@@ -16,8 +16,8 @@ THROUGHPUT_PATH = ROOT / "agents" / "experimental_throughput_agent.py"
 PREMIUM_PATH = ROOT / "agents" / "experimental_premium_throughput_agent.py"
 ADAPTIVE_PATH = ROOT / "agents" / "experimental_adaptive_counter_agent.py"
 SOURCE_PATHS = (THROUGHPUT_PATH, PREMIUM_PATH, ADAPTIVE_PATH)
-OUTPUT = ROOT / "submission-adaptive" / "main.py"
-MANIFEST = ROOT / "submission-adaptive" / "manifest.json"
+OUTPUT = ROOT / "submissions" / "legacy" / "adaptive" / "main.py"
+MANIFEST = ROOT / "submissions" / "legacy" / "adaptive" / "manifest.json"
 LOCAL_MODULES = {
     "experimental_center_out_agent",
     "experimental_hands_agent",
@@ -97,7 +97,7 @@ def main() -> None:
                 "sha256": package_hash,
                 "combined_source_sha256": combined_source_hash(),
                 "source_files": [
-                    f"../{path.name}" for path in SOURCE_PATHS
+                    f"../../../agents/{path.name}" for path in SOURCE_PATHS
                 ],
                 "policy": (
                     "opponent-aware one/two-land selection, paired crop "
