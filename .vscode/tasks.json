@@ -88,7 +88,7 @@
 			"args": [
 				"-m",
 				"unittest",
-				"test_experimental_premium_throughput_agent.ExperimentalPremiumThroughputAgentTests.test_paired_planting_routes_to_nearest_equal_priority_slot"
+				"tests.test_experimental_premium_throughput_agent.ExperimentalPremiumThroughputAgentTests.test_paired_planting_routes_to_nearest_equal_priority_slot"
 			],
 			"isBackground": false,
 			"problemMatcher": []
@@ -100,7 +100,7 @@
 			"args": [
 				"-m",
 				"unittest",
-				"test_experimental_premium_throughput_agent.ExperimentalPremiumThroughputAgentTests.test_paired_planting_routes_to_nearest_equal_priority_slot"
+				"tests.test_experimental_premium_throughput_agent.ExperimentalPremiumThroughputAgentTests.test_paired_planting_routes_to_nearest_equal_priority_slot"
 			],
 			"isBackground": false,
 			"problemMatcher": []
@@ -112,8 +112,8 @@
 			"args": [
 				"-m",
 				"unittest",
-				"test_experimental_premium_throughput_agent.ExperimentalPremiumThroughputAgentTests.test_paired_planting_routes_to_nearest_equal_priority_slot",
-				"test_experimental_premium_throughput_agent.ExperimentalPremiumThroughputAgentTests.test_paired_planting_uses_same_transition"
+				"tests.test_experimental_premium_throughput_agent.ExperimentalPremiumThroughputAgentTests.test_paired_planting_routes_to_nearest_equal_priority_slot",
+				"tests.test_experimental_premium_throughput_agent.ExperimentalPremiumThroughputAgentTests.test_paired_planting_uses_same_transition"
 			],
 			"isBackground": false,
 			"problemMatcher": []
