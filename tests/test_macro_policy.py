@@ -25,6 +25,11 @@ class MacroPolicyTests(unittest.TestCase):
                 "FERTILIZER": 100,
             }
         )
+        state["town"]["unlocked_shops"] = [
+            "BAKERY",
+            "PET_CAFE",
+            "PIZZA_SHOP",
+        ]
 
         features = extract_macro_features(state)
 

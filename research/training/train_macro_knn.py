@@ -14,13 +14,14 @@ from policies.macro_policy import FEATURE_NAMES, select_macro_arm
 
 def _normalization(
     records: list[dict[str, Any]],
+    feature_names: tuple[str, ...],
 ) -> tuple[dict[str, float], dict[str, float]]:
     means = {
         name: fmean(float(record["features"][name]) for record in records)
-        for name in FEATURE_NAMES
+        for name in feature_names
     }
     scales = {}
-    for name in FEATURE_NAMES:
+    for name in feature_names:
         variance = fmean(
             (float(record["features"][name]) - means[name]) ** 2
             for record in records
@@ -35,19 +36,24 @@ def build_model(
     k: int,
     distance_power: float,
 ) -> dict[str, Any]:
-    means, scales = _normalization(records)
+    feature_names = tuple(
+        name
+        for name in FEATURE_NAMES
+        if all(name in record["features"] for record in records)
+    )
+    means, scales = _normalization(records, feature_names)
     return {
         "type": "knn",
         "k": min(k, len(records)),
         "distance_power": distance_power,
-        "features": list(FEATURE_NAMES),
+        "features": list(feature_names),
         "means": means,
         "scales": scales,
         "examples": [
             {
                 "features": {
                     name: float(record["features"][name])
-                    for name in FEATURE_NAMES
+                    for name in feature_names
                 },
                 "outcomes": record["outcomes"],
             }

@@ -6,7 +6,6 @@ from collections import Counter
 from math import sqrt
 from typing import Any
 
-
 ARM_COMPACT = 0
 ARM_EXPANDED = 1
 ARM_COMPACT_CROP = 2
