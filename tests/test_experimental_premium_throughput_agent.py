@@ -15,6 +15,7 @@ from agents.experimental_premium_throughput_agent import (
     _assign_crop_tasks,
     _assign_crop_fertilization,
     _assign_colocated_strawberry_service,
+    _assign_idle_value_fertilization,
     _effective_crop_worker_reserve,
     _worker_actions,
     _sales_orders,
@@ -941,6 +942,278 @@ class ExperimentalPremiumThroughputAgentTests(unittest.TestCase):
 
         self.assertEqual(actions, [["FERTILIZE"], ["WATER"]])
 
+    def test_value_fertilization_routes_carried_fertilizer_to_melon(
+        self,
+    ) -> None:
+        state = scale_observation(day=6)
+        farm = state["farms"][0]
+        plan = next(
+            plan for plan in _dense_crop_plans(farm, 6)
+            if plan["crop"] == "MELON"
+        )
+        target = tuple(plan["position"])
+        x, y = target
+        farm["tiles"][y][x] = {
+            "kind": "PLANT",
+            "crop": "MELON",
+            "planted_day": 0,
+            "watered_today": False,
+            "consecutive_unwatered": 0,
+            "yield_units": 1,
+            "fertilized_until_day": -1,
+        }
+        actions = [None, None]
+
+        assigned = _assign_crop_fertilization(
+            6,
+            farm,
+            state["private"],
+            (plan,),
+            [target, target],
+            [{"FERTILIZER": 1}, {}],
+            actions,
+            1,
+            True,
+            ("MELON",),
+            {"MELON": 250, "FERTILIZER": 100},
+            100,
+        )
+
+        self.assertEqual(assigned, {target})
+        self.assertEqual(actions, [["FERTILIZE"], ["WATER"]])
+
+    def test_value_fertilization_rejects_low_margin_crop(self) -> None:
+        state = scale_observation(day=6)
+        farm = state["farms"][0]
+        plan = next(
+            plan for plan in _dense_crop_plans(farm, 6)
+            if plan["crop"] == "MELON"
+        )
+        target = tuple(plan["position"])
+        x, y = target
+        farm["tiles"][y][x] = {
+            "kind": "PLANT",
+            "crop": "MELON",
+            "planted_day": 0,
+            "watered_today": False,
+            "consecutive_unwatered": 0,
+            "yield_units": 1,
+            "fertilized_until_day": -1,
+        }
+        actions = [None, None]
+
+        assigned = _assign_crop_fertilization(
+            6,
+            farm,
+            state["private"],
+            (plan,),
+            [target, target],
+            [{"FERTILIZER": 1}, {}],
+            actions,
+            1,
+            True,
+            ("MELON",),
+            {"MELON": 80, "FERTILIZER": 100},
+            50,
+        )
+
+        self.assertEqual(assigned, set())
+        self.assertEqual(actions, [None, None])
+
+    def test_value_fertilization_requires_fertilizer_before_water(
+        self,
+    ) -> None:
+        state = scale_observation(day=6)
+        farm = state["farms"][0]
+        plan = next(
+            plan for plan in _dense_crop_plans(farm, 6)
+            if plan["crop"] == "MELON"
+        )
+        target = tuple(plan["position"])
+        x, y = target
+        farm["tiles"][y][x] = {
+            "kind": "PLANT",
+            "crop": "MELON",
+            "planted_day": 0,
+            "watered_today": False,
+            "consecutive_unwatered": 0,
+            "yield_units": 1,
+            "fertilized_until_day": -1,
+        }
+        actions = [None, None]
+
+        assigned = _assign_crop_fertilization(
+            6,
+            farm,
+            state["private"],
+            (plan,),
+            [target, target],
+            [{}, {"FERTILIZER": 1}],
+            actions,
+            1,
+            True,
+            ("MELON",),
+            {"MELON": 250, "FERTILIZER": 100},
+            100,
+            True,
+        )
+
+        self.assertEqual(assigned, set())
+        self.assertEqual(actions, [None, None])
+
+    def test_value_fertilization_returns_empty_when_pair_is_busy(self) -> None:
+        state = scale_observation(day=6)
+        farm = state["farms"][0]
+        plan = next(
+            plan for plan in _dense_crop_plans(farm, 6)
+            if plan["crop"] == "MELON"
+        )
+        target = tuple(plan["position"])
+        x, y = target
+        farm["tiles"][y][x] = {
+            "kind": "PLANT",
+            "crop": "MELON",
+            "planted_day": 0,
+            "watered_today": False,
+            "yield_units": 1,
+            "fertilized_until_day": -1,
+        }
+
+        assigned = _assign_crop_fertilization(
+            6,
+            farm,
+            state["private"],
+            (plan,),
+            [target, target],
+            [{"FERTILIZER": 1}, {}],
+            [["CARE"], None],
+            1,
+            True,
+            ("MELON",),
+            {"MELON": 250, "FERTILIZER": 100},
+            100,
+            True,
+        )
+
+        self.assertEqual(assigned, set())
+
+    def test_idle_value_fertilization_only_replaces_pass(self) -> None:
+        state = scale_observation(day=9, hour=12)
+        farm = state["farms"][0]
+        plan = next(
+            plan for plan in _dense_crop_plans(farm, 9)
+            if plan["crop"] == "STRAWBERRY"
+        )
+        target = tuple(plan["position"])
+        x, y = target
+        farm["tiles"][y][x] = {
+            "kind": "PLANT",
+            "crop": "STRAWBERRY",
+            "planted_day": 0,
+            "watered_today": False,
+            "yield_units": 0,
+            "fertilized_until_day": -1,
+        }
+        positions = [target, (target[0] + 1, target[1]), target]
+        actions = [["CARE"], None, ["WATER"]]
+
+        assigned = _assign_idle_value_fertilization(
+            9,
+            12,
+            farm,
+            (plan,),
+            positions,
+            [{"FERTILIZER": 1}, {"FERTILIZER": 1}, {}],
+            actions,
+            {target},
+            ("STRAWBERRY",),
+            {"STRAWBERRY": 140, "FERTILIZER": 100},
+            50,
+            1,
+            2,
+        )
+
+        self.assertEqual(assigned, {target})
+        self.assertEqual(actions[0], ["CARE"])
+        self.assertEqual(actions[1], ["WEST"])
+        self.assertEqual(actions[2], ["WATER"])
+
+    def test_idle_value_fertilization_requires_serviced_target(self) -> None:
+        state = scale_observation(day=9, hour=12)
+        farm = state["farms"][0]
+        plan = next(
+            plan for plan in _dense_crop_plans(farm, 9)
+            if plan["crop"] == "STRAWBERRY"
+        )
+        target = tuple(plan["position"])
+        x, y = target
+        farm["tiles"][y][x] = {
+            "kind": "PLANT",
+            "crop": "STRAWBERRY",
+            "planted_day": 0,
+            "watered_today": False,
+            "yield_units": 0,
+            "fertilized_until_day": -1,
+        }
+        actions = [None]
+
+        assigned = _assign_idle_value_fertilization(
+            9,
+            12,
+            farm,
+            (plan,),
+            [target],
+            [{"FERTILIZER": 1}],
+            actions,
+            set(),
+            ("STRAWBERRY",),
+            {"STRAWBERRY": 140, "FERTILIZER": 100},
+            50,
+            1,
+            2,
+        )
+
+        self.assertEqual(assigned, set())
+        self.assertEqual(actions, [None])
+
+    def test_idle_value_fertilization_uses_already_watered_crop(self) -> None:
+        state = scale_observation(day=10, hour=12)
+        farm = state["farms"][0]
+        plan = next(
+            plan for plan in _dense_crop_plans(farm, 10)
+            if plan["crop"] == "STRAWBERRY"
+        )
+        target = tuple(plan["position"])
+        x, y = target
+        farm["tiles"][y][x] = {
+            "kind": "PLANT",
+            "crop": "STRAWBERRY",
+            "planted_day": 0,
+            "watered_today": True,
+            "yield_units": 1,
+            "fertilized_until_day": -1,
+        }
+        actions = [None]
+
+        assigned = _assign_idle_value_fertilization(
+            10,
+            12,
+            farm,
+            (plan,),
+            [target],
+            [{"FERTILIZER": 1}],
+            actions,
+            set(),
+            ("STRAWBERRY",),
+            {"STRAWBERRY": 180, "FERTILIZER": 100},
+            20,
+            1,
+            2,
+        )
+
+        self.assertEqual(assigned, {target})
+        self.assertEqual(actions, [["FERTILIZE"]])
+
     def test_colocated_strawberry_pairs_fertilizer_before_water(self) -> None:
         state = scale_observation(day=9)
         farm = state["farms"][0]
@@ -973,7 +1246,9 @@ class ExperimentalPremiumThroughputAgentTests(unittest.TestCase):
         self.assertEqual(actions, [["FERTILIZE"], ["WATER"]])
         self.assertEqual(assigned, {target})
 
-    def test_colocated_strawberry_harvests_before_fertilized_water(self) -> None:
+    def test_colocated_strawberry_harvests_before_fertilized_water(
+        self,
+    ) -> None:
         state = scale_observation(day=9)
         farm = state["farms"][0]
         plan = next(
@@ -1073,7 +1348,9 @@ class ExperimentalPremiumThroughputAgentTests(unittest.TestCase):
 
         self.assertIn(["SELL", "FERTILIZER", 1], orders)
 
-    def test_fertilizer_hold_releases_on_price_cap_or_liquidation(self) -> None:
+    def test_fertilizer_hold_releases_on_price_cap_or_liquidation(
+        self,
+    ) -> None:
         state = scale_observation(day=20)
         farm = state["farms"][0]
         state["private"]["shed"]["FERTILIZER"] = 40
@@ -1096,6 +1373,28 @@ class ExperimentalPremiumThroughputAgentTests(unittest.TestCase):
         self.assertIn(["SELL", "FERTILIZER", 40], orders(20, 60))
         self.assertIn(["SELL", "FERTILIZER", 72], orders(20, 55, 72))
         self.assertIn(["SELL", "FERTILIZER", 40], orders(28, 20))
+
+    def test_feed_reserve_days_control_wheat_available_for_sale(self) -> None:
+        state = scale_observation(day=12)
+        farm = state["farms"][0]
+        plan = ANIMAL_PLANS[0]
+        x, y = plan["position"]
+        farm["tiles"][y][x] = {
+            "kind": plan["structure"],
+            "animal": plan["animal"],
+        }
+        state["private"]["shed"]["WHEAT"] = 10
+
+        orders = _sales_orders(
+            12,
+            farm,
+            state["private"],
+            (plan,),
+            set(),
+            feed_reserve_days=3,
+        )
+
+        self.assertIn(["SELL", "WHEAT", 7], orders)
 
     def test_land_gate_uses_projected_sales_but_keeps_reserve(self) -> None:
         state = scale_observation(day=5, money=100)
@@ -1164,6 +1463,7 @@ class ExperimentalPremiumThroughputAgentTests(unittest.TestCase):
             ),
             [],
         )
+
     def test_dynamic_land_gate_uses_occupancy_instead_of_day(self) -> None:
         state = scale_observation(day=2, money=1300)
         farm = state["farms"][0]

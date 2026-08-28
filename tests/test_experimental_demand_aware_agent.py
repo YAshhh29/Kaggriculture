@@ -98,6 +98,37 @@ class ExperimentalDemandAwareAgentTests(unittest.TestCase):
             premium.call_args.kwargs["hand_targets"],
             custom_hands,
         )
+
+    def test_value_service_controls_are_forwarded(self) -> None:
+        state = scale_observation(day=12)
+        with patch(
+            "agents.experimental_demand_aware_agent.decide_premium"
+        ) as premium:
+            decide_demand(
+                state,
+                use_crop_demand=False,
+                value_fertilization_crops=("MELON", "STRAWBERRY"),
+                minimum_fertilizer_net_value=75,
+                economic_wheat_feed_reserve=True,
+                value_fertilization_limit=2,
+            )
+
+        self.assertEqual(
+            premium.call_args.kwargs["value_fertilization_crops"],
+            ("MELON", "STRAWBERRY"),
+        )
+        self.assertEqual(
+            premium.call_args.kwargs["minimum_fertilizer_net_value"],
+            75,
+        )
+        self.assertTrue(
+            premium.call_args.kwargs["economic_wheat_feed_reserve"]
+        )
+        self.assertEqual(
+            premium.call_args.kwargs["value_fertilization_limit"],
+            2,
+        )
+
     def test_unsupported_opening_falls_back_to_balanced_animals(self) -> None:
         state = scale_observation(day=6)
         state["farms"][1]["money"] = 177

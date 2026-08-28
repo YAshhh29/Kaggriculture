@@ -5,6 +5,10 @@ from __future__ import annotations
 from collections import Counter
 from typing import Any
 
+from core.economics import (
+    fertilizer_net_value,
+    profitable_feed_reserve_days,
+)
 from agents.experimental_center_out_agent import (
     ANIMAL_PLANS,
     CENTER_OUT_BLOCKS,
@@ -735,39 +739,57 @@ def _assign_crop_fertilization(
     actions: list[list[str] | None],
     limit: int | None = None,
     carried_only: bool = False,
-) -> None:
-    candidates = []
+    crops: tuple[str, ...] = ("STRAWBERRY",),
+    market_prices: dict[str, Any] | None = None,
+    minimum_net_value: float | None = None,
+    ordered_pair_only: bool = False,
+) -> set[tuple[int, int]]:
+    candidates: list[tuple[float, dict[str, Any]]] = []
     for plan in crop_plans:
         tile = _tile_at(farm["tiles"], plan["position"])
-        if not _is_crop(tile, "STRAWBERRY"):
+        crop = str(plan["crop"])
+        if crop not in crops or not _is_crop(tile, crop):
             continue
         operations = _crop_operations(day, tile)
-        if {"FERTILIZE", "WATER"}.issubset(operations):
-            candidates.append(plan)
+        if "WATER" not in operations:
+            continue
+        net_value = fertilizer_net_value(
+            {"day": day, "market": {"prices": market_prices or {}}},
+            tile,
+        )
+        if minimum_net_value is not None and net_value < minimum_net_value:
+            continue
+        candidates.append((net_value, plan))
     candidates.sort(
-        key=lambda plan: (
+        key=lambda candidate: (
+            -candidate[0],
             min(
-                _distance(tuple(plan["position"]), access)
+                _distance(tuple(candidate[1]["position"]), access)
                 for access in ((4, 4), (5, 4), (4, 5), (5, 5))
             ),
-            int(plan["position"][1]),
-            int(plan["position"][0]),
+            int(candidate[1]["position"][1]),
+            int(candidate[1]["position"][0]),
         )
     )
     if limit is not None:
         candidates = candidates[:max(0, limit)]
-    for plan in candidates:
+    assigned: set[tuple[int, int]] = set()
+    for _, plan in candidates:
         free_workers = [
             worker for worker, action in enumerate(actions)
             if action is None
         ]
         if len(free_workers) < 2:
-            return
+            return assigned
         target = tuple(plan["position"])
         carriers = [
             worker
             for worker in free_workers
             if int(inventories[worker].get("FERTILIZER", 0)) > 0
+            and (
+                not ordered_pair_only
+                or any(other > worker for other in free_workers)
+            )
         ]
         if carried_only and not carriers:
             continue
@@ -784,6 +806,10 @@ def _assign_crop_fertilization(
                     worker
                     for worker in free_workers
                     if worker != fertilizer_worker
+                    and (
+                        not ordered_pair_only
+                        or worker > fertilizer_worker
+                    )
                 ),
                 key=lambda worker: (
                     _distance(positions[worker], target),
@@ -808,6 +834,8 @@ def _assign_crop_fertilization(
             inventories,
             actions,
         )
+        assigned.add(target)
+    return assigned
 
 
 def _assign_colocated_strawberry_service(
@@ -840,7 +868,10 @@ def _assign_colocated_strawberry_service(
         selected: tuple[int, ...] | None = None
         if "HARVEST" in operations:
             for fertilizer_worker in colocated:
-                if int(inventories[fertilizer_worker].get("FERTILIZER", 0)) <= 0:
+                fertilizer = int(
+                    inventories[fertilizer_worker].get("FERTILIZER", 0)
+                )
+                if fertilizer <= 0:
                     continue
                 harvesters = [
                     worker for worker in colocated
@@ -859,7 +890,10 @@ def _assign_colocated_strawberry_service(
                     break
         else:
             for fertilizer_worker in colocated:
-                if int(inventories[fertilizer_worker].get("FERTILIZER", 0)) <= 0:
+                fertilizer = int(
+                    inventories[fertilizer_worker].get("FERTILIZER", 0)
+                )
+                if fertilizer <= 0:
                     continue
                 waterers = [
                     worker for worker in colocated
@@ -878,6 +912,95 @@ def _assign_colocated_strawberry_service(
             actions[selected[0]] = ["FERTILIZE"]
             actions[selected[1]] = ["WATER"]
         assigned.add(target)
+    return assigned
+
+
+def _assign_idle_value_fertilization(
+    day: int,
+    hour: int,
+    farm: dict[str, Any],
+    crop_plans: tuple[dict[str, Any], ...],
+    positions: list[tuple[int, int]],
+    inventories: list[dict[str, Any]],
+    actions: list[list[str] | None],
+    serviced_targets: set[tuple[int, int]],
+    crops: tuple[str, ...],
+    market_prices: dict[str, Any],
+    minimum_net_value: float,
+    limit: int | None,
+    maximum_distance: int,
+) -> set[tuple[int, int]]:
+    """Stage otherwise-idle carriers toward already-serviced premium crops."""
+    if hour > 20 or limit == 0:
+        return set()
+    candidates: list[tuple[float, int, dict[str, Any], int]] = []
+    for plan in crop_plans:
+        target = tuple(plan["position"])
+        crop = str(plan["crop"])
+        tile = _tile_at(farm["tiles"], target)
+        operations = (
+            _crop_operations(day, tile) if _is_crop(tile, crop) else set()
+        )
+        water_committed = (
+            target in serviced_targets and "WATER" in operations
+        )
+        if (
+            crop not in crops
+            or not _is_crop(tile, crop)
+            or not (water_committed or tile.get("watered_today", False))
+        ):
+            continue
+        net_value = fertilizer_net_value(
+            {"day": day, "market": {"prices": market_prices}},
+            tile,
+        )
+        if net_value < minimum_net_value:
+            continue
+        carriers = [
+            worker
+            for worker, action in enumerate(actions)
+            if action is None
+            and int(inventories[worker].get("FERTILIZER", 0)) > 0
+            and _distance(positions[worker], target) <= maximum_distance
+        ]
+        if not carriers:
+            continue
+        carrier = min(
+            carriers,
+            key=lambda worker: (
+                _distance(positions[worker], target),
+                worker,
+            ),
+        )
+        candidates.append(
+            (
+                -net_value,
+                _distance(positions[carrier], target),
+                plan,
+                carrier,
+            )
+        )
+    assigned: set[tuple[int, int]] = set()
+    for _, _, plan, carrier in sorted(
+        candidates,
+        key=lambda candidate: (
+            candidate[0],
+            candidate[1],
+            int(candidate[2]["position"][1]),
+            int(candidate[2]["position"][0]),
+        ),
+    ):
+        if actions[carrier] is not None:
+            continue
+        target = tuple(plan["position"])
+        actions[carrier] = _act_at_or_move(
+            positions[carrier],
+            target,
+            ["FERTILIZE"],
+        )
+        assigned.add(target)
+        if limit is not None and len(assigned) >= limit:
+            break
     return assigned
 
 
@@ -963,6 +1086,13 @@ def _worker_actions(
     max_active_crops_per_quadrant: int | None = None,
     pair_colocated_feed_care: bool = False,
     anticipate_daily_feed_for_care: bool = False,
+    value_fertilization_crops: tuple[str, ...] = (),
+    fertilizer_market_prices: dict[str, Any] | None = None,
+    minimum_fertilizer_net_value: float = 0.0,
+    value_fertilization_limit: int | None = None,
+    hour: int = 0,
+    idle_value_fertilization_crops: tuple[str, ...] = (),
+    idle_fertilization_max_distance: int = 2,
 ) -> tuple[list[str], list[list[str]]]:
     positions = [
         tuple(farm["farmer"]),
@@ -981,6 +1111,7 @@ def _worker_actions(
     }
     seed_budget = Counter(private.get("seeds", {}))
     assigned_crop_targets: set[tuple[int, int]] = set()
+    remaining_value_fertilizations = value_fertilization_limit
 
     for quadrant in unlocked:
         workers = worker_groups[quadrant]
@@ -1099,6 +1230,7 @@ def _worker_actions(
             if pair_colocated_strawberry_service
             else set()
         )
+        value_crop_targets: set[tuple[int, int]] = set()
         assigned_crop_targets.update(paired_crop_targets)
         effective_reserve = (
             _effective_crop_worker_reserve(
@@ -1113,6 +1245,36 @@ def _worker_actions(
             if release_idle_crop_reserve
             else crop_worker_reserve
         )
+        if (
+            value_fertilization_crops
+            and remaining_value_fertilizations != 0
+        ):
+            value_crop_targets = _assign_crop_fertilization(
+                day,
+                farm,
+                private,
+                local_crops,
+                local_positions,
+                local_inventories,
+                local_actions,
+                (
+                    1
+                    if remaining_value_fertilizations is None
+                    else min(1, remaining_value_fertilizations)
+                ),
+                True,
+                value_fertilization_crops,
+                fertilizer_market_prices,
+                minimum_fertilizer_net_value,
+                True,
+            )
+            assigned_crop_targets.update(value_crop_targets)
+            if remaining_value_fertilizations is not None:
+                remaining_value_fertilizations -= len(value_crop_targets)
+        remaining_crop_reserve = max(
+            0,
+            effective_reserve - 2 * len(value_crop_targets),
+        )
         if crops_before_care_only:
             _assign_limited_animal_services(
                 local_animals,
@@ -1120,7 +1282,7 @@ def _worker_actions(
                 farm,
                 local_positions,
                 local_actions,
-                crop_worker_reserve=effective_reserve,
+                crop_worker_reserve=remaining_crop_reserve,
                 care_enabled=False,
                 anticipate_daily_feed=anticipate_daily_feed_for_care,
             )
@@ -1160,7 +1322,7 @@ def _worker_actions(
                 farm,
                 local_positions,
                 local_actions,
-                crop_worker_reserve=effective_reserve,
+                crop_worker_reserve=remaining_crop_reserve,
                 anticipate_daily_feed=anticipate_daily_feed_for_care,
             )
         if not crop_before_routine_animals and not crops_before_care_only:
@@ -1171,7 +1333,9 @@ def _worker_actions(
                 local_positions,
                 local_actions,
                 critical=False,
-                excluded_targets=paired_crop_targets,
+                excluded_targets=(
+                    paired_crop_targets | value_crop_targets
+                ),
             ))
         if not (crops_before_care_only and plant_before_care):
             _assign_paired_planting(
@@ -1184,6 +1348,31 @@ def _worker_actions(
                 seed_budget,
                 max_active_crops_per_quadrant,
             )
+        if (
+            idle_value_fertilization_crops
+            and remaining_value_fertilizations != 0
+        ):
+            staged_targets = _assign_idle_value_fertilization(
+                day,
+                hour,
+                farm,
+                local_crops,
+                local_positions,
+                local_inventories,
+                local_actions,
+                assigned_crop_targets,
+                idle_value_fertilization_crops,
+                fertilizer_market_prices or {},
+                minimum_fertilizer_net_value,
+                (
+                    1
+                    if remaining_value_fertilizations is None
+                    else min(1, remaining_value_fertilizations)
+                ),
+                idle_fertilization_max_distance,
+            )
+            if remaining_value_fertilizations is not None:
+                remaining_value_fertilizations -= len(staged_targets)
         for local_worker, worker in enumerate(workers):
             actions[worker] = local_actions[local_worker]
 
@@ -1289,6 +1478,7 @@ def _sales_orders(
     minimum_fertilizer_sale_price: int | None = None,
     maximum_fertilizer_holdings: int | None = None,
     fertilizer_liquidation_day: int | None = None,
+    feed_reserve_days: int = 2,
 ) -> list[list[Any]]:
     items = (
         "MELON",
@@ -1314,7 +1504,9 @@ def _sales_orders(
         _plan_is_active(plan, farm["tiles"])
         for plan in animal_plans
     )
-    feed_reserve = 0 if day >= 28 else 2 * active_animals
+    feed_reserve = (
+        0 if day >= 28 else max(0, feed_reserve_days) * active_animals
+    )
     wheat_reserve = feed_reserve
     if (
         day < 28
@@ -1447,6 +1639,12 @@ def decide(
     fertilizer_liquidation_day: int | None = None,
     pair_colocated_feed_care: bool = False,
     anticipate_daily_feed_for_care: bool = False,
+    value_fertilization_crops: tuple[str, ...] = (),
+    minimum_fertilizer_net_value: float = 0.0,
+    economic_wheat_feed_reserve: bool = False,
+    value_fertilization_limit: int | None = None,
+    idle_value_fertilization_crops: tuple[str, ...] = (),
+    idle_fertilization_max_distance: int = 2,
 ) -> dict[str, Any]:
     """Fill paid land with replay-grounded premium crops and stable crews."""
     player = int(observation["player"])
@@ -1509,6 +1707,13 @@ def decide(
             max_active_crops_per_quadrant,
             pair_colocated_feed_care,
             anticipate_daily_feed_for_care,
+            value_fertilization_crops,
+            market_state.get("prices", {}),
+            minimum_fertilizer_net_value,
+            value_fertilization_limit,
+            int(observation["hour"]),
+            idle_value_fertilization_crops,
+            idle_fertilization_max_distance,
         )
 
     worker_actions = [farmer_action, *hands_actions]
@@ -1533,6 +1738,10 @@ def decide(
         minimum_fertilizer_sale_price,
         maximum_fertilizer_holdings,
         fertilizer_liquidation_day,
+        (
+            profitable_feed_reserve_days(observation)
+            if economic_wheat_feed_reserve else 2
+        ),
     )
     market = _affordable_market_orders(
         observation,

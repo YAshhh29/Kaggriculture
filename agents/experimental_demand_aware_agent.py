@@ -4,7 +4,9 @@ from __future__ import annotations
 
 from typing import Any
 
-from agents.experimental_deadline_tapered_wheat_agent import DEADLINE_HAND_TARGETS
+from agents.experimental_deadline_tapered_wheat_agent import (
+    DEADLINE_HAND_TARGETS,
+)
 from agents.experimental_learned_service_agent import _selected_arm
 from agents.experimental_premium_throughput_agent import (
     LAST_PLANT_DAYS,
@@ -61,6 +63,12 @@ def decide_demand(
     fertilize_strawberries: bool = False,
     fertilized_strawberries_per_quadrant: int | None = None,
     carried_fertilizer_only: bool = False,
+    value_fertilization_crops: tuple[str, ...] = (),
+    minimum_fertilizer_net_value: float = 0.0,
+    economic_wheat_feed_reserve: bool = False,
+    value_fertilization_limit: int | None = None,
+    idle_value_fertilization_crops: tuple[str, ...] = (),
+    idle_fertilization_max_distance: int = 2,
 ) -> dict[str, Any]:
     """Execute selected demand axes through the deterministic scheduler."""
     animal, crop = _choices(observation)
@@ -91,6 +99,12 @@ def decide_demand(
             fertilized_strawberries_per_quadrant
         ),
         carried_fertilizer_only=carried_fertilizer_only,
+        value_fertilization_crops=value_fertilization_crops,
+        minimum_fertilizer_net_value=minimum_fertilizer_net_value,
+        economic_wheat_feed_reserve=economic_wheat_feed_reserve,
+        value_fertilization_limit=value_fertilization_limit,
+        idle_value_fertilization_crops=idle_value_fertilization_crops,
+        idle_fertilization_max_distance=idle_fertilization_max_distance,
         pair_colocated_feed_care=service_arm == ARM_PAIRED,
     )
 
