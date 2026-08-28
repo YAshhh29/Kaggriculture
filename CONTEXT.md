@@ -30,11 +30,12 @@ inherited fallback. The latest-two tracked pair is future labor `55821334` plus
 demand animal `55817911`, currently displayed at 655.8.
 
 The active research arm is
-`agents/experimental_contextual_carried_crop_service_agent.py`. It combines
-guarded zero-travel strawberry service with bounded carried-fertilizer routing
-in a narrow day-6 context. It converted one captured live loss and had no
-own-reward regression over 24 ladder contexts, but untouched seeds 217-218
-added no wins. It is not packaged or submitted.
+`agents/experimental_tiered_value_fertilizer_agent.py`. At day 12 hour 12 it
+uses current strawberry price to choose between co-located-only fertilizer and
+at most two steps of otherwise-idle carrier staging. It caps the episode at
+four applications and never replaces a productive worker action. It converted
+two captured losses and had no own-reward regression over 33 ladder contexts,
+but untouched seeds 219-221 added no wins. It is not packaged or submitted.
 
 ## Decision Flow
 
@@ -107,3 +108,12 @@ eight of 11 losses, tied three, and converted one fixed replay; all 12 captured
 wins and the next live win were preserved. Broad seeds 217-218 again tied
 control at 22-10 despite +226.72 mean-margin improvement. No new submission is
 justified without a fresh broad-gate win.
+
+The current replay dataset contains 16 verified losses and 17 verified wins.
+It captures day 9-12 carrier positions, due premium crops, harvest backlog, and
+pending animal work. Audited tiered value fertilizer improved/tied/worsened
+30/3/0, averaging +1,220.21 own reward and preserving all 17 wins. The current
+source rerun over broad seeds 219-221 tied the exact control at 31-17 while
+improving mean margin by 768.02. Seed 222 remains
+untouched. Economic wheat retention is implemented as a research control but
+rejected because shared-market effects produced a -23,649 own-reward case.

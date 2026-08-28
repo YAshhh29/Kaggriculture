@@ -1248,14 +1248,14 @@
       "submission_id": 55821334,
       "validation_episode_id": 100974134,
       "validation_rewards": [52718, 52990],
-      "live_snapshot": "13-11 over 24 games at displayed Score 674.8; mean reward 68738.58",
+      "live_snapshot": "17-16 over 33 verified ladder games; last recorded displayed Score was 674.8 at 24 games",
       "matched_demand_animal_snapshot": "12-11 at 658.9609370608813; mean reward 67795.91",
       "activated_branch": "5-1 across 6 games; approximately 84.7k mean reward and +22.3k margin",
       "fallback_branch": "7-10 across 17 games; approximately 64.3k mean reward and -5.6k margin",
       "status": "COMPLETE"
     },
     "live_loss_counterfactuals": {
-      "dataset": "11 compact public opponent schedules with exact control reward reproduction",
+      "dataset": "16 loss and 17 win public opponent schedules with exact two-sided control reproduction and day 9-12 workload snapshots",
       "pressure_labor": "rejected: mean own reward delta -3040; improved/tied/worse 1/6/4",
       "lean_herd": "rejected: mean own reward delta -4105.73; improved/tied/worse 1/5/5",
       "late_strawberry": "rejected: mean own reward delta -2822.73; improved/tied/worse 0/9/2",
@@ -1269,9 +1269,14 @@
       "contextual_carried_crop_service": "11 losses improved/tied/worse 8/3/0 at +1303.09 mean own reward; converted episode 100989827 to 95691-94332; 12 wins stayed 12-0; next live win +395",
       "contextual_carried_broad_gate": "seeds 217-218 tied control at 22-10 with +226.72 mean-margin delta, zero errors, and no opponent regression; rejected for no extra wins",
       "high_throughput_arms": "full capacity -6623.27, center-out -24771, investment -33160.64, dynamic replacement -10944.36 mean own-reward delta; all rejected",
+      "economic_wheat_feed": "rejected: fixed replay wins 4, own reward improved/tied/worse 9/0/7 on 16 losses, minimum delta -23649",
+      "budgeted_routed_fertilizer": "two captured losses converted but independent win minimum own delta -11538; rejected",
+      "tiered_idle_fertilizer": "day-12 strawberry price >1.30 permits two-step idle staging, otherwise co-location; four applications maximum; audited 33 replay contexts improved/tied/worse 30/3/0 at +1220.21 mean own reward; two losses converted and all 17 wins preserved",
+      "tiered_broad_gates": "historical colocated seeds 219-220 tied control 21-11 and tiered seed 221 tied 10-6; final audited tiered source rerun over 219-221 tied control 31-17 with +768.02 mean-margin delta, zero errors, and no opponent regression; rejected for no extra wins",
+      "fertilizer_budget_frontier": "seed 221 closest margin: four applications -689, five -440, six -513 with no sixth-application yield gain; keep cap four",
       "promotion_rule": "fixed-opponent wins do not count without positive own reward delta and separate win-context validation"
     },
-    "status": "submitted incumbent at displayed Score 674.8; carried-service research rejected at broad win gate"
+    "status": "submitted incumbent; tiered fertilizer research rejected at broad win gate; seed 222 untouched"
   },
   "do_not_do": [
     "do not treat one favorable game as proof",

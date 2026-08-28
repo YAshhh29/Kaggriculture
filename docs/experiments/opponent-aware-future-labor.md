@@ -186,3 +186,65 @@ leaderboard claim.
 The next iteration needs either more genuinely new live losses or a mechanism
 that converts a fresh broad-gate game. Another threshold over the same 11
 losses is not justified.
+
+## Late Value Fertilizer And Feed Iteration
+
+The live replay league was refreshed from public metadata to 33 ladder games:
+16 losses and 17 wins. Player identity is now resolved from the replay's agent
+names instead of the winner-first browser card. Each record captures day 9-12
+at hours 8 and 12, including worker positions, carried fertilizer, due melons
+and strawberries, harvest backlog, and pending animal service.
+
+The economic layer estimates fertilizer's marginal three-day crop units and
+compares their conservative sale value with selling the fertilizer. It also
+estimates whether animal product value justifies retaining one, two, or three
+days of wheat feed. The broad economic-feed arm was rejected: on the 16 losses
+it created four fixed-replay wins but improved/tied/worsened 9/0/7 on own
+reward, with a -23,649 floor. Shared-market wins do not repair that risk.
+
+Routed late strawberry service improved many contexts but displaced later work
+or shifted market timing. A four-application budget reduced the risk and
+converted two captured losses, but one independent win still lost 11,538 own
+reward. Restricting fertilizer to otherwise-idle carriers removed direct action
+displacement; restricting the staging distance to zero removed the remaining
+route-sensitive regression but reduced upside.
+
+The final research policy uses two tiers at day 12 hour 12:
+
+- strawberry price above 1.30 times base: an otherwise-idle fertilizer carrier
+  may move at most two steps toward an already-serviced or already-watered
+  strawberry;
+- otherwise: only an already-colocated idle carrier may fertilize; and
+- the full episode is capped at four applications with at least 50 coins of
+  modeled marginal value per application.
+
+It never overwrites feed, CARE, harvest, water, planting, or another assigned
+action. It retains the inherited three-land expansion and demand-selected herd.
+Exact replay validation:
+
+| Set | Result | Mean own delta | Minimum delta |
+| --- | ---: | ---: | ---: |
+| 16 captured losses | 2 converted; 14/2/0 improved/tied/worse | +1,266.38 | 0 |
+| 17 captured wins | 17 preserved; 16/1/0 improved/tied/worse | +1,176.76 | 0 |
+| Combined | 30/3/0 improved/tied/worse | +1,220.21 | 0 |
+
+Untouched broad gates still failed the required more-wins check:
+
+| Candidate | Seed | Candidate | Control | Margin delta |
+| --- | ---: | ---: | ---: | ---: |
+| Colocated-only | 219 | 10-6 | 10-6 | +623.81 |
+| Colocated-only | 220 | 11-5 | 11-5 | +510.57 |
+| Tiered | 221 | 10-6 | 10-6 | +537.38 |
+
+All three gates had zero errors and no opponent-level win regression. On seed
+221, four applications narrowed the closest loss from 1,321 to 689 coins. A
+fifth narrowed it to 440; a sixth worsened it to 513 and added no harvested
+units. More fertilizer is not monotonic. The tiered policy remains
+research-only and seed 222 is untouched.
+
+After the final audit corrected sale-to-sale opportunity costs and separated
+melon from strawberry proximity features, the exact current source was rerun
+over all three spent broad seeds. Candidate and control both finished 31-17;
+candidate mean margin improved from -8,470.54 to -7,702.52, a +768.02 delta.
+Every opponent-level win count was preserved. The formal decision remains
+`REJECT` because total wins did not increase.

@@ -14,80 +14,10 @@
 			"label": "Validate all package builders",
 			"type": "process",
 			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": ["-m", "unittest", "discover", "-s", "tests", "-p", "test_prepare_*.py", "-v"],
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Prepare learned service submission",
-			"type": "process",
-			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": ["-m", "tools.packaging.prepare_learned_service_submission"],
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Validate learned service Kaggle loader",
-			"type": "process",
-			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": ["-m", "tools.validation.validate_submission", "submissions\\learned-service\\main.py", "--seed", "184"],
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Validate learned service equivalence",
-			"type": "process",
-			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": ["-m", "tools.validation.validate_learned_service_equivalence", "submissions\\learned-service\\main.py", "--seed", "184"],
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Prepare demand animal submission",
-			"type": "process",
-			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": ["-m", "tools.packaging.prepare_demand_animal_submission"],
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Validate demand animal Kaggle loader",
-			"type": "process",
-			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": ["-m", "tools.validation.validate_submission", "submissions\\demand-animal\\main.py", "--seed", "186"],
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Validate demand animal equivalence",
-			"type": "process",
-			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": ["-m", "tools.validation.validate_demand_animal_equivalence", "submissions\\demand-animal\\main.py", "--seed", "186"],
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Smoke test shadow suite",
-			"type": "process",
-			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": ["-m", "research.analysis.run_overnight_shadow", "--seed-start", "188", "--seed-count", "1", "--opponent", "agents\\experimental_lifecycle_agent.py", "--output", "artifacts\\benchmarks\\shadow-smoke.json"],
-			"isBackground": false,
-			"problemMatcher": [],
-			"group": "test"
-		},
-		{
-			"label": "Run overnight shadow suite",
-			"type": "process",
-			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": ["-m", "research.analysis.run_overnight_shadow", "--seed-start", "188", "--seed-count", "10", "--output", "artifacts\\benchmarks\\overnight-shadow.json"],
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Run future labor gate",
-			"type": "process",
-			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": ["-m", "research.evaluation.evaluate_future_labor", "--seed-start", "213", "--seed-count", "1", "--output", "artifacts\\benchmarks\\v1327-opponent-aware-future-labor-broad-gate-seed213.json"],
+			"args": [
+				"-m", "unittest", "discover",
+				"-s", "tests", "-p", "test_prepare_*.py", "-v"
+			],
 			"isBackground": false,
 			"problemMatcher": []
 		},
@@ -95,7 +25,10 @@
 			"label": "Validate future labor Kaggle loader",
 			"type": "process",
 			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": ["-m", "tools.validation.validate_submission", "submissions\\future-labor\\main.py", "--seed", "214"],
+			"args": [
+				"-m", "tools.validation.validate_submission",
+				"submissions\\future-labor\\main.py", "--seed", "214"
+			],
 			"isBackground": false,
 			"problemMatcher": []
 		},
@@ -103,7 +36,10 @@
 			"label": "Validate future labor equivalence",
 			"type": "process",
 			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": ["-m", "tools.validation.validate_future_labor_equivalence", "submissions\\future-labor\\main.py", "--seed", "214"],
+			"args": [
+				"-m", "tools.validation.validate_future_labor_equivalence",
+				"submissions\\future-labor\\main.py", "--seed", "214"
+			],
 			"isBackground": false,
 			"problemMatcher": []
 		},
@@ -113,84 +49,24 @@
 			"command": "${workspaceFolder}\\.conda\\python.exe",
 			"args": [
 				"-m", "research.collection.collect_live_replay_league",
-				"--episode", "100978351:0",
-				"--episode", "100987550:1",
-				"--episode", "100989827:0",
-				"--episode", "100996743:1",
-				"--episode", "101001315:0",
-				"--episode", "101001339:1",
-				"--episode", "101003632:1",
-				"--episode", "101005953:0",
-				"--episode", "101012841:0",
-				"--episode", "101062971:1",
-				"--episode", "101108726:1",
+				"--episode", "100978351:auto",
+				"--episode", "100987550:auto",
+				"--episode", "100989827:auto",
+				"--episode", "100996743:auto",
+				"--episode", "101001315:auto",
+				"--episode", "101001339:auto",
+				"--episode", "101003632:auto",
+				"--episode", "101005953:auto",
+				"--episode", "101012841:auto",
+				"--episode", "101062971:auto",
+				"--episode", "101108726:auto",
+				"--episode", "101249934:auto",
+				"--episode", "101252113:auto",
+				"--episode", "101256603:auto",
+				"--episode", "101274763:auto",
+				"--episode", "101404130:auto",
+				"--team-name", "YASH JAIN",
 				"--output", "artifacts\\datasets\\v1327-future-labor-live-loss-league.json"
-			],
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Evaluate future labor live macro arms",
-			"type": "process",
-			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": [
-				"-m", "research.evaluation.evaluate_live_macro_arms",
-				"artifacts\\datasets\\v1327-future-labor-live-loss-league.json",
-				"--output", "artifacts\\benchmarks\\v1327-future-labor-live-macro-arms.json"
-			],
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Screen high-throughput live macro arms",
-			"type": "process",
-			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": [
-				"-m", "research.evaluation.evaluate_live_macro_arms",
-				"artifacts\\datasets\\v1327-future-labor-live-loss-league.json",
-				"--arm", "center_out",
-				"--arm", "investment",
-				"--arm", "dynamic_replacement",
-				"--output", "artifacts\\benchmarks\\v1327-high-throughput-live-losses.json"
-			],
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Evaluate colocated crop service live losses",
-			"type": "process",
-			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": [
-				"-m", "research.evaluation.evaluate_live_macro_arms",
-				"artifacts\\datasets\\v1327-future-labor-live-loss-league.json",
-				"--arm", "colocated_crop_service",
-				"--output", "artifacts\\benchmarks\\v1327-colocated-crop-service-live-losses.json"
-			],
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Evaluate guarded carried service live losses",
-			"type": "process",
-			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": [
-				"-m", "research.evaluation.evaluate_live_macro_arms",
-				"artifacts\\datasets\\v1327-future-labor-live-loss-league.json",
-				"--arm", "guarded_carried_crop_service",
-				"--output", "artifacts\\benchmarks\\v1327-guarded-carried-crop-service-live-losses.json"
-			],
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Evaluate contextual carried service live losses",
-			"type": "process",
-			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": [
-				"-m", "research.evaluation.evaluate_live_macro_arms",
-				"artifacts\\datasets\\v1327-future-labor-live-loss-league.json",
-				"--arm", "contextual_carried_crop_service",
-				"--output", "artifacts\\benchmarks\\v1327-contextual-carried-crop-service-live-losses.json"
 			],
 			"isBackground": false,
 			"problemMatcher": []
@@ -201,133 +77,68 @@
 			"command": "${workspaceFolder}\\.conda\\python.exe",
 			"args": [
 				"-m", "research.collection.collect_live_replay_league",
-				"--episode", "100980670:0",
-				"--episode", "100982965:1",
-				"--episode", "100985256:1",
-				"--episode", "100992124:0",
-				"--episode", "100994441:1",
-				"--episode", "100999028:1",
-				"--episode", "101008260:1",
-				"--episode", "101010534:0",
-				"--episode", "101015186:1",
-				"--episode", "101017422:1",
-				"--episode", "101035736:0",
-				"--episode", "101056283:0",
+				"--episode", "100980670:auto",
+				"--episode", "100982965:auto",
+				"--episode", "100985256:auto",
+				"--episode", "100992124:auto",
+				"--episode", "100994441:auto",
+				"--episode", "100999028:auto",
+				"--episode", "101008260:auto",
+				"--episode", "101010534:auto",
+				"--episode", "101015186:auto",
+				"--episode", "101017422:auto",
+				"--episode", "101035736:auto",
+				"--episode", "101056283:auto",
+				"--episode", "101165612:auto",
+				"--episode", "101211190:auto",
+				"--episode", "101258884:auto",
+				"--episode", "101341600:auto",
+				"--episode", "101419930:auto",
+				"--team-name", "YASH JAIN",
 				"--output", "artifacts\\datasets\\v1327-future-labor-live-win-league.json"
 			],
 			"isBackground": false,
 			"problemMatcher": []
 		},
 		{
-			"label": "Validate colocated crop service live wins",
+			"label": "Validate tiered fertilizer live losses",
+			"type": "process",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"-m", "research.evaluation.evaluate_live_macro_arms",
+				"artifacts\\datasets\\v1327-future-labor-live-loss-league.json",
+				"--arm", "tiered_value_fertilizer",
+				"--output", "artifacts\\benchmarks\\v1327-tiered-value-fertilizer-live-losses.json"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Validate tiered fertilizer live wins",
 			"type": "process",
 			"command": "${workspaceFolder}\\.conda\\python.exe",
 			"args": [
 				"-m", "research.evaluation.evaluate_live_macro_arms",
 				"artifacts\\datasets\\v1327-future-labor-live-win-league.json",
-				"--arm", "colocated_crop_service",
-				"--output", "artifacts\\benchmarks\\v1327-colocated-crop-service-live-wins.json"
+				"--arm", "tiered_value_fertilizer",
+				"--output", "artifacts\\benchmarks\\v1327-tiered-value-fertilizer-live-wins.json"
 			],
 			"isBackground": false,
 			"problemMatcher": []
 		},
 		{
-			"label": "Validate guarded crop service live wins",
-			"type": "process",
-			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": [
-				"-m", "research.evaluation.evaluate_live_macro_arms",
-				"artifacts\\datasets\\v1327-future-labor-live-win-league.json",
-				"--arm", "guarded_colocated_crop_service",
-				"--output", "artifacts\\benchmarks\\v1327-guarded-colocated-crop-service-live-wins.json"
-			],
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Validate contextual carried service live wins",
-			"type": "process",
-			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": [
-				"-m", "research.evaluation.evaluate_live_macro_arms",
-				"artifacts\\datasets\\v1327-future-labor-live-win-league.json",
-				"--arm", "contextual_carried_crop_service",
-				"--output", "artifacts\\benchmarks\\v1327-contextual-carried-crop-service-live-wins.json"
-			],
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Analyze closest guarded live loss",
-			"type": "process",
-			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": [
-				"-m", "research.analysis.compare_live_macro_episode",
-				"artifacts\\datasets\\v1327-future-labor-live-loss-league.json",
-				"100989827",
-				"--candidate", "agents\\experimental_guarded_colocated_crop_service_agent.py",
-				"--output", "artifacts\\benchmarks\\v1327-guarded-service-episode-100989827.json"
-			],
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Analyze guarded carried-service live loss",
-			"type": "process",
-			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": [
-				"-m", "research.analysis.compare_live_macro_episode",
-				"artifacts\\datasets\\v1327-future-labor-live-loss-league.json",
-				"100989827",
-				"--candidate", "agents\\experimental_guarded_carried_crop_service_agent.py",
-				"--output", "artifacts\\benchmarks\\v1327-guarded-carried-service-episode-100989827.json"
-			],
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Analyze contextual carried-service live loss",
-			"type": "process",
-			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": [
-				"-m", "research.analysis.compare_live_macro_episode",
-				"artifacts\\datasets\\v1327-future-labor-live-loss-league.json",
-				"100989827",
-				"--candidate", "agents\\experimental_contextual_carried_crop_service_agent.py",
-				"--output", "artifacts\\benchmarks\\v1327-contextual-carried-service-episode-100989827.json"
-			],
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
-			"label": "Run guarded crop service gate",
+			"label": "Revalidate tiered fertilizer spent gates",
 			"type": "process",
 			"command": "${workspaceFolder}\\.conda\\python.exe",
 			"args": [
 				"-m", "research.evaluation.evaluate_future_labor",
-				"--seed-start", "216",
-				"--seed-count", "1",
+				"--seed-start", "219", "--seed-count", "3",
 				"--control", "submissions\\future-labor\\main.py",
-				"--candidate", "agents\\experimental_guarded_colocated_crop_service_agent.py",
-				"--output", "artifacts\\benchmarks\\v1327-guarded-crop-service-broad-gate-seed216.json"
+				"--candidate", "agents\\experimental_tiered_value_fertilizer_agent.py",
+				"--output", "artifacts\\benchmarks\\v1327-tiered-value-fertilizer-spent-gates-219-221.json"
 			],
 			"isBackground": false,
 			"problemMatcher": []
-		},
-		{
-			"label": "Run contextual carried service gate",
-			"type": "process",
-			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": [
-				"-m", "research.evaluation.evaluate_future_labor",
-				"--seed-start", "218",
-				"--seed-count", "1",
-				"--control", "submissions\\future-labor\\main.py",
-				"--candidate", "agents\\experimental_contextual_carried_crop_service_agent.py",
-				"--output", "artifacts\\benchmarks\\v1327-contextual-carried-service-broad-gate-seed218.json"
-			],
-			"isBackground": false,
-			"problemMatcher": []
-		},
+		}
 	]
 }

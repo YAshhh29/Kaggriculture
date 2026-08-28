@@ -2036,12 +2036,58 @@ control. Candidate mean margin improved by 226.72, with zero errors and no
 opponent-level regression, but no extra broad-gate win. It is research-only and
 was not packaged or submitted.
 
+### Late Workload-Aware Value Fertilizer
+
+The replay league expanded to all 33 then-visible ladder games: 16 losses and
+17 wins. The collector now resolves our player index from replay agent names,
+supports conflict-checked append/refresh, and captures day 9-12 worker,
+fertilizer, premium-crop, and animal-service state at hours 8 and 12.
+
+Fertilizer ROI now estimates extra units over the three-day effect and compares
+their conservative sale value with selling fertilizer. A separate economic
+wheat reserve retains one to three feed days only when animal-product value
+beats wheat sale value. Combined fertilizer plus economic feed was rejected:
+it produced four fixed-replay wins but regressed seven of 16 own rewards, with
+a -23,649 minimum delta.
+
+The first routed strawberry policy improved 12 of 16 losses but had a -12,921
+outlier. A day-12 harvest-backlog guard made the loss set monotonic, then failed
+the independent win set at -13,289. A four-application budget converted two
+captured losses and averaged +2,759.31 there, but still had a -11,538 win-set
+outlier. Risk-constrained shallow trees also failed held-out zero-regression
+validation.
+
+The root cause was mechanism-level opportunity cost and market timing. The
+safe implementation runs after all productive assignments and may use only an
+otherwise-idle carrier on a strawberry already assigned water or already
+watered. A frozen day-12 price tier permits up to two staging steps above 1.30
+normalized strawberry price and requires co-location otherwise. Four total
+applications are allowed; each must model at least 50 coins of marginal value.
+
+Across 33 exact replay contexts, the audited tiered arm improved 30, tied
+three, regressed none, converted two captured losses, and preserved all 17
+captured wins. Mean own delta was +1,220.21. Colocated-only broad seeds 219-220 tied
+control at 21-11 while improving mean margin by 567.19. Tiered seed 221 tied
+control at 10-6 with +537.38 margin improvement. No gate added a win, so no
+package or upload was created. A five-application seed-221 probe narrowed a
+loss to 440 coins; six applications worsened it to 513 with no additional
+yield. Seed 222 remains untouched.
+
+The final audit put fertilizer and wheat opportunity costs on the same 75%
+sale-realization basis and separated melon versus strawberry proximity and
+fertilization features. The corrected source remained monotonic at 14/2/0 on
+losses (+1,266.38 mean) and 16/1/0 on wins (+1,176.76 mean). A combined rerun
+of spent broad seeds 219-221 stayed 31-17 for both candidate and control while
+improving candidate mean margin by 768.02. It remains rejected for no extra
+wins.
+
 ## What Comes Next
 
 1. Keep submission `55821334` frozen while matchmaking accumulates.
-2. Add genuinely new ladder losses to the exact replay league.
+2. Add genuinely new ladder losses beyond the current 33-game replay league.
 3. Require a fresh broad-gate win, not only positive reward or margin.
-4. Continue bounded fertilizer/service work without displacing animal care.
+4. Keep seed 222 untouched until a mechanism can close the remaining narrow
+  direct-match gap without increasing the fertilizer budget.
 
 ## Experiment Log
 

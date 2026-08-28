@@ -107,6 +107,21 @@ captured loss from 91,939-93,752 to 95,691-94,332 and remained monotonic on the
 control, though candidate margin improved by 226.72. It remains research-only;
 no package or upload was created.
 
+The replay league has since expanded to 33 verified ladder games: 16 losses and
+17 wins, with day 9-12 workload snapshots and replay-name player validation. A
+late fertilizer policy now estimates marginal premium-crop value, caps the
+episode at four applications, and uses only otherwise-idle carriers after
+productive work is assigned. Above 1.30 normalized strawberry price it permits
+two staging steps; otherwise it requires co-location.
+
+This audited tiered arm converted two captured losses and
+improved/tied/worsened 30/3/0 across all 33 contexts, with +1,220.21 mean own
+reward and every win preserved. The current-source rerun of broad seeds 219-221
+still tied the exact control at 31-17, despite a +768.02 mean-margin delta and
+no opponent regression. It remains research-only. A separate economic
+wheat-to-feed reserve was tested and rejected because it caused large
+own-reward regressions under shared-market feedback.
+
 The related three-arm tree is not promoted. Held-out wins were 35, 34, 35, 33,
 33, and 35 as training grew from 8 to 80 contexts; fixed cows stayed at 35 and
 the oracle reached 37. The learning curve is visible in
