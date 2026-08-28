@@ -11,8 +11,20 @@ from typing import Any
 def build_labels(
     dataset: dict[str, Any],
     evaluation: dict[str, Any],
+    *,
+    context: str = "day6_hour0",
+    selected_arms: tuple[str, ...] | None = None,
 ) -> dict[str, Any]:
-    """Join day-6 features to per-arm own rewards and oracle labels."""
+    """Join one decision context to per-arm own rewards and oracle labels."""
+    available_arms = set(evaluation.get("results", {}))
+    if "control" not in available_arms:
+        raise ValueError("Evaluation does not contain control outcomes")
+    missing_arms = set(selected_arms or ()) - available_arms
+    if missing_arms:
+        missing = ", ".join(sorted(missing_arms))
+        raise ValueError(
+            f"Evaluation does not contain requested arms: {missing}"
+        )
     features_by_episode = {
         int(record["episode_id"]): record
         for record in dataset["records"]
@@ -23,6 +35,7 @@ def build_labels(
             for outcome in result["outcomes"]
         }
         for arm, result in evaluation["results"].items()
+        if selected_arms is None or arm in selected_arms or arm == "control"
     }
     arms = tuple(outcomes_by_arm)
     records = []
@@ -43,8 +56,16 @@ def build_labels(
         records.append(
             {
                 "episode_id": episode_id,
-                "features": source["day6_features"],
-                "shops": source["day6_shops"],
+                "features": (
+                    source["decision_contexts"][context]["features"]
+                    if "decision_contexts" in source
+                    else source["day6_features"]
+                ),
+                "shops": (
+                    source["decision_contexts"][context]["shops"]
+                    if "decision_contexts" in source
+                    else source["day6_shops"]
+                ),
                 "rewards": rewards,
                 "best_arm": best_arm,
                 "best_reward_delta": rewards[best_arm] - control,
@@ -54,6 +75,7 @@ def build_labels(
         float(record["best_reward_delta"]) for record in records
     )
     return {
+        "context": context,
         "arms": list(arms),
         "records": records,
         "oracle": {
@@ -75,10 +97,14 @@ def main() -> None:
     parser.add_argument("dataset", type=Path)
     parser.add_argument("evaluation", type=Path)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--context", default="day6_hour0")
+    parser.add_argument("--arm", action="append")
     args = parser.parse_args()
     report = build_labels(
         json.loads(args.dataset.read_text(encoding="utf-8")),
         json.loads(args.evaluation.read_text(encoding="utf-8")),
+        context=args.context,
+        selected_arms=tuple(args.arm) if args.arm else None,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(

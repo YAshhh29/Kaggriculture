@@ -52,14 +52,29 @@ def _deduplicate_episodes(
     return list(unique.values())
 
 
-def _leaf(records: list[dict[str, Any]]) -> tuple[dict[str, Any], float]:
+def _leaf(
+    records: list[dict[str, Any]],
+    minimum_arm_delta: float | None = None,
+) -> tuple[dict[str, Any], float]:
     arms = _available_arms(records)
     rewards = {
         arm: sum(float(record["rewards"][arm]) for record in records)
         for arm in arms
     }
+    eligible = tuple(
+        arm
+        for arm in arms
+        if arm == "control"
+        or minimum_arm_delta is None
+        or all(
+            float(record["rewards"][arm])
+            - float(record["rewards"]["control"])
+            >= minimum_arm_delta
+            for record in records
+        )
+    )
     arm = max(
-        arms,
+        eligible,
         key=lambda candidate: (
             rewards[candidate],
             candidate == "control",
@@ -70,6 +85,7 @@ def _leaf(records: list[dict[str, Any]]) -> tuple[dict[str, Any], float]:
         "arm": arm,
         "samples": len(records),
         "arm_rewards": rewards,
+        "eligible_arms": list(eligible),
     }, rewards[arm]
 
 
@@ -78,10 +94,11 @@ def train_tree(
     *,
     max_depth: int,
     min_leaf: int,
+    minimum_arm_delta: float | None = None,
     depth: int = 0,
 ) -> tuple[dict[str, Any], float]:
     """Fit a greedy tree maximizing summed observed own reward."""
-    leaf, leaf_score = _leaf(records)
+    leaf, leaf_score = _leaf(records, minimum_arm_delta)
     if depth >= max_depth or len(records) < 2 * min_leaf:
         return leaf, leaf_score
     best: tuple[
@@ -109,8 +126,8 @@ def train_tree(
             ]
             if len(left) < min_leaf or len(right) < min_leaf:
                 continue
-            _, left_score = _leaf(left)
-            _, right_score = _leaf(right)
+            _, left_score = _leaf(left, minimum_arm_delta)
+            _, right_score = _leaf(right, minimum_arm_delta)
             candidate = (
                 left_score + right_score,
                 feature,
@@ -127,12 +144,14 @@ def train_tree(
         left_records,
         max_depth=max_depth,
         min_leaf=min_leaf,
+        minimum_arm_delta=minimum_arm_delta,
         depth=depth + 1,
     )
     right, _ = train_tree(
         right_records,
         max_depth=max_depth,
         min_leaf=min_leaf,
+        minimum_arm_delta=minimum_arm_delta,
         depth=depth + 1,
     )
     return {
@@ -161,6 +180,7 @@ def leave_one_episode_out(
     *,
     max_depth: int,
     min_leaf: int,
+    minimum_arm_delta: float | None = None,
 ) -> dict[str, Any]:
     records = _restrict_arms(_deduplicate_episodes(records))
     arms = _available_arms(records)
@@ -176,6 +196,7 @@ def leave_one_episode_out(
             training,
             max_depth=max_depth,
             min_leaf=min_leaf,
+            minimum_arm_delta=minimum_arm_delta,
         )
         arm = select_arm(model, held_out["features"])
         reward = float(held_out["rewards"][arm])
@@ -191,6 +212,7 @@ def leave_one_episode_out(
     return {
         "max_depth": max_depth,
         "min_leaf": min_leaf,
+        "minimum_arm_delta": minimum_arm_delta,
         "mean_reward_delta": round(sum(deltas) / len(deltas), 2),
         "total_reward_delta": sum(deltas),
         "improved_tied_worse": [
@@ -211,6 +233,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("datasets", type=Path, nargs="+")
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--minimum-training-delta", type=float)
     args = parser.parse_args()
     records = [
         record
@@ -230,6 +253,7 @@ def main() -> None:
             records,
             max_depth=depth,
             min_leaf=min_leaf,
+            minimum_arm_delta=args.minimum_training_delta,
         )
         for depth, min_leaf in configurations
     ]
@@ -246,9 +270,11 @@ def main() -> None:
         records,
         max_depth=int(selected["max_depth"]),
         min_leaf=int(selected["min_leaf"]),
+        minimum_arm_delta=args.minimum_training_delta,
     )
     report = {
         "datasets": [str(dataset) for dataset in args.datasets],
+        "minimum_training_delta": args.minimum_training_delta,
         "validation": validation,
         "selected": selected,
         "model": model,

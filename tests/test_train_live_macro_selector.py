@@ -39,6 +39,24 @@ class TrainLiveMacroSelectorTests(unittest.TestCase):
             "fertilizer_70",
         )
 
+    def test_leaf_safety_floor_rejects_one_regressing_episode(self) -> None:
+        records = [
+            record(0, 100, 200),
+            record(0, 100, 200),
+            record(0, 100, 99),
+        ]
+
+        unsafe, _ = train_tree(records, max_depth=0, min_leaf=1)
+        safe, _ = train_tree(
+            records,
+            max_depth=0,
+            min_leaf=1,
+            minimum_arm_delta=0,
+        )
+
+        self.assertEqual(unsafe["arm"], "fertilizer_70")
+        self.assertEqual(safe["arm"], "control")
+
     def test_cross_validation_restricts_fold_to_common_arms(self) -> None:
         records = [
             record(0, 100, 120),
