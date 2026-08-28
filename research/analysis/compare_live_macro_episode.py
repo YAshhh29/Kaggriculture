@@ -22,10 +22,16 @@ CONTROL = ROOT / "submissions" / "future-labor" / "main.py"
 
 def trace_fertilizer_opportunities(
     agent: Any,
-) -> tuple[Any, list[dict[str, Any]], list[dict[str, float]]]:
+) -> tuple[
+    Any,
+    list[dict[str, Any]],
+    list[dict[str, float]],
+    list[dict[str, Any]],
+]:
     """Wrap an agent and capture nearby strawberry service opportunities."""
     events: list[dict[str, Any]] = []
     lock_contexts: list[dict[str, float]] = []
+    late_contexts: list[dict[str, Any]] = []
 
     def traced(observation: dict[str, Any]) -> dict[str, Any]:
         if (
@@ -50,8 +56,57 @@ def trace_fertilizer_opportunities(
             if isinstance(inventory, dict)
             and int(inventory.get("FERTILIZER", 0)) > 0
         ]
+        day = int(observation.get("day", 0))
+        hour = int(observation.get("hour", 0))
+        if (day, hour) in {(10, 12), (12, 12)}:
+            premium_tiles = []
+            for y, row in enumerate(farm.get("tiles", [])):
+                for x, tile in enumerate(row):
+                    if not isinstance(tile, dict) or tile.get("crop") not in {
+                        "MELON",
+                        "STRAWBERRY",
+                    }:
+                        continue
+                    premium_tiles.append(
+                        {
+                            "target": [x, y],
+                            "crop": tile["crop"],
+                            "age": day - int(tile.get("planted_day", day)),
+                            "watered": bool(tile.get("watered_today", False)),
+                            "stress": int(
+                                tile.get("consecutive_unwatered", 0)
+                            ),
+                            "yield_units": int(tile.get("yield_units", 0)),
+                            "fertilized_until_day": int(
+                                tile.get("fertilized_until_day", -1)
+                            ),
+                        }
+                    )
+            late_contexts.append(
+                {
+                    "day": day,
+                    "hour": hour,
+                    "unlocked_quadrants": list(
+                        farm.get("unlocked_quadrants", [])
+                    ),
+                    "workers": [
+                        {
+                            "worker": worker,
+                            "position": list(position),
+                            "fertilizer": (
+                                int(inventories[worker].get("FERTILIZER", 0))
+                                if worker < len(inventories)
+                                and isinstance(inventories[worker], dict)
+                                else 0
+                            ),
+                            "action": actions[worker][0],
+                        }
+                        for worker, position in enumerate(positions)
+                    ],
+                    "premium_tiles": premium_tiles,
+                }
+            )
         if carriers:
-            day = int(observation.get("day", 0))
             for y, row in enumerate(farm.get("tiles", [])):
                 for x, tile in enumerate(row):
                     if not isinstance(tile, dict):
@@ -88,7 +143,7 @@ def trace_fertilizer_opportunities(
                     )
         return decision
 
-    return traced, events, lock_contexts
+    return traced, events, lock_contexts, late_contexts
 
 
 def summarize_fertilizer_opportunities(
@@ -189,8 +244,8 @@ def main() -> None:
     }
     results = {}
     for name, agent in agents.items():
-        traced_agent, events, lock_contexts = trace_fertilizer_opportunities(
-            agent
+        traced_agent, events, lock_contexts, late_contexts = (
+            trace_fertilizer_opportunities(agent)
         )
         results[name] = compact(
             run_game(
@@ -206,6 +261,7 @@ def main() -> None:
             summarize_fertilizer_opportunities(events)
         )
         results[name]["day6_lock_context"] = lock_contexts[0]
+        results[name]["late_decision_contexts"] = late_contexts
     validate_control_reproduction(
         source,
         float(results["control"]["reward"]),

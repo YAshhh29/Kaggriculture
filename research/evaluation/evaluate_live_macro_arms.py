@@ -10,9 +10,15 @@ from typing import Any, Callable
 from agents.experimental_crop_pressure_labor_agent import (
     agent as pressure_labor,
 )
+from agents.experimental_budgeted_value_fertilizer_agent import (
+    agent as budgeted_value_fertilizer,
+)
 from agents.experimental_center_out_agent import agent as center_out
 from agents.experimental_colocated_crop_service_agent import (
     agent as colocated_crop_service,
+)
+from agents.experimental_colocated_value_fertilizer_agent import (
+    agent as colocated_value_fertilizer,
 )
 from agents.experimental_contextual_carried_crop_service_agent import (
     agent as contextual_carried_crop_service,
@@ -28,13 +34,31 @@ from agents.experimental_guarded_colocated_crop_service_agent import (
 from agents.experimental_guarded_carried_crop_service_agent import (
     agent as guarded_carried_crop_service,
 )
+from agents.experimental_idle_value_fertilizer_agent import (
+    agent as idle_value_fertilizer,
+)
 from agents.experimental_investment_agent import agent as investment
 from agents.experimental_late_strawberry_agent import agent as late_strawberry
+from agents.experimental_late_melon_fertilizer_agent import (
+    agent as late_melon_fertilizer,
+)
+from agents.experimental_late_strawberry_fertilizer_agent import (
+    agent as late_strawberry_fertilizer,
+)
+from agents.experimental_late_value_fertilizer_agent import (
+    agent as late_value_fertilizer,
+)
+from agents.experimental_late_value_fertilizer_feed_agent import (
+    agent as late_value_fertilizer_feed,
+)
 from agents.experimental_dynamic_replacement_agent import (
     agent as dynamic_replacement,
 )
 from agents.experimental_pressure_late_strawberry_agent import (
     agent as pressure_late_strawberry,
+)
+from agents.experimental_tiered_value_fertilizer_agent import (
+    agent as tiered_value_fertilizer,
 )
 from benchmark import load_agent_callable, load_simulator
 
@@ -136,18 +160,26 @@ def main() -> None:
     make, simulator_version = load_simulator()
     arms: dict[str, Agent] = {
         "control": load_agent_callable(CONTROL),
+        "budgeted_value_fertilizer": budgeted_value_fertilizer,
         "full_capacity": full_capacity,
         "center_out": center_out,
         "investment": investment,
         "dynamic_replacement": dynamic_replacement,
         "colocated_crop_service": colocated_crop_service,
+        "colocated_value_fertilizer": colocated_value_fertilizer,
         "contextual_carried_crop_service": contextual_carried_crop_service,
         "guarded_colocated_crop_service": guarded_colocated_crop_service,
         "guarded_carried_crop_service": guarded_carried_crop_service,
+        "idle_value_fertilizer": idle_value_fertilizer,
         "pressure_labor": pressure_labor,
         "lean_herd": lean_herd,
         "late_strawberry": late_strawberry,
+        "late_melon_fertilizer": late_melon_fertilizer,
+        "late_strawberry_fertilizer": late_strawberry_fertilizer,
+        "late_value_fertilizer": late_value_fertilizer,
+        "late_value_fertilizer_feed": late_value_fertilizer_feed,
         "pressure_late_strawberry": pressure_late_strawberry,
+        "tiered_value_fertilizer": tiered_value_fertilizer,
         "fertilizer_70": fertilizer_70,
     }
     if args.arm:
