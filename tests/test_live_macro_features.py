@@ -24,15 +24,23 @@ class LiveMacroFeaturesTests(unittest.TestCase):
             {"FERTILIZER": 1},
             {},
         ]
+        state["farms"][0]["tiles"][1][1] = {
+            "kind": "PLANT",
+            "crop": "MELON",
+            "planted_day": 0,
+            "watered_today": False,
+            "fertilized_until_day": -1,
+            "yield_units": 2,
+        }
 
         features = extract_live_macro_features(state)
 
         self.assertEqual(features["own_hands"], 1.0)
         self.assertEqual(features["own_land"], 2.0)
         self.assertEqual(features["own_wheat"], 1.0)
-        self.assertEqual(features["own_unwatered_crops"], 1.0)
+        self.assertEqual(features["own_unwatered_crops"], 2.0)
         self.assertEqual(features["own_stressed_crops"], 1.0)
-        self.assertEqual(features["own_harvestable_crop_units"], 2.0)
+        self.assertEqual(features["own_harvestable_crop_units"], 4.0)
         self.assertEqual(features["own_animals"], 1.0)
         self.assertEqual(features["own_cows"], 1.0)
         self.assertEqual(features["own_sheep"], 0.0)
@@ -40,7 +48,40 @@ class LiveMacroFeaturesTests(unittest.TestCase):
         self.assertEqual(features["own_due_feed"], 1.0)
         self.assertEqual(features["own_collectable_animal_units"], 3.0)
         self.assertEqual(features["own_fertilizer_stock"], 3.0)
-        self.assertEqual(features["own_service_tasks_per_worker"], 2.0)
+        self.assertEqual(features["own_service_tasks_per_worker"], 3.0)
+        self.assertEqual(features["own_fertilizer_carriers"], 1.0)
+        self.assertEqual(features["own_carried_fertilizer"], 1.0)
+        self.assertEqual(features["own_due_melons"], 1.0)
+        self.assertEqual(features["own_due_strawberries"], 0.0)
+        self.assertEqual(features["own_unfertilized_due_melons"], 1.0)
+        self.assertEqual(features["own_unfertilized_due_strawberries"], 0.0)
+        self.assertEqual(features["own_unfertilized_due_premium"], 1.0)
+        self.assertEqual(features["own_workers_on_due_melons"], 0.0)
+        self.assertEqual(features["own_workers_on_due_strawberries"], 0.0)
+        self.assertEqual(features["own_workers_on_due_premium"], 0.0)
+        self.assertEqual(
+            features["own_min_carrier_distance_to_due_melons"],
+            6.0,
+        )
+        self.assertEqual(
+            features["own_min_carrier_distance_to_due_strawberries"],
+            19.0,
+        )
+        self.assertEqual(
+            features["own_min_carrier_distance_to_due_premium"],
+            6.0,
+        )
+        self.assertEqual(features["own_pending_feed"], 1.0)
+        self.assertEqual(features["own_pending_care"], 1.0)
+        self.assertEqual(features["own_pending_animal_harvests"], 1.0)
+        self.assertEqual(
+            features["own_pending_fertilizer_collection"],
+            0.0,
+        )
+        self.assertEqual(
+            features["own_pending_animal_service_per_worker"],
+            1.5,
+        )
 
 
 if __name__ == "__main__":

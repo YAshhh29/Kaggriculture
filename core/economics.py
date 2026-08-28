@@ -22,6 +22,19 @@ BASE_PRICES = {
     "WOOL": 200,
     "FERTILIZER": 100,
 }
+SALE_REALIZATION = 0.75
+PREMIUM_CROP_WINDOWS = {
+    "MELON": {
+        "productive_ages": frozenset({6, 7, 8, 9, 10}),
+        "max_yield": 6,
+        "ongoing": False,
+    },
+    "STRAWBERRY": {
+        "productive_ages": frozenset({9, 11, 13, 15}),
+        "max_yield": 4,
+        "ongoing": True,
+    },
+}
 
 SHOP_PRODUCTS = {
     "BAKERY": ("EGG", "WHEAT"),
@@ -67,6 +80,84 @@ ANIMAL_SPECS = {
     "COW": AnimalSpec(400, "MILK", 8, 2, 3),
     "SHEEP": AnimalSpec(500, "WOOL", 6, 3, 4),
 }
+
+
+def fertilizer_marginal_units(day: int, tile: Any) -> int:
+    """Estimate extra units from one three-day premium-crop application."""
+    if not isinstance(tile, dict) or tile.get("kind") != "PLANT":
+        return 0
+    crop = str(tile.get("crop", ""))
+    spec = PREMIUM_CROP_WINDOWS.get(crop)
+    if spec is None or int(tile.get("fertilized_until_day", -1)) >= day:
+        return 0
+    age = day - int(tile.get("planted_day", day))
+    productive_days = sum(
+        age + offset in spec["productive_ages"]
+        and not (offset == 0 and tile.get("watered_today", False))
+        for offset in range(3)
+    )
+    if spec["ongoing"]:
+        return productive_days
+    current = int(tile.get("yield_units", 0))
+    maximum = int(spec["max_yield"])
+    baseline = min(maximum, current + productive_days)
+    fertilized = min(maximum, current + 2 * productive_days)
+    return max(0, fertilized - baseline)
+
+
+def fertilizer_net_value(
+    observation: dict[str, Any],
+    tile: Any,
+) -> float:
+    """Value extra crop units against selling the fertilizer itself."""
+    day = int(observation.get("day", 0))
+    marginal_units = fertilizer_marginal_units(day, tile)
+    if marginal_units <= 0:
+        return float("-inf")
+    crop = str(tile["crop"])
+    prices = observation.get("market", {}).get("prices", {})
+    crop_price = int(prices.get(crop, BASE_PRICES[crop]))
+    fertilizer_price = int(
+        prices.get("FERTILIZER", BASE_PRICES["FERTILIZER"])
+    )
+    return SALE_REALIZATION * (
+        marginal_units * crop_price - fertilizer_price
+    )
+
+
+def profitable_feed_reserve_days(observation: dict[str, Any]) -> int:
+    """Retain more wheat when one feed is worth more than selling it."""
+    player = int(observation["player"])
+    day = int(observation.get("day", 0))
+    if day >= 28:
+        return 0
+    animals = [
+        str(tile["animal"])
+        for row in observation["farms"][player].get("tiles", [])
+        for tile in row
+        if isinstance(tile, dict) and tile.get("animal") in ANIMAL_SPECS
+    ]
+    if not animals:
+        return 0
+    prices = observation.get("market", {}).get("prices", {})
+    wheat_price = int(prices.get("WHEAT", BASE_PRICES["WHEAT"]))
+    feed_values = [
+        SALE_REALIZATION
+        * int(
+            prices.get(
+                ANIMAL_SPECS[animal].product,
+                BASE_PRICES[ANIMAL_SPECS[animal].product],
+            )
+        )
+        for animal in animals
+    ]
+    mean_feed_value = sum(feed_values) / len(feed_values)
+    wheat_sale_value = SALE_REALIZATION * wheat_price
+    if mean_feed_value >= 2 * wheat_sale_value:
+        return 3
+    if mean_feed_value >= wheat_sale_value:
+        return 2
+    return 1
 
 
 @dataclass(frozen=True)
@@ -179,7 +270,7 @@ def rank_crop_opportunities(
     observation: dict[str, Any],
     crops: tuple[str, ...] = tuple(CROP_SPECS),
 ) -> list[CropOpportunity]:
-    """Rank feasible crops by labor-, horizon-, demand-, and supply-adjusted value."""
+    """Rank crops by labor, horizon, demand, and supply-adjusted value."""
     opportunities = [crop_opportunity(observation, crop) for crop in crops]
     return sorted(
         opportunities,
@@ -215,7 +306,8 @@ def animal_opportunity(
     fertilizer_units = max(0, days_remaining - 1)
     feed_cost = days_remaining * int(prices.get("WHEAT", BASE_PRICES["WHEAT"]))
     expected_net = (
-        product_units * int(prices.get(spec.product, BASE_PRICES[spec.product]))
+        product_units
+        * int(prices.get(spec.product, BASE_PRICES[spec.product]))
         + fertilizer_units
         * int(prices.get("FERTILIZER", BASE_PRICES["FERTILIZER"]))
         - feed_cost
@@ -256,7 +348,9 @@ def economic_snapshot(observation: dict[str, Any]) -> dict[str, Any]:
                 ).items()
             )
         ),
-        "crops": [asdict(item) for item in rank_crop_opportunities(observation)],
+        "crops": [
+            asdict(item) for item in rank_crop_opportunities(observation)
+        ],
         "animals": [
             asdict(animal_opportunity(observation, animal))
             for animal in ANIMAL_SPECS
