@@ -44,6 +44,38 @@
 			"problemMatcher": []
 		},
 		{
+			"label": "Prepare tiered fertilizer submission",
+			"type": "process",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"-m", "tools.packaging.prepare_tiered_fertilizer_submission"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Validate tiered fertilizer Kaggle loader",
+			"type": "process",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"-m", "tools.validation.validate_submission",
+				"submissions\\tiered-fertilizer\\main.py", "--seed", "214"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Validate tiered fertilizer equivalence",
+			"type": "process",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"-m", "tools.validation.validate_tiered_fertilizer_equivalence",
+				"submissions\\tiered-fertilizer\\main.py", "--seed", "221"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
 			"label": "Collect future labor live loss league",
 			"type": "process",
 			"command": "${workspaceFolder}\\.conda\\python.exe",
