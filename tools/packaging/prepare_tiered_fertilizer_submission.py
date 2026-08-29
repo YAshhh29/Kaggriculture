@@ -42,6 +42,10 @@ SOURCE_PATHS = (
 )
 OUTPUT = ROOT / "submissions" / "tiered-fertilizer" / "main.py"
 MANIFEST = ROOT / "submissions" / "tiered-fertilizer" / "manifest.json"
+FROZEN_SUBMISSION_ID = 55858409
+FROZEN_SHA256 = (
+    "bc0ab6cbc74cfc6f1f5e8ba02c42292b6cda718dc805b611d343e41587ac71e9"
+)
 MODULE_RENAMES = {
     GUARDED_SERVICE_PATH: {
         "SELECTION_DAY": "CROP_SERVICE_SELECTION_DAY",
@@ -147,20 +151,25 @@ def combined_source_hash() -> str:
 
 def _refuse_submitted_overwrite() -> None:
     if not OUTPUT.is_file() or not MANIFEST.is_file():
-        return
+        raise SystemExit(
+            f"Tiered-fertilizer submission {FROZEN_SUBMISSION_ID} is "
+            "immutable; the package and manifest must both remain present"
+        )
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
     submission_id = manifest.get("kaggle", {}).get("submission_id")
-    if submission_id is None:
-        return
-    expected_hash = str(manifest.get("sha256", ""))
+    if submission_id != FROZEN_SUBMISSION_ID:
+        raise SystemExit(
+            "Frozen tiered-fertilizer manifest does not identify "
+            f"submission {FROZEN_SUBMISSION_ID}"
+        )
     actual_hash = hashlib.sha256(OUTPUT.read_bytes()).hexdigest()
-    if actual_hash != expected_hash:
+    if actual_hash != FROZEN_SHA256:
         raise SystemExit(
             "Submitted tiered-fertilizer package hash does not match its "
-            "manifest"
+            "uploaded artifact"
         )
     raise SystemExit(
-        f"Tiered-fertilizer submission {submission_id} is immutable"
+        f"Tiered-fertilizer submission {FROZEN_SUBMISSION_ID} is immutable"
     )
 
 
@@ -198,10 +207,17 @@ def main() -> None:
                     ),
                 },
                 "kaggle": {
-                    "submission_id": None,
-                    "status": "NOT_SUBMITTED",
+                    "submission_id": FROZEN_SUBMISSION_ID,
+                    "submitted_at": "2026-08-29T03:18:16.050Z",
+                    "uploaded_bytes": 177080,
+                    "validation_episode_id": 102172512,
+                    "validation_rewards": [49447, 49745],
+                    "initial_score": 600.0,
+                    "public_leaderboard_selected": False,
+                    "incumbent_submission_id": 55821334,
+                    "status": "COMPLETE",
                 },
-                "status": "validated research package; upload requested",
+                "status": "submitted to Kaggle; validation complete",
             },
             indent=2,
         )

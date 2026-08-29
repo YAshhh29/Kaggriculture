@@ -1,7 +1,9 @@
 import ast
 import sys
+import tempfile
 import types
 import unittest
+from pathlib import Path
 from unittest.mock import patch
 
 from tools.packaging import prepare_tiered_fertilizer_submission
@@ -11,6 +13,10 @@ from tests.test_experimental_scale_agent import scale_observation
 class PrepareTieredFertilizerSubmissionTests(unittest.TestCase):
     def test_built_source_is_standalone_and_ends_with_agent(self) -> None:
         source = prepare_tiered_fertilizer_submission.build_source()
+        self.assertEqual(
+            source,
+            prepare_tiered_fertilizer_submission.build_source(),
+        )
         module = ast.parse(source)
         local_imports = [
             node.module
@@ -67,6 +73,28 @@ class PrepareTieredFertilizerSubmissionTests(unittest.TestCase):
                 self.assertTrue(path.is_file())
                 if path.suffix == ".py":
                     ast.parse(path.read_text(encoding="utf-8"))
+
+    def test_main_refuses_to_overwrite_submitted_package(self) -> None:
+        with self.assertRaisesRegex(SystemExit, "immutable"):
+            prepare_tiered_fertilizer_submission.main()
+
+    def test_main_refuses_to_rebuild_missing_frozen_artifact(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            with (
+                patch.object(
+                    prepare_tiered_fertilizer_submission,
+                    "OUTPUT",
+                    root / "main.py",
+                ),
+                patch.object(
+                    prepare_tiered_fertilizer_submission,
+                    "MANIFEST",
+                    root / "manifest.json",
+                ),
+                self.assertRaisesRegex(SystemExit, "immutable"),
+            ):
+                prepare_tiered_fertilizer_submission.main()
 
 
 if __name__ == "__main__":

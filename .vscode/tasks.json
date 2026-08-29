@@ -44,16 +44,6 @@
 			"problemMatcher": []
 		},
 		{
-			"label": "Prepare tiered fertilizer submission",
-			"type": "process",
-			"command": "${workspaceFolder}\\.conda\\python.exe",
-			"args": [
-				"-m", "tools.packaging.prepare_tiered_fertilizer_submission"
-			],
-			"isBackground": false,
-			"problemMatcher": []
-		},
-		{
 			"label": "Validate tiered fertilizer Kaggle loader",
 			"type": "process",
 			"command": "${workspaceFolder}\\.conda\\python.exe",

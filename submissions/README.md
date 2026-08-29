@@ -12,8 +12,9 @@ The tracked standalone Kaggle packages are:
   submission `55817911`.
 - `future-labor/` contains opponent-aware labor submission `55821334`, frozen
   at its manifest SHA-256.
-- `tiered-fertilizer/` contains the validated four-application, price-tiered
-  fertilizer candidate prepared for live Kaggle measurement.
+- `tiered-fertilizer/` contains four-application, price-tiered fertilizer
+  submission `55858409`, frozen after validation at `600.0`. The `647.1`
+  future-labor incumbent remains the public leaderboard selection.
 
 After a package is uploaded, its exact `main.py` is immutable. Each package's
 `manifest.json` records its hashes and supporting evidence.

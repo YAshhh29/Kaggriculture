@@ -36,8 +36,18 @@
     "spent_broad_gate": "31-17 candidate and control on seeds 219-221; +768.02 candidate mean-margin delta"
   },
   "kaggle": {
-    "submission_id": null,
-    "status": "NOT_SUBMITTED"
+    "submission_id": 55858409,
+    "submitted_at": "2026-08-29T03:18:16.050Z",
+    "uploaded_bytes": 177080,
+    "validation_episode_id": 102172512,
+    "validation_rewards": [
+      49447,
+      49745
+    ],
+    "initial_score": 600.0,
+    "public_leaderboard_selected": false,
+    "incumbent_submission_id": 55821334,
+    "status": "COMPLETE"
   },
-  "status": "validated research package; upload requested"
+  "status": "submitted to Kaggle; validation complete"
 }
