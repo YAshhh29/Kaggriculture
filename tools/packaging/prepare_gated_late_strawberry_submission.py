@@ -21,6 +21,10 @@ CANDIDATE_PATH = (
 SOURCE_PATHS = (*TIERED_SOURCE_PATHS, CANDIDATE_PATH)
 OUTPUT = ROOT / "submissions" / "gated-late-strawberry" / "main.py"
 MANIFEST = ROOT / "submissions" / "gated-late-strawberry" / "manifest.json"
+FROZEN_SUBMISSION_ID = 55887535
+FROZEN_SHA256 = (
+    "8959a066a54307a8411f85242da9a21b82c4b93c7a0d7d489440391c3e2153a1"
+)
 CANDIDATE_RENAMES = {
     "SELECTION_DAY": "LATE_STRAWBERRY_SELECTION_DAY",
 }
@@ -84,20 +88,25 @@ def combined_source_hash() -> str:
 
 def _refuse_submitted_overwrite() -> None:
     if not OUTPUT.is_file() or not MANIFEST.is_file():
-        return
+        raise SystemExit(
+            f"Gated late-strawberry submission {FROZEN_SUBMISSION_ID} is "
+            "immutable; the package and manifest must both remain present"
+        )
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
     submission_id = manifest.get("kaggle", {}).get("submission_id")
-    if submission_id is None:
-        return
-    expected_hash = str(manifest.get("sha256", ""))
+    if submission_id != FROZEN_SUBMISSION_ID:
+        raise SystemExit(
+            "Frozen gated late-strawberry manifest does not identify "
+            f"submission {FROZEN_SUBMISSION_ID}"
+        )
     actual_hash = hashlib.sha256(OUTPUT.read_bytes()).hexdigest()
-    if actual_hash != expected_hash:
+    if actual_hash != FROZEN_SHA256:
         raise SystemExit(
             "Submitted gated-late-strawberry package hash does not match "
-            "its manifest"
+            "its uploaded artifact"
         )
     raise SystemExit(
-        f"Gated late-strawberry submission {submission_id} is immutable"
+        f"Gated late-strawberry submission {FROZEN_SUBMISSION_ID} is immutable"
     )
 
 
@@ -139,10 +148,17 @@ def main() -> None:
                     ),
                 },
                 "kaggle": {
-                    "submission_id": None,
-                    "status": "NOT_SUBMITTED",
+                    "submission_id": FROZEN_SUBMISSION_ID,
+                    "submitted_at": "2026-08-30T09:45:30.007Z",
+                    "uploaded_bytes": 179213,
+                    "validation_episode_id": 103192514,
+                    "validation_rewards": [49447, 49745],
+                    "initial_score": 600.0,
+                    "public_leaderboard_selected": False,
+                    "incumbent_submission_id": 55858409,
+                    "status": "COMPLETE",
                 },
-                "status": "validated live-measurement candidate",
+                "status": "submitted to Kaggle; validation complete",
             },
             indent=2,
         )

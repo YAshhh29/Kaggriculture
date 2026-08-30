@@ -31,10 +31,11 @@ demand animal `55817911`, currently displayed at 655.8.
 
 Tiered fertilizer submission `55858409` is live from the exact package at
 `submissions/tiered-fertilizer/main.py`. Its first 27 public games went 15-12,
-ending at rating 671.96. It executes reliably: zero unfinished crop cycles,
-zero missed planting-day watering, and only one livestock loss across those
-games. Losses are primarily against larger mixed cow/sheep or goose economies,
-not basic service failure.
+reaching rating 671.96 at that snapshot; it is currently displayed at 649.3
+and remains the public leaderboard selection. It executes reliably: zero
+unfinished crop cycles, zero missed planting-day watering, and only one
+livestock loss across those games. Losses are primarily against larger mixed
+cow/sheep or goose economies, not basic service failure.
 
 The next live-measurement candidate is
 `agents/experimental_tiered_late_strawberry_agent.py`. It retains tiered
@@ -45,7 +46,10 @@ improved two losses, tied 25 games, regressed none by own reward, and changed
 the record from 15-12 to 17-10. Fresh seeds 222 and 223 tied control at 11-5
 each while improving mean margin, so the strict more-wins promotion gate still
 reports REJECT. The package is prepared for the explicitly requested live
-measurement at `submissions/gated-late-strawberry/main.py`.
+measurement at `submissions/gated-late-strawberry/main.py`. It was uploaded as
+submission `55887535`; validation episode `103192514` completed 49,447-49,745
+at initial score 600.0. The tiered incumbent remains selected while ladder
+matches evaluate the successor.
 
 ## Decision Flow
 

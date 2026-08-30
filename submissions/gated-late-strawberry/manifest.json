@@ -38,8 +38,18 @@
     "formal_local_promotion": "REJECT: broad wins tied despite no regression"
   },
   "kaggle": {
-    "submission_id": null,
-    "status": "NOT_SUBMITTED"
+    "submission_id": 55887535,
+    "submitted_at": "2026-08-30T09:45:30.007Z",
+    "uploaded_bytes": 179213,
+    "validation_episode_id": 103192514,
+    "validation_rewards": [
+      49447,
+      49745
+    ],
+    "initial_score": 600.0,
+    "public_leaderboard_selected": false,
+    "incumbent_submission_id": 55858409,
+    "status": "COMPLETE"
   },
-  "status": "validated live-measurement candidate"
+  "status": "submitted to Kaggle; validation complete"
 }

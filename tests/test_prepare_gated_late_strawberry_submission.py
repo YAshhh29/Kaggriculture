@@ -1,7 +1,9 @@
 import ast
 import sys
+import tempfile
 import types
 import unittest
+from pathlib import Path
 from unittest.mock import patch
 
 from tests.test_experimental_scale_agent import scale_observation
@@ -62,6 +64,28 @@ class PrepareGatedLateStrawberrySubmissionTests(unittest.TestCase):
             prepare_gated_late_strawberry_submission.build_source(),
             prepare_gated_late_strawberry_submission.build_source(),
         )
+
+    def test_main_refuses_to_overwrite_submitted_package(self) -> None:
+        with self.assertRaisesRegex(SystemExit, "immutable"):
+            prepare_gated_late_strawberry_submission.main()
+
+    def test_main_refuses_to_rebuild_missing_frozen_artifact(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            with (
+                patch.object(
+                    prepare_gated_late_strawberry_submission,
+                    "OUTPUT",
+                    root / "main.py",
+                ),
+                patch.object(
+                    prepare_gated_late_strawberry_submission,
+                    "MANIFEST",
+                    root / "manifest.json",
+                ),
+                self.assertRaisesRegex(SystemExit, "immutable"),
+            ):
+                prepare_gated_late_strawberry_submission.main()
 
 
 if __name__ == "__main__":
