@@ -56,9 +56,10 @@ def decide_value_fertilizer(
     application_limit: int | None = None,
     idle_enabled_crops: tuple[str, ...] = (),
     idle_maximum_distance: int = 2,
+    late_strawberry_slots: int = 0,
 ) -> dict[str, Any]:
     """Execute late value service through the deterministic scheduler."""
-    animal, _ = _choices(observation)
+    animal, crop = _choices(observation)
     paired = _crop_service_selected(observation)
     selected = _selected_value_crops(observation)
     value_crops = tuple(crop for crop in selected if crop in enabled_crops)
@@ -77,6 +78,14 @@ def decide_value_fertilizer(
         value_fertilization_limit=application_limit,
         idle_value_fertilization_crops=idle_value_crops,
         idle_fertilization_max_distance=idle_maximum_distance,
+        selective_late_rotation_crop=(
+            "STRAWBERRY"
+            if crop == "STRAWBERRY" and late_strawberry_slots > 0
+            else None
+        ),
+        selective_late_rotation_slots=(
+            late_strawberry_slots if crop == "STRAWBERRY" else 0
+        ),
     )
 
 

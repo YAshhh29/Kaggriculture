@@ -15,6 +15,8 @@ The tracked standalone Kaggle packages are:
 - `tiered-fertilizer/` contains four-application, price-tiered fertilizer
   submission `55858409`, frozen after validation at `600.0`. The `647.1`
   future-labor incumbent remains the public leaderboard selection.
+- `gated-late-strawberry/` contains the validated live-measurement candidate
+  that conditionally replaces eight spent melon slots with strawberries.
 
 After a package is uploaded, its exact `main.py` is immutable. Each package's
 `manifest.json` records its hashes and supporting evidence.

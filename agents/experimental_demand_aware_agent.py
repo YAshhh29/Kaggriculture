@@ -69,6 +69,9 @@ def decide_demand(
     value_fertilization_limit: int | None = None,
     idle_value_fertilization_crops: tuple[str, ...] = (),
     idle_fertilization_max_distance: int = 2,
+    selective_late_rotation_crop: str | None = None,
+    selective_late_rotation_slots: int = 0,
+    selective_late_rotation_source_crop: str = "MELON",
 ) -> dict[str, Any]:
     """Execute selected demand axes through the deterministic scheduler."""
     animal, crop = _choices(observation)
@@ -87,6 +90,11 @@ def decide_demand(
         land_reserves=(300, 300),
         late_rotation_crop=crop,
         late_rotation_last_plant_day=deadline,
+        selective_late_rotation_crop=selective_late_rotation_crop,
+        selective_late_rotation_slots=selective_late_rotation_slots,
+        selective_late_rotation_source_crop=(
+            selective_late_rotation_source_crop
+        ),
         release_idle_crop_reserve=True,
         prioritize_mature_harvest=True,
         hand_targets=hand_targets,

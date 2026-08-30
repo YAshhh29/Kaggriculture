@@ -18,6 +18,7 @@ def decide(
     *,
     maximum_distance: int = 2,
     maximum_applications: int = MAX_FERTILIZER_APPLICATIONS,
+    late_strawberry_slots: int = 0,
 ) -> dict[str, Any]:
     """Stage idle carriers without replacing productive assignments."""
     player = int(observation["player"])
@@ -34,6 +35,7 @@ def decide(
         idle_enabled_crops=("STRAWBERRY",),
         application_limit=max(0, maximum_applications - used),
         idle_maximum_distance=maximum_distance,
+        late_strawberry_slots=late_strawberry_slots,
     )
     actions = [decision.get("farmer", ["PASS"]), *decision.get("hands", [])]
     _APPLICATION_COUNTS[player] = used + sum(

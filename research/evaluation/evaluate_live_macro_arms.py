@@ -60,6 +60,9 @@ from agents.experimental_pressure_late_strawberry_agent import (
 from agents.experimental_tiered_value_fertilizer_agent import (
     agent as tiered_value_fertilizer,
 )
+from agents.experimental_tiered_late_strawberry_agent import (
+    agent as tiered_late_strawberry,
+)
 from benchmark import load_agent_callable, load_simulator
 
 
@@ -154,12 +157,24 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("dataset", type=Path)
     parser.add_argument("--arm", action="append")
+    parser.add_argument("--control", type=Path, default=CONTROL)
+    parser.add_argument("--episode", action="append", type=int)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     records = json.loads(args.dataset.read_text(encoding="utf-8"))["records"]
+    if args.episode:
+        requested = set(args.episode)
+        records = [
+            record
+            for record in records
+            if int(record["episode_id"]) in requested
+        ]
+        found = {int(record["episode_id"]) for record in records}
+        if missing := sorted(requested - found):
+            raise SystemExit(f"Unknown episode: {missing[0]}")
     make, simulator_version = load_simulator()
     arms: dict[str, Agent] = {
-        "control": load_agent_callable(CONTROL),
+        "control": load_agent_callable(args.control),
         "budgeted_value_fertilizer": budgeted_value_fertilizer,
         "full_capacity": full_capacity,
         "center_out": center_out,
@@ -180,6 +195,7 @@ def main() -> None:
         "late_value_fertilizer_feed": late_value_fertilizer_feed,
         "pressure_late_strawberry": pressure_late_strawberry,
         "tiered_value_fertilizer": tiered_value_fertilizer,
+        "tiered_late_strawberry": tiered_late_strawberry,
         "fertilizer_70": fertilizer_70,
     }
     if args.arm:
@@ -230,6 +246,11 @@ def main() -> None:
                 {
                     "simulator_version": simulator_version,
                     "dataset": str(args.dataset),
+                    "control": str(args.control),
+                    "episodes": [
+                        int(record["episode_id"])
+                        for record in records
+                    ],
                     "results": results,
                 },
                 indent=2,

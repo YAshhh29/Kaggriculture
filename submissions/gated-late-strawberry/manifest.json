@@ -1,0 +1,45 @@
+{
+  "created_at": "2026-08-30T09:27:03.368827+00:00",
+  "competition": "kaggriculture",
+  "agent": "main.py",
+  "sha256": "8959a066a54307a8411f85242da9a21b82c4b93c7a0d7d489440391c3e2153a1",
+  "combined_source_sha256": "0022b7d26f31853a3a1ee7628b59fddba29bc522ed14b8b559a4cc5a97779efc",
+  "source_files": [
+    "agents\\experimental_throughput_agent.py",
+    "agents\\experimental_premium_throughput_agent.py",
+    "agents\\experimental_adaptive_counter_agent.py",
+    "agents\\experimental_deadline_tapered_wheat_agent.py",
+    "policies\\macro_policy.py",
+    "policies\\service_policy.py",
+    "agents\\experimental_learned_service_agent.py",
+    "models\\v1327-service-bandit-depth2.json",
+    "core\\economics.py",
+    "policies\\demand_policy.py",
+    "agents\\experimental_demand_aware_agent.py",
+    "agents\\experimental_demand_animal_agent.py",
+    "agents\\experimental_future_labor_agent.py",
+    "core\\routing.py",
+    "policies\\live_macro_features.py",
+    "policies\\fertilizer_policy.py",
+    "agents\\experimental_guarded_colocated_crop_service_agent.py",
+    "agents\\experimental_late_value_fertilizer_agent.py",
+    "agents\\experimental_idle_value_fertilizer_agent.py",
+    "agents\\experimental_tiered_value_fertilizer_agent.py",
+    "agents\\experimental_tiered_late_strawberry_agent.py"
+  ],
+  "policy": "tiered four-application fertilizer plus eight late strawberry replacements when day-6 strawberry price is at least 1.30 and day-9 demand selects strawberry",
+  "validation": {
+    "live_contexts": 27,
+    "live_control": "15-12",
+    "live_candidate": "17-10",
+    "live_own_reward": "2 improved, 25 tied, 0 worse",
+    "fresh_seed_222": "11-5 candidate and control; +340.31 mean-margin delta",
+    "fresh_seed_223": "11-5 candidate and control; +246.88 mean-margin delta",
+    "formal_local_promotion": "REJECT: broad wins tied despite no regression"
+  },
+  "kaggle": {
+    "submission_id": null,
+    "status": "NOT_SUBMITTED"
+  },
+  "status": "validated live-measurement candidate"
+}

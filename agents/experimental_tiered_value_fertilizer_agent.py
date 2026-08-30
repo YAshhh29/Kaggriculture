@@ -40,12 +40,14 @@ def decide(
     observation: dict[str, Any],
     *,
     maximum_applications: int = 4,
+    late_strawberry_slots: int = 0,
 ) -> dict[str, Any]:
     """Run colocated service or value-supported two-step staging."""
     return decide_idle(
         observation,
         maximum_distance=_selected_staging_distance(observation),
         maximum_applications=maximum_applications,
+        late_strawberry_slots=late_strawberry_slots,
     )
 
 

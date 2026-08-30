@@ -1,6 +1,11 @@
 import inspect
+import json
+import tempfile
 import unittest
+from pathlib import Path
+from unittest.mock import patch
 
+from research.evaluation import evaluate_live_macro_arms
 from research.evaluation.evaluate_live_macro_arms import (
     replay_agent,
     summarize,
@@ -13,7 +18,10 @@ class EvaluateLiveMacroArmsTests(unittest.TestCase):
         actions = [{"id": index} for index in range(3)]
         agent = replay_agent(actions)
 
-        self.assertEqual(tuple(inspect.signature(agent).parameters), ("observation",))
+        self.assertEqual(
+            tuple(inspect.signature(agent).parameters),
+            ("observation",),
+        )
         self.assertEqual(agent({"step": 0}), {"id": 1})
 
     def test_summary_prioritizes_own_reward_delta(self) -> None:
@@ -39,6 +47,65 @@ class EvaluateLiveMacroArmsTests(unittest.TestCase):
         validate_control_reproduction(record, 100.0, 80.0)
         with self.assertRaisesRegex(ValueError, "episode 42"):
             validate_control_reproduction(record, 100.0, 81.0)
+
+    def test_main_records_control_and_episode_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            dataset = root / "dataset.json"
+            output = root / "report.json"
+            control = root / "control.py"
+            dataset.write_text(
+                json.dumps(
+                    {
+                        "records": [
+                            {
+                                "episode_id": 42,
+                                "seed": 1,
+                                "own_player": 0,
+                                "expected_rewards": [100.0, 90.0],
+                                "opponent_actions": [],
+                            }
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+            control.write_text("def agent(observation): return {}\n")
+            argv = [
+                "evaluate_live_macro_arms",
+                str(dataset),
+                "--control",
+                str(control),
+                "--episode",
+                "42",
+                "--arm",
+                "tiered_late_strawberry",
+                "--output",
+                str(output),
+            ]
+            with (
+                patch("sys.argv", argv),
+                patch.object(
+                    evaluate_live_macro_arms,
+                    "load_simulator",
+                    return_value=(object(), "1.32.7"),
+                ),
+                patch.object(
+                    evaluate_live_macro_arms,
+                    "load_agent_callable",
+                    return_value=lambda observation: {},
+                ),
+                patch.object(
+                    evaluate_live_macro_arms,
+                    "run_episode",
+                    return_value=(100.0, 90.0),
+                ),
+            ):
+                evaluate_live_macro_arms.main()
+
+            report = json.loads(output.read_text(encoding="utf-8"))
+            self.assertEqual(report["control"], str(control))
+            self.assertEqual(report["episodes"], [42])
 
 
 if __name__ == "__main__":

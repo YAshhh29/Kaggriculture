@@ -116,6 +116,51 @@ class ExperimentalLateValueFertilizerAgentTests(unittest.TestCase):
             ("MELON",),
         )
 
+    def test_late_strawberry_slots_require_strawberry_demand(self) -> None:
+        state = scale_observation(day=12, hour=12)
+        for crop, expected_slots in (("WHEAT", 0), ("STRAWBERRY", 4)):
+            with (
+                patch(
+                    "agents.experimental_late_value_fertilizer_agent."
+                    "_choices",
+                    return_value=("COW", crop),
+                ),
+                patch(
+                    "agents.experimental_late_value_fertilizer_agent."
+                    "_crop_service_selected",
+                    return_value=False,
+                ),
+                patch(
+                    "agents.experimental_late_value_fertilizer_agent."
+                    "_selected_value_crops",
+                    return_value=(),
+                ),
+                patch(
+                    "agents.experimental_late_value_fertilizer_agent."
+                    "_selected_hand_targets",
+                    return_value=tuple([12] * 30),
+                ),
+                patch(
+                    "agents.experimental_late_value_fertilizer_agent."
+                    "decide_demand",
+                    return_value={
+                        "farmer": ["PASS"],
+                        "hands": [],
+                        "market": [],
+                    },
+                ) as demand,
+            ):
+                decide_value_fertilizer(
+                    state,
+                    economic_feed=False,
+                    late_strawberry_slots=4,
+                )
+
+            self.assertEqual(
+                demand.call_args.kwargs["selective_late_rotation_slots"],
+                expected_slots,
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

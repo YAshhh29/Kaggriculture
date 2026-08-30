@@ -161,6 +161,41 @@
 			],
 			"isBackground": false,
 			"problemMatcher": []
+		},
+		{
+			"label": "Validate gated late strawberry package",
+			"type": "process",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"-m", "unittest", "-v",
+				"tests.test_prepare_gated_late_strawberry_submission"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Validate gated late strawberry Kaggle loader",
+			"type": "process",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"-m", "tools.validation.validate_submission",
+				"submissions\\gated-late-strawberry\\main.py",
+				"--seed", "223"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Validate gated late strawberry equivalence",
+			"type": "process",
+			"command": "${workspaceFolder}\\.conda\\python.exe",
+			"args": [
+				"-m", "tools.validation.validate_gated_late_strawberry_equivalence",
+				"submissions\\gated-late-strawberry\\main.py",
+				"--seed", "223"
+			],
+			"isBackground": false,
+			"problemMatcher": []
 		}
 	]
 }
