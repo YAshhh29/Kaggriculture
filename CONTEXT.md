@@ -30,12 +30,11 @@ inherited fallback. The latest-two tracked pair is future labor `55821334` plus
 demand animal `55817911`, currently displayed at 655.8.
 
 Tiered fertilizer submission `55858409` is live from the exact package at
-`submissions/tiered-fertilizer/main.py`. Its first 27 public games went 15-12,
-reaching rating 671.96 at that snapshot; it is currently displayed at 649.3
-and remains the public leaderboard selection. It executes reliably: zero
-unfinished crop cycles, zero missed planting-day watering, and only one
-livestock loss across those games. Losses are primarily against larger mixed
-cow/sheep or goose economies, not basic service failure.
+`submissions/tiered-fertilizer/main.py`. Its current 35 public games are 18-17
+at displayed rating 649.3, and it remains the public leaderboard selection.
+The first 27-game analysis set had zero unfinished crop cycles, zero missed
+planting-day watering, and only one livestock loss. Losses are primarily
+against larger mixed cow/sheep or goose economies, not basic service failure.
 
 The next live-measurement candidate is
 `agents/experimental_tiered_late_strawberry_agent.py`. It retains tiered
@@ -43,13 +42,14 @@ fertilizer and locks a day-6 value gate. When normalized strawberry price is at
 least 1.30 and day-9 demand selects strawberry, it replaces eight spent melon
 slots with a late strawberry cohort. Across the 27 exact live schedules it
 improved two losses, tied 25 games, regressed none by own reward, and changed
-the record from 15-12 to 17-10. Fresh seeds 222 and 223 tied control at 11-5
+the record from 15-12 to 17-10. Eight newer, post-selection replays were an
+exact 3-5 tie between candidate and control, with zero own-reward regression.
+Combined over all 35 schedules, the candidate is 20-15 versus control 18-17,
+with 2/33/0 improved/tied/worse. Fresh seeds 222 and 223 tied control at 11-5
 each while improving mean margin, so the strict more-wins promotion gate still
-reports REJECT. The package is prepared for the explicitly requested live
-measurement at `submissions/gated-late-strawberry/main.py`. It was uploaded as
-submission `55887535`; validation episode `103192514` completed 49,447-49,745
-at initial score 600.0. The tiered incumbent remains selected while ladder
-matches evaluate the successor.
+reports REJECT. It was uploaded as submission `55887535`; validation episode
+`103192514` completed 49,447-49,745 at initial score 600.0. The tiered
+incumbent remains selected while ladder matches evaluate the successor.
 
 ## Decision Flow
 
@@ -128,13 +128,15 @@ wins and the next live win were preserved. Broad seeds 217-218 again tied
 control at 22-10 despite +226.72 mean-margin improvement. No new submission is
 justified without a fresh broad-gate win.
 
-The tiered submission's 27-game replay dataset contains 12 verified losses and
-15 verified wins. Losses average 318.8 harvested units versus 327.7 in wins,
+The tiered submission's analyzed 27-game selection dataset contains 12
+verified losses and 15 verified wins. Losses average 318.8 harvested units
+versus 327.7 in wins,
 but the larger separator is opponent reward: 77.5k in losses versus 53.1k in
 wins. A day-6 strawberry-value gate prevents the late cohort's one observed
 own-reward regression. The gated eight-slot arm converts episodes `102176636`
 and `102511739`, preserves every live win exactly, and improves/ties/worsens
-own reward 2/25/0. Untouched broad seeds 222 and 223 each tie the control's
-11-5 record with zero errors and positive margin deltas. Economic wheat
-retention remains rejected because shared-market effects produced a -23,649
-own-reward case.
+own reward 2/25/0. The eight-game post-selection holdout is exactly unchanged,
+making the combined 35-game counterfactual 20-15 versus 18-17 with own reward
+2/33/0. Untouched broad seeds 222 and 223 each tie the control's 11-5 record
+with zero errors and positive margin deltas. Economic wheat retention remains
+rejected because shared-market effects produced a -23,649 own-reward case.

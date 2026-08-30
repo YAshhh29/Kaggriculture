@@ -133,10 +133,19 @@ def main() -> None:
                     "is at least 1.30 and day-9 demand selects strawberry"
                 ),
                 "validation": {
-                    "live_contexts": 27,
-                    "live_control": "15-12",
-                    "live_candidate": "17-10",
-                    "live_own_reward": "2 improved, 25 tied, 0 worse",
+                    "selection_live_contexts": 27,
+                    "selection_live_control": "15-12",
+                    "selection_live_candidate": "17-10",
+                    "post_selection_live_holdout": (
+                        "8 contexts; candidate and control 3-5; "
+                        "0 improved, 8 tied, 0 worse"
+                    ),
+                    "combined_live_contexts": 35,
+                    "combined_live_control": "18-17",
+                    "combined_live_candidate": "20-15",
+                    "combined_live_own_reward": (
+                        "2 improved, 33 tied, 0 worse"
+                    ),
                     "fresh_seed_222": (
                         "11-5 candidate and control; +340.31 mean-margin delta"
                     ),
