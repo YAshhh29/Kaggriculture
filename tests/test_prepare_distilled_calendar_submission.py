@@ -70,6 +70,24 @@ class PrepareDistilledCalendarSubmissionTests(unittest.TestCase):
                     model_path
                 )
 
+    def test_main_refuses_to_overwrite_submitted_package(self) -> None:
+        with self.assertRaisesRegex(SystemExit, "55910432 is immutable"):
+            prepare_distilled_calendar_submission.main()
+
+    def test_main_refuses_to_rebuild_missing_frozen_artifact(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            missing = Path(directory) / "missing.py"
+            with patch.object(
+                prepare_distilled_calendar_submission,
+                "OUTPUT",
+                missing,
+            ):
+                with self.assertRaisesRegex(
+                    SystemExit,
+                    "package and manifest must both remain present",
+                ):
+                    prepare_distilled_calendar_submission.main()
+
     def test_checked_in_package_and_manifest_are_fresh(self) -> None:
         model = prepare_distilled_calendar_submission.load_verified_model()
         package_bytes = (

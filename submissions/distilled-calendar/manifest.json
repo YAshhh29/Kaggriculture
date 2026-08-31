@@ -55,8 +55,19 @@
     "limitation": "open-loop calendar; not a guaranteed leaderboard rating or a state-adaptive policy"
   },
   "kaggle": {
-    "submission_id": null,
-    "status": "NOT_SUBMITTED"
+    "submission_id": 55910432,
+    "submitted_at": "2026-08-31T07:38:03.267Z",
+    "uploaded_bytes": 19561,
+    "validation_episode_id": 103922332,
+    "validation_rewards": [
+      47243,
+      44975
+    ],
+    "initial_score": 600.0,
+    "public_leaderboard_selected": false,
+    "incumbent_submission_id": 55887535,
+    "incumbent_score_snapshot": 655.2,
+    "status": "COMPLETE"
   },
-  "status": "local validation complete; not submitted"
+  "status": "submitted to Kaggle; validation complete"
 }

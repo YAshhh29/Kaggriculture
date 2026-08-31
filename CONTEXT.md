@@ -9,7 +9,7 @@ Only the latest two submissions are actively tracked.
 ## Current Agent
 
 The current live leaderboard entry remains gated late strawberry submission
-`55887535`, recently displayed at 693.4. The next challenger is
+`55887535`, currently displayed at 655.2. The new challenger is
 `agents/experimental_distilled_calendar_agent.py`, an exact behavior clone of
 Crop Dusta player 0's public action calendar from episode `99058164`.
 
@@ -25,9 +25,11 @@ The model records public replay provenance and hashes. It uses no competitor
 source code or private data. Its package is
 `submissions/distilled-calendar/main.py`, SHA-256
 `43d24a73c346c7687e574de69b8ffaf0ef959b34649e4e333a70f3f6c44b0976`.
-It is locally validated but not yet submitted. This is an open-loop calendar,
-not a guaranteed 1000-1500 rating; the hard holdout includes six losses against
-the current rank-one win calendar.
+It was uploaded unchanged as submission `55910432`; validation episode
+`103922332` completed 47,243-44,975 at initial score 600.0. The gated incumbent
+remains selected. This is an open-loop calendar, not a guaranteed 1000-1500
+rating; the hard holdout includes six losses against the current rank-one win
+calendar.
 
 The older future-labor agent inherits two deterministic service templates
 selected on day 1:
@@ -71,7 +73,7 @@ each while improving mean margin, so the strict more-wins promotion gate still
 reports REJECT. It was uploaded as submission `55887535`; validation episode
 `103192514` completed 49,447-49,745 at initial score 600.0. The tiered
 incumbent remained selected during initial validation; the gated submission
-later reached 693.4 and became the selected leaderboard entry.
+later became the selected leaderboard entry and currently displays 655.2.
 
 ## Decision Flow
 

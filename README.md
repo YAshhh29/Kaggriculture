@@ -46,6 +46,8 @@ both positions and eight opponent families, with zero errors and no
 opponent-family win regression. A harder 60-game elite holdout finished
 41-15-4 versus 10-50-0. The package is locally validated at SHA-256
 `43d24a73c346c7687e574de69b8ffaf0ef959b34649e4e333a70f3f6c44b0976`.
+It was uploaded unchanged as submission `55910432`; validation episode
+`103922332` completed 47,243-44,975 at initial score 600.0.
 
 This evidence justifies a live challenger, not a guaranteed leaderboard score.
 The policy is open-loop and still went 4-6 against the current rank-one win
@@ -56,7 +58,7 @@ and exact gates are documented in
 The two tracked Kaggle policies are deliberately separate:
 
 - `submissions/gated-late-strawberry/main.py` is submission `55887535`, the
-  current selected entry at the recent 693.4 snapshot.
+  current selected entry at the 655.2 snapshot.
 - `submissions/tiered-fertilizer/main.py` is submission `55858409`, the frozen
   control at the recorded 649.3 snapshot.
 

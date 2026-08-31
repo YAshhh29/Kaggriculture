@@ -26,6 +26,11 @@ OUTPUT = ROOT / "submissions" / "distilled-calendar" / "main.py"
 MANIFEST = ROOT / "submissions" / "distilled-calendar" / "manifest.json"
 MODEL_TYPE = "public_calendar_behavior_clone"
 SIMULATOR_VERSION = "1.32.7"
+FROZEN_SUBMISSION_ID = 55910432
+FROZEN_SHA256 = (
+    "43d24a73c346c7687e574de69b8ffaf0ef959b34649e4e333a70f3f6c44b0976"
+)
+FROZEN_BYTES = 19561
 
 
 def load_verified_model(path: Path = MODEL_PATH) -> dict[str, Any]:
@@ -114,7 +119,37 @@ def combined_source_hash() -> str:
     return digest.hexdigest()
 
 
+def _refuse_submitted_overwrite() -> None:
+    if not OUTPUT.is_file() or not MANIFEST.is_file():
+        raise SystemExit(
+            f"Distilled-calendar submission {FROZEN_SUBMISSION_ID} is "
+            "immutable; the package and manifest must both remain present"
+        )
+    manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
+    submission_id = manifest.get("kaggle", {}).get("submission_id")
+    if submission_id != FROZEN_SUBMISSION_ID:
+        raise SystemExit(
+            "Frozen distilled-calendar manifest does not identify "
+            f"submission {FROZEN_SUBMISSION_ID}"
+        )
+    package_bytes = OUTPUT.read_bytes()
+    if len(package_bytes) != FROZEN_BYTES:
+        raise SystemExit(
+            "Submitted distilled-calendar package length does not match "
+            "the uploaded artifact"
+        )
+    if hashlib.sha256(package_bytes).hexdigest() != FROZEN_SHA256:
+        raise SystemExit(
+            "Submitted distilled-calendar package hash does not match "
+            "the uploaded artifact"
+        )
+    raise SystemExit(
+        f"Distilled-calendar submission {FROZEN_SUBMISSION_ID} is immutable"
+    )
+
+
 def main() -> None:
+    _refuse_submitted_overwrite()
     source = build_source()
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text(source, encoding="utf-8")
@@ -195,10 +230,18 @@ def main() -> None:
                     ),
                 },
                 "kaggle": {
-                    "submission_id": None,
-                    "status": "NOT_SUBMITTED",
+                    "submission_id": FROZEN_SUBMISSION_ID,
+                    "submitted_at": "2026-08-31T07:38:03.267Z",
+                    "uploaded_bytes": FROZEN_BYTES,
+                    "validation_episode_id": 103922332,
+                    "validation_rewards": [47243, 44975],
+                    "initial_score": 600.0,
+                    "public_leaderboard_selected": False,
+                    "incumbent_submission_id": 55887535,
+                    "incumbent_score_snapshot": 655.2,
+                    "status": "COMPLETE",
                 },
-                "status": "local validation complete; not submitted",
+                "status": "submitted to Kaggle; validation complete",
             },
             indent=2,
         )
