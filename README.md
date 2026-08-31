@@ -16,6 +16,10 @@ Runnable agents are in `agents/`, shared mechanics in `core/`, strategy
 interfaces in `policies/`, experiments in `research/`, tests in `tests/`, and
 exact standalone packages in `submissions/`.
 
+The isolated reinforcement-learning workspace is in [rl/README.md](rl/README.md).
+It starts with dependency-free state, action, replay, reward, and rollout
+contracts before introducing a neural framework.
+
 ## What The Competition Is
 
 Kaggriculture is a two-player, turn-based resource-management game. The

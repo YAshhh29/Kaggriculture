@@ -18,6 +18,15 @@ artifacts/ui/
 artifacts/*.json
 artifacts/*.html
 
+# Local RL datasets, model checkpoints, and run outputs can contain Kaggle
+# Competition Data or large generated artifacts. Keep only their guides.
+rl/data/*
+!rl/data/README.md
+rl/checkpoints/*
+!rl/checkpoints/README.md
+rl/runs/*
+!rl/runs/README.md
+
 # Standalone upload outputs are reproducible from packaging scripts. Keep the
 # legacy packages locally without adding every generated bundle.
 submissions/legacy/
