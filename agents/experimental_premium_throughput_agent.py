@@ -128,6 +128,9 @@ def _dense_crop_plans(
     selective_late_rotation_crop: str | None = None,
     selective_late_rotation_slots: int = 0,
     selective_late_rotation_source_crop: str = "MELON",
+    opening_fill_nw: bool = False,
+    opening_melon_slots: int = 12,
+    opening_fill_last_plant_day: int = 0,
 ) -> tuple[dict[str, Any], ...]:
     managed = _managed_crop_plans(
         farm,
@@ -169,6 +172,16 @@ def _dense_crop_plans(
             ),
         )[:max(0, selective_late_rotation_slots)]
     }
+    opening_fill_crops = {
+        str(plan["id"]): (
+            "MELON" if index < opening_melon_slots else "WHEAT"
+        )
+        for index, plan in enumerate(
+            plan
+            for plan in DENSE_CROP_PLANS
+            if plan["quadrant"] == "NW"
+        )
+    } if opening_fill_nw else {}
     plans: list[dict[str, Any]] = []
     for plan in managed:
         if tuple(plan["position"]) in reserved_positions:
@@ -179,6 +192,20 @@ def _dense_crop_plans(
             if isinstance(tile, dict) and tile.get("kind") == "PLANT"
             else None
         )
+        opening_crop = opening_fill_crops.get(str(plan["id"]))
+        if opening_crop is not None and (
+            current_crop == opening_crop
+            or tile is None and day <= opening_fill_last_plant_day
+        ):
+            plans.append(
+                {
+                    **plan,
+                    "crop": opening_crop,
+                    "first_plant_day": 0,
+                    "last_plant_day": opening_fill_last_plant_day,
+                }
+            )
+            continue
         selective_late_active = (
             str(plan["id"]) in selective_late_ids
             and current_crop == selective_late_rotation_crop
@@ -336,10 +363,20 @@ def _seed_orders(
     extra_wheat_seed_buffer: int = 0,
     reserve_seeds_per_quadrant: bool = False,
     max_active_crops_per_quadrant: int | None = None,
+    crop_worker_reserve: int | None = None,
 ) -> list[list[Any]]:
-    available_crop_workers = max(
+    existing_crop_workers = max(
         0,
         1 + len(farm.get("hands", [])) - animal_crew_size,
+    )
+    reserved_crop_workers = (
+        0
+        if crop_worker_reserve is None
+        else crop_worker_reserve * len(set(pair_quadrants))
+    )
+    available_crop_workers = min(
+        1 + len(farm.get("hands", [])),
+        max(existing_crop_workers, reserved_crop_workers),
     )
     pair_count = min(len(pair_quadrants), available_crop_workers // 2)
     pairs_by_quadrant = Counter(pair_quadrants[:pair_count])
@@ -1645,6 +1682,12 @@ def decide(
     value_fertilization_limit: int | None = None,
     idle_value_fertilization_crops: tuple[str, ...] = (),
     idle_fertilization_max_distance: int = 2,
+    crop_worker_reserves_by_day: tuple[int, ...] | None = None,
+    opening_fill_nw: bool = False,
+    opening_melon_slots: int = 12,
+    opening_fill_last_plant_day: int = 0,
+    final_crop_liquidation: bool = False,
+    animals_before_seeds: bool = False,
 ) -> dict[str, Any]:
     """Fill paid land with replay-grounded premium crops and stable crews."""
     player = int(observation["player"])
@@ -1652,6 +1695,13 @@ def decide(
     private = observation["private"]
     market_state = observation.get("market", {})
     day = int(observation["day"])
+    daily_crop_worker_reserve = (
+        crop_worker_reserve
+        if crop_worker_reserves_by_day is None
+        else crop_worker_reserves_by_day[
+            min(day, len(crop_worker_reserves_by_day) - 1)
+        ]
+    )
     desired_animals = tuple(
         plan
         for plan in animal_plans
@@ -1671,6 +1721,9 @@ def decide(
         selective_late_rotation_crop,
         selective_late_rotation_slots,
         selective_late_rotation_source_crop,
+        opening_fill_nw,
+        opening_melon_slots,
+        opening_fill_last_plant_day,
     )
     animal_crew_size = _animal_crew_size(day)
     pair_quadrants = _pair_quadrants(day, farm)
@@ -1682,6 +1735,7 @@ def decide(
             farm,
             private,
             market_state,
+            crop_plans if final_crop_liquidation else (),
         )
     else:
         farmer_action, hands_actions = _worker_actions(
@@ -1690,7 +1744,7 @@ def decide(
             farm,
             private,
             crop_plans,
-            crop_worker_reserve,
+            daily_crop_worker_reserve,
             release_idle_crop_reserve,
             actionable_crop_reserve,
             prioritize_mature_harvest,
@@ -1781,8 +1835,10 @@ def decide(
                 extra_wheat_seed_buffer,
                 reserve_seeds_per_quadrant,
                 max_active_crops_per_quadrant,
+                daily_crop_worker_reserve,
             ),
         ],
+        animals_before_seeds=animals_before_seeds,
     )
     return {
         "farmer": farmer_action,

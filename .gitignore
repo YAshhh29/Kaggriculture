@@ -6,6 +6,7 @@ __pycache__/
 
 # Generated experiment outputs stay local. Curated models and small fixtures
 # belong in models/ and tests/fixtures/ instead.
+artifacts/analysis/
 artifacts/benchmarks/
 artifacts/datasets/
 artifacts/diagnostics/

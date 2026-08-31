@@ -1,0 +1,27 @@
+{
+  "episodes": [
+    {"band": "top3", "score": 3037.2, "submission_id": 55829779, "team_name": "Crop Dusta", "episode_id": 103268405},
+    {"band": "top3", "score": 3037.2, "submission_id": 55829779, "team_name": "Crop Dusta", "episode_id": 103116564},
+    {"band": "top3", "score": 3037.2, "submission_id": 55829779, "team_name": "Crop Dusta", "episode_id": 102958094},
+    {"band": "top3", "score": 3037.2, "submission_id": 55829779, "team_name": "Crop Dusta", "episode_id": 102694950},
+    {"band": "top3", "score": 2941.5, "submission_id": 55865730, "team_name": "Yusuke Hayashi", "episode_id": 103185757},
+    {"band": "top3", "score": 2941.5, "submission_id": 55865730, "team_name": "Yusuke Hayashi", "episode_id": 103116566},
+    {"band": "top3", "score": 2941.5, "submission_id": 55865730, "team_name": "Yusuke Hayashi", "episode_id": 102908979},
+    {"band": "top50", "score": 2602.0, "submission_id": 55880633, "team_name": "Tom3", "episode_id": 103257049},
+    {"band": "top50", "score": 2602.0, "submission_id": 55880633, "team_name": "Tom3", "episode_id": 103185637},
+    {"band": "top50", "score": 2602.0, "submission_id": 55880633, "team_name": "Tom3", "episode_id": 103141003},
+    {"band": "top500", "score": 1980.5, "submission_id": 55849130, "team_name": "JianYuan Deng", "episode_id": 103281600},
+    {"band": "top500", "score": 1980.5, "submission_id": 55849130, "team_name": "JianYuan Deng", "episode_id": 103263719},
+    {"band": "top500", "score": 1980.5, "submission_id": 55849130, "team_name": "JianYuan Deng", "episode_id": 103176605},
+    {"band": "score1500", "score": 1499.9, "submission_id": 55818651, "team_name": "XU XUXIANG", "episode_id": 103270280},
+    {"band": "score1500", "score": 1499.9, "submission_id": 55818651, "team_name": "XU XUXIANG", "episode_id": 103223758},
+    {"band": "score1500", "score": 1499.9, "submission_id": 55818651, "team_name": "XU XUXIANG", "episode_id": 103118797},
+    {"band": "score1000", "score": 1000.9, "submission_id": 55383262, "team_name": "Caio Coelho", "episode_id": 103138591},
+    {"band": "score1000", "score": 1000.9, "submission_id": 55383262, "team_name": "Caio Coelho", "episode_id": 103112063},
+    {"band": "score1000", "score": 1000.9, "submission_id": 55383262, "team_name": "Caio Coelho", "episode_id": 102752956},
+    {"band": "ours", "score": 649.3, "submission_id": 55858409, "team_name": "YASH JAIN", "episode_id": 103127484},
+    {"band": "ours", "score": 649.3, "submission_id": 55858409, "team_name": "YASH JAIN", "episode_id": 103080737},
+    {"band": "ours", "score": 649.3, "submission_id": 55858409, "team_name": "YASH JAIN", "episode_id": 102939961},
+    {"band": "ours", "score": 649.3, "submission_id": 55858409, "team_name": "YASH JAIN", "episode_id": 102875468}
+  ]
+}

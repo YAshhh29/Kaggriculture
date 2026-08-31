@@ -37,14 +37,28 @@ than one unusually profitable game against `starter`.
 
 ## Current Status
 
+The current promotion candidate is a public-data behavior clone of Crop Dusta
+player 0's complete episode-99058164 action calendar. It addresses the measured
+architecture gap directly: the exact standalone package averages 160.86
+plantings per game on its broad gate, versus 77.46 for tiered fertilizer. It
+finished 72-8 against tiered's 55-25 over 80 games on unseen seeds 225-229,
+both positions and eight opponent families, with zero errors and no
+opponent-family win regression. A harder 60-game elite holdout finished
+41-15-4 versus 10-50-0. The package is locally validated at SHA-256
+`43d24a73c346c7687e574de69b8ffaf0ef959b34649e4e333a70f3f6c44b0976`.
+
+This evidence justifies a live challenger, not a guaranteed leaderboard score.
+The policy is open-loop and still went 4-6 against the current rank-one win
+calendar. Public replay provenance, mechanics, rejected hand-tuned experiments,
+and exact gates are documented in
+[docs/RULES_STRATEGY_AUDIT_2026-08-30.md](docs/RULES_STRATEGY_AUDIT_2026-08-30.md).
+
 The two tracked Kaggle policies are deliberately separate:
 
-- `submissions/future-labor/main.py` is submission `55821334`: opponent-aware
-  peak labor over demand-animal safety. At 24 ladder games it is 13-11 at Score
-  674.8.
-- `submissions/demand-animal/main.py` is submission `55817911`: the day-6
-  shop-demand selector over safe expansion-animal plans. It currently displays
-  Score 655.8.
+- `submissions/gated-late-strawberry/main.py` is submission `55887535`, the
+  current selected entry at the recent 693.4 snapshot.
+- `submissions/tiered-fertilizer/main.py` is submission `55858409`, the frozen
+  control at the recorded 649.3 snapshot.
 
 Deadline submission `55795843`, compact submission `55778351`, and adaptive
 submission `55770236` remain immutable historical controls but are no longer
@@ -130,7 +144,7 @@ the oracle reached 37. The learning curve is visible in
 Earlier economic and daily seed-admission learners remain rejected. Dynamic
 expansion was neutral, removing lifecycle windows overloaded crop service,
 bounded wheat trading lost 2-8, and broader anticipatory CARE lost 4-6. Future
-labor `55821334` and demand animal `55817911` are the current latest-two live
+labor `55821334` and demand animal `55817911` were an earlier latest-two live
 pair. The shadow tree remains research-only.
 
 Initial 600.0 ratings are not proof of ladder strength. Submitting more agents

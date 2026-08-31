@@ -1,0 +1,62 @@
+{
+  "created_at": "2026-08-31T06:23:07.433976+00:00",
+  "competition": "kaggriculture",
+  "agent": "main.py",
+  "sha256": "43d24a73c346c7687e574de69b8ffaf0ef959b34649e4e333a70f3f6c44b0976",
+  "combined_source_sha256": "9ee6bc643b8fb89e8551ae722f4aa5a8de89989b2cc51a5b265cd5775f7de6c0",
+  "source_files": [
+    "agents\\experimental_distilled_calendar_agent.py",
+    "models\\v1327-public-calendar-99058164.json"
+  ],
+  "policy": "behavior clone of a public elite action calendar, preserving simulator-native no-op and atomic planting semantics",
+  "training_data": {
+    "source_episode_id": 99058164,
+    "source_team": "Crop Dusta",
+    "replay_sha256": "a1f21a92764f4f1e655a0108b989484b65328b0a1105823c43297bab82762e17",
+    "actions_sha256": "298bcb8d2e5b7543bc1403e76062ef6b9a0bc778ce95365ccc5395e99fb22cef",
+    "records": 720,
+    "license": "Apache-2.0",
+    "license_basis": "Kaggriculture Rules 1.7 Data Access and Use, 2.4 Competition Data, and 2.11 Environments & Public Availability",
+    "distribution_constraint": "private participant repository; do not publish Competition Data to non-participants"
+  },
+  "validation": {
+    "evidence_path": "research\\evaluation\\distilled_calendar_validation_2026-08-31.json",
+    "evidence_sha256": "a44d056970b2c29a2d9ab16ebb9fa340cdc2f6a5dc8dfcada2b20bbedb9f8a12",
+    "source_replay_decisions": "719/719 exact",
+    "package_equivalence": {
+      "seed": 230,
+      "decisions": 1438,
+      "mismatches": 0
+    },
+    "broad_gate": {
+      "runtime": "standalone package",
+      "seeds": "225-229",
+      "games": 80,
+      "candidate": "72-8",
+      "control": "55-25",
+      "candidate_mean_margin": 48431.57,
+      "control_mean_margin": -4401.48,
+      "errors": 0,
+      "mean_plant_cycles": 160.86,
+      "control_mean_plant_cycles": 77.46
+    },
+    "hard_holdout": {
+      "runtime": "action-equivalent source",
+      "seeds": "230-234",
+      "games": 60,
+      "candidate": "41-15-4",
+      "control": "10-50-0",
+      "candidate_mean_margin": 24347.3,
+      "control_mean_margin": -31668.1,
+      "errors": 0,
+      "mean_plant_cycles": 154.3,
+      "control_mean_plant_cycles": 77.73
+    },
+    "limitation": "open-loop calendar; not a guaranteed leaderboard rating or a state-adaptive policy"
+  },
+  "kaggle": {
+    "submission_id": null,
+    "status": "NOT_SUBMITTED"
+  },
+  "status": "local validation complete; not submitted"
+}

@@ -1108,6 +1108,7 @@ def _final_day_actions(
     farm: dict[str, Any],
     private: dict[str, Any],
     market: dict[str, Any],
+    crop_plans: tuple[dict[str, Any], ...] = (),
 ) -> tuple[list[str], list[list[str]]]:
     positions = [
         tuple(farm["farmer"]),
@@ -1116,7 +1117,11 @@ def _final_day_actions(
     inventories = _inventories(private, len(positions))
     shed_tiles = _shed_access_tiles(len(farm["tiles"]))
     prices = market.get("prices", {})
-    products = {str(plan["product"]) for plan in animal_plans}
+    products = {
+        str(plan["product"]) for plan in animal_plans
+    } | {
+        str(plan["crop"]) for plan in crop_plans
+    }
     reserved: set[tuple[str, str]] = set()
     actions: list[list[str]] = []
 
@@ -1156,6 +1161,36 @@ def _final_day_actions(
                         plan_id, target, ["COLLECT_FERTILIZER"],
                     )
                 )
+        for plan in crop_plans:
+            target = tuple(plan["position"])
+            tile = _tile_at(farm["tiles"], target)
+            if not _is_crop(tile, str(plan["crop"])):
+                continue
+            crop = str(plan["crop"])
+            age = 29 - int(tile["planted_day"])
+            units = int(tile.get("yield_units", 0))
+            if units <= 0 or age < int(CROP_DATA[crop]["first_yield"]):
+                continue
+            distance = _distance(position, target)
+            return_distance = min(
+                _distance(target, shed_tile) for shed_tile in shed_tiles
+            )
+            if hour + distance + 1 + return_distance > 22:
+                continue
+            plan_id = str(plan["id"])
+            if (plan_id, "HARVEST") in reserved:
+                continue
+            value = int(prices.get(crop, 0)) * units
+            candidates.append(
+                (
+                    value / (distance + 1),
+                    value,
+                    -distance,
+                    plan_id,
+                    target,
+                    ["HARVEST"],
+                )
+            )
         if candidates:
             _, _, _, plan_id, target, operation = max(
                 candidates,
