@@ -35,6 +35,8 @@ feed safety, and liquidation one tested residual at a time.
 | `rollout.py` | Thin adapter around the official simulator for paired evaluation. |
 | `ARCHITECTURE.md` | Why the learner is hierarchical, recurrent, and residual. |
 | `ROADMAP.md` | Staged experiments and promotion gates. |
+| `PUBLIC_META_AUDIT.md` | Source-linked audit of public 1800-2800 agents and RL evidence. |
+| `FAST_TRACK.md` | Immediate guarded-portfolio implementation and release gates. |
 | `data/` | Local replay-derived datasets. Ignored by Git. |
 | `checkpoints/` | Local learned parameters. Ignored by Git. |
 | `runs/` | Local metrics and experiment outputs. Ignored by Git. |
@@ -84,7 +86,9 @@ candidate in both seats and prints paired totals. Pass `--player 0` or
 4. Read `runtime.py` and note the fail-closed executor boundary.
 5. Read `replay_dataset.py` to understand replay time alignment.
 6. Read `ARCHITECTURE.md` for the eventual actor, critic, and league.
-7. Follow `ROADMAP.md`; do not jump directly to million-game self-play.
+7. Read `PUBLIC_META_AUDIT.md` for current competition evidence.
+8. Use `FAST_TRACK.md` for the immediate deterministic challenger.
+9. Follow `ROADMAP.md`; do not jump directly to million-game self-play.
 
 ## Data Rule
 

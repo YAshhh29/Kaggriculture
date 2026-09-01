@@ -1,5 +1,18 @@
 # RL Experiment Roadmap
 
+## Two-Speed Strategy
+
+The public meta audit changed sequencing, not the core architecture.
+
+- **Fast track:** implement guarded recovery, inventory, liquidation, market,
+  and route-portfolio residuals around the current calendar. See
+  `FAST_TRACK.md`.
+- **Learning track:** use those same bounded residuals as supervised/RL Options.
+
+We do not wait for neural training before testing deterministic residuals, and
+we do not let fast-track rules expand into an untestable second strategic
+policy. Every intervention remains isolated and ablated.
+
 ## Phase 0: Contracts
 
 Status: implemented.
