@@ -157,7 +157,7 @@ class ExperimentalCalendarRecoveryAgentTests(unittest.TestCase):
         self.assertEqual(decision["farmer"], ["EAST"])
         self.assertEqual(decision["market"], [])
 
-    def test_terminal_commitment_advances_stranded_calendar_harvest(self) -> None:
+    def test_terminal_commitment_advances_stranded_harvest(self) -> None:
         state = scale_observation(day=29, hour=7)
         state["step"] = 703
         state["farms"][0]["farmer"] = [3, 5]
@@ -200,7 +200,7 @@ class ExperimentalCalendarRecoveryAgentTests(unittest.TestCase):
 
         self.assertEqual(decision["farmer"], ["WEST"])
 
-    def test_terminal_commitment_keeps_returnable_calendar_harvest(self) -> None:
+    def test_terminal_commitment_keeps_returnable_harvest(self) -> None:
         state = scale_observation(day=29, hour=7)
         state["step"] = 703
         state["farms"][0]["farmer"] = [3, 5]

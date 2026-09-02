@@ -14,10 +14,8 @@ from agents.experimental_budgeted_value_fertilizer_agent import (
     agent as budgeted_value_fertilizer,
 )
 from agents.experimental_center_out_agent import agent as center_out
-from agents.experimental_calendar_recovery_agent import (
-    agent as calendar_recovery,
-)
 from agents.experimental_distilled_calendar_agent import decide as calendar
+from rl.candidate_a import build_candidate_a_agent
 from agents.experimental_colocated_crop_service_agent import (
     agent as colocated_crop_service,
 )
@@ -68,20 +66,50 @@ from agents.experimental_tiered_late_strawberry_agent import (
     agent as tiered_late_strawberry,
 )
 from benchmark import load_agent_callable, load_simulator
-from rl.candidate_a import build_candidate_a_agent
+from rl.candidate_a import (
+    CandidateATelemetry,
+    build_candidate_a_agent,
+)
 
 
 ROOT = Path(__file__).resolve().parents[2]
 CONTROL = ROOT / "submissions" / "future-labor" / "main.py"
 Agent = Callable[[dict[str, Any]], dict[str, Any]]
-calendar_recovery_only = build_candidate_a_agent(
-    baseline=calendar,
-    enable_liquidation=False,
-)
-calendar_liquidation_only = build_candidate_a_agent(
-    baseline=calendar,
-    enable_recovery=False,
-)
+InstrumentedArm = Callable[[CandidateATelemetry | None], Agent]
+
+
+def _calendar_recovery_arm(telemetry: CandidateATelemetry | None = None) -> Agent:
+    return build_candidate_a_agent(baseline=calendar, telemetry=telemetry)
+
+
+def _calendar_recovery_only_arm(
+    telemetry: CandidateATelemetry | None = None,
+) -> Agent:
+    return build_candidate_a_agent(
+        baseline=calendar,
+        enable_liquidation=False,
+        telemetry=telemetry,
+    )
+
+
+def _calendar_liquidation_only_arm(
+    telemetry: CandidateATelemetry | None = None,
+) -> Agent:
+    return build_candidate_a_agent(
+        baseline=calendar,
+        enable_recovery=False,
+        telemetry=telemetry,
+    )
+
+
+calendar_recovery = _calendar_recovery_arm()
+calendar_recovery_only = _calendar_recovery_only_arm()
+calendar_liquidation_only = _calendar_liquidation_only_arm()
+INSTRUMENTED_ARMS: dict[str, InstrumentedArm] = {
+    "calendar_recovery": _calendar_recovery_arm,
+    "calendar_recovery_only": _calendar_recovery_only_arm,
+    "calendar_liquidation_only": _calendar_liquidation_only_arm,
+}
 
 
 def replay_agent(actions: list[dict[str, Any]]) -> Agent:
@@ -136,6 +164,31 @@ def validate_control_reproduction(
             f"Control did not reproduce episode {episode_id}: "
             f"{actual} != {expected}"
         )
+
+
+def _aggregate_telemetry(
+    episodes: list[dict[str, Any]],
+) -> dict[str, Any]:
+    guard_types: dict[str, int] = {}
+    guard_firings = 0
+    prevented_invalid = 0
+    recovered_units = 0
+    sold_units = 0
+    for episode in episodes:
+        guard_firings += int(episode.get("guard_firings", 0))
+        prevented_invalid += int(episode.get("prevented_invalid", 0))
+        recovered_units += int(episode.get("recovered_units", 0))
+        sold_units += int(episode.get("sold_units", 0))
+        for guard_type, count in episode.get("guard_types", {}).items():
+            guard_types[guard_type] = guard_types.get(guard_type, 0) + count
+    return {
+        "episodes": len(episodes),
+        "guard_firings": guard_firings,
+        "guard_types": guard_types,
+        "prevented_invalid": prevented_invalid,
+        "recovered_units": recovered_units,
+        "sold_units": sold_units,
+    }
 
 
 def summarize(
@@ -227,10 +280,22 @@ def main() -> None:
         }
     results: dict[str, Any] = {}
     control_rewards: dict[int, float] = {}
+    telemetry_reports: dict[str, Any] = {}
     for name, arm in arms.items():
         outcomes = []
+        episode_telemetry: list[dict[str, Any]] = []
         for record in records:
-            reward, opponent_reward = run_episode(make, arm, record)
+            telemetry = (
+                CandidateATelemetry()
+                if name in INSTRUMENTED_ARMS
+                else None
+            )
+            agent = (
+                INSTRUMENTED_ARMS[name](telemetry)
+                if name in INSTRUMENTED_ARMS
+                else arm
+            )
+            reward, opponent_reward = run_episode(make, agent, record)
             episode_id = int(record["episode_id"])
             outcomes.append(
                 {
@@ -249,6 +314,13 @@ def main() -> None:
                     reward,
                     opponent_reward,
                 )
+            if telemetry is not None:
+                episode_telemetry.append(
+                    {
+                        "episode_id": episode_id,
+                        **telemetry.summarize(),
+                    }
+                )
             print(
                 f"{name} episode={episode_id} reward={reward} "
                 f"opponent={opponent_reward}"
@@ -256,19 +328,27 @@ def main() -> None:
         results[name] = {"outcomes": outcomes}
         if name != "control":
             results[name]["summary"] = summarize(outcomes, control_rewards)
+            if episode_telemetry:
+                telemetry_reports[name] = {
+                    "episodes": episode_telemetry,
+                    "aggregate": _aggregate_telemetry(episode_telemetry),
+                }
         args.output.parent.mkdir(parents=True, exist_ok=True)
+        report_payload = {
+            "simulator_version": simulator_version,
+            "dataset": str(args.dataset),
+            "control": str(args.control),
+            "episodes": [
+                int(record["episode_id"])
+                for record in records
+            ],
+            "results": results,
+        }
+        if telemetry_reports:
+            report_payload["residual_instrumentation"] = telemetry_reports
         args.output.write_text(
             json.dumps(
-                {
-                    "simulator_version": simulator_version,
-                    "dataset": str(args.dataset),
-                    "control": str(args.control),
-                    "episodes": [
-                        int(record["episode_id"])
-                        for record in records
-                    ],
-                    "results": results,
-                },
+                report_payload,
                 indent=2,
             )
             + "\n",

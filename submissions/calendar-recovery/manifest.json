@@ -1,0 +1,58 @@
+{
+  "created_at": "2026-09-02T16:39:35.577215+00:00",
+  "competition": "kaggriculture",
+  "agent": "main.py",
+  "sha256": "4f06533878e140ccca39a1a7ca4efbcc3db8d371d219a3ebe862373e3b3aaa80",
+  "combined_source_sha256": "3e16f778f0d90a528f368382a7a6b8b60a0d9d32d9a76c1faed08ab3fc83ccfa",
+  "parent_submission": {
+    "submission_id": 55910432,
+    "sha256": "43d24a73c346c7687e574de69b8ffaf0ef959b34649e4e333a70f3f6c44b0976"
+  },
+  "source_files": [
+    "submissions/distilled-calendar/main.py (parent)",
+    "models\\v1327-public-calendar-99058164.json",
+    "core\\routing.py",
+    "policies\\macro_policy.py",
+    "policies\\live_macro_features.py",
+    "rl\\action_space.py",
+    "rl\\features.py",
+    "rl\\policy.py",
+    "rl\\runtime.py",
+    "rl\\candidate_a.py",
+    "agents\\experimental_calendar_recovery_agent.py"
+  ],
+  "policy": "Crop Dusta public calendar plus guarded weed/setup recovery, live terminal liquidation, and stranded harvest commitments",
+  "training_data": {
+    "parent_source_episode_id": 99058164,
+    "parent_source_team": "Crop Dusta",
+    "parent_actions_sha256": "298bcb8d2e5b7543bc1403e76062ef6b9a0bc778ce95365ccc5395e99fb22cef"
+  },
+  "validation": {
+    "captured_live_gate": {
+      "record": "21-12",
+      "parent_wins_preserved": "20/20",
+      "loss_conversions": 1,
+      "own_reward_regressions": 0,
+      "reports": [
+        "artifacts/benchmarks/v1327-candidate-a-terminal-live-losses-13.json",
+        "artifacts/benchmarks/v1327-candidate-a-terminal-live-wins-20.json"
+      ]
+    },
+    "fresh_family_gate": {
+      "seeds": "240-249",
+      "games": 120,
+      "control": "93-23",
+      "candidate": "103-17",
+      "errors": 0,
+      "mean_margin_delta": 696.89,
+      "decision": "PROMOTE",
+      "report": "artifacts/benchmarks/v1327-candidate-a-terminal-fresh-gate-240-249.json"
+    },
+    "package_equivalence": {
+      "seed": 230,
+      "decisions": 1438,
+      "mismatches": 0
+    }
+  },
+  "status": "candidate A package built; upload only after gates"
+}

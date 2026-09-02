@@ -75,6 +75,76 @@ class EpisodeRecovery:
     terminal: dict[int, TerminalCommitment] = field(default_factory=dict)
 
 
+@dataclass(frozen=True)
+class GuardEvent:
+    guard_type: str
+    worker: int
+    step: int
+    original_action: tuple[Any, ...]
+    replacement_action: tuple[Any, ...]
+    detail: str = ""
+
+
+@dataclass
+class CandidateATelemetry:
+    """Structured residual counters for benchmark output only."""
+
+    events: list[GuardEvent] = field(default_factory=list)
+    prevented_invalid: int = 0
+    recovered_units: int = 0
+    sold_units: int = 0
+    terminal_inventory_before: dict[str, int] = field(default_factory=dict)
+    terminal_inventory_after: dict[str, int] = field(default_factory=dict)
+
+    def record(
+        self,
+        *,
+        guard_type: str,
+        worker: int,
+        step: int,
+        original: list[Any],
+        replacement: list[Any],
+        detail: str = "",
+    ) -> None:
+        if original == replacement:
+            return
+        self.events.append(
+            GuardEvent(
+                guard_type=guard_type,
+                worker=worker,
+                step=step,
+                original_action=tuple(original),
+                replacement_action=tuple(replacement),
+                detail=detail,
+            )
+        )
+
+    def summarize(self) -> dict[str, Any]:
+        by_guard: dict[str, int] = {}
+        for event in self.events:
+            by_guard[event.guard_type] = by_guard.get(event.guard_type, 0) + 1
+        return {
+            "guard_firings": len(self.events),
+            "guard_types": by_guard,
+            "prevented_invalid": self.prevented_invalid,
+            "recovered_units": self.recovered_units,
+            "sold_units": self.sold_units,
+            "terminal_inventory_before": dict(self.terminal_inventory_before),
+            "terminal_inventory_after": dict(self.terminal_inventory_after),
+            "events": [
+                {
+                    "guard_type": event.guard_type,
+                    "worker": event.worker,
+                    "step": event.step,
+                    "original_action": list(event.original_action),
+                    "replacement_action": list(event.replacement_action),
+                    "detail": event.detail,
+                }
+                for event in self.events
+            ],
+        }
+
+
 class CandidateAPolicy:
     """Enable only the deterministic Candidate A residual Options."""
 
@@ -114,8 +184,14 @@ class CandidateAPolicy:
 class CandidateAExecutor(ResidualExecutor):
     """Apply narrow recovery and liquidation without replacing strategy."""
 
-    def __init__(self, baseline: Baseline) -> None:
+    def __init__(
+        self,
+        baseline: Baseline,
+        *,
+        telemetry: CandidateATelemetry | None = None,
+    ) -> None:
         self._baseline = baseline
+        self._telemetry = telemetry
         self._episodes: dict[int, EpisodeRecovery] = {}
 
     def apply(
@@ -134,7 +210,18 @@ class CandidateAExecutor(ResidualExecutor):
         if residual_action.market == MarketDecision.LIQUIDATE:
             action = self._terminal_units(observation, action, episode)
             if step >= TERMINAL_SELL_STEP:
-                action["market"] = self._terminal_market(observation, action)
+                before = _shed_inventory(observation)
+                market = self._terminal_market(observation, action)
+                after = _projected_shed_after_market(before, market)
+                if self._telemetry is not None:
+                    self._telemetry.terminal_inventory_before = before
+                    self._telemetry.terminal_inventory_after = after
+                    self._telemetry.sold_units += sum(
+                        int(order[2])
+                        for order in market
+                        if len(order) >= 3 and str(order[0]) == "SELL"
+                    )
+                action["market"] = market
         episode.last_step = step
         return action
 
@@ -177,11 +264,28 @@ class CandidateAExecutor(ResidualExecutor):
             tuple(farm["farmer"]),
             *(tuple(position) for position in farm.get("hands", [])),
         ]
-        planned = [action.get("farmer", PASS), *action.get("hands", [])]
+        baseline_planned = [
+            action.get("farmer", PASS),
+            *action.get("hands", []),
+        ]
         planned = [
-            list(planned[worker]) if worker < len(planned) else list(PASS)
+            list(baseline_planned[worker])
+            if worker < len(baseline_planned)
+            else list(PASS)
             for worker in range(len(positions))
         ]
+        for worker in range(len(positions), len(baseline_planned)):
+            if self._telemetry is not None:
+                stale = list(baseline_planned[worker])
+                self._telemetry.record(
+                    guard_type="hand_align",
+                    worker=worker,
+                    step=step,
+                    original=stale,
+                    replacement=list(PASS),
+                    detail="dropped_stale_calendar_hand",
+                )
+                self._telemetry.prevented_invalid += 1
         for worker, position in enumerate(positions):
             pending = episode.pending.get(worker)
             if pending is not None:
@@ -192,7 +296,17 @@ class CandidateAExecutor(ResidualExecutor):
                     pending,
                 )
                 if replacement is not None:
+                    original = list(planned[worker])
                     planned[worker] = replacement
+                    if self._telemetry is not None:
+                        self._telemetry.record(
+                            guard_type="pending_repair",
+                            worker=worker,
+                            step=step,
+                            original=original,
+                            replacement=replacement,
+                            detail="continue",
+                        )
                     if replacement[0] == "PLANT":
                         episode.pending[worker] = PendingRepair(
                             position=position,
@@ -202,6 +316,15 @@ class CandidateAExecutor(ResidualExecutor):
                     else:
                         episode.pending.pop(worker, None)
                     continue
+                if self._telemetry is not None:
+                    self._telemetry.record(
+                        guard_type="pending_repair",
+                        worker=worker,
+                        step=step,
+                        original=list(planned[worker]),
+                        replacement=list(planned[worker]),
+                        detail="cancelled",
+                    )
                 episode.pending.pop(worker, None)
             tile = _tile_at(farm, position)
             operation = str(planned[worker][0]) if planned[worker] else "PASS"
@@ -215,12 +338,22 @@ class CandidateAExecutor(ResidualExecutor):
                     operation,
                 )
             ):
+                original = list(planned[worker])
                 episode.pending[worker] = PendingRepair(
                     position=position,
-                    action=tuple(planned[worker]),
+                    action=tuple(original),
                     expires_step=step + (2 if operation == "PLANT" else 1),
                 )
                 planned[worker] = ["DIG"]
+                if self._telemetry is not None:
+                    self._telemetry.record(
+                        guard_type="weed_dig",
+                        worker=worker,
+                        step=step,
+                        original=original,
+                        replacement=["DIG"],
+                    )
+                    self._telemetry.recovered_units += 1
         return {
             "farmer": planned[0],
             "hands": planned[1:],
@@ -322,8 +455,18 @@ class CandidateAExecutor(ResidualExecutor):
                 if commitment is not None:
                     episode.terminal[worker] = commitment
                     reserved.add(commitment.target)
+                    if self._telemetry is not None:
+                        self._telemetry.record(
+                            guard_type="terminal_commitment",
+                            worker=worker,
+                            step=step,
+                            original=list(planned[worker]),
+                            replacement=list(planned[worker]),
+                            detail="started",
+                        )
             if commitment is None:
                 continue
+            original = list(planned[worker])
             replacement = self._follow_terminal_commitment(
                 observation,
                 worker,
@@ -331,9 +474,27 @@ class CandidateAExecutor(ResidualExecutor):
                 commitment,
             )
             if replacement is None:
+                if self._telemetry is not None:
+                    self._telemetry.record(
+                        guard_type="terminal_commitment",
+                        worker=worker,
+                        step=step,
+                        original=original,
+                        replacement=original,
+                        detail="cancelled",
+                    )
                 episode.terminal.pop(worker, None)
                 continue
             planned[worker] = replacement
+            if self._telemetry is not None:
+                self._telemetry.record(
+                    guard_type="terminal_commitment",
+                    worker=worker,
+                    step=step,
+                    original=original,
+                    replacement=replacement,
+                    detail=commitment.phase,
+                )
         if step < TERMINAL_RETURN_STEP:
             return {
                 "farmer": planned[0],
@@ -345,12 +506,30 @@ class CandidateAExecutor(ResidualExecutor):
                 continue
             inventory = _inventory(private, worker)
             if _sellable_units(inventory) > 0:
+                original = list(planned[worker])
                 if position in shed_tiles:
                     planned[worker] = ["DROP"]
+                    if self._telemetry is not None:
+                        self._telemetry.record(
+                            guard_type="terminal_inventory_route",
+                            worker=worker,
+                            step=step,
+                            original=original,
+                            replacement=["DROP"],
+                        )
                     continue
                 target = nearest_position(position, shed_tiles)
                 if distance(position, target) + 1 <= transitions:
-                    planned[worker] = step_toward(position, target, ["DROP"])
+                    replacement = step_toward(position, target, ["DROP"])
+                    planned[worker] = replacement
+                    if self._telemetry is not None:
+                        self._telemetry.record(
+                            guard_type="terminal_inventory_route",
+                            worker=worker,
+                            step=step,
+                            original=original,
+                            replacement=replacement,
+                        )
                     continue
             tile = _tile_at(farm, position)
             if _harvestable(tile):
@@ -358,7 +537,16 @@ class CandidateAExecutor(ResidualExecutor):
                     distance(position, target) for target in shed_tiles
                 )
                 if return_distance + 2 <= transitions:
+                    original = list(planned[worker])
                     planned[worker] = ["HARVEST"]
+                    if self._telemetry is not None:
+                        self._telemetry.record(
+                            guard_type="terminal_inventory_route",
+                            worker=worker,
+                            step=step,
+                            original=original,
+                            replacement=["HARVEST"],
+                        )
         return {
             "farmer": planned[0],
             "hands": planned[1:],
@@ -597,13 +785,44 @@ def _projected_shed(
     return shed
 
 
+def _shed_inventory(observation: dict[str, Any]) -> dict[str, int]:
+    private = observation["private"]
+    return {
+        str(item): int(quantity)
+        for item, quantity in private.get("shed", {}).items()
+        if int(quantity) > 0
+    }
+
+
+def _projected_shed_after_market(
+    before: dict[str, int],
+    market: list[list[Any]],
+) -> dict[str, int]:
+    after = dict(before)
+    for order in market:
+        if len(order) < 3 or str(order[0]) != "SELL":
+            continue
+        product = str(order[1])
+        sold = int(order[2])
+        if sold <= 0:
+            continue
+        remaining = max(0, after.get(product, 0) - sold)
+        if remaining:
+            after[product] = remaining
+        else:
+            after.pop(product, None)
+    return after
+
+
 def build_candidate_a_agent(
     *,
     baseline: Baseline,
     enable_recovery: bool = True,
     enable_liquidation: bool = True,
     enable_terminal_commitments: bool = True,
+    telemetry: CandidateATelemetry | None = None,
 ) -> Baseline:
+    executor = CandidateAExecutor(baseline, telemetry=telemetry)
     return build_residual_agent(
         CandidateAPolicy(
             enable_recovery=enable_recovery,
@@ -611,5 +830,5 @@ def build_candidate_a_agent(
             enable_terminal_commitments=enable_terminal_commitments,
         ),
         baseline=baseline,
-        executor=CandidateAExecutor(baseline),
+        executor=executor,
     )
