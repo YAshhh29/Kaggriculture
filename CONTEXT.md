@@ -8,9 +8,31 @@ Only the latest two submissions are actively tracked.
 
 ## Current Agent
 
-The current tracked incumbent is
-`agents/experimental_future_labor_agent.py`. It inherits two deterministic
-service templates selected on day 1:
+The current live leaderboard entry remains gated late strawberry submission
+`55887535`, currently displayed at 655.2. The new challenger is
+`agents/experimental_distilled_calendar_agent.py`, an exact behavior clone of
+Crop Dusta player 0's public action calendar from episode `99058164`.
+
+This is the first local candidate that changes the underlying utilization
+architecture. Across the exact standalone-package broad gate on seeds 225-229,
+both positions and eight opponent families, it scored 72-8 versus tiered
+fertilizer's 55-25 with zero errors. Mean planting increased from 77.46 to
+160.86 cycles per game. A harder source-runtime holdout on seeds 230-234 scored
+41-15-4 versus 10-50-0, with mean planting increasing from 77.73 to 154.30.
+Source, package, and simulator actions match over 1,438 decisions.
+
+The model records public replay provenance and hashes. It uses no competitor
+source code or private data. Its package is
+`submissions/distilled-calendar/main.py`, SHA-256
+`43d24a73c346c7687e574de69b8ffaf0ef959b34649e4e333a70f3f6c44b0976`.
+It was uploaded unchanged as submission `55910432`; validation episode
+`103922332` completed 47,243-44,975 at initial score 600.0. The gated incumbent
+remains selected. This is an open-loop calendar, not a guaranteed 1000-1500
+rating; the hard holdout includes six losses against the current rank-one win
+calendar.
+
+The older future-labor agent inherits two deterministic service templates
+selected on day 1:
 
 1. frozen deadline capacity;
 2. deadline capacity plus zero-travel co-located FEED+CARE pairing.
@@ -26,17 +48,18 @@ Its exact standalone package is `submissions/future-labor/main.py`, SHA-256
 It was uploaded unchanged as Kaggle submission `55821334`; validation episode
 `100974134` completed 52,718-52,990. Its 24-game snapshot is 13-11 at Score
 674.8. The first 23 games split 5-1 for the 13-hand branch and 7-10 for the
-inherited fallback. The latest-two tracked pair is future labor `55821334` plus
-demand animal `55817911`, currently displayed at 655.8.
+inherited fallback. The latest-two tracked pair was future labor `55821334` plus
+demand animal `55817911` in the historical 24-game snapshot; both have since
+left the latest-two pair.
 
 Tiered fertilizer submission `55858409` is live from the exact package at
 `submissions/tiered-fertilizer/main.py`. Its current 35 public games are 18-17
-at displayed rating 649.3, and it remains the public leaderboard selection.
+at the recorded 649.3 snapshot.
 The first 27-game analysis set had zero unfinished crop cycles, zero missed
 planting-day watering, and only one livestock loss. Losses are primarily
 against larger mixed cow/sheep or goose economies, not basic service failure.
 
-The next live-measurement candidate is
+The current live-measurement submission is
 `agents/experimental_tiered_late_strawberry_agent.py`. It retains tiered
 fertilizer and locks a day-6 value gate. When normalized strawberry price is at
 least 1.30 and day-9 demand selects strawberry, it replaces eight spent melon
@@ -49,7 +72,8 @@ with 2/33/0 improved/tied/worse. Fresh seeds 222 and 223 tied control at 11-5
 each while improving mean margin, so the strict more-wins promotion gate still
 reports REJECT. It was uploaded as submission `55887535`; validation episode
 `103192514` completed 49,447-49,745 at initial score 600.0. The tiered
-incumbent remains selected while ladder matches evaluate the successor.
+incumbent remained selected during initial validation; the gated submission
+later became the selected leaderboard entry and currently displays 655.2.
 
 ## Decision Flow
 
@@ -104,6 +128,8 @@ observation
 .\.conda\python.exe -m tools.validation.validate_future_labor_equivalence submissions\future-labor\main.py --seed 214
 .\.conda\python.exe -m tools.validation.validate_submission submissions\gated-late-strawberry\main.py --seed 223
 .\.conda\python.exe -m tools.validation.validate_gated_late_strawberry_equivalence submissions\gated-late-strawberry\main.py --seed 223
+.\.conda\python.exe -m tools.validation.validate_submission submissions\distilled-calendar\main.py --seed 230
+.\.conda\python.exe -m tools.validation.validate_distilled_calendar_equivalence submissions\distilled-calendar\main.py --seed 230
 ```
 
 Never regenerate a submitted package and assume it is the uploaded artifact.

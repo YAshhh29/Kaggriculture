@@ -13,9 +13,12 @@ The tracked standalone Kaggle packages are:
 - `future-labor/` contains opponent-aware labor submission `55821334`, frozen
   at its manifest SHA-256.
 - `tiered-fertilizer/` contains four-application, price-tiered fertilizer
-  submission `55858409`, currently selected at `649.3`.
+  submission `55858409`, recorded at `649.3`.
 - `gated-late-strawberry/` contains the validated live-measurement candidate
-  uploaded as submission `55887535`, frozen after validation at `600.0`.
+  uploaded as submission `55887535`, selected at the current `655.2` snapshot.
+- `distilled-calendar/` contains public-calendar behavior clone submission
+  `55910432`. Its exact package is `72-8` on the 80-game broad gate and is
+  frozen after successful validation.
 
 After a package is uploaded, its exact `main.py` is immutable. Each package's
 `manifest.json` records its hashes and supporting evidence.

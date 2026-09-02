@@ -11,6 +11,25 @@ from tests.test_experimental_scale_agent import scale_observation
 
 
 class ExperimentalThroughputAgentTests(unittest.TestCase):
+    def test_optional_priority_places_animals_before_seeds(self) -> None:
+        state = scale_observation(money=1000)
+        orders = _affordable_market_orders(
+            state,
+            [
+                ["BUY_SEED", "WHEAT", 10],
+                ["BUY_ANIMAL", "COW", 1],
+            ],
+            animals_before_seeds=True,
+        )
+
+        self.assertEqual(
+            orders,
+            [
+                ["BUY_ANIMAL", "COW", 1],
+                ["BUY_SEED", "WHEAT", 10],
+            ],
+        )
+
     def test_replay_grounded_labor_and_crew_stages(self) -> None:
         self.assertEqual(_hand_target(0), 4)
         self.assertEqual(_hand_target(6), 8)

@@ -126,6 +126,10 @@ class AnalyzePublicReplayTests(unittest.TestCase):
             {"MELON": 1},
         )
         self.assertEqual(
+            player["successful_board_transitions"]["plants_by_day"],
+            {"0": {"MELON": 1}},
+        )
+        self.assertEqual(
             player["successful_board_transitions"]["animal_placements"],
             {"COW": 1},
         )

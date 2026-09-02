@@ -130,6 +130,61 @@ class ExperimentalPremiumThroughputAgentTests(unittest.TestCase):
             {"MELON": 5, "STRAWBERRY": 8, "WHEAT": 8},
         )
 
+    def test_high_utilization_opening_fills_nw_with_melon_and_wheat(
+        self,
+    ) -> None:
+        state = scale_observation(day=0)
+        plans = _dense_crop_plans(
+            state["farms"][0],
+            0,
+            late_rotation_crop="WHEAT",
+            opening_fill_nw=True,
+            opening_melon_slots=12,
+        )
+
+        self.assertEqual(
+            Counter(str(plan["crop"]) for plan in plans),
+            {"MELON": 12, "WHEAT": 9},
+        )
+
+    def test_opening_fill_preserves_active_crop_then_releases_slot(
+        self,
+    ) -> None:
+        state = scale_observation(day=2)
+        farm = state["farms"][0]
+        plan = DENSE_CROP_PLANS[5]
+        x, y = plan["position"]
+        farm["tiles"][y][x] = {
+            "kind": "PLANT",
+            "crop": "MELON",
+            "planted_day": 0,
+        }
+
+        active = {
+            str(candidate["id"]): str(candidate["crop"])
+            for candidate in _dense_crop_plans(
+                farm,
+                2,
+                late_rotation_crop="WHEAT",
+                opening_fill_nw=True,
+                opening_melon_slots=12,
+            )
+        }
+        self.assertEqual(active[str(plan["id"])], "MELON")
+
+        farm["tiles"][y][x] = None
+        released = {
+            str(candidate["id"]): str(candidate["crop"])
+            for candidate in _dense_crop_plans(
+                farm,
+                2,
+                late_rotation_crop="WHEAT",
+                opening_fill_nw=True,
+                opening_melon_slots=12,
+            )
+        }
+        self.assertEqual(released[str(plan["id"])], str(plan["crop"]))
+
     def test_capacity_mode_preserves_active_backfill_wheat(self) -> None:
         state = scale_observation(day=13)
         farm = state["farms"][0]

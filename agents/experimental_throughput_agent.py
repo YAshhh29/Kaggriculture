@@ -20,7 +20,10 @@ HAND_TARGETS = (
     12, 12, 12, 12, 12, 12, 12, 12,
     10, 8,
 )
-HIRE_COSTS = (1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233)
+HIRE_COSTS = (
+    1, 1, 2, 3, 5, 8, 13, 21,
+    34, 55, 89, 144, 233, 377, 610, 987,
+)
 LAND_COSTS = (1000, 2000, 4000)
 ANIMAL_COSTS = {"COW": 400, "SHEEP": 500, "GOOSE": 300}
 SEED_COSTS = {
@@ -79,6 +82,8 @@ def _purchase_cost(
 def _affordable_market_orders(
     observation: dict[str, Any],
     orders: list[list[Any]],
+    *,
+    animals_before_seeds: bool = False,
 ) -> list[list[Any]]:
     player = int(observation["player"])
     farm = observation["farms"][player]
@@ -89,8 +94,8 @@ def _affordable_market_orders(
         "BUY_PRODUCT": 1,
         "HIRE": 2,
         "BUY_LAND": 3,
-        "BUY_SEED": 4,
-        "BUY_ANIMAL": 5,
+        "BUY_SEED": 5 if animals_before_seeds else 4,
+        "BUY_ANIMAL": 4 if animals_before_seeds else 5,
     }
     ranked = sorted(
         enumerate(orders),

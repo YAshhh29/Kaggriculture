@@ -154,6 +154,7 @@ def analyze_player(
     animal_purchase_events: list[dict[str, Any]] = []
     structure_events: list[dict[str, Any]] = []
     successful_plants: Counter[str] = Counter()
+    successful_plants_by_day: dict[int, Counter[str]] = {}
     successful_animals: Counter[str] = Counter()
     lost_animals: Counter[str] = Counter()
     first_crop_step: dict[str, int] = {}
@@ -268,6 +269,10 @@ def analyze_player(
                     if after_tile.get("kind") == "PLANT":
                         crop = str(after_tile.get("crop", "UNKNOWN"))
                         successful_plants[crop] += 1
+                        successful_plants_by_day.setdefault(
+                            day,
+                            Counter(),
+                        )[crop] += 1
                         first_crop_step.setdefault(crop, decision_step)
                     animal = after_tile.get("animal")
                     if animal and not (
@@ -408,6 +413,10 @@ def analyze_player(
         "animal_purchase_events": animal_purchase_events,
         "successful_board_transitions": {
             "plants": dict(sorted(successful_plants.items())),
+            "plants_by_day": {
+                str(day): dict(sorted(counts.items()))
+                for day, counts in sorted(successful_plants_by_day.items())
+            },
             "animal_placements": dict(sorted(successful_animals.items())),
             "animal_losses": dict(sorted(lost_animals.items())),
             "structures": structure_events,

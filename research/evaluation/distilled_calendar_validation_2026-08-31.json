@@ -1,0 +1,182 @@
+{
+  "schema_version": 1,
+  "competition": "kaggriculture",
+  "simulator_version": "1.32.7",
+  "package": {
+    "path": "submissions/distilled-calendar/main.py",
+    "sha256": "43d24a73c346c7687e574de69b8ffaf0ef959b34649e4e333a70f3f6c44b0976",
+    "bytes": 19561
+  },
+  "training_data": {
+    "source_episode_id": 99058164,
+    "source_team": "Crop Dusta",
+    "source_player": 0,
+    "replay_sha256": "a1f21a92764f4f1e655a0108b989484b65328b0a1105823c43297bab82762e17",
+    "actions_sha256": "298bcb8d2e5b7543bc1403e76062ef6b9a0bc778ce95365ccc5395e99fb22cef",
+    "license": "Apache-2.0",
+    "distribution_constraint": "Keep in the private participant repository; do not publish or redistribute Competition Data to non-participants during the competition.",
+    "rules_url": "https://www.kaggle.com/competitions/kaggriculture/rules",
+    "rules_sections": [
+      "1.7 Data Access and Use",
+      "2.4 Competition Data",
+      "2.11 Environments & Public Availability"
+    ]
+  },
+  "equivalence": {
+    "seed": 230,
+    "player_positions": [0, 1],
+    "decisions": 1438,
+    "mismatches": 0
+  },
+  "gates": {
+    "broad": {
+      "detailed_report": {
+        "path": "artifacts/benchmarks/v1327-exact-distilled-calendar-seeds-225-229.json",
+        "sha256": "5993807832ba50c67f95f08da9f088384fe4e8a64308e82fad68c4c693ef7400",
+        "tracked": false
+      },
+      "created_at": "2026-08-31T05:28:46.237859+00:00",
+      "runtime": "standalone package",
+      "seeds": [225, 226, 227, 228, 229],
+      "player_positions": [0, 1],
+      "control": {
+        "path": "submissions/tiered-fertilizer/main.py",
+        "record": "55-25-0",
+        "errors": 0,
+        "mean_margin": -4401.48,
+        "mean_cycles_planted": 77.4625,
+        "mean_cycles_harvested": 76.15
+      },
+      "candidate": {
+        "path": "submissions/distilled-calendar/main.py",
+        "record": "72-8-0",
+        "errors": 0,
+        "mean_margin": 48431.57,
+        "mean_cycles_planted": 160.8625,
+        "mean_cycles_harvested": 144.2
+      },
+      "matchups": [
+        {
+          "opponent": "submissions/demand-animal/main.py",
+          "control": {"record": "6-4-0", "mean_margin": 719.7},
+          "candidate": {"record": "10-0-0", "mean_margin": 55255.5}
+        },
+        {
+          "opponent": "agents/experimental_compact_macro_agent.py",
+          "control": {"record": "10-0-0", "mean_margin": 9422.9},
+          "candidate": {"record": "10-0-0", "mean_margin": 49232.7}
+        },
+        {
+          "opponent": "agents/experimental_adaptive_counter_agent.py",
+          "control": {"record": "10-0-0", "mean_margin": 15058.8},
+          "candidate": {"record": "10-0-0", "mean_margin": 49446.6}
+        },
+        {
+          "opponent": "agents/experimental_lifecycle_agent.py",
+          "control": {"record": "10-0-0", "mean_margin": 10991.9},
+          "candidate": {"record": "10-0-0", "mean_margin": 86625.1}
+        },
+        {
+          "opponent": "agents/experimental_scale_agent.py",
+          "control": {"record": "10-0-0", "mean_margin": 30024.3},
+          "candidate": {"record": "10-0-0", "mean_margin": 89418.9}
+        },
+        {
+          "opponent": "submissions/learned-service/main.py",
+          "control": {"record": "9-1-0", "mean_margin": 4807.4},
+          "candidate": {"record": "10-0-0", "mean_margin": 55255.5}
+        },
+        {
+          "opponent": "agents/current_top_replay_agent.py",
+          "source_episode_id": 99058164,
+          "source_player": 0,
+          "control": {"record": "0-10-0", "mean_margin": -54548.7},
+          "candidate": {"record": "5-5-0", "mean_margin": 0.0}
+        },
+        {
+          "opponent": "agents/current_rank2_replay_agent.py",
+          "source_episode_id": 99058164,
+          "source_player": 1,
+          "control": {"record": "0-10-0", "mean_margin": -51688.1},
+          "candidate": {"record": "7-3-0", "mean_margin": 2218.3}
+        }
+      ]
+    },
+    "hard_holdout": {
+      "detailed_report": {
+        "path": "artifacts/benchmarks/v1327-exact-distilled-hard-holdout-230-234.json",
+        "sha256": "b31afcdfcb603715464d503eaa475192a3871649f6036bf60d05544f980433c3",
+        "tracked": false
+      },
+      "created_at": "2026-08-30T20:13:53.263054+00:00",
+      "runtime": "action-equivalent source runtime",
+      "seeds": [230, 231, 232, 233, 234],
+      "player_positions": [0, 1],
+      "control": {
+        "path": "submissions/tiered-fertilizer/main.py",
+        "record": "10-50-0",
+        "errors": 0,
+        "mean_margin": -31668.1,
+        "mean_cycles_planted": 77.7333333333,
+        "mean_cycles_harvested": 76.55
+      },
+      "candidate": {
+        "path": "agents/experimental_distilled_calendar_agent.py",
+        "record": "41-15-4",
+        "errors": 0,
+        "mean_margin": 24347.3,
+        "mean_cycles_planted": 154.3,
+        "mean_cycles_harvested": 137.1333333333
+      },
+      "public_replay_controls": [
+        {
+          "episode_id": 103116564,
+          "source_player": 0,
+          "replay_sha256": "ce2732645e0e8a56ed93650560a9f4168c2e93f29e9c393e640266e4d62d5780"
+        },
+        {
+          "episode_id": 103268405,
+          "source_player": 1,
+          "replay_sha256": "2e39fca84f0a1ed5353f2b7abe49aef1037b349215e4f5f8f8f9716a90c08d92"
+        },
+        {
+          "episode_id": 99058164,
+          "source_players": [0, 1],
+          "replay_sha256": "a1f21a92764f4f1e655a0108b989484b65328b0a1105823c43297bab82762e17"
+        }
+      ],
+      "matchups": [
+        {
+          "opponent": "episode-103116564 player 0",
+          "control": {"record": "0-10-0", "mean_margin": -39007.6},
+          "candidate": {"record": "4-6-0", "mean_margin": -3870.2}
+        },
+        {
+          "opponent": "episode-103268405 player 1",
+          "control": {"record": "0-10-0", "mean_margin": -23009.7},
+          "candidate": {"record": "9-1-0", "mean_margin": 21062.5}
+        },
+        {
+          "opponent": "episode-99058164 player 0",
+          "control": {"record": "0-10-0", "mean_margin": -70327.3},
+          "candidate": {"record": "3-3-4", "mean_margin": 0.0}
+        },
+        {
+          "opponent": "episode-99058164 player 1",
+          "control": {"record": "0-10-0", "mean_margin": -57664.0},
+          "candidate": {"record": "5-5-0", "mean_margin": -11763.1}
+        },
+        {
+          "opponent": "submissions/tiered-fertilizer/main.py",
+          "control": {"record": "5-5-0", "mean_margin": 0.0},
+          "candidate": {"record": "10-0-0", "mean_margin": 70327.3}
+        },
+        {
+          "opponent": "submissions/gated-late-strawberry/main.py",
+          "control": {"record": "5-5-0", "mean_margin": 0.0},
+          "candidate": {"record": "10-0-0", "mean_margin": 70327.3}
+        }
+      ]
+    }
+  }
+}

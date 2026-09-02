@@ -6,6 +6,7 @@ __pycache__/
 
 # Generated experiment outputs stay local. Curated models and small fixtures
 # belong in models/ and tests/fixtures/ instead.
+artifacts/analysis/
 artifacts/benchmarks/
 artifacts/datasets/
 artifacts/diagnostics/
@@ -16,6 +17,12 @@ artifacts/top-replays/
 artifacts/ui/
 artifacts/*.json
 artifacts/*.html
+
+# Local RL datasets, model checkpoints, and run outputs can contain Kaggle
+# Competition Data or large generated artifacts.
+rl/data/
+rl/checkpoints/
+rl/runs/
 
 # Standalone upload outputs are reproducible from packaging scripts. Keep the
 # legacy packages locally without adding every generated bundle.
