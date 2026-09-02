@@ -14,6 +14,10 @@ from agents.experimental_budgeted_value_fertilizer_agent import (
     agent as budgeted_value_fertilizer,
 )
 from agents.experimental_center_out_agent import agent as center_out
+from agents.experimental_calendar_recovery_agent import (
+    agent as calendar_recovery,
+)
+from agents.experimental_distilled_calendar_agent import decide as calendar
 from agents.experimental_colocated_crop_service_agent import (
     agent as colocated_crop_service,
 )
@@ -64,11 +68,20 @@ from agents.experimental_tiered_late_strawberry_agent import (
     agent as tiered_late_strawberry,
 )
 from benchmark import load_agent_callable, load_simulator
+from rl.candidate_a import build_candidate_a_agent
 
 
 ROOT = Path(__file__).resolve().parents[2]
 CONTROL = ROOT / "submissions" / "future-labor" / "main.py"
 Agent = Callable[[dict[str, Any]], dict[str, Any]]
+calendar_recovery_only = build_candidate_a_agent(
+    baseline=calendar,
+    enable_liquidation=False,
+)
+calendar_liquidation_only = build_candidate_a_agent(
+    baseline=calendar,
+    enable_recovery=False,
+)
 
 
 def replay_agent(actions: list[dict[str, Any]]) -> Agent:
@@ -178,6 +191,9 @@ def main() -> None:
         "budgeted_value_fertilizer": budgeted_value_fertilizer,
         "full_capacity": full_capacity,
         "center_out": center_out,
+        "calendar_recovery": calendar_recovery,
+        "calendar_recovery_only": calendar_recovery_only,
+        "calendar_liquidation_only": calendar_liquidation_only,
         "investment": investment,
         "dynamic_replacement": dynamic_replacement,
         "colocated_crop_service": colocated_crop_service,
