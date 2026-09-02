@@ -1,6 +1,9 @@
 import unittest
 
-from rl.candidate_b import build_candidate_b_agent
+from rl.candidate_b import (
+    _premium_ordering,
+    build_candidate_b_agent,
+)
 from tests.test_experimental_scale_agent import scale_observation
 
 
@@ -80,6 +83,25 @@ class CandidateBTests(unittest.TestCase):
         )(state)
 
         self.assertEqual(decision["market"], baseline_market)
+
+    def test_market_ordering_never_changes_total_sale_quantity(self) -> None:
+        state = scale_observation(day=20, hour=0)
+        state["step"] = 480
+        state["market"]["inventory"] = {
+            "MELON": 10_000,
+            "MILK": 10_000,
+        }
+        orders = [
+            ["SELL", "MILK", 3],
+            ["SELL", "MELON", 2],
+        ]
+
+        ordered = _premium_ordering(state, orders)
+
+        self.assertEqual(
+            sorted((order[1], order[2]) for order in ordered),
+            sorted((order[1], order[2]) for order in orders),
+        )
 
 
 if __name__ == "__main__":
