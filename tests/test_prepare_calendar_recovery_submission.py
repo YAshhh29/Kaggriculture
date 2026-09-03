@@ -32,7 +32,8 @@ class PrepareCalendarRecoverySubmissionTests(unittest.TestCase):
         self.assertIn("agent", function_names)
         code = compile(
             source,
-            "submissions/calendar-recovery/main.py",
+            "submissions/candidate-a(calendar recovery first attempt)"
+            "/main.py",
             "exec",
         )
         package_module = types.ModuleType("calendar_recovery_submission_test")

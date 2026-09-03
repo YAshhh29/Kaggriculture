@@ -38,8 +38,9 @@ SOURCE_PATHS = (
     CANDIDATE_PATH,
     RECOVERY_PATH,
 )
-OUTPUT = ROOT / "submissions" / "calendar-recovery" / "main.py"
-MANIFEST = ROOT / "submissions" / "calendar-recovery" / "manifest.json"
+SUBMISSION_DIR = "candidate-a(calendar recovery first attempt)"
+OUTPUT = ROOT / "submissions" / SUBMISSION_DIR / "main.py"
+MANIFEST = ROOT / "submissions" / SUBMISSION_DIR / "manifest.json"
 STRIPPED_IMPORT_PREFIXES = ("agents.", "policies.", "core.", "rl.")
 
 

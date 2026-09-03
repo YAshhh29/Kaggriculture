@@ -9,6 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from tools.packaging.prepare_calendar_recovery_submission import (
+    SUBMISSION_DIR as CANDIDATE_A_SUBMISSION_DIR,
     build_source as build_calendar_recovery,
     combined_source_hash as calendar_recovery_source_hash,
 )
@@ -95,15 +96,16 @@ def main() -> None:
                 "combined_source_sha256": combined_source_hash(),
                 "parent_submission": {
                     "note": (
-                        "built on the calendar-recovery (Candidate A) "
-                        "package, itself not yet uploaded to Kaggle"
+                        "built on the Candidate A package, live on Kaggle"
                     ),
                     "source_files": [
-                        "submissions/calendar-recovery/main.py (parent)",
+                        f"submissions/{CANDIDATE_A_SUBMISSION_DIR}/main.py"
+                        " (parent)",
                     ],
                 },
                 "source_files": [
-                    "submissions/calendar-recovery/main.py (parent)",
+                    f"submissions/{CANDIDATE_A_SUBMISSION_DIR}/main.py"
+                    " (parent)",
                     "rl/candidate_b.py",
                 ],
                 "policy": (
