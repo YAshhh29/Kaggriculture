@@ -48,6 +48,37 @@ depends only on that product's own running inventory, so permuting SELLs of
 *already-fixed* quantities can never change total revenue -- and was
 removed after live replay confirmed zero of 264 eligible firings ever
 changed anything.
+
+Second residual, added after two live episodes (105061000, 105062726) showed
+the same calendar turn (record 200: [BUY_PRODUCT WHEAT 16, BUY_LAND]) spend
+its way past the money a same-turn BUY_LAND needed, in both games, at both
+seats. The calendar only ever attempts BUY_LAND twice in the whole 720-step
+script (records 122 and 200); when the second attempt is starved this way it
+is never retried, and every later scripted PLANT/WATER/HARVEST/BUILD_PASTURE
+the calendar sends to that still-unowned quadrant reports the tile as the
+literal string "LOCKED" and executes as a no-op for the rest of the episode
+(471 such no-ops observed in each replay). `_land_priority_ordering` moves a
+starved BUY_LAND ahead of any HIRE/BUY_PRODUCT/BUY_SEED/BUY_ANIMAL that
+precedes it in the same turn, but never crosses a SELL in either direction
+(a SELL only ever adds cash before land is evaluated, same reasoning as the
+affordability pass, so its position is left to that pass entirely) and never
+moves anything if BUY_LAND was not itself starved.
+
+Unlike `_sequential_affordability_ordering`, this is not a strict-dominance
+rule: displacing a HIRE/BUY_PRODUCT/BUY_SEED/BUY_ANIMAL order can and usually
+does lower its fulfilled count, sometimes to zero. That is accepted on
+purpose -- an entire quadrant (LAND_PRICES[1] = 2000, ~500 remaining steps of
+extra planting/harvesting surface) is judged to dominate a partial WHEAT
+restock or an extra hire on the turns actually observed -- rather than
+proven via the same fulfilled-count invariant the sell pass relies on. The
+one thing it does inherit from that pass's hard-won lesson: it only ever
+reorders purchases against each other, never touches when a SELL reaches the
+shared market, so it cannot reproduce the live-opponent price-timing risk
+that walled off BUY_ANIMAL rescues and burned the BUY_SEED live gate above.
+It has been checked against both failing replays and the full offline test
+suite; it has not yet been run through a fresh live-opponent paired gate the
+way the sell pass was, so treat it with the same "verify before fully
+trusting at scale" posture that gate was built to enforce.
 """
 
 from __future__ import annotations
@@ -417,14 +448,118 @@ def _sequential_affordability_ordering(
     return market_orders
 
 
+_LAND_PRIORITY_DISPLACERS = {"BUY_PRODUCT", "BUY_SEED", "HIRE", "BUY_ANIMAL"}
+
+
+def _is_land_order(order: list[Any]) -> bool:
+    return len(order) >= 1 and str(order[0]) == "BUY_LAND"
+
+
+def _land_first_ordering(
+    tagged_orders: list[tuple[int, list[Any]]],
+) -> list[tuple[int, list[Any]]]:
+    """Walk each BUY_LAND order back past adjacent non-SELL spends.
+
+    Stops the moment it hits a SELL, another BUY_LAND, or the start of the
+    batch -- so this never changes a SELL's position (that stays entirely
+    the affordability pass's decision) and never reorders two BUY_LAND
+    orders relative to each other.
+    """
+    result = list(tagged_orders)
+    for index in range(len(result)):
+        if not _is_land_order(result[index][1]):
+            continue
+        insert_at = index
+        while insert_at > 0 and str(result[insert_at - 1][1][0]) \
+                in _LAND_PRIORITY_DISPLACERS:
+            insert_at -= 1
+        if insert_at != index:
+            item = result.pop(index)
+            result.insert(insert_at, item)
+    return result
+
+
+def _land_priority_ordering(
+    observation: dict[str, Any],
+    market_orders: list[list[Any]],
+) -> list[list[Any]]:
+    """Rescue a BUY_LAND a preceding same-turn spend would otherwise starve.
+
+    Only fires when reordering flips at least one BUY_LAND order from
+    failing (fulfilled 0) to succeeding (fulfilled 1) in local simulation;
+    see the module docstring for why this trades a purchase's fulfilled
+    count away on purpose rather than requiring it never drop.
+    """
+    if int(observation.get("step", 0)) >= TERMINAL_MARKET_STEP:
+        return market_orders
+    if not market_orders or len(market_orders) > MAX_MARKET_ORDERS:
+        return market_orders
+    if not any(_is_land_order(order) for order in market_orders):
+        return market_orders
+
+    tagged = list(enumerate(market_orders))
+    candidate_tagged = _land_first_ordering(tagged)
+    candidate_orders = [order for _, order in candidate_tagged]
+    if candidate_orders == market_orders:
+        return market_orders
+
+    market = observation.get("market", {})
+    market_inventory = {
+        str(item): int(quantity)
+        for item, quantity in market.get("inventory", {}).items()
+    }
+    if not market_inventory:
+        return market_orders
+    private = observation.get("private", {})
+    shed = {
+        str(item): int(quantity)
+        for item, quantity in private.get("shed", {}).items()
+    }
+    player = int(observation.get("player", 0))
+    farms = observation.get("farms")
+    if not farms or player >= len(farms):
+        return market_orders
+    farm = farms[player]
+    money = float(farm.get("money", 0))
+    hires_today = int(farm.get("hires_today", 0))
+    unlocked_quadrant_count = len(farm.get("unlocked_quadrants", []))
+
+    baseline_outcome = _simulate_orders(
+        money=money,
+        shed=shed,
+        market_inventory=market_inventory,
+        hires_today=hires_today,
+        unlocked_quadrant_count=unlocked_quadrant_count,
+        tagged_orders=tagged,
+    )
+    candidate_outcome = _simulate_orders(
+        money=money,
+        shed=shed,
+        market_inventory=market_inventory,
+        hires_today=hires_today,
+        unlocked_quadrant_count=unlocked_quadrant_count,
+        tagged_orders=candidate_tagged,
+    )
+    land_tags = [tag for tag, order in tagged if _is_land_order(order)]
+    baseline_fulfilled = baseline_outcome[1]
+    candidate_fulfilled = candidate_outcome[1]
+    rescued = any(
+        baseline_fulfilled.get(tag, 0) == 0
+        and candidate_fulfilled.get(tag, 0) == 1
+        for tag in land_tags
+    )
+    return candidate_orders if rescued else market_orders
+
+
 def build_candidate_b_agent(*, baseline: Baseline = candidate_a) -> Baseline:
-    """Create Candidate A plus the sequential-affordability residual."""
+    """Create Candidate A plus the market-timing residuals."""
     def decide(observation: dict[str, Any]) -> AgentAction:
         action = clone_action(baseline(observation))
-        action["market"] = _sequential_affordability_ordering(
+        market = _sequential_affordability_ordering(
             observation,
             action["market"],
         )
+        action["market"] = _land_priority_ordering(observation, market)
         return action
 
     return decide

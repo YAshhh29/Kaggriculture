@@ -1,6 +1,7 @@
 import unittest
 
 from rl.candidate_b import (
+    _land_priority_ordering,
     _sequential_affordability_ordering,
     build_candidate_b_agent,
 )
@@ -220,6 +221,89 @@ class CandidateBTests(unittest.TestCase):
         ordered = _sequential_affordability_ordering(state, orders)
 
         self.assertEqual(ordered, orders)
+
+    def test_moves_land_purchase_before_a_product_buy_that_starves_it(
+        self,
+    ) -> None:
+        # Live episodes 105061000/105062726: the calendar's *only* scripted
+        # BUY_LAND for the third quadrant (record 200, both games, both
+        # seats) sat behind a BUY_PRODUCT WHEAT 16 that drained the money
+        # it needed. The purchase failed silently, was never retried, and
+        # the quadrant stayed locked for the rest of the episode. These are
+        # the exact real numbers from episode 105061000 at that turn.
+        state = scale_observation(day=8, hour=9, money=2192)
+        state["farms"][0]["unlocked_quadrants"] = ["NW", "NE"]
+        state["farms"][0]["hires_today"] = 8
+        state["market"]["inventory"] = {"WHEAT": 9_945}
+        state["private"]["shed"] = {"WHEAT": 2}
+        orders = [["BUY_PRODUCT", "WHEAT", 16], ["BUY_LAND"]]
+
+        ordered = _land_priority_ordering(state, orders)
+
+        self.assertEqual(ordered, [["BUY_LAND"], ["BUY_PRODUCT", "WHEAT", 16]])
+
+    def test_keeps_baseline_when_land_purchase_already_affordable(
+        self,
+    ) -> None:
+        state = scale_observation(day=8, hour=9, money=100_000)
+        state["farms"][0]["unlocked_quadrants"] = ["NW", "NE"]
+        state["market"]["inventory"] = {"WHEAT": 9_945}
+        orders = [["BUY_PRODUCT", "WHEAT", 16], ["BUY_LAND"]]
+
+        ordered = _land_priority_ordering(state, orders)
+
+        self.assertEqual(ordered, orders)
+
+    def test_land_priority_never_moves_a_sell(self) -> None:
+        state = scale_observation(day=8, hour=9, money=1_500)
+        state["farms"][0]["unlocked_quadrants"] = ["NW", "NE"]
+        state["market"]["inventory"] = {"WHEAT": 9_945, "MELON": 9_990}
+        state["private"]["shed"] = {"MELON": 2}
+        orders = [
+            ["SELL", "MELON", 2],
+            ["BUY_PRODUCT", "WHEAT", 16],
+            ["BUY_LAND"],
+        ]
+
+        ordered = _land_priority_ordering(state, orders)
+
+        self.assertEqual(
+            ordered,
+            [["SELL", "MELON", 2], ["BUY_LAND"], ["BUY_PRODUCT", "WHEAT", 16]],
+        )
+
+    def test_does_not_reorder_land_past_terminal_market_step(self) -> None:
+        state = scale_observation(day=30, hour=0, money=2192)
+        state["step"] = 717
+        state["farms"][0]["unlocked_quadrants"] = ["NW", "NE"]
+        state["market"]["inventory"] = {"WHEAT": 9_945}
+        orders = [["BUY_PRODUCT", "WHEAT", 16], ["BUY_LAND"]]
+
+        ordered = _land_priority_ordering(state, orders)
+
+        self.assertEqual(ordered, orders)
+
+    def test_full_agent_rescues_the_real_failing_turn(self) -> None:
+        state = scale_observation(day=8, hour=9, money=2192)
+        state["step"] = 199
+        state["farms"][0]["unlocked_quadrants"] = ["NW", "NE"]
+        state["farms"][0]["hires_today"] = 8
+        state["market"]["inventory"] = {"WHEAT": 9_945}
+        state["private"]["shed"] = {"WHEAT": 2}
+        baseline_action = {
+            "farmer": ["NORTH"],
+            "hands": [],
+            "market": [["BUY_PRODUCT", "WHEAT", 16], ["BUY_LAND"]],
+        }
+
+        decision = build_candidate_b_agent(
+            baseline=fixed_baseline(baseline_action),
+        )(state)
+
+        self.assertEqual(
+            decision["market"],
+            [["BUY_LAND"], ["BUY_PRODUCT", "WHEAT", 16]],
+        )
 
 
 if __name__ == "__main__":
