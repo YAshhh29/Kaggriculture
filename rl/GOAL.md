@@ -496,17 +496,38 @@ replays the exact real failing turn end-to-end through
 `build_candidate_b_agent`), package/source/simulator equivalence 1438/1438
 decisions with 0 mismatches (seed 230), both fixes hand-verified against
 the real captured observations from both failing episodes as described
-above. Not yet completed as of this writing: a fresh live-opponent family
-gate for the reorder fix specifically, the same class of test that is what
-actually caught the `BUY_SEED` regression in 8 (captured-replay and
-single-player simulation both missed that one). A gate against
+above.
+
+A fresh live-opponent gate for the reorder fix specifically (the same
+class of test that actually caught the `BUY_SEED` regression in 8, which
+captured-replay and single-player simulation both missed) was run against
 future-labor/gated-late-strawberry/tiered-fertilizer, seeds 400-409, both
-seats, was started and is running in the background; update this section
-with the result once it completes rather than treating the reorder fix as
-validated to the same bar as the rest of Candidate B until then. The guard
-fix carries no comparable live-opponent risk (it never touches a market
-order, only a worker's tile-task action on a tile no policy has ever had
-reason to plant on), so it does not need the same gate to be trusted.
+seats -- 120 games. Result: **inconclusive, not passed**. The starvation
+condition this fix targets (a same-turn spend draining `BUY_LAND` below
+its cost at calendar record 200) never occurred against any of these three
+opponents at these ten seeds -- every one of the 60 old/new pairs produced
+byte-identical rewards, meaning `_land_priority_ordering` never fired once.
+That is a real limitation of random sampling against a rare, opponent-
+trajectory-dependent trigger, not a pass: it neither confirms nor refutes
+live-opponent risk for this rule the way the fresh gate did for the sell
+pass in 8. Widening the seed/opponent sweep further is unlikely to be
+efficient (2200s for zero firings), so the stronger remaining argument is
+structural, not empirical: `BUY_LAND`'s cost depends only on
+`unlocked_quadrant_count`, never on the shared `market_inventory` a live
+opponent also trades against, so the specific mechanism that broke the
+`BUY_SEED` rescue (reordering shifts the price a live opponent's own
+concurrent trade lands on) cannot touch `BUY_LAND` itself. The one order
+this rule displaces that *does* read shared market state is `BUY_PRODUCT`
+(when present) -- moving it one queue position later could shift the price
+it pays, but only on the partial quantity already being deliberately
+sacrificed, not on whether `BUY_LAND` succeeds. Treat this rule as
+verified-by-construction-and-real-replay, not yet live-gate-confirmed;
+revisit if a future live episode shows it firing with a worse outcome.
+
+The guard fix carries no comparable live-opponent risk (it never touches a
+market order, only a worker's tile-task action on a tile no policy has
+ever had reason to plant on), so it does not need the same gate to be
+trusted.
 
 ## 9. Candidate C: public-state route portfolio
 

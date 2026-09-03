@@ -73,10 +73,14 @@ Two fixes, at two different layers:
 
 Both fixes: full test suite green (489/489), package/source/simulator
 equivalence 1438/1438 decisions with 0 mismatches (seed 230). The land
-fix specifically has not yet completed the same fresh live-opponent
-family gate the sequential-affordability pass went through before shipping;
-see `rl/GOAL.md` section 8c for status and the reasoning for shipping the
-guard fix and the reorder fix at different confidence levels.
+fix's fresh live-opponent gate (120 games, 3 opponent families, seeds
+400-409) came back inconclusive rather than passed: the starvation
+condition it targets never occurred against these opponents/seeds, so it
+neither confirms nor refutes live-opponent risk the way that gate did for
+the existing sell-reordering pass. See `rl/GOAL.md` section 8c for the
+structural argument for why it should still be safe, and the reasoning
+for trusting the guard fix and the reorder fix at different confidence
+levels in the meantime.
 
 After a package is uploaded, its exact `main.py` is immutable. Each package's
 `manifest.json` records its hashes and supporting evidence.
