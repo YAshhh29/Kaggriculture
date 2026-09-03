@@ -421,6 +421,93 @@ or 10's architecture or gates:
   scope small enough to actually find and fix the two real regressions
   above. Worth preserving as C/D grow more mechanisms.
 
+### 8c. Post-deployment fix: land-purchase starvation (2026-09-03)
+
+Found from two real live Kaggle episodes (105061000, 105062726 -- both
+played by the live Candidate A submission, both against different real
+opponents, YASH JAIN on different seats in each), not from a gate. In both
+games, at the identical calendar record (200), the calendar's *only*
+scripted `BUY_LAND` attempt for the third quadrant (SW) sat behind a
+`BUY_PRODUCT WHEAT 16` in the same turn's batch (`[BUY_PRODUCT WHEAT 16,
+BUY_LAND]`), which drained the money the land purchase needed
+(money=2192/2156, land cost=2000). The purchase failed silently. Because
+the calendar is a fixed 720-step replay with no adaptive retry, and because
+this is the *only* record in the whole script that attempts that quadrant,
+it never got a second chance -- the third quadrant stayed locked for the
+rest of both 720-step episodes. Every later scheduled `PLANT`/`WATER`/
+`HARVEST`/`BUILD_PASTURE` the calendar sent there reported the tile as the
+literal string `"LOCKED"` (confirmed by direct inspection of both replays)
+and executed as a no-op: 471 such wasted actions in each game.
+
+Two fixes, at the two layers already established by this file's own
+architecture:
+
+- **Guard fix, `rl/candidate_a.py`.** The existing weed guard already
+  substitutes a safe action when a scheduled tile-task's target is a
+  `WEED` tile it didn't expect; it never checked for a `LOCKED` tile
+  (unpurchased quadrant), because until this discovery no evidence existed
+  that the calendar could ever schedule a task onto one. Extended the same
+  guard's tile-kind check to cover `LOCKED` across all tile-task operations
+  (not just the weed guard's three), substituting `PASS`. Structurally
+  simpler and safer than the weed guard: no retry state is needed (a locked
+  quadrant doesn't clear itself the way a dug weed does), and since none of
+  these operations move the worker, swapping the guaranteed-no-op action
+  for `PASS` cannot desync any later scheduled movement either way -- unlike
+  the weed guard, this one carries none of the synchronization-safety risk
+  documented in section 6. Benefits both Candidate A and Candidate B (B
+  wraps A). Verified directly against the real captured observation from
+  replay 105061000, record 210: the guard swaps exactly the calls that were
+  live no-ops (farmer and two hands, all sitting on `"LOCKED"` tiles) and
+  leaves every other worker's action, including ones on real WEED/PLANT/
+  PASTURE tiles in the same turn, byte-for-byte unchanged.
+- **Reorder fix, `rl/candidate_b.py`.** Fixing the wasted turns alone
+  doesn't get the quadrant purchased -- the underlying complaint. Added
+  `_land_priority_ordering`, a second, separate market-timing residual
+  alongside the existing sequential-affordability one: it moves a starved
+  `BUY_LAND` order ahead of a same-turn `HIRE`/`BUY_PRODUCT`/`BUY_SEED`/
+  `BUY_ANIMAL`, gated on local simulation actually flipping that `BUY_LAND`
+  from failing to succeeding (same `_simulate_orders` primitive the
+  affordability pass already uses and was validated against). It never
+  moves a `SELL` in either direction -- a `SELL`'s position is left
+  entirely to the existing, already-gated affordability pass, so this fix
+  cannot reproduce the live-opponent shared-market-timing risk documented
+  in 8's `BUY_SEED` regression (that risk comes specifically from moving
+  *when a SELL executes*, and this rule never does). What it does **not**
+  inherit from the affordability pass is that pass's core safety property:
+  strict fulfilled-count dominance. Rescuing land is expected to (and, in
+  both real episodes, does) reduce a same-turn purchase's fulfilled count,
+  sometimes to a small fraction of what was requested. That is accepted
+  as a deliberate value judgment -- an entire quadrant (`LAND_PRICES[1] =
+  2000`, on the order of 500 remaining steps of extra planting/harvesting
+  surface) is judged to dominate a partial WHEAT restock or a skipped
+  hire -- not proven the way the rest of Candidate B's logic is. Verified
+  against the real observation from episode 105061000, record 199: the fix
+  reorders to `[BUY_LAND, BUY_PRODUCT WHEAT 16]`, which local simulation
+  confirms lets the land purchase succeed at the cost of 11 of the 16
+  requested WHEAT units (5 fulfilled instead of 16). This fix does **not**
+  help the currently-live Candidate A package by itself -- only Candidate
+  B's market-timing layer carries it, so shipping just the guard fix to
+  Candidate A alone would stop the wasted turns but not get the quadrant
+  bought.
+
+Validation completed before this section was written: full suite 489/489
+(8 new tests: 3 for the guard, 5 for the reorder, including one that
+replays the exact real failing turn end-to-end through
+`build_candidate_b_agent`), package/source/simulator equivalence 1438/1438
+decisions with 0 mismatches (seed 230), both fixes hand-verified against
+the real captured observations from both failing episodes as described
+above. Not yet completed as of this writing: a fresh live-opponent family
+gate for the reorder fix specifically, the same class of test that is what
+actually caught the `BUY_SEED` regression in 8 (captured-replay and
+single-player simulation both missed that one). A gate against
+future-labor/gated-late-strawberry/tiered-fertilizer, seeds 400-409, both
+seats, was started and is running in the background; update this section
+with the result once it completes rather than treating the reorder fix as
+validated to the same bar as the rest of Candidate B until then. The guard
+fix carries no comparable live-opponent risk (it never touches a market
+order, only a worker's tile-task action on a tile no policy has ever had
+reason to plant on), so it does not need the same gate to be trusted.
+
 ## 9. Candidate C: public-state route portfolio
 
 C is the first intended 1500-crossing architecture. Build only after A+B are stable.
