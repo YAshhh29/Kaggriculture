@@ -817,6 +817,39 @@ confirming the good news -- exactly what a bigger sample is for. Treat
 the headline number as encouraging, and the `SGY2512` result as the
 concrete next thing to understand before any promotion claim.
 
+### 9e. The two losses are not a B-layer problem (2026-09-03)
+
+Candidate C's `elite_pasture` route wraps `build_candidate_b_agent`, the
+exact code the other concurrent session is auditing for a suspected live
+regression -- so a fair question is whether Candidate C's own losses
+trace to the same cause, and whether it should be expected to inherit
+whatever that investigation finds. Tested three variants of the elite
+baseline (raw; wrapped in only Candidate A's guards; wrapped in the full
+Candidate A + Candidate B stack, i.e. today's actual route) against both
+opponents that had ever beaten Candidate C (`SGY2512`, `Cary Jin`), 3
+fresh seeds (960-962), both seats, 36 games:
+
+- All three variants produced the *same* win/loss pattern in every single
+  game (identical results down to seat/seed, rewards differing only by
+  small guard-triggered corrections). Candidate B's market-timing layer
+  is not the cause of either weakness -- whatever the other session finds
+  about that code, it does not by itself explain Candidate C's losses.
+- `SGY2512`: 6-0 at these seeds -- a complete reversal of 9d's 0-4 at
+  seeds 950-951. This was ordinary seed variance, not a persistent
+  weakness; retract the "concrete next thing to understand" framing in
+  9d.
+- `Cary Jin`: 2-1 at these seeds (consistent with 9d's 2-2). This is a
+  real, repeatable weak matchup, but it is shared identically across raw/
+  guarded/stacked, meaning it is inherent to the elite baseline's actual
+  recorded moves against this one opponent's strategy -- not something
+  Candidate C's own layers introduced, and not a good target for a
+  one-opponent-specific patch (which section 9's own "never select by
+  replay ID" spirit argues against extending to hand-tuned counters).
+
+Net effect on confidence: Candidate C's real, replicated weakness is
+narrower than 9d suggested (one opponent, not two), and is decoupled
+from the current Candidate B investigation.
+
 ## 10. Candidate D: learned residual/Option selector
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
