@@ -379,6 +379,37 @@ class CandidateAExecutor(ResidualExecutor):
                         detail="calendar_targeted_unpurchased_land",
                     )
                     self._telemetry.prevented_invalid += 1
+            elif (
+                operation in LOCKED_TILE_OPERATIONS
+                and operation != "DIG"
+                and _is_weed(tile)
+            ):
+                # The repair above only fires for RECOVERABLE_SETUP work that
+                # also passes the schedule-safety check, so most weed-blocked
+                # actions still reach the simulator as guaranteed no-ops -- a
+                # real-game audit found 37 of them across three games (WATER,
+                # HARVEST and FERTILIZE on WEED, plus PLANT the repair
+                # declined). None of those operations can act on a weed, so
+                # the turn is already lost; clearing the weed in place is
+                # strictly better than spending it on nothing.
+                #
+                # This is a 1:1 substitution, never an inserted step: the
+                # worker does not move either way, so it cannot displace the
+                # calendar's later scheduled movement -- the failure mode that
+                # made the original broad multi-step recovery cost -32690 in
+                # section 6. No retry is queued for the same reason.
+                original = list(planned[worker])
+                planned[worker] = ["DIG"]
+                if self._telemetry is not None:
+                    self._telemetry.record(
+                        guard_type="weed_clear",
+                        worker=worker,
+                        step=step,
+                        original=original,
+                        replacement=["DIG"],
+                        detail="doomed_action_on_weed_cleared_in_place",
+                    )
+                    self._telemetry.prevented_invalid += 1
         return {
             "farmer": planned[0],
             "hands": planned[1:],

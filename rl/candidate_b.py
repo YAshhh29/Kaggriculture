@@ -79,6 +79,26 @@ It has been checked against both failing replays and the full offline test
 suite; it has not yet been run through a fresh live-opponent paired gate the
 way the sell pass was, so treat it with the same "verify before fully
 trusting at scale" posture that gate was built to enforce.
+
+**`_land_priority_ordering` is DISABLED by default** (opt in with
+`build_candidate_b_agent(enable_land_priority=True)`). The reason is risk,
+not measured harm, and the distinction matters for anyone reading this later:
+
+- Instrumented measurement over 8 complete games (5752 decisions, 3408
+  non-empty market batches) found `_land_priority_ordering` changed the
+  order 3 times and `_sequential_affordability_ordering` changed it 8
+  times. The entire market layer alters roughly 1.4 decisions per game, so
+  neither rule can account for a large live rating gap in either direction.
+- The seeds 300-309 six-family gate scores 108-12 both with the rule
+  (section 8's original A+B gate) and without it (the later no-land run),
+  against the same 107-13 Candidate A control. That is a null result for
+  this rule, not evidence against it.
+
+So it is switched off because it is the one residual in this module that was
+never justified by the fulfilled-count invariant -- it deliberately sacrifices
+another purchase -- and a rule that fires ~0.4 times per game with no measured
+benefit is not worth an unproven tail risk. Do not describe turning it off as
+"fixing" a live regression: the measurements above cannot support that claim.
 """
 
 from __future__ import annotations
@@ -551,7 +571,11 @@ def _land_priority_ordering(
     return candidate_orders if rescued else market_orders
 
 
-def build_candidate_b_agent(*, baseline: Baseline = candidate_a) -> Baseline:
+def build_candidate_b_agent(
+    *,
+    baseline: Baseline = candidate_a,
+    enable_land_priority: bool = False,
+) -> Baseline:
     """Create Candidate A plus the market-timing residuals."""
     def decide(observation: dict[str, Any]) -> AgentAction:
         action = clone_action(baseline(observation))
@@ -559,7 +583,11 @@ def build_candidate_b_agent(*, baseline: Baseline = candidate_a) -> Baseline:
             observation,
             action["market"],
         )
-        action["market"] = _land_priority_ordering(observation, market)
+        action["market"] = (
+            _land_priority_ordering(observation, market)
+            if enable_land_priority
+            else market
+        )
         return action
 
     return decide

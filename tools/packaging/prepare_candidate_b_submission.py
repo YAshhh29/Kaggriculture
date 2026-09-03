@@ -149,9 +149,26 @@ def main() -> None:
                         "seeds": "300-309",
                         "games": 120,
                         "control_a": "107-13",
-                        "candidate_ab": "108-12",
+                        "candidate_ab_no_land_priority": "108-12",
                         "errors": 0,
                         "per_family_win_regression": 0,
+                        "mean_margin_delta_vs_control_a": 2335.23,
+                        "land_priority": "disabled by default",
+                        "land_priority_evidence": (
+                            "This gate compares Candidate A against A+B; it "
+                            "does not isolate the land-priority rule. Section "
+                            "8's original A+B gate scored the same 108-12 on "
+                            "these seeds and families WITH the rule enabled, "
+                            "so the rule is a null result here, and the "
+                            "margin delta above is the A-to-B delta, not a "
+                            "land-priority effect. Instrumented measurement "
+                            "over 8 complete games (5752 decisions) found it "
+                            "reorders 3 times and the sell pass 8 times. It "
+                            "is off by default on risk grounds -- it is the "
+                            "one residual never justified by the "
+                            "fulfilled-count invariant -- not because "
+                            "disabling it was measured to fix anything."
+                        ),
                         "families": [
                             "distilled-calendar",
                             "current_rank2_replay_agent",
@@ -160,6 +177,10 @@ def main() -> None:
                             "experimental_lifecycle_agent",
                             "learned-service",
                         ],
+                        "report": (
+                            "artifacts/benchmarks/"
+                            "v1327-candidate-b-no-land-ablation-300-309.json"
+                        ),
                     },
                 },
                 "status": "candidate B package built; upload only after gates",

@@ -118,9 +118,26 @@ class ExperimentalCalendarRecoveryAgentTests(unittest.TestCase):
             )
         )
 
-        decision = candidate(state)
+        first = candidate(state)
+        state["step"] = 35
+        state["hour"] = 11
+        state["farms"][0]["tiles"][y][x] = None
+        second = candidate(state)
+        state["step"] = 36
+        state["hour"] = 12
+        third = candidate(state)
 
-        self.assertEqual(decision["farmer"], ["PLANT", "WHEAT"])
+        # The multi-step repair (DIG -> PLANT -> WATER) must still be
+        # declined here: step 36 is scheduled movement, and consuming it is
+        # exactly what desynchronized the route for -32690 in section 6.
+        # A bare 1:1 DIG is allowed because it costs the same single turn the
+        # doomed PLANT would have cost and leaves the worker in place, so the
+        # assertions that matter are that no retry is queued and that the
+        # calendar's own next two actions -- including the WEST movement --
+        # still execute on schedule.
+        self.assertEqual(first["farmer"], ["DIG"])
+        self.assertEqual(second["farmer"], ["WATER"])
+        self.assertEqual(third["farmer"], ["WEST"])
 
     def test_live_hand_count_truncates_stale_calendar_actions(self) -> None:
         state = scale_observation(day=5, hour=0)
@@ -344,6 +361,89 @@ class ExperimentalCalendarRecoveryAgentTests(unittest.TestCase):
         decision = candidate(state)
 
         self.assertEqual(decision["farmer"], ["PLANT", "WHEAT"])
+
+    def test_weed_blocked_water_is_cleared_in_place(self) -> None:
+        # A real-game audit found WATER/HARVEST/FERTILIZE actions landing on
+        # WEED tiles as guaranteed no-ops, because the schedule-safe repair
+        # above only covers RECOVERABLE_SETUP work. The turn is already lost,
+        # so clear the weed instead of spending it on nothing.
+        state = scale_observation(day=8, hour=10)
+        state["step"] = 200
+        x, y = state["farms"][0]["farmer"]
+        state["farms"][0]["tiles"][y][x] = {"kind": "WEED"}
+        candidate = build_candidate_a_agent(
+            baseline=fixed_baseline(
+                {"farmer": ["WATER"], "hands": [], "market": []}
+            )
+        )
+
+        decision = candidate(state)
+
+        self.assertEqual(decision["farmer"], ["DIG"])
+
+    def test_weed_clear_queues_no_retry_and_keeps_next_calendar_action(
+        self,
+    ) -> None:
+        # The 1:1 substitution must not become an inserted step: the next
+        # turn has to follow the calendar exactly, or this reintroduces the
+        # route desync that cost -32690 in the rejected broad recovery.
+        state = scale_observation(day=8, hour=10)
+        state["step"] = 200
+        x, y = state["farms"][0]["farmer"]
+        state["farms"][0]["tiles"][y][x] = {"kind": "WEED"}
+        candidate = build_candidate_a_agent(
+            baseline=scheduled_baseline(
+                {
+                    200: {"farmer": ["WATER"], "hands": [], "market": []},
+                    201: {"farmer": ["EAST"], "hands": [], "market": []},
+                }
+            )
+        )
+
+        first = candidate(state)
+        state["step"] = 201
+        state["hour"] = 11
+        state["farms"][0]["tiles"][y][x] = None
+        second = candidate(state)
+
+        self.assertEqual(first["farmer"], ["DIG"])
+        self.assertEqual(second["farmer"], ["EAST"])
+
+    def test_dig_on_a_weed_is_left_alone(self) -> None:
+        state = scale_observation(day=8, hour=10)
+        state["step"] = 200
+        x, y = state["farms"][0]["farmer"]
+        state["farms"][0]["tiles"][y][x] = {"kind": "WEED"}
+        candidate = build_candidate_a_agent(
+            baseline=fixed_baseline(
+                {"farmer": ["DIG"], "hands": [], "market": []}
+            )
+        )
+
+        decision = candidate(state)
+
+        self.assertEqual(decision["farmer"], ["DIG"])
+
+    def test_weed_clear_does_not_touch_a_healthy_plant(self) -> None:
+        state = scale_observation(day=8, hour=10)
+        state["step"] = 200
+        x, y = state["farms"][0]["farmer"]
+        state["farms"][0]["tiles"][y][x] = {
+            "kind": "PLANT",
+            "crop": "WHEAT",
+            "planted_day": 6,
+            "yield_units": 0,
+            "watered_today": False,
+        }
+        candidate = build_candidate_a_agent(
+            baseline=fixed_baseline(
+                {"farmer": ["WATER"], "hands": [], "market": []}
+            )
+        )
+
+        decision = candidate(state)
+
+        self.assertEqual(decision["farmer"], ["WATER"])
 
 
 if __name__ == "__main__":

@@ -1,9 +1,9 @@
 {
-  "created_at": "2026-09-03T08:29:10.738417+00:00",
+  "created_at": "2026-09-03T16:20:37.171277+00:00",
   "competition": "kaggriculture",
   "agent": "main.py",
-  "sha256": "890f667848ed5f166dc67f61a6fdeb723103c844ec53ae8f48144d022b65c405",
-  "combined_source_sha256": "54e8c00670166e9d5869a04f485c6f6d0b11426c9ab7f07e3ae8dfcf51e856fe",
+  "sha256": "d1ff98515209b3bde2395d6a368a67bfe0d2c036759671505a838f52761e4f57",
+  "combined_source_sha256": "baf0ac1f155c4deede4fbf5166c17debdc0574e04e992fb5fdbd9c40abc27f4c",
   "parent_submission": {
     "note": "built on the Candidate A package, live on Kaggle",
     "source_files": [
@@ -32,9 +32,12 @@
       "seeds": "300-309",
       "games": 120,
       "control_a": "107-13",
-      "candidate_ab": "108-12",
+      "candidate_ab_no_land_priority": "108-12",
       "errors": 0,
       "per_family_win_regression": 0,
+      "mean_margin_delta_vs_control_a": 2335.23,
+      "land_priority": "disabled by default",
+      "land_priority_evidence": "This gate compares Candidate A against A+B; it does not isolate the land-priority rule. Section 8's original A+B gate scored the same 108-12 on these seeds and families WITH the rule enabled, so the rule is a null result here, and the margin delta above is the A-to-B delta, not a land-priority effect. Instrumented measurement over 8 complete games (5752 decisions) found it reorders 3 times and the sell pass 8 times. It is off by default on risk grounds -- it is the one residual never justified by the fulfilled-count invariant -- not because disabling it was measured to fix anything.",
       "families": [
         "distilled-calendar",
         "current_rank2_replay_agent",
@@ -42,7 +45,8 @@
         "experimental_scale_agent",
         "experimental_lifecycle_agent",
         "learned-service"
-      ]
+      ],
+      "report": "artifacts/benchmarks/v1327-candidate-b-no-land-ablation-300-309.json"
     }
   },
   "status": "candidate B package built; upload only after gates"

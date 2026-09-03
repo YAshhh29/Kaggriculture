@@ -222,6 +222,55 @@ class CandidateBTests(unittest.TestCase):
 
         self.assertEqual(ordered, orders)
 
+    def test_can_disable_land_priority_for_ablation(self) -> None:
+        state = scale_observation(day=8, hour=9, money=2192)
+        state["step"] = 200
+        baseline_market = [["BUY_PRODUCT", "WHEAT", 16], ["BUY_LAND"]]
+        decision = build_candidate_b_agent(
+            baseline=fixed_baseline(
+                {
+                    "farmer": ["PASS"],
+                    "hands": [],
+                    "market": baseline_market,
+                }
+            ),
+            enable_land_priority=False,
+        )(
+            {
+                **state,
+                "market": {
+                    **state["market"],
+                    "inventory": {"WHEAT": 9_945},
+                },
+            }
+        )
+
+        self.assertEqual(decision["market"], baseline_market)
+
+    def test_default_agent_keeps_land_priority_disabled(self) -> None:
+        state = scale_observation(day=8, hour=9, money=2192)
+        state["step"] = 200
+        baseline_market = [["BUY_PRODUCT", "WHEAT", 16], ["BUY_LAND"]]
+        decision = build_candidate_b_agent(
+            baseline=fixed_baseline(
+                {
+                    "farmer": ["PASS"],
+                    "hands": [],
+                    "market": baseline_market,
+                }
+            ),
+        )(
+            {
+                **state,
+                "market": {
+                    **state["market"],
+                    "inventory": {"WHEAT": 9_945},
+                },
+            }
+        )
+
+        self.assertEqual(decision["market"], baseline_market)
+
     def test_moves_land_purchase_before_a_product_buy_that_starves_it(
         self,
     ) -> None:
@@ -298,6 +347,7 @@ class CandidateBTests(unittest.TestCase):
 
         decision = build_candidate_b_agent(
             baseline=fixed_baseline(baseline_action),
+            enable_land_priority=True,
         )(state)
 
         self.assertEqual(

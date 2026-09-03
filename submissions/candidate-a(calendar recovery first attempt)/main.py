@@ -637,6 +637,12 @@ class CandidateAExecutor(ResidualExecutor):
                 if self._telemetry is not None:
                     self._telemetry.record(guard_type='locked_quadrant', worker=worker, step=step, original=original, replacement=list(PASS), detail='calendar_targeted_unpurchased_land')
                     self._telemetry.prevented_invalid += 1
+            elif operation in LOCKED_TILE_OPERATIONS and operation != 'DIG' and _is_weed(tile):
+                original = list(planned[worker])
+                planned[worker] = ['DIG']
+                if self._telemetry is not None:
+                    self._telemetry.record(guard_type='weed_clear', worker=worker, step=step, original=original, replacement=['DIG'], detail='doomed_action_on_weed_cleared_in_place')
+                    self._telemetry.prevented_invalid += 1
         return {'farmer': planned[0], 'hands': planned[1:], 'market': [list(order) for order in action.get('market', [])]}
 
     def _repair_preserves_schedule(self, observation: dict[str, Any], worker: int, operation: str) -> bool:
