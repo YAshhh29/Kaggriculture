@@ -38,6 +38,18 @@ The tracked standalone Kaggle packages are:
   earlier version of this package (sequential affordability only, before
   the land-priority fix below) was previously uploaded and live -- see the
   correction below.
+- `candidate-c/` (public-state route portfolio) contains a real elite
+  player's strategy ("fog flower", public leaderboard score 2882.6,
+  pulled from the Kaggle leaderboard via API, episode 105144807 where
+  they beat the leaderboard's #2 team) wrapped in Candidate A's guards
+  and Candidate B's market-timing residuals, currently the sole
+  effectively-selected route (Candidate B is kept as a second, documented
+  route; the selector cannot yet legally choose between them -- see
+  `rl/GOAL.md` section 9c). Beat Candidate B 20-0 and Candidate A 8-0 on
+  fresh seeds neither was recorded on, both seats -- the first of five
+  route candidates tried to win instead of losing. This is a strong
+  initial signal, not the full 1000-game/panel gate `rl/GOAL.md` section
+  9 specifies for a real promotion decision. Not yet uploaded to Kaggle.
 
 ### 2026-09-03: locked-quadrant fix (both packages above)
 

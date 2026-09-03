@@ -693,6 +693,96 @@ almost certainly a replay involving a top-leaderboard player specifically
 (from the leaderboard directly, not this project's own games), or a
 Kaggle token so this can be searched for directly.
 
+### 9c. Kaggle API token unlocked real leaderboard data (2026-09-03)
+
+The user supplied a Kaggle API token (`KGAT_...`). It authenticates as a
+Bearer token against `api.kaggle.com` (not the `kaggle.json`
+username+key scheme the `kaggle` pip package's own client assumes, which
+returned 401 with this token) -- raw `requests` calls or the `kaggle` CLI
+with `KAGGLE_API_TOKEN` set both work. This gave direct access to the
+live leaderboard, any team's public submissions and episodes, and replay
+downloads for any completed episode. Token is not committed anywhere;
+treat as a live account credential.
+
+**A-vs-B investigation.** The user's own submission history (pulled via
+`kaggle competitions submissions kaggriculture`) showed the *previous*
+Candidate B (sequential-affordability only, before this file's 8c fixes)
+already scored lower than Candidate A (1019.6 vs 1175.0) -- the
+underperformance predates the locked-quadrant fix and is not specific to
+it. It also showed the same exact Candidate A package file re-uploaded
+twice scoring 1175.0 and 1210.8 -- roughly 35 points of pure noise on
+identical bytes, before any A-vs-B comparison is even attempted. A larger
+recent-episode sample (23 games for Candidate A, 35 for Candidate B, both
+pulled live) gave A 65.2% wins vs B's 54.3% -- a real gap, if a smaller
+one than the raw scores suggested. But a *controlled* local test --
+cloning 6 of those exact real opponents (`Kaggler Albafica`, `Cary Jin`,
+`The Grower`, `Stanislav Tsepa`, `SGY2512`, `Shangshang Zhang`) and
+running Candidate A and B against each, same seeds, same seats -- found
+the opposite: B 13-11, A 9-15. These two methodologies disagree on
+direction. Likely reason: the clones are frozen replays of what a real
+opponent did against a *different, older* version of this project's
+agent, so they cannot reproduce how a genuinely reactive live opponent
+would respond differently to A's choices vs B's -- exactly the
+"shared-market timing an isolated simulation cannot see" risk section 8
+already documents, just now cutting the other way. **No confident verdict
+on A vs B**; recorded honestly rather than forcing one.
+
+**Elite route found and validated.** Pulled the live leaderboard
+(`kaggle competitions leaderboard kaggriculture -s`) and confirmed Crop
+Dusta is still ranked #1 (2979.7) -- direct evidence the original parent
+really was elite-sourced. Rather than guessing at other elite teams,
+pulled leaderboard #2 (`Giulio Ravasio`, 2965.4)'s most recent episode
+(105144807) and found their opponent, `fog flower` (public score 2882.6),
+*won* that game 71471-69193. Cloned `fog flower`'s side of that one
+episode the same way as every other clone this file describes
+(`agents/experimental_distilled_elite_pasture_agent.py`,
+`models/v1327-public-elite-fogflower-105144807.json`) and tested it,
+wrapped in Candidate A's guards and Candidate B's market-timing residuals
+(`build_candidate_b_agent(baseline=build_candidate_a_agent(baseline=...))`),
+against both Candidate A and Candidate B on fresh seeds neither this
+route nor A/B was ever recorded on, both seats:
+
+- vs Candidate B: 20-0 (seeds 600-602, 700-703, 750-753, 800-803)
+- vs Candidate A: 8-0 (seeds 750-753)
+
+Every variant tested (raw, guarded, fully stacked) won every single game.
+This is the first candidate, of five tried across sections 9a/9b/9c, to
+win decisively instead of losing decisively. The distinguishing factor
+was not the strategy family (this is the same cow/sheep-pasture archetype
+as the two rejected clones in 9b) but the source: a genuinely elite
+leaderboard result, pulled from the leaderboard directly, rather than
+from this project's own match history -- confirming the theory in 9b.
+
+**Wired into `rl/candidate_c.py`** as `ELITE_PASTURE`, now the first
+(default-selected) route, with `CALENDAR` (Candidate B) kept as the
+second, documented route. The selector still cannot legally choose
+between them adaptively -- both are step-indexed scripted replays with
+no live-opponent signal available at episode start, per this file's own
+non-reentrant rule -- so `_select_route_name` remains a placeholder
+returning whichever route is listed first. This is "ship the better-
+measured single route," not yet a real portfolio; a genuine per-opponent
+selector still needs a second *reactive* route or a legal early signal,
+neither of which exists yet.
+
+**Packaged**: `submissions/candidate-c/main.py`
+(`tools/packaging/prepare_candidate_c_submission.py`), built on top of
+the full Candidate B package the same way Candidate B was built on
+Candidate A. Package/source/simulator equivalence: 1438/1438 decisions,
+0 mismatches (seed 230). Full suite 500/500.
+
+**Not yet done**, per this section's own C-gate requirements above: the
+1000-game head-to-head, the panel checks around scores 1500/1800/2200/
+2500, the bottom-decile/hard-elite-holdout checks, and a temporal
+holdout collected after selector freeze. What exists is a strong initial
+signal (28 fresh-seed games, zero losses) two orders of magnitude below
+that gate's own stated scale -- treat this as "promising enough to
+package and keep validating," not as a promotion decision. `rl/GOAL.md`
+section 12's own discipline (state a hypothesis, run the narrow test
+first, then paired seeds, then larger gates) has been followed through
+the narrow and paired-seed stages; the larger gates are the honest next
+step before this should be trusted as much as Candidate A/B's own
+promotion evidence.
+
 ## 10. Candidate D: learned residual/Option selector
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
