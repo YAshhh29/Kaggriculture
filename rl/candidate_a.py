@@ -51,6 +51,18 @@ ANIMAL_STRUCTURES = {
     "SHEEP": "PASTURE",
 }
 RECOVERABLE_SETUP = {"PLANT", "BUILD_COOP", "BUILD_PASTURE"}
+LOCKED_TILE_OPERATIONS = {
+    "PLANT",
+    "WATER",
+    "HARVEST",
+    "FERTILIZE",
+    "DIG",
+    "BUILD_COOP",
+    "BUILD_PASTURE",
+    "FEED",
+    "CARE",
+    "COLLECT_FERTILIZER",
+}
 
 
 @dataclass(frozen=True)
@@ -354,6 +366,19 @@ class CandidateAExecutor(ResidualExecutor):
                         replacement=["DIG"],
                     )
                     self._telemetry.recovered_units += 1
+            elif operation in LOCKED_TILE_OPERATIONS and _is_locked(tile):
+                original = list(planned[worker])
+                planned[worker] = list(PASS)
+                if self._telemetry is not None:
+                    self._telemetry.record(
+                        guard_type="locked_quadrant",
+                        worker=worker,
+                        step=step,
+                        original=original,
+                        replacement=list(PASS),
+                        detail="calendar_targeted_unpurchased_land",
+                    )
+                    self._telemetry.prevented_invalid += 1
         return {
             "farmer": planned[0],
             "hands": planned[1:],
@@ -678,6 +703,10 @@ def _tile_at(farm: dict[str, Any], position: tuple[int, int]) -> Any:
 
 def _is_weed(tile: Any) -> bool:
     return isinstance(tile, dict) and tile.get("kind") == "WEED"
+
+
+def _is_locked(tile: Any) -> bool:
+    return tile == "LOCKED"
 
 
 def _repair_has_time(observation: dict[str, Any], operation: str) -> bool:

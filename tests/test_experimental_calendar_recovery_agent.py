@@ -288,6 +288,63 @@ class ExperimentalCalendarRecoveryAgentTests(unittest.TestCase):
 
         self.assertEqual(decision["farmer"], ["PLANT", "WHEAT"])
 
+    def test_locked_quadrant_blocks_scheduled_tile_tasks(self) -> None:
+        # Live episodes 105061000/105062726: the calendar's only scripted
+        # BUY_LAND for the third quadrant was starved of funds by an
+        # earlier same-turn BUY_PRODUCT, so the quadrant never unlocked.
+        # Every later scheduled PLANT/WATER/etc. the calendar sent there
+        # reported the tile as the literal string "LOCKED" and executed as
+        # a no-op for the rest of the episode (471 times, in each replay).
+        state = scale_observation(day=8, hour=17)
+        state["step"] = 210
+        farmer_x, farmer_y = state["farms"][0]["farmer"]
+        state["farms"][0]["tiles"][farmer_y][farmer_x] = "LOCKED"
+        state["farms"][0]["hands"] = [(2, 8)]
+        state["farms"][0]["tiles"][8][2] = "LOCKED"
+        candidate = build_candidate_a_agent(
+            baseline=fixed_baseline(
+                {
+                    "farmer": ["PLANT", "WHEAT"],
+                    "hands": [["WATER"]],
+                    "market": [],
+                }
+            )
+        )
+
+        decision = candidate(state)
+
+        self.assertEqual(decision["farmer"], ["PASS"])
+        self.assertEqual(decision["hands"][0], ["PASS"])
+
+    def test_locked_quadrant_guard_leaves_normal_tiles_alone(self) -> None:
+        state = scale_observation(day=8, hour=17)
+        state["step"] = 210
+        candidate = build_candidate_a_agent(
+            baseline=fixed_baseline(
+                {"farmer": ["PLANT", "WHEAT"], "hands": [], "market": []}
+            )
+        )
+
+        decision = candidate(state)
+
+        self.assertEqual(decision["farmer"], ["PLANT", "WHEAT"])
+
+    def test_recovery_disabled_leaves_locked_tile_task_untouched(self) -> None:
+        state = scale_observation(day=8, hour=17)
+        state["step"] = 210
+        x, y = state["farms"][0]["farmer"]
+        state["farms"][0]["tiles"][y][x] = "LOCKED"
+        candidate = build_candidate_a_agent(
+            baseline=fixed_baseline(
+                {"farmer": ["PLANT", "WHEAT"], "hands": [], "market": []}
+            ),
+            enable_recovery=False,
+        )
+
+        decision = candidate(state)
+
+        self.assertEqual(decision["farmer"], ["PLANT", "WHEAT"])
+
 
 if __name__ == "__main__":
     unittest.main()
