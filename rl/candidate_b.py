@@ -1,8 +1,57 @@
-"""Candidate B: order-safe premium market residual over Candidate A."""
+"""Candidate B: sequential-affordability market residual over Candidate A.
+
+Hypothesis: in a real batch of market orders for one turn, Candidate A
+sometimes places a SELL after a money- or shed-consuming order
+(BUY_PRODUCT/BUY_SEED/BUY_ANIMAL/HIRE/BUY_LAND) that it funds. Because the
+1.32.7 engine drains each order to completion before starting the next, a
+sell positioned after a purchase cannot fund it -- moving eligible sells
+earlier can only add cash/shed-room before later orders execute, never take
+any away, so it can only keep every previously-successful order successful
+and, sometimes, rescue one that used to fail.
+
+Live replay of Candidate A's real 33-episode captured record found this
+pattern almost entirely in WHEAT/FERTILIZER sells trailing an unrelated
+spend (858 + 825 instances), not in premium sells (0 instances) -- so this
+module moves any SELL, not just the four premium products the original
+design brief singled out. That introduces a same-item overlap with
+BUY_PRODUCT (which only ever targets WHEAT/FERTILIZER) that the premium-only
+scope never had to consider: an exhaustive sweep over quantities and
+inventory levels found no case where every order's fulfilled quantity tied
+but final money still differed -- the engine's "quote a buy at post-buy
+inventory" rule (built to make an unchanged-market buy/sell round-trip net
+zero) appears to make same-item reordering money-neutral whenever nothing's
+fulfillment changes, same as the cross-item case. That is an empirical
+finding, not a proof, so `_is_strict_improvement` keeps a same-cost money
+check as a free safety net rather than assuming the invariant is airtight.
+
+This module only ever moves a SELL, never changes what the baseline chose
+to buy -- but real replay still turned up a purchase type where *rescuing*
+one is dangerous. Rescuing a HIRE is safe: Candidate A's own recovery
+already re-aligns actions to the live hand count (extra/fewer hands is a
+known, handled case). Rescuing a BUY_ANIMAL is not: the fixed calendar
+never schedules care/feed for an animal it didn't plan for, and a rescued
+animal can also fill the one pasture/coop slot the calendar's own later,
+already-planned animal purchase needed. On real replay this cut both ways
+in one batch of games: a rescued HIRE gained +8578 on episode 103977950,
+while a rescued SHEEP purchase cost -37129 on episode 103937628 -- same
+mechanism, opposite outcome, because only one of the two purchase types has
+a downstream consumer of the state it creates. So `_is_rescue_barrier`
+walls off BUY_ANIMAL specifically: a sell may still jump HIRE/BUY_PRODUCT/
+BUY_SEED/BUY_LAND, but never crosses a BUY_ANIMAL order. BUY_SEED/BUY_LAND
+are structurally closer to BUY_PRODUCT (inert until something later
+chooses to use them, no ongoing care requirement, no capacity to block) but
+have not been individually observed rescued in real replay either way.
+
+A prior implementation of this module (order-safe premium re-*sorting* via
+permutation search) was proven mathematically inert -- each product's price
+depends only on that product's own running inventory, so permuting SELLs of
+*already-fixed* quantities can never change total revenue -- and was
+removed after live replay confirmed zero of 264 eligible firings ever
+changed anything.
+"""
 
 from __future__ import annotations
 
-import itertools
 import math
 from typing import Any
 
@@ -12,15 +61,32 @@ from rl.runtime import AgentAction, Baseline, clone_action
 
 MAX_MARKET_ORDERS = 10
 TERMINAL_MARKET_STEP = 717
-PREMIUM_PRODUCTS = {"MELON", "MILK", "WOOL", "STRAWBERRY"}
 MARKET_I0 = 10_000
 PRICE_FLOOR = 1
+HINGE_GAIN = 8.0
+
+# (base, T, below_func, below_target, above_func, above_target) -- exact
+# copy of the 1.32.7 simulator's MARKET_PARAMS for every sellable product,
+# not just the four premium ones, because a faithful affordability check
+# needs the real price of whatever else shares the same order batch.
 MARKET_PARAMS = {
+    "WHEAT": (25, 400, "sqrt", 0.80, "log", 0.20),
+    "CARROT": (35, 450, "hinge", 1.00, "sqrt", 0.70),
+    "TOMATO": (60, 200, "hinge", 0.40, "sqrt", 0.60),
     "STRAWBERRY": (120, 100, "sqrt", 0.70, "linear", 1.60),
     "MELON": (250, 300, "log", 0.20, "sq", 3.60),
+    "EGG": (50, 332, "hinge", 0.40, "log", 0.20),
     "MILK": (160, 122, "sqrt", 0.60, "linear", 1.60),
     "WOOL": (200, 105, "log", 0.20, "sq", 3.20),
+    "FERTILIZER": (100, 200, "linear", 0.40, "linear", 0.40),
 }
+SEED_COST = {
+    "WHEAT": 10, "CARROT": 20, "TOMATO": 50, "STRAWBERRY": 100, "MELON": 80,
+}
+ANIMAL_COST = {"GOOSE": 300, "COW": 400, "SHEEP": 500}
+LAND_PRICES = (1000, 2000, 4000)
+FARM_HAND_COST_MULT = 1
+SHED_CAPACITY = 100
 
 
 def _shape(function: str, value: float, scale: int) -> float:
@@ -34,8 +100,10 @@ def _shape(function: str, value: float, scale: int) -> float:
     if function == "log":
         return math.log(1.0 + value)
     if function == "hinge":
+        if not scale or scale <= 0:
+            return value
         unit = value / scale
-        return unit + 8.0 * max(0.0, unit - 1.0) ** 2
+        return unit + HINGE_GAIN * max(0.0, unit - 1.0) ** 2
     return value
 
 
@@ -59,58 +127,301 @@ def _market_price(product: str, inventory: int) -> int:
     )
 
 
-def _premium_sell_order(order: list[Any]) -> bool:
+def _fib(n: int) -> int:
+    a, b = 1, 1
+    for _ in range(n):
+        a, b = b, a + b
+    return a
+
+
+def _hire_cost(hires_already_today: int) -> int:
+    return FARM_HAND_COST_MULT * _fib(hires_already_today)
+
+
+def _next_land_cost(unlocked_quadrant_count: int) -> int | None:
+    extra = unlocked_quadrant_count - 1  # NW starts unlocked for free.
+    if extra < 0 or extra >= len(LAND_PRICES):
+        return None
+    return LAND_PRICES[extra]
+
+
+def _is_sell_order(order: list[Any]) -> bool:
     return (
         len(order) >= 3
         and str(order[0]) == "SELL"
-        and str(order[1]) in PREMIUM_PRODUCTS
         and int(order[2]) > 0
     )
 
 
-def _premium_ordering(
+_RESCUE_ELIGIBLE_OPS = {"HIRE", "BUY_PRODUCT"}
+
+
+def _is_rescue_barrier(order: list[Any]) -> bool:
+    """True for a spend a sell must never be moved across.
+
+    Only HIRE and BUY_PRODUCT are trusted rescue targets; everything else
+    (BUY_ANIMAL, BUY_SEED, BUY_LAND) is walled off. Captured-replay testing
+    (no live opponent, opponent actions fixed regardless of our timing)
+    made BUY_ANIMAL look uniquely dangerous: rescuing a SHEEP purchase cost
+    -37129 relative to Candidate A on episode 103937628, because the fixed
+    calendar never schedules care for an animal it didn't plan for and the
+    rescue can fill the pasture/coop slot its own later purchase needed.
+    But a live paired-game gate against a mirror-match opponent (which
+    *does* react to shared market state, unlike a replay) showed the same
+    "sell wheat before buying seed/hire" calendar turn cost -15302 and
+    flipped a win to a loss via a BUY_SEED rescue alone, with BUY_ANIMAL
+    already walled off -- proving the risk isn't animal-specific. It's
+    shared-market timing: reordering our own trades shifts the price the
+    opponent's own concurrent trades land on, an effect the isolated
+    single-player safety simulation in `_simulate_orders` cannot see by
+    construction. HIRE (Candidate A's own recovery already re-aligns to the
+    live hand count) and BUY_PRODUCT have only shown benefit so far, in
+    both replay and live-opponent testing (episode 103977950: +8578 replay;
+    seed 305 vs distilled-calendar: improved margin live) -- but that is
+    two spend types' worth of evidence, not proof the risk can never touch
+    them too. Widen this set only against new, separately-gated evidence.
+    """
+    return len(order) >= 1 and str(order[0]) not in _RESCUE_ELIGIBLE_OPS \
+        and str(order[0]) != "SELL"
+
+
+def _has_reorder_opportunity(orders: list[list[Any]]) -> bool:
+    """True if a sell sits after some other, non-barrier order."""
+    seen_other = False
+    for order in orders:
+        if _is_rescue_barrier(order):
+            seen_other = False
+        elif _is_sell_order(order):
+            if seen_other:
+                return True
+        else:
+            seen_other = True
+    return False
+
+
+def _stable_partition_sells_first(
+    tagged_orders: list[tuple[int, list[Any]]],
+) -> list[tuple[int, list[Any]]]:
+    """Sells-first within each run, never crossing a rescue barrier."""
+    result: list[tuple[int, list[Any]]] = []
+    run: list[tuple[int, list[Any]]] = []
+    for item in tagged_orders:
+        if _is_rescue_barrier(item[1]):
+            sells = [entry for entry in run if _is_sell_order(entry[1])]
+            rest = [entry for entry in run if not _is_sell_order(entry[1])]
+            result.extend(sells)
+            result.extend(rest)
+            result.append(item)
+            run = []
+        else:
+            run.append(item)
+    sells = [entry for entry in run if _is_sell_order(entry[1])]
+    rest = [entry for entry in run if not _is_sell_order(entry[1])]
+    result.extend(sells)
+    result.extend(rest)
+    return result
+
+
+def _simulate_orders(
+    *,
+    money: float,
+    shed: dict[str, int],
+    market_inventory: dict[str, int],
+    hires_today: int,
+    unlocked_quadrant_count: int,
+    tagged_orders: list[tuple[int, list[Any]]],
+) -> tuple[float, dict[int, int]]:
+    """Replay one player's own order queue in isolation.
+
+    Mirrors the 1.32.7 engine's per-order-then-per-unit commit loop for a
+    single player's queue. Ignores simultaneous opponent trading on the same
+    product at the same queue position -- an approximation already relied on
+    elsewhere in this module for premium pricing -- but since both the
+    baseline and candidate orderings are replayed under the identical
+    approximation, the comparison between them stays valid.
+    """
+    shed = dict(shed)
+    market_inventory = dict(market_inventory)
+    fulfilled: dict[int, int] = {}
+    for tag, order in tagged_orders:
+        fulfilled[tag] = 0
+        if not order:
+            continue
+        op = str(order[0])
+        if op in ("SELL", "BUY_PRODUCT", "BUY_SEED", "BUY_ANIMAL"):
+            if len(order) < 3:
+                continue
+            item = str(order[1])
+            try:
+                requested = int(order[2])
+            except (TypeError, ValueError):
+                continue
+            if requested <= 0:
+                continue
+            if op == "SELL":
+                if item not in market_inventory:
+                    continue
+                for _ in range(requested):
+                    if shed.get(item, 0) <= 0:
+                        break
+                    price = _market_price(item, market_inventory[item])
+                    shed[item] -= 1
+                    money += price
+                    if price > 1:
+                        market_inventory[item] += 1
+                    fulfilled[tag] += 1
+            elif op == "BUY_PRODUCT":
+                if (
+                    item not in ("WHEAT", "FERTILIZER")
+                    or item not in market_inventory
+                ):
+                    continue
+                for _ in range(requested):
+                    price = _market_price(item, market_inventory[item] - 1)
+                    if money < price or sum(shed.values()) >= SHED_CAPACITY:
+                        break
+                    money -= price
+                    shed[item] = shed.get(item, 0) + 1
+                    market_inventory[item] -= 1
+                    fulfilled[tag] += 1
+            elif op == "BUY_SEED":
+                if item not in SEED_COST:
+                    continue
+                price = SEED_COST[item]
+                for _ in range(requested):
+                    if money < price:
+                        break
+                    money -= price
+                    fulfilled[tag] += 1
+            elif op == "BUY_ANIMAL":
+                if item not in ANIMAL_COST:
+                    continue
+                price = ANIMAL_COST[item]
+                for _ in range(requested):
+                    if money < price or sum(shed.values()) >= SHED_CAPACITY:
+                        break
+                    money -= price
+                    shed[item] = shed.get(item, 0) + 1
+                    fulfilled[tag] += 1
+        elif op == "HIRE":
+            cost = _hire_cost(hires_today)
+            if money >= cost:
+                money -= cost
+                hires_today += 1
+                fulfilled[tag] = 1
+        elif op == "BUY_LAND":
+            cost = _next_land_cost(unlocked_quadrant_count)
+            if cost is not None and money >= cost:
+                money -= cost
+                unlocked_quadrant_count += 1
+                fulfilled[tag] = 1
+        # Any other/malformed op is left at fulfilled[tag] = 0, matching the
+        # simulator's "malformed sub-op aborts this order" behavior.
+    return money, fulfilled
+
+
+def _is_strict_improvement(
+    baseline: tuple[float, dict[int, int]],
+    candidate: tuple[float, dict[int, int]],
+) -> bool:
+    """True if no order lost fulfillment, and something measurably improved.
+
+    Never reject on final money alone: a rescued purchase spends money that
+    a failed purchase would have left idle, so a rescued order's fulfilled
+    count rising is itself the win, regardless of leftover cash. When every
+    fulfilled count ties instead, fall back to requiring strictly more
+    money -- not because a same-item sell/BUY_PRODUCT overlap is known to
+    produce a money difference on a fulfilled tie (see module docstring: an
+    exhaustive sweep found none), but because there is no proof it never
+    can, and this check is free insurance if it ever does.
+    """
+    baseline_money, baseline_fulfilled = baseline
+    candidate_money, candidate_fulfilled = candidate
+    if any(
+        candidate_fulfilled[tag] < count
+        for tag, count in baseline_fulfilled.items()
+    ):
+        return False
+    if any(
+        candidate_fulfilled[tag] > count
+        for tag, count in baseline_fulfilled.items()
+    ):
+        return True
+    return candidate_money > baseline_money
+
+
+def _sequential_affordability_ordering(
     observation: dict[str, Any],
     market_orders: list[list[Any]],
 ) -> list[list[Any]]:
-    """Reorder only a pure premium-sale batch; otherwise preserve the plan."""
+    """Move sells ahead of spends they could otherwise fund.
+
+    Never invents, drops, or resizes an order -- only reorders the exact
+    batch the baseline already chose -- and only takes effect when a local
+    replay proves the reordered batch strictly dominates the baseline batch
+    (never a smaller fulfilled quantity on any order, never less cash when
+    every order's fulfilled quantity ties).
+    """
     if int(observation.get("step", 0)) >= TERMINAL_MARKET_STEP:
         return market_orders
     if not market_orders or len(market_orders) > MAX_MARKET_ORDERS:
         return market_orders
-    if not all(_premium_sell_order(order) for order in market_orders):
+    if not _has_reorder_opportunity(market_orders):
         return market_orders
+
+    tagged = list(enumerate(market_orders))
+    candidate_tagged = _stable_partition_sells_first(tagged)
+    candidate_orders = [order for _, order in candidate_tagged]
+    if candidate_orders == market_orders:
+        return market_orders
+
     market = observation.get("market", {})
-    inventory = market.get("inventory", {})
-    if any(str(order[1]) not in inventory for order in market_orders):
+    market_inventory = {
+        str(item): int(quantity)
+        for item, quantity in market.get("inventory", {}).items()
+    }
+    if not market_inventory:
         return market_orders
+    private = observation.get("private", {})
+    shed = {
+        str(item): int(quantity)
+        for item, quantity in private.get("shed", {}).items()
+    }
+    player = int(observation.get("player", 0))
+    farms = observation.get("farms")
+    if not farms or player >= len(farms):
+        return market_orders
+    farm = farms[player]
+    money = float(farm.get("money", 0))
+    hires_today = int(farm.get("hires_today", 0))
+    unlocked_quadrant_count = len(farm.get("unlocked_quadrants", []))
 
-    best_orders = [list(order) for order in market_orders]
-    best_value = _sale_value(best_orders, inventory)
-    for permutation in itertools.permutations(market_orders):
-        candidate = [list(order) for order in permutation]
-        value = _sale_value(candidate, inventory)
-        if value > best_value:
-            best_orders = candidate
-            best_value = value
-    return best_orders
-
-
-def _sale_value(orders: list[list[Any]], inventory: dict[str, Any]) -> int:
-    projected = {str(item): int(quantity) for item, quantity in inventory.items()}
-    value = 0
-    for order in orders:
-        product = str(order[1])
-        for _ in range(int(order[2])):
-            value += _market_price(product, projected[product])
-            projected[product] += 1
-    return value
+    baseline_outcome = _simulate_orders(
+        money=money,
+        shed=shed,
+        market_inventory=market_inventory,
+        hires_today=hires_today,
+        unlocked_quadrant_count=unlocked_quadrant_count,
+        tagged_orders=tagged,
+    )
+    candidate_outcome = _simulate_orders(
+        money=money,
+        shed=shed,
+        market_inventory=market_inventory,
+        hires_today=hires_today,
+        unlocked_quadrant_count=unlocked_quadrant_count,
+        tagged_orders=candidate_tagged,
+    )
+    if _is_strict_improvement(baseline_outcome, candidate_outcome):
+        return candidate_orders
+    return market_orders
 
 
 def build_candidate_b_agent(*, baseline: Baseline = candidate_a) -> Baseline:
-    """Create Candidate A plus the isolated premium ordering residual."""
+    """Create Candidate A plus the sequential-affordability residual."""
     def decide(observation: dict[str, Any]) -> AgentAction:
         action = clone_action(baseline(observation))
-        action["market"] = _premium_ordering(
+        action["market"] = _sequential_affordability_ordering(
             observation,
             action["market"],
         )
