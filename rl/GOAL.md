@@ -850,6 +850,79 @@ Net effect on confidence: Candidate C's real, replicated weakness is
 narrower than 9d suggested (one opponent, not two), and is decoupled
 from the current Candidate B investigation.
 
+### 9f. Candidate B corrected, and a second Candidate C (2026-09-03)
+
+**What the land-priority ablation actually showed.** A concurrent session
+ran a no-land ablation and concluded land priority was "the source of B's
+Kaggle degradation." That conclusion is not supported, and the record is
+corrected here so it is not inherited as fact:
+
+- The report
+  (`artifacts/benchmarks/v1327-candidate-b-no-land-ablation-300-309.json`)
+  labels its arms `submitted_control` and `future_labor`. Those are
+  hardcoded legacy names in `research/evaluation/evaluate_future_labor.py`,
+  which does not record the agent paths it was actually given. Matching the
+  numbers against section 8, the control's 107-13 is Candidate A and the
+  candidate's 108-12 is no-land B -- so the run compared **A against
+  no-land B**, never land-on against land-off.
+- Section 8's original A+B gate scored the *same* 108-12 on the same seeds
+  and families **with** the rule enabled. Land priority is a null result
+  there, and the +2335 margin delta is the A-to-B delta, not a land effect.
+- Direct instrumentation over 8 complete games (5752 decisions, 3408
+  non-empty market batches): `_land_priority_ordering` changed the order
+  **3** times and `_sequential_affordability_ordering` **8** times. B's
+  whole market layer alters ~1.4 decisions per game -- roughly 99.8%
+  identical to A. It cannot produce a 200-point rating gap in either
+  direction, which points the A-vs-B leaderboard gap at rating dynamics
+  (section 9c already measured +/-35 points on byte-identical uploads),
+  not at B's logic.
+
+The default stays disabled, on **risk** grounds: it is the one residual
+never justified by the fulfilled-count invariant, it deliberately
+sacrifices another purchase, and a rule firing ~0.4 times per game with no
+measured benefit is not worth an unproven tail. Opt in with
+`build_candidate_b_agent(enable_land_priority=True)`.
+
+**Where B's waste actually is.** A no-op audit (every tile-task action
+whose target tile was unchanged afterwards) found **205 wasted actions per
+3 games (~68/game)**. The largest fixable class was 37 actions doomed by a
+weed -- `WATER`/`HARVEST`/`FERTILIZE` on `WEED`, plus `PLANT` the existing
+repair declined, because that repair only fires for `RECOVERABLE_SETUP`
+work that also passes the schedule-safety check.
+
+`rl/candidate_a.py` now substitutes a bare in-place `DIG` for those. It is
+a 1:1 substitution with no queued retry: the worker does not move either
+way, so it cannot displace scheduled movement -- the mechanism behind
+section 6's -32690 rejection. Measured: waste 205 -> 179 with every
+`on WEED` entry eliminated; paired head-to-head over 24 games, 9-15 for
+both arms with **zero differing games** and mean margin -12853 -> -12084.
+Neutral-to-marginally-positive and safe, not a breakthrough.
+
+`test_weed_repair_does_not_displace_scheduled_movement` was rewritten
+rather than deleted: its old assertion assumed the only alternative was
+the multi-step repair, so it now asserts the property it actually guards
+-- that the calendar's own `WATER` and `WEST` at steps 35/36 still execute
+on schedule after the substitution.
+
+**Candidate C2.** `rl/candidate_c2.py` is Candidate C's stack over a
+second elite baseline: a clone of "Giulio Ravasio", public leaderboard
+rank #2 (2965.4), from the same episode 105144807 whose other side became
+Candidate C. Measured on fresh seeds 970-973, both seats, before it was
+written to disk: **8-0 against Candidate B, 2-6 against Candidate C1**
+(several near-misses: 84515-84243, 107243-110472). So the local ordering
+is C1 > C2 > B.
+
+It exists because two variants differing only by a residual flag would
+differ by ~1 decision per game -- far below the +/-35 point noise measured
+in 9c -- and would settle nothing live. Two different elite programmes
+actually diverge, so the comparison can carry information. C2 is a
+comparison arm, not a claimed improvement over C1.
+
+Note that Candidate C and C2 both import `rl.candidate_a` and
+`rl.candidate_b` directly, so every correction above propagates into both
+automatically; C's package bytes changed as a result, and its 9d panel
+result predates the weed-clear guard.
+
 ## 10. Candidate D: learned residual/Option selector
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
