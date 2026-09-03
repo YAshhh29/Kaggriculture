@@ -486,6 +486,7 @@ SHED_CAPACITY = 100
 SELLABLE_PRODUCTS = ('MELON', 'MILK', 'WOOL', 'STRAWBERRY', 'TOMATO', 'CARROT', 'EGG', 'WHEAT', 'FERTILIZER')
 ANIMAL_STRUCTURES = {'GOOSE': 'COOP', 'COW': 'PASTURE', 'SHEEP': 'PASTURE'}
 RECOVERABLE_SETUP = {'PLANT', 'BUILD_COOP', 'BUILD_PASTURE'}
+LOCKED_TILE_OPERATIONS = {'PLANT', 'WATER', 'HARVEST', 'FERTILIZE', 'DIG', 'BUILD_COOP', 'BUILD_PASTURE', 'FEED', 'CARE', 'COLLECT_FERTILIZER'}
 
 @dataclass(frozen=True)
 class PendingRepair:
@@ -630,6 +631,12 @@ class CandidateAExecutor(ResidualExecutor):
                 if self._telemetry is not None:
                     self._telemetry.record(guard_type='weed_dig', worker=worker, step=step, original=original, replacement=['DIG'])
                     self._telemetry.recovered_units += 1
+            elif operation in LOCKED_TILE_OPERATIONS and _is_locked(tile):
+                original = list(planned[worker])
+                planned[worker] = list(PASS)
+                if self._telemetry is not None:
+                    self._telemetry.record(guard_type='locked_quadrant', worker=worker, step=step, original=original, replacement=list(PASS), detail='calendar_targeted_unpurchased_land')
+                    self._telemetry.prevented_invalid += 1
         return {'farmer': planned[0], 'hands': planned[1:], 'market': [list(order) for order in action.get('market', [])]}
 
     def _repair_preserves_schedule(self, observation: dict[str, Any], worker: int, operation: str) -> bool:
@@ -815,6 +822,9 @@ def _tile_at(farm: dict[str, Any], position: tuple[int, int]) -> Any:
 def _is_weed(tile: Any) -> bool:
     return isinstance(tile, dict) and tile.get('kind') == 'WEED'
 
+def _is_locked(tile: Any) -> bool:
+    return tile == 'LOCKED'
+
 def _repair_has_time(observation: dict[str, Any], operation: str) -> bool:
     day = int(observation.get('day', 0))
     hour = int(observation.get('hour', 0))
@@ -913,7 +923,7 @@ from typing import Any
 def decide(observation: dict[str, Any]) -> dict[str, Any]:
     return _DECIDE(observation)
 candidate_a = decide
-'Candidate B: sequential-affordability market residual over Candidate A.\n\nHypothesis: in a real batch of market orders for one turn, Candidate A\nsometimes places a SELL after a money- or shed-consuming order\n(BUY_PRODUCT/BUY_SEED/BUY_ANIMAL/HIRE/BUY_LAND) that it funds. Because the\n1.32.7 engine drains each order to completion before starting the next, a\nsell positioned after a purchase cannot fund it -- moving eligible sells\nearlier can only add cash/shed-room before later orders execute, never take\nany away, so it can only keep every previously-successful order successful\nand, sometimes, rescue one that used to fail.\n\nLive replay of Candidate A\'s real 33-episode captured record found this\npattern almost entirely in WHEAT/FERTILIZER sells trailing an unrelated\nspend (858 + 825 instances), not in premium sells (0 instances) -- so this\nmodule moves any SELL, not just the four premium products the original\ndesign brief singled out. That introduces a same-item overlap with\nBUY_PRODUCT (which only ever targets WHEAT/FERTILIZER) that the premium-only\nscope never had to consider: an exhaustive sweep over quantities and\ninventory levels found no case where every order\'s fulfilled quantity tied\nbut final money still differed -- the engine\'s "quote a buy at post-buy\ninventory" rule (built to make an unchanged-market buy/sell round-trip net\nzero) appears to make same-item reordering money-neutral whenever nothing\'s\nfulfillment changes, same as the cross-item case. That is an empirical\nfinding, not a proof, so `_is_strict_improvement` keeps a same-cost money\ncheck as a free safety net rather than assuming the invariant is airtight.\n\nThis module only ever moves a SELL, never changes what the baseline chose\nto buy -- but real replay still turned up a purchase type where *rescuing*\none is dangerous. Rescuing a HIRE is safe: Candidate A\'s own recovery\nalready re-aligns actions to the live hand count (extra/fewer hands is a\nknown, handled case). Rescuing a BUY_ANIMAL is not: the fixed calendar\nnever schedules care/feed for an animal it didn\'t plan for, and a rescued\nanimal can also fill the one pasture/coop slot the calendar\'s own later,\nalready-planned animal purchase needed. On real replay this cut both ways\nin one batch of games: a rescued HIRE gained +8578 on episode 103977950,\nwhile a rescued SHEEP purchase cost -37129 on episode 103937628 -- same\nmechanism, opposite outcome, because only one of the two purchase types has\na downstream consumer of the state it creates. So `_is_rescue_barrier`\nwalls off BUY_ANIMAL specifically: a sell may still jump HIRE/BUY_PRODUCT/\nBUY_SEED/BUY_LAND, but never crosses a BUY_ANIMAL order. BUY_SEED/BUY_LAND\nare structurally closer to BUY_PRODUCT (inert until something later\nchooses to use them, no ongoing care requirement, no capacity to block) but\nhave not been individually observed rescued in real replay either way.\n\nA prior implementation of this module (order-safe premium re-*sorting* via\npermutation search) was proven mathematically inert -- each product\'s price\ndepends only on that product\'s own running inventory, so permuting SELLs of\n*already-fixed* quantities can never change total revenue -- and was\nremoved after live replay confirmed zero of 264 eligible firings ever\nchanged anything.\n'
+'Candidate B: sequential-affordability market residual over Candidate A.\n\nHypothesis: in a real batch of market orders for one turn, Candidate A\nsometimes places a SELL after a money- or shed-consuming order\n(BUY_PRODUCT/BUY_SEED/BUY_ANIMAL/HIRE/BUY_LAND) that it funds. Because the\n1.32.7 engine drains each order to completion before starting the next, a\nsell positioned after a purchase cannot fund it -- moving eligible sells\nearlier can only add cash/shed-room before later orders execute, never take\nany away, so it can only keep every previously-successful order successful\nand, sometimes, rescue one that used to fail.\n\nLive replay of Candidate A\'s real 33-episode captured record found this\npattern almost entirely in WHEAT/FERTILIZER sells trailing an unrelated\nspend (858 + 825 instances), not in premium sells (0 instances) -- so this\nmodule moves any SELL, not just the four premium products the original\ndesign brief singled out. That introduces a same-item overlap with\nBUY_PRODUCT (which only ever targets WHEAT/FERTILIZER) that the premium-only\nscope never had to consider: an exhaustive sweep over quantities and\ninventory levels found no case where every order\'s fulfilled quantity tied\nbut final money still differed -- the engine\'s "quote a buy at post-buy\ninventory" rule (built to make an unchanged-market buy/sell round-trip net\nzero) appears to make same-item reordering money-neutral whenever nothing\'s\nfulfillment changes, same as the cross-item case. That is an empirical\nfinding, not a proof, so `_is_strict_improvement` keeps a same-cost money\ncheck as a free safety net rather than assuming the invariant is airtight.\n\nThis module only ever moves a SELL, never changes what the baseline chose\nto buy -- but real replay still turned up a purchase type where *rescuing*\none is dangerous. Rescuing a HIRE is safe: Candidate A\'s own recovery\nalready re-aligns actions to the live hand count (extra/fewer hands is a\nknown, handled case). Rescuing a BUY_ANIMAL is not: the fixed calendar\nnever schedules care/feed for an animal it didn\'t plan for, and a rescued\nanimal can also fill the one pasture/coop slot the calendar\'s own later,\nalready-planned animal purchase needed. On real replay this cut both ways\nin one batch of games: a rescued HIRE gained +8578 on episode 103977950,\nwhile a rescued SHEEP purchase cost -37129 on episode 103937628 -- same\nmechanism, opposite outcome, because only one of the two purchase types has\na downstream consumer of the state it creates. So `_is_rescue_barrier`\nwalls off BUY_ANIMAL specifically: a sell may still jump HIRE/BUY_PRODUCT/\nBUY_SEED/BUY_LAND, but never crosses a BUY_ANIMAL order. BUY_SEED/BUY_LAND\nare structurally closer to BUY_PRODUCT (inert until something later\nchooses to use them, no ongoing care requirement, no capacity to block) but\nhave not been individually observed rescued in real replay either way.\n\nA prior implementation of this module (order-safe premium re-*sorting* via\npermutation search) was proven mathematically inert -- each product\'s price\ndepends only on that product\'s own running inventory, so permuting SELLs of\n*already-fixed* quantities can never change total revenue -- and was\nremoved after live replay confirmed zero of 264 eligible firings ever\nchanged anything.\n\nSecond residual, added after two live episodes (105061000, 105062726) showed\nthe same calendar turn (record 200: [BUY_PRODUCT WHEAT 16, BUY_LAND]) spend\nits way past the money a same-turn BUY_LAND needed, in both games, at both\nseats. The calendar only ever attempts BUY_LAND twice in the whole 720-step\nscript (records 122 and 200); when the second attempt is starved this way it\nis never retried, and every later scripted PLANT/WATER/HARVEST/BUILD_PASTURE\nthe calendar sends to that still-unowned quadrant reports the tile as the\nliteral string "LOCKED" and executes as a no-op for the rest of the episode\n(471 such no-ops observed in each replay). `_land_priority_ordering` moves a\nstarved BUY_LAND ahead of any HIRE/BUY_PRODUCT/BUY_SEED/BUY_ANIMAL that\nprecedes it in the same turn, but never crosses a SELL in either direction\n(a SELL only ever adds cash before land is evaluated, same reasoning as the\naffordability pass, so its position is left to that pass entirely) and never\nmoves anything if BUY_LAND was not itself starved.\n\nUnlike `_sequential_affordability_ordering`, this is not a strict-dominance\nrule: displacing a HIRE/BUY_PRODUCT/BUY_SEED/BUY_ANIMAL order can and usually\ndoes lower its fulfilled count, sometimes to zero. That is accepted on\npurpose -- an entire quadrant (LAND_PRICES[1] = 2000, ~500 remaining steps of\nextra planting/harvesting surface) is judged to dominate a partial WHEAT\nrestock or an extra hire on the turns actually observed -- rather than\nproven via the same fulfilled-count invariant the sell pass relies on. The\none thing it does inherit from that pass\'s hard-won lesson: it only ever\nreorders purchases against each other, never touches when a SELL reaches the\nshared market, so it cannot reproduce the live-opponent price-timing risk\nthat walled off BUY_ANIMAL rescues and burned the BUY_SEED live gate above.\nIt has been checked against both failing replays and the full offline test\nsuite; it has not yet been run through a fresh live-opponent paired gate the\nway the sell pass was, so treat it with the same "verify before fully\ntrusting at scale" posture that gate was built to enforce.\n'
 import math
 from typing import Any
 MAX_MARKET_ORDERS = 10
@@ -1181,13 +1191,79 @@ def _sequential_affordability_ordering(observation: dict[str, Any], market_order
     if _is_strict_improvement(baseline_outcome, candidate_outcome):
         return candidate_orders
     return market_orders
+_LAND_PRIORITY_DISPLACERS = {'BUY_PRODUCT', 'BUY_SEED', 'HIRE', 'BUY_ANIMAL'}
+
+def _is_land_order(order: list[Any]) -> bool:
+    return len(order) >= 1 and str(order[0]) == 'BUY_LAND'
+
+def _land_first_ordering(tagged_orders: list[tuple[int, list[Any]]]) -> list[tuple[int, list[Any]]]:
+    """Walk each BUY_LAND order back past adjacent non-SELL spends.
+
+    Stops the moment it hits a SELL, another BUY_LAND, or the start of the
+    batch -- so this never changes a SELL's position (that stays entirely
+    the affordability pass's decision) and never reorders two BUY_LAND
+    orders relative to each other.
+    """
+    result = list(tagged_orders)
+    for index in range(len(result)):
+        if not _is_land_order(result[index][1]):
+            continue
+        insert_at = index
+        while insert_at > 0 and str(result[insert_at - 1][1][0]) in _LAND_PRIORITY_DISPLACERS:
+            insert_at -= 1
+        if insert_at != index:
+            item = result.pop(index)
+            result.insert(insert_at, item)
+    return result
+
+def _land_priority_ordering(observation: dict[str, Any], market_orders: list[list[Any]]) -> list[list[Any]]:
+    """Rescue a BUY_LAND a preceding same-turn spend would otherwise starve.
+
+    Only fires when reordering flips at least one BUY_LAND order from
+    failing (fulfilled 0) to succeeding (fulfilled 1) in local simulation;
+    see the module docstring for why this trades a purchase's fulfilled
+    count away on purpose rather than requiring it never drop.
+    """
+    if int(observation.get('step', 0)) >= TERMINAL_MARKET_STEP:
+        return market_orders
+    if not market_orders or len(market_orders) > MAX_MARKET_ORDERS:
+        return market_orders
+    if not any((_is_land_order(order) for order in market_orders)):
+        return market_orders
+    tagged = list(enumerate(market_orders))
+    candidate_tagged = _land_first_ordering(tagged)
+    candidate_orders = [order for _, order in candidate_tagged]
+    if candidate_orders == market_orders:
+        return market_orders
+    market = observation.get('market', {})
+    market_inventory = {str(item): int(quantity) for item, quantity in market.get('inventory', {}).items()}
+    if not market_inventory:
+        return market_orders
+    private = observation.get('private', {})
+    shed = {str(item): int(quantity) for item, quantity in private.get('shed', {}).items()}
+    player = int(observation.get('player', 0))
+    farms = observation.get('farms')
+    if not farms or player >= len(farms):
+        return market_orders
+    farm = farms[player]
+    money = float(farm.get('money', 0))
+    hires_today = int(farm.get('hires_today', 0))
+    unlocked_quadrant_count = len(farm.get('unlocked_quadrants', []))
+    baseline_outcome = _simulate_orders(money=money, shed=shed, market_inventory=market_inventory, hires_today=hires_today, unlocked_quadrant_count=unlocked_quadrant_count, tagged_orders=tagged)
+    candidate_outcome = _simulate_orders(money=money, shed=shed, market_inventory=market_inventory, hires_today=hires_today, unlocked_quadrant_count=unlocked_quadrant_count, tagged_orders=candidate_tagged)
+    land_tags = [tag for tag, order in tagged if _is_land_order(order)]
+    baseline_fulfilled = baseline_outcome[1]
+    candidate_fulfilled = candidate_outcome[1]
+    rescued = any((baseline_fulfilled.get(tag, 0) == 0 and candidate_fulfilled.get(tag, 0) == 1 for tag in land_tags))
+    return candidate_orders if rescued else market_orders
 
 def build_candidate_b_agent(*, baseline: Baseline=candidate_a) -> Baseline:
-    """Create Candidate A plus the sequential-affordability residual."""
+    """Create Candidate A plus the market-timing residuals."""
 
     def decide(observation: dict[str, Any]) -> AgentAction:
         action = clone_action(baseline(observation))
-        action['market'] = _sequential_affordability_ordering(observation, action['market'])
+        market = _sequential_affordability_ordering(observation, action['market'])
+        action['market'] = _land_priority_ordering(observation, market)
         return action
     return decide
 agent = build_candidate_b_agent()
