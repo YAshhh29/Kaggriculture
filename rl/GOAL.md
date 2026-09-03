@@ -587,6 +587,70 @@ C gate:
 
 Planning range if gates pass: 1500-2100. Ultimate public analogues reach 2300-2800, but correlated forks and stale ratings are not proof our C will.
 
+### 9a. Status: selector scaffold built, no second route yet (2026-09-03)
+
+Before writing any selector code, surveyed the ~77 files under
+`agents/experimental_*.py` for genuinely different, already-competitive
+route experts to reuse (avoiding exactly the "ten forks of one route"
+trap this section warns about). Finding: only 3 genuinely distinct
+execution mechanisms exist in this repo's history (the parametric wheat
+engine behind `experimental_premium_throughput_agent.py`; the frozen
+elite-replay clone behind Candidate A/B; and the older scale/investment/
+zoned/lifecycle/center-out expansion lineage), plus one narrow,
+toy-scale market-timing seed (`experimental_ridge_agent.py`). None of
+the four suggested new families above (cow-heavy, carrot/tomato
+scarcity, wool/dairy shop-sensitive, market-front-running) exist as a
+complete route today; real scaffolding exists for two of them in
+`core/economics.py` (`crop_opportunity`, `animal_opportunity`,
+`SHOP_PRODUCTS`) but nobody has assembled a dedicated route from it.
+
+Tested the two best candidates for reuse directly, per section 3's rule
+to trust measurements over the plan:
+
+- `experimental_center_out_agent.py`, the one genuinely diversified
+  5-crop layout in the whole catalog: lost 0-10, 0-4, and 0-4 in existing
+  benchmark artifacts against agents (`experimental_deadline_tapered_
+  wheat_agent.py`, `experimental_learned_service_agent.py`,
+  `experimental_demand_animal_agent.py`) that are themselves weaker than
+  Candidate B.
+- The most evolved homegrown lineage, tested fresh against Candidate B
+  directly: `submissions/gated-late-strawberry/main.py` and
+  `submissions/tiered-fertilizer/main.py` each lost 0-8 (seeds 500-501,
+  both seats), by roughly 2x margin every game.
+
+Two independent hand-built strategies losing decisively to the calendar
+clone is now real evidence, not a one-off: the calendar clone (itself a
+behavior-clone of a real elite player, not a hand-built heuristic)
+appears to structurally dominate this project's own hand-built
+alternatives. Building a third hand-rolled route from `core/economics.py`
+now, under time pressure and with no iteration budget remotely close to
+what the other lineages received (dozens of ablation files, hundreds of
+benchmark runs each), would very likely repeat this exact failure. The
+user was asked and chose: source new route experts the same way the
+current parent was built -- by behavior-cloning a genuinely different
+real elite replay -- rather than a third hand-built attempt.
+
+Built in the meantime, so a validated route can be added without a
+redesign: `rl/candidate_c.py` (`RouteExpert`, `CandidateCExecutor`,
+`build_candidate_c_agent`) and `tests/test_candidate_c.py` (9 tests,
+all passing; full suite 498/498). The executor commits to exactly one
+route per episode with unconditional hysteresis (never reconsiders once
+committed, even if the injected selector's signal would change), and
+hard-enforces that a non-reentrant route (the calendar's own step-indexed
+baseline is the only one so far) can only ever be selected at step 0 --
+raises otherwise. `ROUTES` ships with only the validated fallback
+(Candidate B) today, so `rl.candidate_c.agent` is currently
+behavior-identical to `rl.candidate_b.agent` (tested directly) and is
+not yet a submission candidate distinct from Candidate B.
+
+Blocked on: a real episode replay of a genuinely different, competitive
+elite strategy to clone (candidate leads from `rl/PUBLIC_META_AUDIT.md`:
+teams playing like `tetsutani`/`indarkarhana`'s "Shape the Shop Work the
+Pasture" cow/sheep-pasture family, scored 2371-2689 there). This
+environment has no Kaggle API credentials and cannot browse Kaggle's
+JS-rendered pages for episode data, so this needs either a user-supplied
+replay JSON or a user-supplied Kaggle API token.
+
 ## 10. Candidate D: learned residual/Option selector
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
