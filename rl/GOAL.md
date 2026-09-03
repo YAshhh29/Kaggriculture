@@ -923,6 +923,23 @@ Note that Candidate C and C2 both import `rl.candidate_a` and
 automatically; C's package bytes changed as a result, and its 9d panel
 result predates the weed-clear guard.
 
+**C2 on the same 224-game panel as 9d** (56 unique opponents, seeds
+950-951, both seats): **214-10, 95.5%**, against C1's 218-6 / 97.3%.
+
+The 4-loss gap is *entirely one opponent*. Per-opponent losses are Cary
+Jin 2-2 and SGY2512 0-4 for **both** variants; the only difference is
+Shangshang Zhang, 8-0 for C1 versus 4-4 for C2. 9d already flagged C1's
+Shangshang wins as unreliable -- that clone scored literally 0, a
+breakdown of the frozen opponent script rather than genuine dominance --
+and 9e showed SGY2512's losses are seed-specific (C1 went 6-0 against it
+at seeds 960-962). Discount both and the two variants are close to
+indistinguishable on this panel.
+
+So do not read 97.3% vs 95.5% as a real 1.8-point quality gap. The
+cleanest evidence favouring C1 is the direct head-to-head (6-2, and 2-6
+in the concurrent session's independent run at different seeds), not the
+panel win rate.
+
 ## 10. Candidate D: learned residual/Option selector
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
