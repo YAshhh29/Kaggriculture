@@ -1,0 +1,36 @@
+{
+  "created_at": "2026-09-03T14:24:34.301202+00:00",
+  "competition": "kaggriculture",
+  "agent": "main.py",
+  "sha256": "b382ad1c2934219963425092f3eb66d673f51206263a2d52cfb2e20200fad56c",
+  "combined_source_sha256": "bb9818a5e11d3b75d62edbe4dd11342ecaca7b059969869dead1272979b282b5",
+  "parent_submission": {
+    "note": "built on the Candidate B package",
+    "source_files": [
+      "submissions/candidate-b/main.py (parent)"
+    ]
+  },
+  "source_files": [
+    "submissions/candidate-b/main.py (parent)",
+    "agents/experimental_distilled_elite_pasture_agent.py",
+    "models/v1327-public-elite-fogflower-105144807.json",
+    "rl/candidate_c.py"
+  ],
+  "policy": "Public-state route portfolio (currently a placeholder selector that always picks the better-measured route): the default route clones a real elite player (\"fog flower\", public leaderboard score 2882.6, pulled via the Kaggle API from episode 105144807 where they beat the leaderboard's #2 team), wrapped in Candidate A's guarded recovery/terminal liquidation and Candidate B's market-timing residuals. Candidate B itself is kept as a second, documented route, not currently selectable by any live signal.",
+  "training_data": {
+    "elite_route_source_episode_id": 105144807,
+    "elite_route_source_team": "fog flower",
+    "elite_route_source_context": "fog flower (public score 2882.6) beat Giulio Ravasio (leaderboard #2, 2965.4) in this game, final 71471-69193",
+    "elite_route_actions_sha256": "8ffeb472025ece4159dccfcdc9f4601ac7bb285f47fc237dc91d5992d6b7f010"
+  },
+  "validation": {
+    "local_fresh_seed_gates": {
+      "elite_route_vs_candidate_b": "20-0",
+      "elite_route_vs_candidate_a": "8-0",
+      "elite_route_stacked_vs_candidate_b": "8-0",
+      "note": "All fresh seeds (600-602, 700-703, 750-753, 800-803), both seats, neither this route nor Candidate A/B was recorded on any of them. Four prior candidates (center_out_agent, the best homegrown lineage, and two clones sourced from this project's own Kaggle match history) were rejected the same way before this one was tried -- see rl/GOAL.md section 9c."
+    },
+    "not_yet_run": "captured-live gate; large-scale fresh family gate (GOAL.md section 9's full 1000-game/panel requirement); package/source/simulator equivalence"
+  },
+  "status": "strong initial local validation; upload only after you decide the remaining gates in rl/GOAL.md section 9 are not required first"
+}
