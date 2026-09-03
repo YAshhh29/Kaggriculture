@@ -70,6 +70,7 @@ from rl.candidate_a import (
     CandidateATelemetry,
     build_candidate_a_agent,
 )
+from rl.candidate_b import agent as candidate_b
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -247,6 +248,7 @@ def main() -> None:
         "calendar_recovery": calendar_recovery,
         "calendar_recovery_only": calendar_recovery_only,
         "calendar_liquidation_only": calendar_liquidation_only,
+        "candidate_b": candidate_b,
         "investment": investment,
         "dynamic_replacement": dynamic_replacement,
         "colocated_crop_service": colocated_crop_service,
