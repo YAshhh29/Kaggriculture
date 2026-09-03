@@ -1,0 +1,37 @@
+{
+  "created_at": "2026-09-03T16:36:32.459281+00:00",
+  "competition": "kaggriculture",
+  "agent": "main.py",
+  "sha256": "806090acddd6b45a1327f71210a354a24f610e0b0c52953c525de011e7d5a397",
+  "combined_source_sha256": "7af93e5dd3beb2fc439b9374aec7c9d81bbb373a4cd2d8a4cf8180bdbd1c6ba6",
+  "parent_submission": {
+    "note": "built on the Candidate C package",
+    "source_files": [
+      "submissions/candidate-c/main.py (parent)"
+    ]
+  },
+  "source_files": [
+    "submissions/candidate-c/main.py (parent)",
+    "agents/experimental_distilled_elite_giulio_agent.py",
+    "models/v1327-public-elite-giulio-105144807.json",
+    "rl/candidate_c2.py"
+  ],
+  "policy": "Candidate C's stack (Candidate A guards + Candidate B market-timing residuals, land priority off by default) over a second elite baseline: a behavior clone of \"Giulio Ravasio\", public leaderboard rank #2 (2965.4) at capture. Shipped as a comparison arm against Candidate C's \"fog flower\" (2882.6) clone so a live upload can tell which elite programme actually transfers; the two disagree in most head-to-head games, unlike two variants differing only by a residual flag.",
+  "training_data": {
+    "source_episode_id": 105144807,
+    "source_team": "Giulio Ravasio",
+    "source_context": "Giulio Ravasio held public leaderboard rank #2 (2965.4) at capture time; this is their side of episode 105144807, which they lost 69193-71471 to fog flower (2882.6, cloned as the other C variant).",
+    "actions_sha256": "2b72411b743ad4133ced5029c93b00db91dde1eb13b13c75fbe90a6bd6582228"
+  },
+  "validation": {
+    "head_to_head": {
+      "vs_candidate_b": "8-0",
+      "vs_candidate_c1_fog_flower": "2-6",
+      "seeds": "970-973",
+      "seats": "both",
+      "note": "Fresh seeds neither baseline was recorded on. C2 is clearly stronger than Candidate B and clearly weaker than Candidate C1 locally; it is shipped as a comparison arm, not as a claimed improvement over C1."
+    },
+    "not_yet_run": "broad 56-opponent panel (Candidate C1 scored 218-6 there); captured-live gate; section 9's 1000-game bar"
+  },
+  "status": "comparison arm; upload alongside Candidate C to learn which elite baseline transfers to live play"
+}
