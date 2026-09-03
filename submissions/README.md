@@ -19,6 +19,18 @@ The tracked standalone Kaggle packages are:
 - `distilled-calendar/` contains public-calendar behavior clone submission
   `55910432`. Its exact package is `72-8` on the 80-game broad gate and is
   frozen after successful validation.
+- `calendar-recovery/` (Candidate A) contains `distilled-calendar` plus
+  guarded weed/setup recovery, live terminal liquidation, and stranded
+  harvest commitments. Uploaded to Kaggle; live score has been observed in
+  the `1160-1200` range. Locally gated at `22-11` combined with Candidate B
+  below vs its own `21-12` on 33 captured live episodes, and `108-12`
+  combined vs `107-13` on a fresh 120-game, 6-opponent-family gate --
+  Candidate A alone scored `21-12` and `107-13` respectively on those same
+  gates.
+- `candidate-b/` (Candidate A + sequential affordability) contains
+  `calendar-recovery` plus a market residual that moves a SELL order ahead
+  of a same-turn HIRE/BUY_PRODUCT purchase it can fund, verified per-turn
+  against a local market replay. Not yet uploaded to Kaggle.
 
 After a package is uploaded, its exact `main.py` is immutable. Each package's
 `manifest.json` records its hashes and supporting evidence.
