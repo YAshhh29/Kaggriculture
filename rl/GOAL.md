@@ -651,6 +651,48 @@ environment has no Kaggle API credentials and cannot browse Kaggle's
 JS-rendered pages for episode data, so this needs either a user-supplied
 replay JSON or a user-supplied Kaggle API token.
 
+### 9b. Two real-replay clone attempts also failed (2026-09-03)
+
+The user supplied 24 real replays from Candidate A/B's own recent match
+history (`failing_replays/`). Surveying them found the same signature
+(COW~8, SHEEP~6, 3 land quadrants) in 15-18 of 24 games across entirely
+different team names -- not 20 independent opponents, one widely-copied
+public strategy that is the current dominant meta archetype, and it beat
+Candidate A/B in 12 of the 24 games shown. This looked like the strongest
+possible real-replay clone candidate available, so it was tried before
+concluding anything further about section 9a's hand-built dead end.
+
+Cloned the archetype's two largest observed wins over Candidate A/B
+(episodes 105113156 "Mikhail_Komkin", 105061000 "Mwanza Wambua") the same
+way the Crop Dusta parent was built --
+`agents/experimental_distilled_pasture_agent.py` plus
+`models/v1327-public-pasture-*.json`, zero fidelity mismatches against
+the source replay. Both, tested raw and with Candidate A's guard layer
+applied, lost 0-6 to the *current* Candidate B on 3 fresh seeds neither
+was recorded on, both seats -- guards fired zero times in either case.
+Full reasoning and rejection notice kept in
+`experimental_distilled_pasture_agent.py`'s docstring rather than deleted,
+matching the existing `experimental_shadow_demand_agent.py` precedent for
+a documented negative result.
+
+That makes four independently-sourced candidates now rejected by direct
+measurement (center_out, the best homegrown lineage, and these two
+real-opponent clones) with the same outcome: everything tested so far
+loses decisively to the current Candidate B. Read together with section
+8c's live-bug fixes, this suggests Candidate B is not obviously weak
+locally -- it beat every one of these four candidates, including two real
+recordings of the strategy currently winning against this project's own
+live agent on Kaggle. Likely explanation for why none of these 24 replays
+contained an elite-caliber opponent: Kaggle's ladder pairs similarly-rated
+players, so a project's own match history reflects opponents near its own
+current rating, not top-of-leaderboard play. The original Crop Dusta
+episode was evidently sourced some other way (its exact provenance
+predates this file), not from this project's own match history -- the
+same gap likely applies to finding a second one now. Real next unlock is
+almost certainly a replay involving a top-leaderboard player specifically
+(from the leaderboard directly, not this project's own games), or a
+Kaggle token so this can be searched for directly.
+
 ## 10. Candidate D: learned residual/Option selector
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
