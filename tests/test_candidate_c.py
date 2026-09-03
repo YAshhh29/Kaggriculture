@@ -1,8 +1,8 @@
 import unittest
 
-from rl.candidate_b import agent as candidate_b
 from rl.candidate_c import (
     CandidateCExecutor,
+    ELITE_PASTURE,
     RouteExpert,
     ROUTES,
     agent,
@@ -20,18 +20,22 @@ def stub_route(name: str, *, reentrant: bool) -> RouteExpert:
 
 
 class CandidateCTests(unittest.TestCase):
-    def test_shipped_config_matches_candidate_b_exactly(self) -> None:
-        # Only one validated route exists; Candidate C must not diverge
-        # from it until a second route is actually wired in.
+    def test_default_route_is_the_validated_elite_clone(self) -> None:
+        # elite_pasture beat Candidate B 20-0 and Candidate A 8-0 across
+        # fresh seeds in local testing (see rl/GOAL.md section 9c); it is
+        # the best-measured route today and must stay the default until
+        # a real selector rule exists.
         state = scale_observation(day=0, hour=0)
         state["step"] = 0
 
-        self.assertEqual(agent(state), candidate_b(state))
+        self.assertEqual(agent(state), ELITE_PASTURE.decide(state))
 
-    def test_ships_with_exactly_one_route_today(self) -> None:
-        self.assertEqual(len(ROUTES), 1)
-        self.assertEqual(ROUTES[0].name, "calendar")
+    def test_ships_with_two_routes_today(self) -> None:
+        self.assertEqual(len(ROUTES), 2)
+        self.assertEqual(ROUTES[0].name, "elite_pasture")
+        self.assertEqual(ROUTES[1].name, "calendar")
         self.assertFalse(ROUTES[0].reentrant)
+        self.assertFalse(ROUTES[1].reentrant)
 
     def test_commits_once_and_ignores_later_signal_changes(self) -> None:
         # A synthetic selector that would flip every step must not change

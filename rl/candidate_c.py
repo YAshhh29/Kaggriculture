@@ -1,43 +1,48 @@
 """Candidate C: public-state route portfolio over complete route experts.
 
-Status: selector machinery only. Exactly one validated, competitive route
-exists in this repository today -- Candidate A+B, the calendar-clone
-family (`rl.candidate_b.agent`). Two independent hand-built alternatives
-were tried and both lost decisively in direct local testing before any
-selector work started:
+Status: two validated routes. `elite_pasture` is the new default -- see
+`rl/GOAL.md` section 9c for the full account. Four candidates were
+rejected before it by direct measurement: two hand-built strategies
+(`experimental_center_out_agent.py`; the best homegrown lineage,
+`gated-late-strawberry`/`tiered-fertilizer`), and two real-replay clones
+sourced from this project's own Kaggle match history
+(`experimental_distilled_pasture_agent.py`, kept rejected). The pattern
+that broke the streak: Kaggle's ladder pairs similarly-rated opponents, so
+this project's own match history never contained a genuinely elite
+replay to clone -- a real Kaggle API token unblocked pulling one directly
+from the leaderboard instead of from this project's own games.
 
-  - `experimental_center_out_agent.py` (the one genuinely diversified
-    5-crop layout in the whole `agents/experimental_*.py` catalog): 0-10,
-    0-4, 0-4 against agents that are themselves weaker than Candidate B.
-  - The most evolved homegrown lineage (`gated-late-strawberry`,
-    `tiered-fertilizer`): 0-8 against Candidate B directly (seeds 500-501,
-    both seats), by roughly 2x margin each time.
+`elite_pasture` (`experimental_distilled_elite_pasture_agent.py`) clones
+episode 105144807, player "fog flower" (public leaderboard score 2882.6),
+who beat the leaderboard's #2 team (2965.4) in that game. Wrapped in the
+same guard and market-timing layers as Candidate A/B
+(`build_candidate_b_agent(baseline=build_candidate_a_agent(baseline=...))`),
+it beat Candidate B 10-0 and Candidate A 4-0 across fresh seeds neither
+was recorded on, both seats -- the first candidate tested this way to
+win convincingly instead of losing decisively. `calendar` (Candidate B)
+is kept as the second route, both as a documented fallback and because
+nothing yet justifies discarding a submission with its own extensive
+validation history.
 
-Per `rl/GOAL.md` section 3 ("If measurements disagree with these bands,
-trust measurements and update the plan"), a second route for this module
-should come from behavior-cloning a genuinely different real elite replay
--- the same method that built the current parent -- not another hand-built
-heuristic; two independent hand-built attempts have now failed against
-this specific opponent. `ROUTES` below contains only the safe fallback
-until one is validated.
-
-This module implements the selector state machine and its safety
-invariants now, so a validated second route can be added later as data
-(one `RouteExpert` entry) rather than a redesign. Hard invariants, per
-`rl/GOAL.md` section 9 ("Selector"):
+This module still cannot legally choose between them: both are
+step-indexed scripted replays with no live-opponent signal available at
+episode start (see the non-reentrant rule below), so `_select_route_name`
+remains a placeholder returning whichever route is listed first --
+currently `elite_pasture`, because it is the better-measured of the two,
+not because a real per-opponent selection rule exists yet. Hard
+invariants, per `rl/GOAL.md` section 9 ("Selector"):
 
   - Only public/legal state is ever read by `_select_route_name` -- it
     receives nothing but the live `observation` dict, which never contains
     team name, rank, submission ID, replay ID, or seed (those live only in
     a replay file's `info` block, never in what an agent is called with).
     There is no field for those to leak in through even by accident.
-  - A scripted, step-indexed route -- the calendar (`rl.candidate_b`,
-    which wraps `rl.candidate_a`, which wraps the frozen 720-step replay)
-    -- has no awareness of a board state it did not itself create, because
-    its baseline looks up `CALENDAR_ACTIONS[step + 1]` and nothing else.
-    It can only be entered at episode start. This module enforces that as
-    a hard, checked, one-way transition (`RouteExpert.reentrant = False`),
-    not just a convention a future edit could quietly break.
+  - A scripted, step-indexed route -- both routes here are, since each
+    wraps a frozen 720-step replay with no awareness of a board state it
+    did not itself create -- can only be entered at episode start. This
+    module enforces that as a hard, checked, one-way transition
+    (`RouteExpert.reentrant = False`), not just a convention a future edit
+    could quietly break.
   - Hysteresis: once committed, a route is never reconsidered for the rest
     of the episode. This is the strictest possible reading of "latch with
     hysteresis; do not oscillate," and is the correct starting point before
@@ -52,7 +57,11 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Callable
 
-from rl.candidate_b import agent as calendar_route
+from agents.experimental_distilled_elite_pasture_agent import (
+    agent as elite_pasture_route,
+)
+from rl.candidate_a import build_candidate_a_agent
+from rl.candidate_b import agent as calendar_route, build_candidate_b_agent
 from rl.runtime import AgentAction
 
 
@@ -69,8 +78,15 @@ class RouteExpert:
     reentrant: bool
 
 
-FALLBACK = RouteExpert(name="calendar", decide=calendar_route, reentrant=False)
-ROUTES: tuple[RouteExpert, ...] = (FALLBACK,)
+ELITE_PASTURE = RouteExpert(
+    name="elite_pasture",
+    decide=build_candidate_b_agent(
+        baseline=build_candidate_a_agent(baseline=elite_pasture_route)
+    ),
+    reentrant=False,
+)
+CALENDAR = RouteExpert(name="calendar", decide=calendar_route, reentrant=False)
+ROUTES: tuple[RouteExpert, ...] = (ELITE_PASTURE, CALENDAR)
 
 
 def _select_route_name(
