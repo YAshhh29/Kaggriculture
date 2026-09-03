@@ -783,6 +783,40 @@ the narrow and paired-seed stages; the larger gates are the honest next
 step before this should be trusted as much as Candidate A/B's own
 promotion evidence.
 
+### 9d. Broad 56-opponent gate (2026-09-03)
+
+Extracted a clone for every unique real opponent already sitting in the
+local replay cache from the A-vs-B investigation in 9c (56 distinct
+teams; no new Kaggle API calls, per the decision to stop using the
+token) and ran Candidate C against all of them: 2 fresh seeds (950, 951)
+neither Candidate C nor any of its components was ever recorded on, both
+seats -- 224 games.
+
+**Result: 218-6-0, 97.3% win rate.** Only 2 of the 56 opponents beat
+Candidate C at all:
+
+- `Cary Jin`: 2-2. The same opponent that beat both Candidate A and
+  Candidate B decisively in the 9c controlled comparison -- Candidate C
+  is a clear improvement here (2 wins vs 0 for A and B), not a full fix.
+- `SGY2512`: 0-4. This is worse than how Candidate A/B did against the
+  same real opponent in the 9c comparison (3-1, different seeds though,
+  so not a perfectly controlled comparison) -- the one clear case so far
+  where the elite-pasture route looks weaker than the calendar route it
+  replaced as Candidate C's default. Not yet investigated further.
+
+All 6 losses were by small margins (-1934 to -6944); every one of the
+218 wins with a visible margin in the raw results was substantially
+larger. Full per-game results kept locally at
+`kaggle_cache/candidate_c_broad_gate_results.json` (git-ignored, derived
+from Competition Data replays -- not published).
+
+This is a meaningfully larger sample than 9c's 28 games, still two
+orders of magnitude below section 9's own 1000-game bar, and it
+surfaced a specific, named weakness (`SGY2512`) rather than only
+confirming the good news -- exactly what a bigger sample is for. Treat
+the headline number as encouraging, and the `SGY2512` result as the
+concrete next thing to understand before any promotion claim.
+
 ## 10. Candidate D: learned residual/Option selector
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
