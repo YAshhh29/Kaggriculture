@@ -34,16 +34,23 @@ The tracked standalone Kaggle packages are:
   and land priority (moves a BUY_LAND order ahead of a same-turn spend that
   would otherwise starve it -- see below). Locally gated at `22-11` on the
   same 33 captured live episodes and `108-12` on the same fresh family gate
-  (both combined with Candidate A, before the land-purchase fix). Not yet
-  uploaded to Kaggle.
+  (both combined with Candidate A, before the land-purchase fix). An
+  earlier version of this package (sequential affordability only, before
+  the land-priority fix below) was previously uploaded and live -- see the
+  correction below.
 
 ### 2026-09-03: locked-quadrant fix (both packages above)
 
-Two live episodes (105061000, 105062726 -- both real Kaggle games played by
-the live Candidate A submission) showed the same calendar turn (record 200,
-same step in both games, both seats) spend past the money a same-turn
-`BUY_LAND` needed: the batch was `[BUY_PRODUCT WHEAT 16, BUY_LAND]`, and the
-product purchase drained the funds the land purchase needed. The calendar
+Two live episodes (105061000, 105062726) showed the same calendar turn
+(record 200, same step in both games, both seats) spend past the money a
+same-turn `BUY_LAND` needed. Correction: these were played by the
+*previously-uploaded* Candidate B (sequential affordability only), not
+Candidate A alone as first written here -- it makes no difference to the
+diagnosis, since that turn's batch (`[BUY_PRODUCT WHEAT 16, BUY_LAND]`)
+contains no `SELL`, so the sequential-affordability pass was a guaranteed
+no-op on it; previously-live Candidate B behaved identically to Candidate
+A alone for this specific bug. The product purchase drained the funds the
+land purchase needed. The calendar
 only ever attempts `BUY_LAND` twice in its entire 720-step script; once this
 one failed, it was never retried, and the third quadrant stayed locked for
 the rest of both episodes. Every later scheduled `PLANT`/`WATER`/`HARVEST`/
@@ -68,8 +75,10 @@ Two fixes, at two different layers:
   judged to dominate a partial WHEAT restock. Verified against the real
   observation from episode 105061000: the fix trades 11 of 16 requested
   WHEAT units for the land purchase actually succeeding. This fix does
-  *not* help the currently-live Candidate A package on its own -- only
-  Candidate B's market-timing layer carries it.
+  *not* help a Candidate A upload on its own -- only Candidate B's
+  market-timing layer carries it, so the new `candidate-b/` package (not
+  a plain Candidate A reupload) is what should replace whatever is
+  currently live.
 
 Both fixes: full test suite green (489/489), package/source/simulator
 equivalence 1438/1438 decisions with 0 mismatches (seed 230). The land

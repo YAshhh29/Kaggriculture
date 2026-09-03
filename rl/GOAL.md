@@ -424,9 +424,20 @@ or 10's architecture or gates:
 ### 8c. Post-deployment fix: land-purchase starvation (2026-09-03)
 
 Found from two real live Kaggle episodes (105061000, 105062726 -- both
-played by the live Candidate A submission, both against different real
-opponents, YASH JAIN on different seats in each), not from a gate. In both
-games, at the identical calendar record (200), the calendar's *only*
+against different real opponents, YASH JAIN on different seats in each),
+not from a gate. **Correction**, per the user: these were played by the
+*previously-uploaded* Candidate B (sequential affordability only, before
+the fix below existed), not Candidate A alone as this section first
+claimed. This changes nothing about the diagnosis or the fix: the failing
+turn's batch (`[BUY_PRODUCT WHEAT 16, BUY_LAND]`) contains no `SELL`, so
+`_sequential_affordability_ordering` -- the only residual the previously-live
+package had beyond Candidate A -- was structurally a no-op on it (its own
+`_has_reorder_opportunity` gate requires a `SELL` present at all). The
+previously-live Candidate B was therefore byte-identical to Candidate A
+alone on this exact turn. Lesson (same shape as 2b): don't infer which
+package is actually live/current from this file's own "not yet uploaded"
+notes -- ask, the way 2b already established for Candidate A itself. In
+both games, at the identical calendar record (200), the calendar's *only*
 scripted `BUY_LAND` attempt for the third quadrant (SW) sat behind a
 `BUY_PRODUCT WHEAT 16` in the same turn's batch (`[BUY_PRODUCT WHEAT 16,
 BUY_LAND]`), which drained the money the land purchase needed
