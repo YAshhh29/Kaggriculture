@@ -940,6 +940,76 @@ cleanest evidence favouring C1 is the direct head-to-head (6-2, and 2-6
 in the concurrent session's independent run at different seeds), not the
 panel win rate.
 
+### 9h. Candidate C's first real Kaggle upload failed at "Validation
+Episode failed" (2026-09-04)
+
+Every local check this file records for Candidate C -- 518 tests, package
+equivalence, 30+ full games through the real simulator, the 224-game
+panel -- passed, and the upload still failed immediately with
+`AttributeError: 'str' object has no attribute 'name'` inside
+`CandidateCExecutor.__init__`. Root cause was in the packaging pipeline,
+not in any of the code those checks exercised, which is why nothing
+above caught it.
+
+**Mechanism.** `kaggle_environments.agent.get_last_callable` does not
+look up a variable literally named `agent`. It execs the whole file into
+a fresh namespace and returns
+`[v for v in env.values() if callable(v)][-1]` -- the last callable
+*value*, by dict insertion order. Candidate C's bundle contained a stray
+`agent = build_candidate_b_agent()`, inherited from the embedded
+Candidate B package. `_drop_top_level_agent` in
+`prepare_candidate_c_submission.py` only filtered `ast.FunctionDef`
+nodes named "agent" -- correct for Candidate A's own export (a `def
+agent(observation): ...`), but Candidate B moved to `agent =
+build_candidate_b_agent()`, an `Assign`, sometime before this file's
+section 8. Reassigning an existing dict key does not move its position:
+that early assignment pinned `agent`'s slot near the top of the exec
+namespace, so this module's own later definitions (`RouteExpert`,
+`CandidateCExecutor`, `build_candidate_c_agent`, and the real trailing
+`agent = build_candidate_c_agent()`) all landed *after* it in insertion
+order. Kaggle's loader therefore picked `build_candidate_c_agent` itself
+-- the factory, not the per-turn closure. Calling a factory function
+`(routes=ROUTES)` with an observation dict as its first positional
+argument binds that dict to `routes`; iterating a dict yields its string
+keys, which is exactly `'str' object has no attribute 'name'`.
+
+**Why every existing check missed it.** `test_prepare_candidate_c_submission.py`
+called `package_module.agent(...)` directly -- module attribute access
+always returns the *current* value of a name regardless of its
+insertion-order position, so it cannot see this bug by construction. The
+other assertion, `module.body[-1].targets[0].id == "agent"`, checks
+*source-order* position of the last statement, not *exec-namespace
+insertion-order* position of a possibly-reassigned name -- those are
+different things, and only the second one is what Kaggle's loader
+actually uses.
+
+**Fix and verification.** Extended `_drop_top_level_agent` to also
+filter `ast.Assign` nodes targeting "agent", not just `FunctionDef`.
+Verified two ways: replicated `get_last_callable` exactly against the
+rebuilt package and confirmed it now returns the real closure and equals
+`env['agent']`; then ran 30 full games through the actual simulator
+using the callable obtained *that same way* (not `module.agent`) --
+30/30 `DONE`, 0 errors. Added a `get_last_callable` helper and two
+regression tests (asserts the loader's actual pick behaves correctly;
+asserts `agent` is assigned exactly once) to all three packaging test
+suites -- B, C, and C2. Reverting the fix and rerunning reproduces the
+exact real `AttributeError` in the C and C2 tests, confirming they would
+have caught this before the first upload. Checked B and C2 directly
+against the same `get_last_callable` replication: B was never affected
+(Candidate A's export really is a `FunctionDef`, correctly filtered
+already); C2 was never affected (its own filter already checked
+`Assign`, independently of this fix).
+
+**Lesson for any future packaging script in this file's pattern**: a
+test that calls `module.agent` or checks the literal last source
+statement is not a substitute for testing against the actual mechanism
+the target platform uses to extract a callable from a file. When
+bundling one package's frozen output as a dependency of another,
+re-verify what node type its own top-level export uses -- it can change
+between the two, and a stale assumption about it is invisible to every
+test that only inspects the final state of the name rather than how it
+got there.
+
 ## 10. Candidate D: learned residual/Option selector
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
