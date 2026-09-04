@@ -1397,6 +1397,195 @@ agents in `agents/` stand against C1's 23/24 screen is not yet measured
 (the run was lost to a session restart). That number decides whether
 Candidate D re-targets an existing reactive executor or needs a new one.
 
+### 9l. What actually separates a 3000 economy from ours (2026-09-05)
+
+Section 9k established that clone-hunting and residual tweaks are both
+exhausted. This section stops searching over agents and instead asks the
+comparative question directly: pulled 51 fresh replays across the top
+eight teams (about 100 elite player-games), wrote `tools/data/profile_agents.py`
+to profile any replay's economy from public record alone -- units sold and
+the live price at each sale, worker action mix, hiring, land, livestock,
+crops -- and compared elite, ourselves, and the mid-field on identical
+metrics.
+
+**Finding 1: the whole field, us included, competes in collapsing markets
+and ignores the ones that pay.** Median price by 90-step bucket across
+elite games, with end-of-game market inventory relative to `I0 = 10000`:
+
+| product | b0 | b2 | b4 | b6 | b7 | final inv - I0 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| TOMATO | 60 | 62 | 70 | 76 | **80** | **-166** |
+| CARROT | 35 | 36 | 39 | 47 | **49** | **-177** |
+| EGG | 50 | 51 | 54 | 58 | **59** | **-157** |
+| MILK | 172 | 191 | 76 | 19 | **22** | +66 |
+| WOOL | 209 | 187 | 172 | 49 | **31** | +54 |
+| MELON | 260 | 270 | 94 | 108 | 115 | +129 |
+
+Tomato, carrot and egg prices *rise all game* because town demand outruns
+supply. Nobody in the field sells tomato at all. Meanwhile everyone dumps
+milk, wool and melon into a collapse.
+
+**Finding 2: the market's absorption limits are computable, and we ignore
+them.** From the simulator's own `MARKET_PARAMS`, units sellable before
+the price halves: EGG and WHEAT **never** (log curves), FERTILIZER 253,
+CARROT 230, MELON 113, WOOL **42**, MILK **39**, STRAWBERRY **32**. The
+town's measured drain per game (shared across both players) is WHEAT 828,
+STRAWBERRY 509, WOOL 460, EGG 426, MILK 377, CARROT 354, TOMATO 354,
+FERTILIZER 220, MELON 31. Against that, our median sales are MILK **294**
+(roughly 1.6x a sustainable half-share), CARROT **12**, EGG **0**,
+TOMATO **0**.
+
+Pricing the three scarce markets from their observed deficits using the
+simulator's own scarcity formula gives **~39,000 coins per game of
+unclaimed, non-degrading revenue** (TOMATO 15.9k, EGG 13.0k, CARROT
+10.2k) against our median reward of 81,508.
+
+**Finding 3: the per-team split explains the top of the leaderboard.**
+
+| team | LB | COW | SHEEP | GOOSE | carrots planted | milk units |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Crop Dusta | 3029 | 4 | **10** | **3** | 30 | 107 |
+| keiz | 3006 | 8 | 6 | 1 | 27 | 188 |
+| Jesse Bullard | 2966 | 6 | **11** | 0 | 42 | 165 |
+| AI是我的豆包 | 2941 | 7 | 9 | 0 | 41 | 192 |
+| **ours (C1/C2)** | ~2100 | **9** | 5 | **0** | **6** | **294** |
+
+The number one agent runs the inverse of our livestock mix and five times
+our carrots. Note also that the two elite teams with our carrot count (6)
+-- Giulio and Andrey -- are the lower-ranked of the elite group, and
+Giulio is exactly who Candidate C2 clones.
+
+**Finding 4: our reward variance is market contention, not execution.**
+The same C1 build earns MILK at 215/unit in one game and 24.3/unit in
+another. Its farm output is near-identical across both (section 9j showed
+byte-identical cycle counts across four losses). What changes is whether
+the opponent floods the same market. Local rewards ranging 44k-162k are
+mostly this.
+
+**Finding 5: our reactive lineage is routing-limited, not strategy-limited.**
+Every hand-built reactive agent screened scores **0-1 of 24** where C1
+scores 23/24, at roughly half C1's coins. Profiling the best of them
+against C1 on an identical game shows why:
+
+| | C1 | best homegrown |
+| --- | ---: | ---: |
+| utilisation | **0.47** | **0.26** |
+| task turns | 3376 | 1955 |
+| move turns | 3276 | **4374** |
+| pass turns | 540 | **1145** |
+
+Our agents spend their worker-turns walking and idling. The elite tape's
+real asset is worker routing, not crop selection. This reframes what is
+hard: choosing what to grow is a solved arithmetic problem given the
+tables above; routing many workers efficiently over 720 steps is the part
+we have never matched, and it is what the tape encodes implicitly.
+
+**Finding 6: there is no spare capacity to bolt new production onto C1.**
+Measured across a full game, C1 leaves only 0.3-3 empty tiles of 75
+unlocked mid-game and its workers idle only 2-8% of turns. Adding tomato,
+carrot or geese on top of C1 is not possible; capturing the 39k requires
+*reallocating* land and labour.
+
+**What this implies for Candidate D.** Combining findings 5 and 6: keep
+the tape's routing, change what it grows. A crop substitution on the tape
+preserves the routing skeleton that makes C1 strong while retargeting its
+output at markets whose price is rising rather than collapsing. That is
+our own portfolio design applied to a proven execution skeleton, not a
+copy of anyone's strategy, and it is the first Candidate D direction that
+is both grounded in measurement and cheap enough to falsify quickly.
+
+### 9m. The local benchmark has been lying to us (2026-09-05)
+
+This is the most important measurement in this file, and it invalidates
+how every candidate in sections 6-9l was validated.
+
+**The contradiction.** Candidate C1 was measured three ways on the same
+day:
+
+| opponent | how measured | C1 win rate |
+| --- | --- | ---: |
+| ~2100 cached tapes (the standard local panel) | frozen replay | **95%** (76/80) |
+| elite tapes, LB 2837-3021 | frozen replay | **78%** (28/36) |
+| live agents, LB 2100-2400 | real ladder | **52%** |
+| live agents, LB 2400+ | real ladder | **20%** (1/5) |
+
+C1 beats the *tape* of the world #1 (keiz, 3021) 4 games out of 4, and
+loses to live 2400-rated agents 4 times out of 5. Both numbers are real.
+
+**The cause: a frozen tape is far weaker than the agent it came from.**
+A replay tape reproduces one game's actions against a different opponent
+on a different seed, with none of the reactivity that earned the source
+its score. Section 9k already saw this without drawing the conclusion:
+Crop Dusta, ranked #1 at 3029.4, produces a route that wins 6 of 24 --
+and that was verified not to be an extraction bug by reproducing its
+source game's rewards exactly. The local panel is not a field of
+2100-rated opponents. It is a field of *crippled* 2100-rated opponents,
+and it inflates our measured win rate by roughly forty points.
+
+**Our real standing.** 60 live games from submission 56007798 (public
+score 2045.1, 136 episodes, well past the ~60-game convergence point):
+**33W-27L, 55%**, mean reward 84,770 against 85,412, median opponent LB
+2103. By band: 66% against 1800-2100, 52% against 2100-2400, 20%
+against 2400+.
+
+**What this explains.**
+
+- Why cloning a 2882-rated player produced a 2045-rated agent. The clone
+  keeps the programme and discards the adaptivity that earned the score.
+  This is the ceiling on the entire clone strategy, and it is now
+  measured rather than suspected.
+- Why all seven interventions in section 9k came back neutral. They were
+  tuned against a benchmark that does not predict live results.
+- Why leaderboard rank fails to predict tape transferability (9k).
+- Why C2 scoring above C1 live contradicted C1 beating C2 76-69 locally
+  (9k): the local number was never the relevant one.
+
+**Consequences for method, effective immediately.**
+
+1. A tape-panel win rate is not evidence of live strength. Numbers like
+   "218/224" and "76/80" elsewhere in this file measure robustness of a
+   programme against frozen scripts, nothing more.
+2. Real validation requires reactive opponents or live ladder games.
+   Live episodes for a submission are pullable via the API and are the
+   only unambiguous signal available.
+3. Do not spend further effort searching for a better tape to clone.
+
+**Live-validated signals.** Paired winner-versus-loser within the same
+live game, 60 games, which controls for seed, market and opponent:
+
+| feature | winner did more | z |
+| --- | ---: | ---: |
+| sold_WHEAT | 25.0% (median -28.5) | 3.9 |
+| task_turns | 72.9% | 3.5 |
+| wheat_bought_for_feed | 30.0% | 3.1 |
+| plant_WHEAT | 67.4% | 2.3 |
+| price_MELON | 68.3% | 2.3 |
+| buy_SHEEP | 64.9% | 1.8 |
+| utilisation | 62.7% | 2.0 |
+| buy_COW | 42.4% | 1.2 |
+
+The clearest actionable defect: winners **plant more wheat, sell less of
+it, and buy less of it**. They grow their own feed. We sell 404 wheat and
+buy back 157, paying the bid-ask spread on a round-trip we create
+ourselves. Throughput (task_turns, utilisation) is again the strongest
+non-economic signal, and sheep-over-cows reappears.
+
+**Supporting negative results from the same day.**
+
+- Every hand-built reactive agent in `agents/` and `submissions/` scores
+  **1/24 or 0/24** against C1's 23/24, with mean coins near 50,000
+  against C1's 98,862. The homegrown lineage is at roughly half of C1's
+  economy, so re-targeting one is not a viable base for Candidate D.
+- Herd composition does not separate the field. Andrey Tikhomirov sits
+  at LB 2920 with the same C9/S5/G0 herd we ran at 2071, and
+  `total_animals` correlates -0.016 with leaderboard score across 36
+  teams. The product-mix story in 9l is real about market structure but
+  is **not** the explanation for the 800-point gap.
+- The 9l claim that we run zero geese was drawn from a blend of older
+  submissions. Our current live agent runs 7 cows, 5 sheep, **2 geese**
+  and sells 229 milk. 9l's "ours" column should not be trusted; this
+  section's live profile supersedes it.
+
 ## 10. Candidate D: learned residual/Option selector
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
