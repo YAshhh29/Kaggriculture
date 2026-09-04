@@ -1195,6 +1195,107 @@ It was not attempted here for lack of remaining time in this session, not
 because the data speaks against it; the persistence finding above is
 exactly the evidence that would motivate it.
 
+### 9k. Seven attempts to beat Candidate C1, all measured, all failed
+(2026-09-04)
+
+Nothing in this section improved on C1. It is recorded in full because
+each result closes a direction that would otherwise be re-attempted, and
+two of them close directions this file previously named as the top
+priority. `rl/candidate_d.py` and its tests were **deleted** at the end
+of this work: both mechanisms it held were refuted, and the second was
+actively harmful, so leaving a module exporting a shippable `agent` would
+have been a trap. C1 and C2 are unchanged and remain the deployed pair.
+
+**1. The C1/C2 route selector is not worth building.** This is the item
+section 9 and the project's own roadmap called the biggest real gap. Ran
+C2 across the identical 80 opponents, seeds and seats as C1:
+
+    C1 76/80    C2 69/80    they disagree on only 11/80
+    C1 wins where C2 loses:  9
+    C2 wins where C1 loses:  2
+    ORACLE (a perfect selector): 78/80
+
+The entire upside of a *flawless* selector is **+2 games in 80**, against
+nine chances per two to pick wrong. Any realistic selector is
+expected-negative. Building it would have been weeks of work for a
+ceiling smaller than the noise band section 9c already measured on
+byte-identical uploads. It also resolves the live-versus-local
+contradiction noted earlier: C1 genuinely beats C2 by 7 games locally, so
+C2's higher live score is rating noise, not evidence C2 is better.
+
+**2-4. The market-action surface over this tape is exhausted.** Three
+independent interventions, all neutral or negative:
+
+| intervention | result |
+| --- | --- |
+| glut-aware sell deferral (section 9j) | 0 effect in 80/80 games |
+| price-floor throttle (hold sales under 40%/60% of base) | **-12,466 / -16,570** mean coins; 6/10 wins -> 4/10 and 2/10 |
+| eager selling (accelerate output goods while price is high) | -448 / -585 mean coins |
+
+The price-floor result is the informative one, because it looked
+overwhelming on paper. In one real game C1 sells 333 MILK at a mean of
+24.3 coins against a base of 160, and 82% of it goes at 1-6 coins;
+the simulator's own numbers say milk's price hits ~4 coins after roughly
+74 net units, so the route produces ~4.5x what the market can absorb.
+Withholding those "worthless" sales cost 12-16k coins and flipped wins
+into losses. The reason is that those cheap sales are not revenue
+decisions, they are **logistics**: they clear the 100-unit shed so
+harvests can be deposited, and they fund the wheat that feeds the
+animals. Starving them breaks the engine. Cheap sales in this game are
+load-bearing, and the tape's schedule is close to locally optimal in both
+directions.
+
+**5-6. Better source tapes were hunted twice, and neither beat C1.**
+On a fixed 24-game screen where **C1 scores 23/24**:
+
+- Six highest-reward opponents from our own cached corpus (their real
+  games reached 137k-146k): **7, 11, 14, 14, 15, 19** out of 24. High
+  reward in their own game does not transfer; these opponents are
+  rating-matched to us, exactly as section 9c warned.
+- Six freshly pulled tapes from the *current* top of the leaderboard
+  (Crop Dusta #1 at 3029.4, keiz #2 at 2989.1, Jesse Bullard #3 at
+  2965.5, in head-to-head games against each other today): **6, 6, 11**
+  (Crop Dusta), **14** (keiz), **20, 22** (Jesse Bullard).
+
+The Crop Dusta result is the important one and was verified against a
+tape-extraction bug before being believed: replaying both sides of
+episode 105502929 reproduces its recorded rewards exactly
+(71431.0 / 93533.0). So the #1 agent on the leaderboard, at 3029.4,
+produces a route that wins 6 of 24 here. **Leaderboard rank does not
+predict tape transferability at all.** The straightforward reading is
+that the agents at the top are adaptive, and a frozen replay of one of
+their games cannot reproduce behaviour that was conditioned on that
+game's opponent and state. Fog flower's tape transferring well (76/80)
+looks like a property of that route being unusually self-contained, not
+a general property of elite replays.
+
+**7. Jesse Bullard's route, the one screen result close to C1, does not
+hold up.** Full 80-opponent panel: **69/80**, identical to C2 and seven
+games behind C1, despite slightly higher mean coins (100,720 vs 98,862).
+Coins are not the scoring metric. Its 22/24 screen was small-sample luck.
+It does cover `opp_105437064`, which both C1 and C2 lose, lifting a
+C1+JB oracle to 79/80 -- but with 10 ways to pick wrong against 3 to pick
+right, the selector arithmetic is worse than C1/C2's, not better.
+
+**What this means for Candidate D.** Frozen-clone route hunting has
+plateaued: two independent searches over twelve candidate tapes, one of
+them drawn from the live top of the leaderboard, produced nothing better
+than a route captured days ago. Residual tweaks over that route are
+exhausted in both directions. And the selector premise -- that we have
+two strong routes worth choosing between -- is measurably worth +2
+games. If Candidate D is going to beat C1 it has to be **genuinely
+adaptive**, i.e. produce actions conditioned on live state rather than
+selecting among frozen tapes, which is what section 10 always specified
+and what the Crop Dusta evidence now independently argues the top of the
+leaderboard is already doing.
+
+One caveat that limits how much any of this says about the live ladder:
+all 80 panel opponents come from **our own match history**, so Kaggle
+paired them near our own rating. C1's 76/80 is against a field selected
+to be our equals, not against the leaderboard's top. Local win rate here
+has both little headroom and limited external validity, and no local
+number in this section should be read as a live-score prediction.
+
 ## 10. Candidate D: learned residual/Option selector
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
