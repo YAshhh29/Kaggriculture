@@ -1272,7 +1272,6 @@ def build_candidate_b_agent(*, baseline: Baseline=candidate_a, enable_land_prior
         action['market'] = _land_priority_ordering(observation, market) if enable_land_priority else market
         return action
     return decide
-agent = build_candidate_b_agent()
 'Behavior clone of an elite cow/sheep-pasture strategy ("fog flower").\n\nSource: episode 105144807, player 1 ("fog flower", public leaderboard\nscore 2882.6 at capture time), which beat "Giulio Ravasio" (leaderboard\nrank #2, 2965.4) 71471-69193. Unlike the two rejected clones in\n`experimental_distilled_pasture_agent.py` (sourced from this project\'s own\nmatch history, where opponents are matched near this project\'s own rating\nby Kaggle\'s ladder), this source was pulled directly from the leaderboard\nvia the Kaggle API and is a genuinely elite, top-tier result -- a much\nstronger candidate than anything sourced from this project\'s own games.\nSee rl/GOAL.md section 9c.\n\nSame method as `experimental_distilled_calendar_agent.py`: a fixed,\nopen-loop, per-step lookup into the exact recorded action sequence.\n'
 import base64
 import json

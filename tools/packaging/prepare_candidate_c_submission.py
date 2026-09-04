@@ -107,10 +107,39 @@ def _elite_agent_body() -> list[ast.stmt]:
 
 
 def _drop_top_level_agent(body: list[ast.stmt]) -> list[ast.stmt]:
+    """Drop the embedded Candidate B bundle's own `agent` export.
+
+    Candidate B's package ends with `agent = build_candidate_b_agent()` --
+    an Assign, not a FunctionDef (Candidate B moved to the same "build a
+    closure, assign it to `agent`" pattern candidate A used). Kaggle's
+    loader (`kaggle_environments.agent.get_last_callable`) does not look
+    for a variable literally named "agent"; it execs the whole module and
+    takes the LAST CALLABLE VALUE in the resulting namespace by
+    insertion order. A stray earlier `agent = ...` is not just redundant:
+    since reassigning an existing dict key does not move it, that earlier
+    assignment keeps `agent`'s insertion position pinned near the top of
+    the file, so this module's own later definitions (RouteExpert,
+    CandidateCExecutor, build_candidate_c_agent, ...) end up AFTER it in
+    iteration order -- and the loader picks `build_candidate_c_agent`
+    itself instead, which is not the per-turn decision function. Only
+    filtering FunctionDef here missed this Assign entirely; that is
+    exactly the bug that broke the first Kaggle upload of this package
+    (AttributeError: 'str' object has no attribute 'name', because the
+    observation dict got passed into build_candidate_c_agent's `routes`
+    parameter and iterating a dict yields its string keys). Filter both
+    node shapes so the same rebuild can never quietly reintroduce this.
+    """
     return [
         node
         for node in body
         if not (isinstance(node, ast.FunctionDef) and node.name == "agent")
+        and not (
+            isinstance(node, ast.Assign)
+            and any(
+                isinstance(target, ast.Name) and target.id == "agent"
+                for target in node.targets
+            )
+        )
     ]
 
 
