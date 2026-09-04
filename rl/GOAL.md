@@ -1296,6 +1296,107 @@ to be our equals, not against the leaderboard's top. Local win rate here
 has both little headroom and limited external validity, and no local
 number in this section should be read as a live-score prediction.
 
+### 9l. The whole field is farming the wrong products (2026-09-05)
+
+Section 9k exhausted the residual and clone-search surface. This section
+stops looking for a better *tape* and asks a different question: what
+does a 2900-3000 economy do that ours does not? The answer is a
+structural market inefficiency the entire field, us included, is sitting
+on -- and it is the first thing found in this project that is worth
+roughly a third of our score rather than a couple of games.
+
+**Evidence base.** 51 replays pulled fresh from the current top of the
+leaderboard (Crop Dusta 3029.4, keiz 3006.1, Jesse Bullard 2965.5,
+AI是我的豆包 2941.3, Andrey Tikhomirov 2919.4, Giulio Ravasio 2913.5,
+MtN 2911.6, Syed Asad Ali 2873.5) giving 88 elite player-games, against
+253 of our own and 261 mid-field. Profiler:
+`tools/data/profile_agents.py`.
+
+**The product mix differs sharply, and the #1 agent is the extreme.**
+
+| team | LB | COW | SHEEP | GOOSE | carrots planted | milk units | milk price |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Crop Dusta | 3029 | 4 | 10 | 3 | 30 | 107 | 65.0 |
+| keiz | 3006 | 8 | 6 | 1 | 27 | 188 | 90.1 |
+| Jesse Bullard | 2966 | 6 | 11 | 0 | 42 | 165 | 36.6 |
+| AI是我的豆包 | 2941 | 7 | 9 | 0 | 41 | 192 | 47.2 |
+| **ours (C1/C2)** | ~2100 | **9** | **5** | **0** | **6** | **294** | 45.8 |
+
+Crop Dusta runs 10 sheep to 4 cows -- the inverse of our 5 to 9 -- plants
+five times the carrots, keeps geese, and sells a third of the milk.
+
+**Why, from the simulator's own price model.** Price is
+`base +/- amp*f(|inv - I0|)` about `I0 = 10000`, and the `above` (glut)
+shape is per-product. Units a product absorbs before its price halves:
+
+| product | base | units to half price | price after 200 units |
+| --- | ---: | ---: | ---: |
+| EGG | 50 | never (log) | 41 |
+| WHEAT | 25 | never (log) | 21 |
+| FERTILIZER | 100 | 253 | 60 |
+| CARROT | 35 | 230 | 19 |
+| MELON | 250 | 113 | 1 |
+| WOOL | 200 | 42 | 1 |
+| MILK | 160 | 39 | 1 |
+| STRAWBERRY | 120 | 32 | 1 |
+
+Milk collapses after **39 units**. We sell **294**.
+
+**But absorption is a rate, not a budget.** The town drains inventory
+continuously; measured per game across 12 elite replays as
+`units sold by both players - net inventory change`: WHEAT 828,
+STRAWBERRY 509, WOOL 460, EGG 426, MILK 377, CARROT 354, TOMATO 354,
+FERTILIZER 220, MELON 31. Halve those for a per-player sustainable rate.
+
+**The result is that three markets are permanently starved.** Median
+price by 90-step bucket across elite games, with end-of-game market
+inventory relative to `I0`:
+
+| product | b0 | b2 | b4 | b6 | b7 | final inv - I0 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| TOMATO | 60 | 62 | 70 | 76 | **80** | **-166** |
+| CARROT | 35 | 36 | 39 | 47 | **49** | **-177** |
+| EGG | 50 | 51 | 54 | 58 | **59** | **-157** |
+| MILK | 172 | 191 | 76 | 19 | 22 | +66 |
+| WOOL | 209 | 187 | 172 | 49 | 31 | +54 |
+| MELON | 260 | 270 | 94 | 108 | 115 | +129 |
+
+Tomato, carrot and egg prices **rise for the whole game** because demand
+outruns supply. **Nobody in the field sells tomato at all** -- not one
+team, elite or otherwise -- despite it being the highest-throughput crop
+in the game (`ongoing`, `interval 1`, `first_yield_day 8`, `max_yield 4`)
+and the town absorbing 354 units of it per game. Meanwhile every agent,
+ours included, dumps milk, wool and melon into a collapse.
+
+**What that is worth.** Selling into the observed deficits, priced with
+the simulator's own scarcity branch:
+
+| item | deficit | price now | revenue to fill | +100 beyond | total |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| TOMATO | 166 | 80 | 11,623 | 4,318 | 15,941 |
+| CARROT | 177 | 49 | 7,420 | 2,738 | 10,158 |
+| EGG | 157 | 59 | 8,595 | 4,371 | 12,966 |
+| | | | | | **39,065** |
+
+Against a median reward of 81,508 (ours) and 84,750 (elite). This is
+non-degrading revenue in markets with no competition, and it dwarfs
+every lever measured in 9j and 9k, all of which were worth hundreds of
+coins or less.
+
+**It cannot be bolted onto Candidate C1.** Measured over a full C1 game:
+empty unlocked tiles average **0.3 to 3** out of 75 from bucket 2 onward,
+and idle worker-turns fall to **2-8%**. The farm is saturated. Capturing
+this requires *reallocating* land and labour away from milk-heavy
+production, which is a different production plan -- not a residual over a
+frozen tape. That is the architectural case for Candidate D being a real
+reactive agent, and it is now an evidence-backed case rather than an
+aspiration.
+
+**Open question before building.** Where the existing hand-built reactive
+agents in `agents/` stand against C1's 23/24 screen is not yet measured
+(the run was lost to a session restart). That number decides whether
+Candidate D re-targets an existing reactive executor or needs a new one.
+
 ## 10. Candidate D: learned residual/Option selector
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
