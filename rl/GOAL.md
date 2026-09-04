@@ -1010,6 +1010,116 @@ between the two, and a stale assumption about it is invisible to every
 test that only inspects the final state of the name rather than how it
 got there.
 
+### 9i. The fourth quadrant, a real 245-episode corpus, and Candidate D
+kickoff (2026-09-04)
+
+**Land-quadrant economics, answered with real data.** Deduplicated the
+full local cache to 245 genuine `YASH JAIN`-vs-real-opponent episodes
+(5 excluded: 1 is the fog-flower/Giulio source game, which has neither
+side as us; 4 have `YASH JAIN` on both sides -- self-play probes, not
+real opponents) and pooled final-state `unlocked_quadrants` against
+final reward for both sides of every game:
+
+| final quadrants | n | mean reward | mean hands |
+| --- | ---: | ---: | ---: |
+| 2 | 22 | 43,636 | 11.5 |
+| 3 | 460 | 83,093 | 10.6 |
+| 4 | 7 | 59,916 | 9.3 |
+
+3 quadrants outperforms 4 by ~39% mean reward with *more* labor, not
+less. Sharper still: against every one of the 7 opponents who reached 4
+quadrants, our win rate is **7-0**, versus 66% against 3-quadrant
+opponents. Buying the fourth quadrant is not a missed opportunity we are
+leaving on the table -- in this sample it is a tell that an opponent
+over-extended. The likely mechanism (consistent with section 9's
+existing "worker-time, not land, is the binding constraint" framing):
+7000 cumulative coin and, more importantly, the *hand-hours* to farm a
+4th quadrant compete directly with hand-hours for premium sale
+throughput and livestock service on the first three, and 720 steps is
+not enough to recover that trade against a competent opponent. No
+candidate in this project buys the 4th quadrant; that default stays.
+
+**Candidate D's data prerequisite is now met.** `tools/data/curate_candidate_d_corpus.py`
+(new) scans every cached replay, reuses `rl.replay_dataset._validate_replay`
+(simulator version, `DONE`/`DONE`, finite rewards, 720-record shape) so
+this pipeline cannot silently ingest a malformed game, deduplicates by
+episode ID and SHA-256, and writes one index row per usable episode to
+`rl/data/candidate_d_corpus_index.jsonl` (git-ignored, per this repo's
+Competition Data handling) with opponent identity, result, and both
+sides' final hand/money/quadrant state. Split policy is
+`sha256(opponent_name.casefold())[0] % 10` (70/20/10 train/validation/test)
+so every game against one opponent stays in one split -- no identity
+leakage. This clears GOAL.md section 10's 200-episode minimum (245 usable,
+168/43/24 unique opponents across the three splits) and is a curation
+pass only: it does not yet call `encode_state` or emit per-step examples,
+because that requires the Option-level label design below to be settled
+first. True temporal holdout is not yet implemented -- the cached replay
+JSON carries no per-episode timestamp, so it would need a fresh
+`episodes --csv` pull cross-referenced by episode ID; recorded here as an
+open v2 gap, not solved today.
+
+**The four newly-requested public notebooks mostly restate research this
+file already has.** WebFetch cannot read any of the four Kaggle notebook
+pages the user linked this session (`boatlee/v16-rc5-...`,
+`lynnsakurai/farming-score-v3-replay-revised`,
+`reyhanksatria/adaptive-route-agent-v2`,
+`foysalemonshanto/read-the-market-choose-the-farm`) beyond their
+`<title>` -- confirmed for all four, not assumed; Kaggle's notebook pages
+are JS-rendered and this is the same limitation section 11's audit
+already worked around by using Kaggle's own score/metadata API instead of
+page scraping. Of the four, one (`farming-score-v3-replay-revised`) is
+already fully audited in `rl/PUBLIC_META_AUDIT.md` ("Replay Revised"),
+and `boatlee`'s v16/v20/v21 lineage is already audited there too (V16
+Recovery, V20 Adaptive R1, V21-R1 Public-State Route Portfolio) -- the
+new `v16-rc5-...` title is almost certainly the same lineage, not
+independent evidence. `reyhanksatria/adaptive-route-agent-v2` and
+`foysalemonshanto/read-the-market-choose-the-farm` are genuinely new
+titles with no prior audit entry and no content beyond the title; their
+names are thematically consistent with the audited "route portfolio" and
+"market-state-conditioned" families but that is not verified evidence
+and is not treated as such.
+
+**The concrete mechanism this unblocks: route selection at shared-prefix
+divergence, not at step 0.** Section 9's placeholder selector
+(`_select_route_name` always returns `routes[0].name`) exists because
+Candidate C1/C2's route experts are two different real players' complete
+720-step scripts with no shared opening -- there is no legal opponent
+signal at step 0 to select on, and switching mid-script between two
+unrelated scripts is not coherent. `PUBLIC_META_AUDIT.md`'s own
+independent lesson from the strongest public route-portfolio agents is
+exactly the fix: "select routes at shared-prefix divergence points with
+hysteresis... from early opponent spending/hiring, initial shop
+sequences, or the first meaningful divergence between experts" -- i.e.
+run a shared, safe default opening, then *commit* once, once real signal
+exists, not before. A quick check of how early that signal actually
+appears: across the 244/245 opponents who ever unlock a second quadrant,
+the first expansion happens at median step 159 (p10 149, p90 170) --
+late, and tightly clustered, meaning quadrant-count timing itself is not
+an early discriminator, but it does confirm a shared default opening is
+safe to run for well over 100 steps before any commitment is forced.
+Early shop/hire sequence (not land timing) is the more promising signal
+and is unmeasured -- next step, not done here.
+
+This reframes what Candidate D actually is, versus one more Candidate C
+revision: because the elite clones are pure step-indexed lookups
+(`actions[step]`, no internal cursor), entering one late at a commit step
+`k > 0` is structurally legal, which a step-0-only selector could never
+use. Candidate D's first Option is therefore: run `calendar` (the only
+reentrant, always-safe route) as the default prefix, gather public
+opponent state up to a tunable commit step `k`, then commit once to
+whichever executor -- calendar, elite_pasture, elite_giulio, or a future
+route -- simulator counterfactual branching (section 10's prescribed
+method) scores best against the observed opening. This is genuinely
+different work from Candidate C, not a rename of it, which is why it
+belongs in Candidate D rather than a Candidate C3.
+
+**Status.** Today's concrete progress is the corpus pipeline, the
+land-quadrant answer, the notebook-research honesty pass, and the
+route-selection mechanism decision above. No Option-labeling harness,
+no model, and no trained selector exist yet -- see section 10 for the
+remaining staged plan (counterfactual labeling, interpretable baseline,
+causal-influence check against a constant selector, only then online RL).
+
 ## 10. Candidate D: learned residual/Option selector
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
