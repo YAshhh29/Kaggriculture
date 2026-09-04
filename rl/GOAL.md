@@ -1120,6 +1120,81 @@ no model, and no trained selector exist yet -- see section 10 for the
 remaining staged plan (counterfactual labeling, interpretable baseline,
 causal-influence check against a constant selector, only then online RL).
 
+### 9j. A real, tested, honest null result: glut-aware sell deferral
+(2026-09-04)
+
+Extended `kaggle_cache/clones/` from 56 to all 245 corpus opponents
+(`tools/data/build_opponent_clones.py`) and built `rl/replay_agent.py`, a
+generic factory turning any 720-record action tape into a local
+opponent. Building it caught a real indexing bug before it shipped: a
+marker-agent probe against the actual simulator proved the action
+recorded at replay index k was chosen while observing step k-1, so a
+replay agent must look up `step + 1`, not `step` -- confirmed by
+reproducing a real recorded game byte-for-byte (rewards 59014.0/123624.0,
+exact match) once fixed.
+
+Read the installed simulator source directly
+(`kaggle_environments/envs/kaggriculture/kaggriculture.py`) rather than
+guess at market mechanics: the market is one pool shared by both players,
+priced by `price(inv) = base +/- amp*f(|inv-I0|)`, `I0=10000`. MELON and
+WOOL use the quadratic `above_func="sq"` with the highest `above_target`
+of any product -- selling into a glut is far more punishing for these two
+than for anything else. Candidate C1's frozen elite-clone baseline has no
+way to react to this since it just replays fog flower's exact historical
+schedule regardless of what the current shared market looks like.
+
+Built `rl/candidate_d.py`: a narrow residual over Candidate C that holds
+back a MELON/WOOL sell when the market looks glutted, and flushes the
+exact same quantity later (never invents, drops, or resizes an order).
+13 focused unit tests first, per this file's own discipline -- one caught
+a real bug (a forced flush at the max-hold deadline was being
+immediately re-captured and re-deferred by the same call's own
+new-deferral scan, if the market was still glutted; fixed by tracking
+which items were just force-flushed and excluding them from
+reconsideration that turn).
+
+Paired head-to-head against Candidate C1 on the same 80 real opponents,
+same seeds, same seats (`kaggle_cache/candidate_d_vs_c1_paired_80.json`):
+**0/80 games showed any effect at all.** The guard never fired. Checking
+why, against real cached replays rather than guessing again: raw MELON/
+WOOL market inventory barely moves (max observed deviation +149 units
+against I0=10000), so the 5%-above-I0 threshold this version used was
+never reached. Raising sensitivity by checking *price* instead of raw
+inventory found real volatility (MELON mean price 161 against a base of
+250, WOOL 141 against 200, both frequently near the 1-coin floor) -- but
+before rebuilding around that signal, checking the load-bearing
+assumption first (does a price dip actually recover?) against 25 real
+games directly (no simulation needed) found it does not: of 1,343 MELON
+dips more than 20 steps in, only 0.1% recovered above their trailing
+median within 10 steps, and the mean price movement over that window was
+**negative** (-19.6, price kept falling). WOOL was only marginally
+better (6.7%, near-zero mean gain). This market trends on short
+horizons; it does not mean-revert. Deferring a sell in the hope the
+price comes back is the wrong mechanism for this market, not just an
+uncalibrated one -- rebuilding the same residual around a price signal
+instead of an inventory signal would not have fixed this.
+
+**This is not shipped as an improvement, and Candidate C1 is unchanged.**
+`rl/candidate_d.py` stays in the repo, wired to nothing, as a real,
+tested, safe (zero regressions across the full suite; zero effect,
+positive or negative, across 80 real paired games), honestly-documented
+negative result -- consistent with how this file already records four
+earlier rejected route candidates in section 9. The diagnostic pass that
+led here also confirms two things worth keeping: Candidate A's existing
+terminal liquidation already strands negligible inventory (mean 0.2
+units across the same 80 games), so that is not an open gap either; and
+C1 held **76/80 (95%)** on this broader, largely non-overlapping opponent
+sample, consistent with the original 56-opponent panel's 97.3% -- real
+additional evidence, not a repeat of the same numbers.
+
+**What this rules in for next time.** A front-running mechanism (sell
+*sooner*, before a trending price falls further, rather than *later*
+hoping it recovers) is the mechanism this data actually supports, and is
+unexplored -- it is the literal opposite of what this section built.
+It was not attempted here for lack of remaining time in this session, not
+because the data speaks against it; the persistence finding above is
+exactly the evidence that would motivate it.
+
 ## 10. Candidate D: learned residual/Option selector
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
