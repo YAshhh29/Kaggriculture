@@ -2244,6 +2244,87 @@ is largely complete by day 15; wheat cycles in ~5 days and animals yield
 most attractive first target: its price swings 4.7x, and the field's
 adaptation to it is +0.065 -- effectively uncontested.
 
+### 9v. Adapting to demand is what the top does -- and a tape cannot do it
+(2026-09-06)
+
+Section 9u showed town demand is random per game, observable, and swings
+prices up to 40x. This section asks who exploits it, what it is worth,
+and whether our existing architecture can be made to.
+
+**Adaptation is the cleanest correlate of rank in this whole file.**
+Correlation between a game's demand for a product and how much of it the
+player produced, split by leaderboard band, 300 player-games:
+
+| band | wool -> sheep bought | milk -> cows bought | strawberry -> planted |
+| --- | ---: | ---: | ---: |
+| **TOP (>=2850)** | **+0.672** | **+0.339** | **+0.309** |
+| MID (2400-2849) | +0.323 | +0.319 | +0.123 |
+| **LOW (<2400)** | **+0.000** | **-0.046** | **-0.086** |
+
+A clean monotonic gradient. The top of the ladder steers production at
+the demand draw; the middle does it weakly; below 2400 there is no
+response at all. This is the first measurement in this file that explains
+the ladder rather than describing it -- and it says the demand engine is
+not undiscovered, it is *what being good at this game consists of*.
+
+**What adaptation is worth, ranked properly.** Section 9u picked
+strawberry because it was uncontested, which is the wrong criterion.
+Ranking by expected value -- the price gap between high- and low-demand
+games times the volume actually achievable:
+
+| target | low-demand price | high-demand price | typical units | EV |
+| --- | ---: | ---: | ---: | ---: |
+| STRAWBERRY | 37 | 178 | 270 | **38,070** |
+| WOOL | 1 | 239 | 154 | **36,652** |
+| MILK | 5 | 110 | 271 | 28,455 |
+| TOMATO | 77 | 202 | 144 | 18,135 |
+| EGG | 59 | 70 | 64 | 704 |
+| CARROT | 45 | 66 | 18 | 387 |
+
+Strawberry and wool are effectively tied at the top; carrot and egg are
+near-worthless targets despite carrot's scarcity premium, because the
+volumes are tiny. For scale, section 9t measured the median winning
+margin at 4,845, so the leading targets are several margins wide.
+
+**A frozen tape cannot be retrofitted to do this. Demonstrated, not
+asserted.** COW and SHEEP looked like the ideal substitution: both occupy
+a PASTURE tile, both are placed with PLACE, both accept FEED and CARE,
+both are collected with HARVEST. Rewriting `BUY_ANIMAL COW` to SHEEP and
+the matching placements should therefore change *what the farm produces*
+while leaving geometry, routing and service schedule untouched.
+
+It failed, three times, each for a different structural reason:
+
+1. **Per-worker inventory.** The first version checked whether *any*
+   worker held the animal and rewrote placements globally, so it
+   redirected a PLACE for a worker who was not carrying it. Result: 9 of
+   17 animals placed, 7 pastures permanently empty, reward 117,133 ->
+   63,035 and wins 40/48 -> 4/48.
+2. **Animals live in the shed.** `BUY_ANIMAL` deposits into
+   `private["shed"]`, so the real route is buy -> **PICKUP** -> PLACE.
+   Rewriting the purchase without the PICKUP left workers asking for an
+   animal that was no longer there. Fixing that recovered 2 of the 7 lost
+   pastures.
+3. **Cash coupling, which is fatal.** Sheep cost 500 against a cow's 400.
+   The tape's purchase schedule is tuned to its own cash trajectory with
+   no slack: tracing a swapped game shows money at **39** at step 185 and
+   **1** at step 204, where a `BUY SHEEP x2` needing 1,000 simply fails.
+   Five pastures stay empty for the rest of the game.
+
+So the tape's actions are coupled through cash, shed capacity and pickup
+timing, not just through tile geometry. Even the most surgical
+substitution available in this game breaks it. **This closes off the
+tempting shortcut of bolting adaptation onto a clone**, and it explains
+mechanically why every candidate we have shipped scores +0.000 on the
+adaptation gradient above.
+
+**Conclusion for Agent E.** E has to generate its own actions. Adaptation
+cannot be a layer over a recorded route, because the recorded route's
+affordability is part of what was recorded. The demand model itself is
+built and tested (`rl/demand.py`, 15 tests) and is the piece worth
+keeping; `rl/herd_swap.py` is retained as the evidence for this section
+and is wired into nothing.
+
 ## 10. Candidate D: learned residual/Option selector
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
