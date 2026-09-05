@@ -60,7 +60,7 @@ class PrepareCandidateDSubmissionTests(unittest.TestCase):
         ]
 
         self.assertEqual(local_imports, [])
-        self.assertIn("elite_giulio2_route", assigned)
+        self.assertIn("elite_andrey_route", assigned)
         self.assertIn("agent", assigned)
         self.assertEqual(module.body[-1].targets[0].id, "agent")
 
@@ -91,7 +91,7 @@ class PrepareCandidateDSubmissionTests(unittest.TestCase):
             for node in module.body
             if isinstance(node, ast.AnnAssign)
             and isinstance(node.target, ast.Name)
-            and node.target.id == "GIULIO2_MODEL_PAYLOAD"
+            and node.target.id == "ANDREY_MODEL_PAYLOAD"
         ]
 
         self.assertNotIn("MODEL_PATH", top_level_assigns)
@@ -111,8 +111,8 @@ class PrepareCandidateDSubmissionTests(unittest.TestCase):
         self.assertEqual(
             package, prepare_candidate_d_submission.build_source()
         )
-        self.assertIn("105531280", manifest)
-        self.assertIn("Giulio Ravasio", manifest)
+        self.assertIn("105520725", manifest)
+        self.assertIn("Andrey Tikhomirov", manifest)
 
 
 if __name__ == "__main__":

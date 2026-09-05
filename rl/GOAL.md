@@ -1786,6 +1786,90 @@ and the best public PPO result cited in `PUBLIC_META_AUDIT.md` reached
 ~80k terminal cash, which is **below** the ~103k our current route
 already produces. PPO is not the missing piece here.
 
+### 9p. Candidate D's route re-chosen on a proper panel (2026-09-05)
+
+Section 9n picked Candidate D's route with a screen that used **three
+seeds against a single mid-field clone**. That is far too noisy to choose
+between tapes whose true win rates sit within a few points of each other,
+and section 9o then showed the choice was not settled: D beat C1 on the
+elite panel but tied it overall (p=0.50) and lost their head-to-head.
+
+**Re-screen.** Nineteen leading tapes (top twelve by mean coins, top
+twelve by floor, deduplicated, plus the incumbent Giulio route as a
+control) were re-run on a stratified slice of real top-500 opponents --
+12 from the top 50, 6 from 51-150, 12 from 151-500 -- both seats,
+identical games for every candidate, 60 paired games each:
+
+| route | wins | mean coins | floor |
+| --- | ---: | ---: | ---: |
+| **Andrey Tikhomirov ep105520725** | **42/60 (70.0%)** | **92,327** | 49,822 |
+| Jesse Bullard ep105487025 | 40/60 (66.7%) | 89,698 | 41,059 |
+| Bohannn Wang ep105546785 / 105551379 / 105548688 | 40/60 (66.7%) | 89,698 | 41,059 |
+| OceanMix ep105554277 | 38/60 (63.3%) | 87,014 | 49,301 |
+| Giulio ep105531280 (incumbent) | 37/60 (61.7%) | 87,830 | 40,872 |
+| Ignat / Andrew Reed / sword3522 | 33/60 (55.0%) | 84-91k | 40-49k |
+| Mater Welon ep105545969 | 25/60 (41.7%) | 89,894 | 43,905 |
+| Andrey Tikhomirov ep105527696 | 24/60 (40.0%) | 90,354 | 56,586 |
+| OceanMix ep105550837 | 22/60 (36.7%) | 79,513 | 40,756 |
+
+Two structural facts fall out of that table. **Tape quality belongs to
+the game, not the player**: two Andrey tapes recorded the same day score
+70.0% and 40.0%, and two OceanMix tapes score 63.3% and 36.7%. And
+**public agents are copied wholesale**: three tapes credited to two
+different teams (Jesse Bullard, Bohannn Wang twice) return byte-identical
+wins, mean and floor, which is what one shared public agent looks like
+from the outside.
+
+Section 9n's own ranking metric is also refuted here. Mater Welon's tape
+had the highest coin production in the 191-tape search and finishes
+**41.7%** on this panel; peikopon, third by coins, finishes 50.0%. Coins
+rank routes badly once real opponents are involved.
+
+**Confirmation on the full panel.** The winner was then re-scored on all
+92 top-500 opponents using the *same seeds* as section 9o's tournament,
+so it pairs game-for-game against the stored results:
+
+| route | wins | mean coins | floor | vs top-50 |
+| --- | ---: | ---: | ---: | ---: |
+| **Andrey ep105520725** | **118/184 (64.1%)** | **91,199** | 42,858 | 44/74 |
+| Giulio ep105531280 | 108/184 (58.7%) | 86,859 | **47,689** | **50/74** |
+| C1 fog flower | 103/184 (56.0%) | 85,811 | 35,703 | 38/74 |
+
+**No pair is significant at p < 0.05** (Andrey vs Giulio p=0.19, Andrey
+vs C1 p=0.079, Giulio vs C1 p=0.50). This section does not claim
+significance, and neither should any later one citing it. The switch
+rests on three things instead: Andrey leads **all three independent
+evaluations** (the 191-tape search by coins, the 60-game stratified panel,
+the 184-game full panel); it wins **+16 games against ranks 51-500**,
+which is the band actually faced around our rank of ~677, giving back 6
+against the top 50; and it carries the best mean coins of any route
+tested, which section 9m argued is the component most likely to transfer
+live.
+
+The honest counter-argument, recorded so it is not lost: the Giulio route
+has a better floor (47,689 against 42,858) and a better top-50 record
+(50/74 against 44/74). If the goal were specifically to beat the top of
+the ladder rather than to climb through the middle of it, Giulio would be
+the better pick. There is also a winner's-curse risk in selecting the best
+of nineteen candidates on one panel; the full-panel confirmation on
+different seeds is the partial guard against that, and it held.
+
+**Candidate D now runs episode 105520725.**
+`models/v1327-public-elite-andrey-105520725.json`,
+`agents/experimental_distilled_elite_andrey_agent.py`, wired through the
+unchanged A+B wrapper in `rl/candidate_d.py`. All seven gates in the new
+`tools/validation/preflight_candidate_d.py` pass on the rebuilt package:
+deterministic rebuild matching disk, manifest hash agreement, embedded
+model hash verification, extraction through Kaggle's real
+`get_last_callable`, 1438/1438 source/package/simulator equivalence, 12/12
+whole games finishing DONE through that loader path in both seats, and the
+full test suite.
+
+**Standing recommendation.** Upload Candidate D into the slot vacated by
+**C2**, keeping C1. Kaggle keeps only the two most recent submissions
+active and does not allow choosing, so the ordering matters: C1 must be
+re-submitted *before* D so that D's upload displaces C2 rather than C1.
+
 ## 10. Candidate D: learned residual/Option selector
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.

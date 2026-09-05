@@ -1,9 +1,9 @@
 {
-  "created_at": "2026-09-05T01:31:18.417361+00:00",
+  "created_at": "2026-09-05T15:36:04.764235+00:00",
   "competition": "kaggriculture",
   "agent": "main.py",
-  "sha256": "2309050e6db9ef42691d762643bbcd814346c5fd9ba1d0b654544515e5a00dd1",
-  "combined_source_sha256": "db0ebd60eb2261978a852ce454c32d33bfde0e6f3fce14279985bee61d4ddd81",
+  "sha256": "21d6c3c9b657071b376ae63189aa85f60986a9520cd67d11514ea408341384d5",
+  "combined_source_sha256": "5dd724ff4a14d1f50fcff621a848820d0855550228a796bae945ff8ebec7bb28",
   "parent_submission": {
     "note": "built on the Candidate B package",
     "source_files": [
@@ -12,24 +12,26 @@
   },
   "source_files": [
     "submissions/candidate-b/main.py (parent)",
-    "agents/experimental_distilled_elite_giulio2_agent.py",
-    "models/v1327-public-elite-giulio2-105531280.json",
+    "agents/experimental_distilled_elite_andrey_agent.py",
+    "models/v1327-public-elite-andrey-105520725.json",
     "rl/candidate_d.py"
   ],
-  "policy": "Candidate A's guarded recovery and live terminal liquidation, plus Candidate B's market-timing residuals (land priority off), over the physical route that won a systematic search. 191 candidate tapes -- every side of every cached replay from a team rated 2400+, on a game that team won -- were scored on our own final reward under this exact stack; the best five then ran 48 games each over six seeds, both seats and four opponents. Episode 105531280 (Giulio Ravasio, LB 2908.0) won on wins, mean coins and floor at once. This is a different game from Candidate C2's Giulio clone (episode 105144807).",
+  "policy": "Candidate A's guarded recovery and live terminal liquidation, plus Candidate B's market-timing residuals (land priority off), over the physical route that won a systematic search. 191 candidate tapes -- every side of every cached replay from a team rated 2400+, on a game that team won -- were scored on our own final reward under this exact stack, then the leaders were re-screened against real top-500 opponents. Episode 105520725 (Andrey Tikhomirov, LB 2920.0, rank 4) led all three evaluations: the search, a 60-game stratified panel (70.0%) and a 184-game full panel (64.1%).",
   "training_data": {
-    "source_episode_id": 105531280,
-    "source_team": "Giulio Ravasio",
-    "source_context": "Giulio Ravasio (public leaderboard 2908.0 at capture, rank 6) winning side of a 2026-09-04 top-table game; selected as the highest-scoring of 191 candidate tapes on wins, mean coins and floor",
-    "actions_sha256": "7bcc4069562a04ead1b954fa036eaeae51fe3ef3b376b70f7aecd16266de0805"
+    "source_episode_id": 105520725,
+    "source_team": "Andrey Tikhomirov",
+    "source_context": "Andrey Tikhomirov (public leaderboard 2920.0, rank 4 at capture) winning side of a 2026-09-04 top-table game; selected as best of 191 candidate tapes and confirmed best on two independent top-500 panels",
+    "actions_sha256": "b8ec86e8f30e72d1b03b527a4d626722f8bdbaacfd3a529d7852a9e2a3891002"
   },
   "validation": {
-    "finalist_panel": {
-      "games": "48 per candidate (6 seeds x 2 seats x 4 opponents)",
-      "candidate_d": "38/48 wins, mean 108472, floor 51094",
-      "candidate_c1": "32/48 wins, mean 97043, floor 47364",
-      "per_opponent": "6/12, 12/12, 8/12, 12/12 (no collapse)"
+    "top500_panel": {
+      "games": "184 per agent (92 distinct top-500 opponents x 2 seats)",
+      "candidate_d_andrey": "118/184 = 64.1%, mean 91199, floor 42858",
+      "prev_route_giulio": "108/184 = 58.7%, mean 86859, floor 47689",
+      "candidate_c1": "103/184 = 56.0%, mean 85811, floor 35703",
+      "significance": "paired McNemar: Andrey vs Giulio p=0.19, Andrey vs C1 p=0.079 -- NOT significant at p<0.05; selection rests on leading three independent evaluations, not one test"
     },
+    "stratified_panel": "60 games: Andrey 70.0%, Giulio 61.7%, C1 48.3%; Andrey vs C1 p=0.0124",
     "search": "191 tapes scored on own final reward",
     "caveat": "rl/GOAL.md section 9m: win rate against frozen tapes overstates live strength by roughly forty points. Own-reward improvement (+12% mean, +8% floor over C1) is the transferable part of this result; the win-rate figures are not a live forecast."
   }

@@ -22,10 +22,10 @@ from tools.packaging.prepare_distilled_calendar_submission import (
 
 ROOT = Path(__file__).resolve().parents[2]
 ELITE_AGENT_PATH = (
-    ROOT / "agents" / "experimental_distilled_elite_giulio2_agent.py"
+    ROOT / "agents" / "experimental_distilled_elite_andrey_agent.py"
 )
 ELITE_MODEL_PATH = (
-    ROOT / "models" / "v1327-public-elite-giulio2-105531280.json"
+    ROOT / "models" / "v1327-public-elite-andrey-105520725.json"
 )
 CANDIDATE_D_PATH = ROOT / "rl" / "candidate_d.py"
 SOURCE_PATHS = (ELITE_AGENT_PATH, ELITE_MODEL_PATH, CANDIDATE_D_PATH)
@@ -64,10 +64,10 @@ def load_verified_model(path: Path = ELITE_MODEL_PATH) -> dict[str, Any]:
 # is inert here -- but it is exactly the kind of quiet aliasing that
 # section 9h's packaging bug was made of, so namespace them instead.
 _ELITE_RENAMES = {
-    "decide": "elite_giulio2_decide",
-    "MODEL_PAYLOAD": "GIULIO2_MODEL_PAYLOAD",
-    "CALENDAR_ACTIONS": "GIULIO2_ACTIONS",
-    "_load_actions": "_load_giulio2_actions",
+    "decide": "elite_andrey_decide",
+    "MODEL_PAYLOAD": "ANDREY_MODEL_PAYLOAD",
+    "CALENDAR_ACTIONS": "ANDREY_ACTIONS",
+    "_load_actions": "_load_andrey_actions",
 }
 
 
@@ -164,8 +164,8 @@ def build_source() -> str:
     base.body.extend(_elite_agent_body())
     base.body.append(
         ast.Assign(
-            targets=[ast.Name(id="elite_giulio2_route", ctx=ast.Store())],
-            value=ast.Name(id="elite_giulio2_decide", ctx=ast.Load()),
+            targets=[ast.Name(id="elite_andrey_route", ctx=ast.Store())],
+            value=ast.Name(id="elite_andrey_decide", ctx=ast.Load()),
         )
     )
     module = ast.parse(CANDIDATE_D_PATH.read_text(encoding="utf-8"))
@@ -208,8 +208,8 @@ def main() -> None:
                 },
                 "source_files": [
                     "submissions/candidate-b/main.py (parent)",
-                    "agents/experimental_distilled_elite_giulio2_agent.py",
-                    "models/v1327-public-elite-giulio2-105531280.json",
+                    "agents/experimental_distilled_elite_andrey_agent.py",
+                    "models/v1327-public-elite-andrey-105520725.json",
                     "rl/candidate_d.py",
                 ],
                 "policy": (
@@ -219,12 +219,12 @@ def main() -> None:
                     "that won a systematic search. 191 candidate tapes -- "
                     "every side of every cached replay from a team rated "
                     "2400+, on a game that team won -- were scored on our "
-                    "own final reward under this exact stack; the best five "
-                    "then ran 48 games each over six seeds, both seats and "
-                    "four opponents. Episode 105531280 (Giulio Ravasio, LB "
-                    "2908.0) won on wins, mean coins and floor at once. "
-                    "This is a different game from Candidate C2's Giulio "
-                    "clone (episode 105144807)."
+                    "own final reward under this exact stack, then the "
+                    "leaders were re-screened against real top-500 "
+                    "opponents. Episode 105520725 (Andrey Tikhomirov, LB "
+                    "2920.0, rank 4) led all three evaluations: the search, "
+                    "a 60-game stratified panel (70.0%) and a 184-game full "
+                    "panel (64.1%)."
                 ),
                 "training_data": {
                     "source_episode_id": model["source_episode_id"],
@@ -233,21 +233,31 @@ def main() -> None:
                     "actions_sha256": model["actions_sha256"],
                 },
                 "validation": {
-                    "finalist_panel": {
+                    "top500_panel": {
                         "games": (
-                            "48 per candidate "
-                            "(6 seeds x 2 seats x 4 opponents)"
+                            "184 per agent "
+                            "(92 distinct top-500 opponents x 2 seats)"
                         ),
-                        "candidate_d": (
-                            "38/48 wins, mean 108472, floor 51094"
+                        "candidate_d_andrey": (
+                            "118/184 = 64.1%, mean 91199, floor 42858"
+                        ),
+                        "prev_route_giulio": (
+                            "108/184 = 58.7%, mean 86859, floor 47689"
                         ),
                         "candidate_c1": (
-                            "32/48 wins, mean 97043, floor 47364"
+                            "103/184 = 56.0%, mean 85811, floor 35703"
                         ),
-                        "per_opponent": (
-                            "6/12, 12/12, 8/12, 12/12 (no collapse)"
+                        "significance": (
+                            "paired McNemar: Andrey vs Giulio p=0.19, "
+                            "Andrey vs C1 p=0.079 -- NOT significant at "
+                            "p<0.05; selection rests on leading three "
+                            "independent evaluations, not one test"
                         ),
                     },
+                    "stratified_panel": (
+                        "60 games: Andrey 70.0%, Giulio 61.7%, C1 48.3%; "
+                        "Andrey vs C1 p=0.0124"
+                    ),
                     "search": "191 tapes scored on own final reward",
                     "caveat": (
                         "rl/GOAL.md section 9m: win rate against frozen "
