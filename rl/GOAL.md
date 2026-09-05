@@ -2023,6 +2023,81 @@ tape opponents, which cannot compete for market space the way a live
 opponent does, so it does not settle the inventory-conditioned rule
 proposed here.
 
+### 9s. The price edge scales with rank, but resists being turned into a
+rule (2026-09-05)
+
+Section 9r found winners are paid more for identical output. This asks
+whether that skill also describes *climbing*, and then tries to build it.
+
+**It is the single largest behavioural gap between rank bands.** Forty
+teams with five or more games each, 851 games, leaderboard 2029-3021,
+aggregated per team:
+
+| feature | corr with LB | top (>=2850) | mid (2300-2600) | delta |
+| --- | ---: | ---: | ---: | ---: |
+| price_WOOL | -0.04 | **73.1** | **26.5** | **+46.5** |
+| price_MILK | **+0.184** | **53.5** | **41.9** | **+11.6** |
+| invsale_WOOL | +0.08 | **10,041.5** | **10,053.9** | **-12.4** |
+| invsale_MILK | **-0.184** | 10,050.9 | 10,056.3 | **-5.5** |
+| units_WOOL / units_MILK | ~0.00 | — | — | unchanged |
+| reward | +0.06 | 88,397 | 78,424 | +9,973 |
+| hires | +0.318 | 290 | 287 | +3 |
+| cow | -0.154 | 8 | 9 | -1 |
+
+Top teams get **2.8x the price per wool unit and 28% more per milk unit
+for the same volume sold**, and they sell at systematically lower market
+inventory. The direction matches 9r exactly, on a different question and
+a different slice of the data.
+
+**A real calibration bug, found here.** Section 9j's glut-deferral used a
+threshold of **10,500**. Actual market inventory only moves through
+roughly **10,040-10,060**, so that rule could never fire -- which is
+exactly what its 0/80 result showed, and the reason was a mis-scaled
+constant rather than an absent mechanism. `rl/sell_gate.py` now carries a
+test asserting the thresholds sit inside the measured band so this cannot
+regress.
+
+**But the rebuilt, correctly-calibrated gate still does not pay.** Holding
+gated sales while inventory is above the measured band, with cash, shed,
+terminal and patience guards, over 24 games against three opponents:
+
+| configuration | mean coins | floor | wins |
+| --- | ---: | ---: | ---: |
+| Candidate D, no gate | **128,970** | **96,086** | 16/24 |
+| gate WOOL>10046 + MILK>10052 | 121,950 | 86,846 | 16/24 |
+| gate WOOL only | 122,594 | 86,908 | 16/24 |
+| gate MILK only | **128,064** | 95,984 | 16/24 |
+| tighter thresholds | 121,985 | 86,843 | 16/24 |
+
+Wool gating is the damage (-6,376 on its own); milk gating is roughly
+neutral (-906). No configuration changed the win count at all.
+
+**Two honest readings, and I cannot yet separate them.**
+
+1. *The local benchmark cannot test this mechanism.* Frozen tape opponents
+   sell on a fixed script and never compete for market space, so waiting
+   for a quieter market cannot pay against them by construction. Section
+   9m established these panels mislead about live strength; this is
+   plausibly another instance.
+2. *The winners were never waiting.* Their milk may simply arrive at
+   quieter moments as a by-product of when animals were placed. Testing
+   that over 140 paired games: winners place cows earlier on median
+   (p=0.041) and their first sheep later (p=0.010), with cow and sheep
+   counts unchanged. Both are modest, and with seven comparisons in that
+   family neither clearly survives a multiple-comparison correction, so
+   this is a lead rather than a finding.
+
+**Standing conclusion.** The price-realisation edge is the best-evidenced
+thing this project has found about strong play -- it replicates across
+winner-versus-loser pairs, across rank bands, and its magnitude is
+independently predicted by the simulator's own pricing constants. It has
+so far resisted every attempt to convert it into a sell-side rule. The
+next test should be production-side (animal placement schedule) rather
+than sale-side, and it needs an evaluation that reactive opponents can
+participate in, because the tape panel cannot decide this question.
+
+`rl/sell_gate.py` is kept, tested and **not wired into any candidate**.
+
 ## 10. Candidate D: learned residual/Option selector
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
