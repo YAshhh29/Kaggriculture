@@ -2149,6 +2149,101 @@ bad.
 3. Stop investing in opening/setup tuning until something specific
    justifies it.
 
+### 9u. Town demand is random per game, observable, and barely exploited
+(2026-09-06)
+
+Every earlier section treated the market as a price curve. It is not --
+there is a demand engine underneath it that this project had never
+opened, and it is the largest unexploited edge found so far.
+
+**How demand actually works** (`_town_consume`, `kaggriculture.py`):
+
+* Every `townShopSellInterval` (4) steps, **each unlocked shop instance**
+  removes one unit of each product it sells. Shops selling a single
+  product remove **two** -- that is `YARN_STORE` (WOOL) and `PET_CAFE`
+  (CARROT).
+* Every `townCenterSellInterval` (24) steps the town centre removes one
+  unit of every product **except FERTILIZER**.
+* A shop unlocks every few days, **drawn at random with replacement**
+  from the eight types, capped at `MAX_SHOP_INSTANCES` = 8. Observed
+  unlock days: 3, 6, 9, 12, 15, 18, 21, 24.
+
+Two consequences follow immediately. Demand is **fully determined by
+`observation["town"]["unlocked_shops"]`**, so it can be computed exactly
+rather than estimated. And because the draw is random with replacement,
+**every game has a different demand profile** -- a game may unlock
+`YARN_STORE` twice and consume 4 wool per event, or never unlock it and
+consume wool only from the town centre.
+
+**The model reproduces reality.** Predicted total drain against measured
+drain over 60 games:
+
+| item | predicted | actual | ratio |
+| --- | ---: | ---: | ---: |
+| MELON | 30 | 30 | **1.00** |
+| WOOL | 390 | 384 | **0.99** |
+| MILK | 570 | 520 | 0.91 |
+| STRAWBERRY | 750 | 584 | 0.78 |
+| WHEAT | 930 | 570 | 0.61 |
+| FERTILIZER | 0 | 74 | — |
+
+It is exact where supply meets demand and predicted-above-actual where
+players simply do not grow enough to satisfy the town, which is the
+correct reading: predicted is demand *capacity*, actual is
+min(demand, supply). MELON matching at 1.00 is the sharpest confirmation
+-- melon appears in **no shop at all**, so its only demand is the town
+centre's 30 units, and that is exactly what drains. FERTILIZER is in no
+shop and not a town-centre product, so it has **zero** natural demand;
+every unit sold sits in the market permanently depressing its price.
+
+**The price consequences are enormous.** Splitting games by whether an
+item's shop demand is above or below median, and comparing its
+end-of-game price:
+
+| item | low-demand games | high-demand games | swing |
+| --- | ---: | ---: | ---: |
+| **WOOL** | 24.0 | **242.5** | **10x** |
+| **MILK** | 3.0 | **122.0** | **40x** |
+| STRAWBERRY | 41.0 | 192.0 | 4.7x |
+| TOMATO | 79.0 | 216.0 | 2.7x |
+| CARROT | 43.5 | 63.5 | 1.5x |
+| EGG | 59.0 | 69.0 | 1.2x |
+| WHEAT | 34.0 | 43.0 | 1.3x |
+
+Whether wool is worth 24 or 242 a unit is decided by a random draw the
+agent can *see*, from day 3 onward.
+
+**And the field barely responds.** Correlation between a game's demand
+for a product and how much of it that player produced, across 180
+player-games:
+
+| adaptation | correlation |
+| --- | ---: |
+| wool demand -> sheep bought | +0.388 |
+| milk demand -> cows bought | +0.194 |
+| **strawberry demand -> strawberry planted** | **+0.065** |
+
+Partial at best, and essentially absent for strawberry. Winners adapt
+harder than losers -- wool demand to sheep is **+0.497 for winners
+against +0.276 for losers** -- which is the first evidence in this file
+that *adapting to demand is itself a winning behaviour* rather than a
+theory. Milk demand alone correlates +0.322 with reward.
+
+**Why this matters more than anything in 9j-9t.** Every candidate this
+project has shipped -- A, B, C1, C2, D -- is a frozen tape or a fixed
+schedule. None of them can read `unlocked_shops`, so none can respond to
+a 10x swing in what their produce is worth. That is not a tuning gap, it
+is a structural one, and it is exactly the kind of edge a clone can never
+capture no matter which replay is cloned.
+
+**This is Agent E's core mechanism.** Read the unlocked shops, compute
+exact per-product demand, and steer production and sale priority toward
+what this particular town actually wants. The signal arrives by day 3 and
+is largely complete by day 15; wheat cycles in ~5 days and animals yield
+4-8 days after placement, so there is real time to act. Strawberry is the
+most attractive first target: its price swings 4.7x, and the field's
+adaptation to it is +0.065 -- effectively uncontested.
+
 ## 10. Candidate D: learned residual/Option selector
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
