@@ -1586,6 +1586,93 @@ non-economic signal, and sheep-over-cows reappears.
   and sells 229 milk. 9l's "ours" column should not be trusted; this
   section's live profile supersedes it.
 
+### 9n. Candidate D: the route chosen by search, not by rank (2026-09-05)
+
+Sections 9j-9m closed every other door. Residual mechanisms measured
+neutral or negative; the C1/C2 selector had a +2/80 ceiling; the
+hand-built reactive engine runs at half C1's economy and its fertilizer
+and feed knobs are inert in that configuration (measured this session:
+41,862 mean coins with the flags on, byte-identical to baseline, and
+2,642 when fertilizer sales are withheld -- holding fertilizer starves
+the cash the engine needs). What 9m left standing was the route itself,
+plus the warning that leaderboard rank does not imply a good tape.
+
+**Method.** Score tapes on *our own final reward*, not tape-panel win
+rate, because 9m showed the latter overstates live strength by ~40
+points while our own coin production is nearly self-determined. 191
+candidates -- every side of every cached replay from a team rated 2400+,
+on a game that team won -- ran under the exact Candidate C guard stack on
+fixed seeds. The best five then ran 48 games each across six seeds, both
+seats and four opponents (two mid-field clones, two elite tapes):
+
+| candidate | wins | mean coins | floor |
+| --- | ---: | ---: | ---: |
+| Giulio Ravasio ep105531280 | **38/48** | 108,472 | 51,094 |
+| Mater Welon ep105545969 | 28/48 | 112,794 | 53,645 |
+| peikopon ep105552428 | 32/48 | 107,097 | 49,999 |
+| Candidate C1 (fog flower) | 32/48 | 97,043 | 47,364 |
+| Andrew Reed ep105554550 | 36/48 | 87,440 | 43,542 |
+
+Coins and wins diverge sharply. Mater Welon's tape earns the most coins
+and still loses **0/12** to one opponent -- the failure mode a single
+frozen route can least afford. Episode 105531280 won on wins, mean coins
+and floor simultaneously, and stayed balanced across all four opponents
+(6/12, 12/12, 8/12, 12/12), strongest exactly where C1 is weakest (8/12
+against the Jesse Bullard tape against C1's 4/12).
+
+This is **not** the Giulio game Candidate C2 clones. C2 uses episode
+105144807; this is 105531280, a day newer. Many Giulio games were scored
+and only this one came out on top, which is itself evidence that tape
+quality is a property of the individual game, not of the player.
+
+**Where Candidate D stands against C1 -- honestly, it is a wash that
+favours D only against strong opposition.**
+
+| measurement | Candidate D | Candidate C1 |
+| --- | ---: | ---: |
+| finalist panel, incl. elite tapes (48 games) | **38/48** | 32/48 |
+| broad panel, 40 mid-field clones x 2 seats | 76/80 | 76/80 |
+| broad-panel mean coins | 103,216 | **106,768** |
+| broad-panel floor | **42,426** | 36,326 |
+| finalist-panel floor | **51,094** | 47,364 |
+| head-to-head, 16 games | 6W-10L | **10W-6L** |
+
+D loses the direct matchup with C1 and earns slightly fewer coins on the
+weak panel, but wins clearly against elite opposition and has a better
+worst case on both panels (+17% and +8%). Against C2 it is unambiguous:
+**12W-4L head-to-head, mean margin +5,998**, and ahead on every panel
+metric.
+
+**So the justified action is to replace C2, not C1.** D is better than C2
+on every measurement taken. It is not established as better than C1, and
+this file should not claim it is. Per 9m none of these tape-panel numbers
+is a live forecast; the transferable part is the floor improvement and
+the elite-panel margin.
+
+**Build and gates.** `rl/candidate_d.py` wraps
+`agents/experimental_distilled_elite_giulio2_agent.py` (model
+`models/v1327-public-elite-giulio2-105531280.json`, hashes verified by
+`tools/data/build_elite_model.py`) in Candidate A's guards and Candidate
+B's residuals -- deliberately the same wrapping as C, so the comparison
+isolates the route. Packaging is
+`tools/packaging/prepare_candidate_d_submission.py`. Gates run:
+
+- source/package/simulator equivalence **1438/1438 decisions, 0
+  mismatches**;
+- 20 real games driven through Kaggle's actual `get_last_callable`
+  extraction path, **20/20 DONE, 0 errors**, mean reward 111,168 -- the
+  check that section 9h's upload failure would have tripped;
+- full suite **527 tests, OK**;
+- 5 packaging tests including the loader-order regression and a new
+  assertion that the embedded payload is namespaced.
+
+One real packaging defect was caught and fixed while building: appending
+a second distilled clone verbatim rebinds `MODEL_PAYLOAD`,
+`CALENDAR_ACTIONS` and `_load_actions`, so the bundled calendar's own
+`decide` would silently execute this route's tape. Inert for D, which
+never selects that route, but the same class of quiet aliasing as 9h, so
+the clone's module-level names are now namespaced.
+
 ## 10. Candidate D: learned residual/Option selector
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.

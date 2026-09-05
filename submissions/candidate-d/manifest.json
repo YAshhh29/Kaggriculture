@@ -1,0 +1,36 @@
+{
+  "created_at": "2026-09-05T01:31:18.417361+00:00",
+  "competition": "kaggriculture",
+  "agent": "main.py",
+  "sha256": "2309050e6db9ef42691d762643bbcd814346c5fd9ba1d0b654544515e5a00dd1",
+  "combined_source_sha256": "db0ebd60eb2261978a852ce454c32d33bfde0e6f3fce14279985bee61d4ddd81",
+  "parent_submission": {
+    "note": "built on the Candidate B package",
+    "source_files": [
+      "submissions/candidate-b/main.py (parent)"
+    ]
+  },
+  "source_files": [
+    "submissions/candidate-b/main.py (parent)",
+    "agents/experimental_distilled_elite_giulio2_agent.py",
+    "models/v1327-public-elite-giulio2-105531280.json",
+    "rl/candidate_d.py"
+  ],
+  "policy": "Candidate A's guarded recovery and live terminal liquidation, plus Candidate B's market-timing residuals (land priority off), over the physical route that won a systematic search. 191 candidate tapes -- every side of every cached replay from a team rated 2400+, on a game that team won -- were scored on our own final reward under this exact stack; the best five then ran 48 games each over six seeds, both seats and four opponents. Episode 105531280 (Giulio Ravasio, LB 2908.0) won on wins, mean coins and floor at once. This is a different game from Candidate C2's Giulio clone (episode 105144807).",
+  "training_data": {
+    "source_episode_id": 105531280,
+    "source_team": "Giulio Ravasio",
+    "source_context": "Giulio Ravasio (public leaderboard 2908.0 at capture, rank 6) winning side of a 2026-09-04 top-table game; selected as the highest-scoring of 191 candidate tapes on wins, mean coins and floor",
+    "actions_sha256": "7bcc4069562a04ead1b954fa036eaeae51fe3ef3b376b70f7aecd16266de0805"
+  },
+  "validation": {
+    "finalist_panel": {
+      "games": "48 per candidate (6 seeds x 2 seats x 4 opponents)",
+      "candidate_d": "38/48 wins, mean 108472, floor 51094",
+      "candidate_c1": "32/48 wins, mean 97043, floor 47364",
+      "per_opponent": "6/12, 12/12, 8/12, 12/12 (no collapse)"
+    },
+    "search": "191 tapes scored on own final reward",
+    "caveat": "rl/GOAL.md section 9m: win rate against frozen tapes overstates live strength by roughly forty points. Own-reward improvement (+12% mean, +8% floor over C1) is the transferable part of this result; the win-rate figures are not a live forecast."
+  }
+}
