@@ -1870,6 +1870,75 @@ full test suite.
 active and does not allow choosing, so the ordering matters: C1 must be
 re-submitted *before* D so that D's upload displaces C2 rather than C1.
 
+### 9q. Why cloning is capped, and what Agent E must actually fix
+(2026-09-05)
+
+**The clone ceiling, stated plainly.** We cloned "fog flower" at public
+score 2882 and the resulting agent settled at **2094.7** live. A frozen
+tape discards whatever reactivity earned the source its score, and
+section 9m measured the size of that loss from the other direction: tapes
+are roughly forty points weaker than the agents they came from, and the
+world #1's tape wins 6 of 24 locally. Every tape-panel number in sections
+9n-9p, including Candidate D's 64.1%, is measured against *tapes* and so
+does **not** establish that D beats live top-500 agents.
+
+The consequence is arithmetic. To reach the top ten by cloning we would
+need a source around 3700, and the ladder's best is 3021. **Cloning cannot
+pass ~2100 for us, which is exactly where C1 and D both sit.** Candidate D
+is a lateral move from C1, not a climb, and this file should not be read
+as claiming otherwise. Cloning is also commodity: anyone can pull the same
+replays, and three tapes in the 9p re-screen turned out to be one shared
+public agent running under two team names.
+
+**So Agent E must be our own policy.** Not a copy of one player, but a
+strategy specification distilled from what *many* winners do, executed by
+our own agent.
+
+**The blocker is execution, not strategy.** Profiled the tape route
+against the best reactive engine configuration, identical seeds and
+opponent, three games each:
+
+| metric | tape | reactive engine | gap |
+| --- | ---: | ---: | ---: |
+| reward | 113,550 | 45,101 | -68,449 |
+| task turns | 3,494 | 1,956 | -1,538 |
+| move turns | 3,272 | 4,522 | +1,250 |
+| idle turns | 322 | 985 | +663 |
+| water | 1,231 | 590 | -640 |
+| care | 415 | 179 | -236 |
+| harvest | 450 | 238 | -212 |
+| units sold | 2,140 | 720 | -1,420 |
+| **revenue per unit sold** | **91.1** | **88.5** | **~equal** |
+| **task share of turns** | **0.493** | **0.262** | — |
+
+The engine realises essentially the same price per unit as the tape, so
+its market policy and product mix are not the problem -- consistent with
+sections 9j-9o, where every market-side intervention measured neutral or
+negative. What it does is **44% less work**: it burns 1,250 more turns
+walking and 663 more idling, and ends with 14 tiles in use against 21.
+
+**Therefore Agent E's core problem is task assignment and routing**, not
+strategy discovery. Raising task share from 0.262 toward 0.49 is worth
+roughly a doubling of output on its own, and it is a well-posed
+engineering problem rather than an open-ended search. The strategy
+specification to execute is already measured and recorded: sections 9l
+(market absorption per product, and the scarce tomato/carrot/egg markets),
+9m (live-validated winner traits: more task turns, grow your own feed
+rather than round-tripping wheat, sheep over cows), and 9o (three
+quadrants, weeds already solved, watering already saturated in a good
+route).
+
+**Planned order for E**, so it is falsifiable at each step rather than a
+single large bet:
+
+1. Localise the lost turns precisely -- travel distance per completed
+   task, and the reason each idle turn had no assignment.
+2. Fix assignment/routing until task share approaches the tape's, scored
+   on own final reward across fixed seeds.
+3. Only then apply the 9l/9m strategy specification on top.
+4. Gate against live-like opposition, and never again quote a tape-panel
+   win rate as evidence of live strength.
+
 ## 10. Candidate D: learned residual/Option selector
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
