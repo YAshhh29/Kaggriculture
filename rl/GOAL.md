@@ -1939,6 +1939,90 @@ single large bet:
 4. Gate against live-like opposition, and never again quote a tape-panel
    win rate as evidence of live strength.
 
+### 9r. What actually separates winners, learned from 120 paired games
+(2026-09-05)
+
+Agent E needs a real edge, not a copied route. This section looks for one
+in the games of the strong players themselves, contrasting winner against
+loser **inside the same game** so seed, market and opponent are held
+fixed. Three findings, one of them the first significant behavioural
+differentiator this project has found.
+
+**1. The marginal-value model does not discriminate. (Falsified.)**
+`rl/economics.py` prices each action in coins from the simulator's own
+constants. Scoring every action both players actually took, across 70
+paired games:
+
+| metric | winner | loser | winner higher | p |
+| --- | ---: | ---: | ---: | ---: |
+| modelled action value | 90,918 | 92,186 | 54.3% | 0.47 |
+| value per action | 37.3 | 39.1 | 52.9% | 0.63 |
+| productive actions taken | 2,440 | 2,438 | 55.1% | 0.40 |
+
+Losers' actions score marginally *higher*. The model is not wrong as a
+description of what an action is worth -- it is simply not what separates
+these players. Recorded as a falsification so it is not silently reused
+as a ranking signal.
+
+**2. Throughput separates us from the field, not winners from losers.**
+Winners and losers perform 2,440 against 2,438 productive actions -- a
+dead heat. Section 9q measured our reactive engine at 1,956 against a
+tape's 3,494, so throughput is what stands between *our* agent and real
+players, and it remains worth fixing. But it will not win games once we
+get there, and section 9q should be read with that qualification.
+
+**3. Winners get paid more for identical output. (Significant.)**
+Across 90 paired games:
+
+| metric | winner | loser | winner higher | p |
+| --- | ---: | ---: | ---: | ---: |
+| units sold | 1,755 | 1,760 | 51.7% | 0.75 |
+| **mean price per unit** | **68.52** | **64.21** | **61.1%** | **0.035** |
+| MILK price realised | 58.8 | 55.1 | 61/89 | **0.0005** |
+| wheat units sold | 373 | 404 | winners sell less | **0.031** |
+
+Same production, same volume, better price. The wheat result independently
+reproduces section 9m's live-game finding that winners grow their own feed
+rather than round-tripping it.
+
+**The mechanism, and it checks out quantitatively.** Milk sale *timing*
+explains nothing -- across 120 paired games the volume-weighted sale step
+is identical (494.7 against 494.7), as are first-sale step, spread and
+burstiness. What differs is the state of the shared market at the moment
+of sale:
+
+| MILK, 120 paired games | winner | loser | p |
+| --- | ---: | ---: | ---: |
+| price realised | 60.9 | 55.1 | **0.0045** |
+| **market inventory when selling** | **10,047.6** | **10,050.2** | **0.0004** |
+| units sold | 271.5 | 275.0 | 0.71 |
+
+Winners sell milk into a **less saturated market**. The inventory gap is
+only ~2.6 units, but milk's price moves 2.098 coins per unit of deviation
+from equilibrium (base 160, T 122, linear glut response, target 1.60), so
+2.6 x 2.098 = 5.5 coins per unit -- against an observed price gap of 5.8.
+Mechanism and magnitude agree from independent directions, which is the
+strongest evidence in this file that the effect is real rather than a
+coincidence of the sample.
+
+It is also milk-specific: wool (p=0.16) and strawberry (p=0.78) show
+nothing, exactly as expected, because milk has the steepest price
+sensitivity of the high-volume goods.
+
+**What this gives Agent E.** A concrete, cheap, market-side rule --
+condition milk sales on `observation["market"]["inventory"]["MILK"]`
+rather than selling blind. It costs no worker turns, so it cannot harm
+throughput, and it targets the one behaviour that measurably separates
+winners from losers among strong players.
+
+Two cautions carried forward. Section 9j's price-floor throttle, which
+withheld sales on a *price* threshold with cash and shed guards, cost
+12-16k coins -- withholding must never starve the logistics that clear
+the shed and fund feed. And that experiment was scored against frozen
+tape opponents, which cannot compete for market space the way a live
+opponent does, so it does not settle the inventory-conditioned rule
+proposed here.
+
 ## 10. Candidate D: learned residual/Option selector
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
