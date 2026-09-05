@@ -1673,6 +1673,119 @@ a second distilled clone verbatim rebinds `MODEL_PAYLOAD`,
 never selects that route, but the same class of quiet aliasing as 9h, so
 the clone's module-level names are now namespaced.
 
+### 9o. Candidate D validated against the real top 500 (2026-09-05)
+
+Section 9n could not claim D was better than C1: it won the elite-tape
+panel but lost their head-to-head 6-10. This section settles it on a
+panel that actually matters, and answers four open questions with
+measurement.
+
+**Top-500 tournament.** 92 distinct opponents built from cached replays
+of teams ranked 1-470 (37 of them top-50), each team's best winning side,
+both seats, 184 games per agent -- 552 games total:
+
+| agent | overall | vs top 50 | vs 51-150 | vs 151-500 | mean coins | floor |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| **D** | **108/184 (58.7%)** | **50/74 (67.6%)** | 18/44 | 40/66 | 86,859 | 47,689 |
+| C1 | 103/184 (56.0%) | 38/74 (51.4%) | 19/44 | 46/66 | 85,811 | 35,703 |
+| C2 | 81/184 (44.0%) | 36/74 (48.6%) | 17/44 | 28/66 | 85,929 | 50,966 |
+
+D > C1 > C2, and the margin is concentrated exactly where it matters:
+**against the strongest fifty teams D wins 67.6% where C1 wins 51.4%**,
+twelve more wins in 74. C1 is the better farmer of *weak* opposition
+(151-500: 69.7% against D's 60.6%), which is what the old mid-field panel
+was measuring and why it scored them equal. D's floor is also 34% higher.
+The 9n head-to-head loss does not generalise: one frozen tape against
+another is a single matchup, not a ladder.
+
+Note the win rates here (44-59%) sit far closer to our real live 55%
+(section 9m) than the 92-95% the mid-field clone panel produced. A panel
+built from top-500 opponents is the first local benchmark in this project
+whose numbers are in the same range as reality.
+
+**The fourth quadrant, settled.** 1,290 player-games across the whole
+ladder:
+
+| rank band | 3 quadrants | 4 quadrants |
+| --- | ---: | ---: |
+| top 50 | 99.0% | 1.0% |
+| 51-150 | 100% | 0% |
+| 151-500 | 100% | 0% |
+| 501-2000 | 95.7% | 0.6% |
+
+Outcome by quadrant count: 3 quadrants n=1,255, **51.2% win rate**;
+4 quadrants n=12, **8.3% win rate**. The only highly-ranked player who
+ever buys the fourth is Jesse Bullard (rank 3), who went **1-4** in those
+games. The cause is market absorption, not land: milk's price collapses
+after 39 units and we already sell past that, so a fourth field produces
+goods worth ~1 coin while consuming the hand-hours that grow melon and
+wheat. Three quadrants stays, and this is no longer a 7-sample inference.
+
+**The watering and feed-loop claims, implemented and measured.**
+`rl/idle_work.py` converts a route's `PASS` turns into FERTILIZE, WATER
+or shed PICKUP, firing only where the wrapped route already idled, so it
+cannot displace an action or desynchronise a tape. Over six seeds on D:
+
+| variant | mean coins |
+| --- | ---: |
+| D baseline | 98,827 |
+| D + idle water only | **98,827 (exactly zero)** |
+| D + idle fertilize + restock | 99,092 (**+265, +0.27%**) |
+
+Watering gains **nothing** -- the route already issues ~1,043 waters a
+game and only ~27 idle turns land on a dry in-window plant. The fertilizer
+loop is real but tiny: the route collects ~372 fertilizer and applies only
+~74, yet capturing the rest needs a worker holding fertilizer *while*
+idling on a fertilizable tile, which happens ~13 times a game even with a
+shed-restock rule. The mechanics are sound (a fertilized plant gains 2
+yield per watering instead of 1) but the tape leaves no room to exercise
+them. Kept in the tree, tested, **not wired into Candidate D** -- 0.27% is
+not worth the risk surface.
+
+**Weeds are not a problem.** Measured over three seeds per agent: mean
+weeds on the board **0.40 tiles (C1) / 0.42 (D)** out of 75, peak 6-8,
+handled by ~36-38 DIGs a game. There is nothing to win here.
+
+**Wheat round-trip, quantified.** D sells 397 wheat at a mean of 31.5 and
+buys 182 back for feed at a mean of 34.4 -- a real self-inflicted loss of
+**~528 coins a game**, and the only lever found that costs zero worker
+turns. Worth fixing, worth ~0.5%.
+
+**The public notebooks are not a source of strength.** Kaggle notebook
+pages cannot be read by fetching them (JS-rendered), but
+`kaggle kernels pull` retrieves their source directly -- a capability
+this project wrongly assumed unavailable for several sections. Pulling
+six requested notebooks:
+
+| notebook | rank | score | what the code actually is |
+| --- | ---: | ---: | --- |
+| avioon / apex-v7-god-emperor | 304 | 2379.1 | ctypes shim around a compiled `agent.so`; strategy opaque |
+| boatlee / v21 route portfolio | 810 | 1950.7 | 0 functions; a 166KB base64+zlib tape |
+| foysalemonshanto | 1201 | 1694.8 | 0 functions; embedded blob |
+| llccqq624 | 1380 | 1596.6 | 0 functions; embedded blob |
+| dianatofficial | 2263 | 1311.0 | EDA writeup |
+| mansiaggarwal88 | 7405 | 147.7 | EDA writeup |
+
+**Five of the six rank below our own 677 / 2071.3.** Cloning them would
+move us down. The most-cited "route portfolio" notebook is itself just an
+embedded tape, exactly like ours. The genuine top (keiz 3021, Crop Dusta
+3011) publish nothing at all -- they expose only replays, which is what
+the section 9n search already mines.
+
+**On PPO, accurately.** This file never claimed PPO would settle
+anything; section 10 says the opposite -- *"Do not train a
+primitive-action PPO policy. Public evidence shows full-action PPO/BC
+often stalls around 40k-80k terminal cash and fails to generalize."*
+Residual PPO over Options appears only under "Online RL", gated behind
+*"Only after free-running BC beats the deterministic selector"*, which
+requires an Option-labelling harness and a BC model that do not exist.
+Two later measurements make that gate look worse, not better: section 9k
+found a perfect route selector is worth **+2 games in 80**, so PPO
+optimising Option choice is optimising against an almost-flat ceiling;
+and the best public PPO result cited in `PUBLIC_META_AUDIT.md` reached
+~80k terminal cash, which is **below** the ~103k our current route
+already produces. PPO is not the missing piece here.
+
 ## 10. Candidate D: learned residual/Option selector
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
