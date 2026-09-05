@@ -2098,6 +2098,57 @@ participate in, because the tape panel cannot decide this question.
 
 `rl/sell_gate.py` is kept, tested and **not wired into any candidate**.
 
+### 9t. Games are decided late, and by very little (2026-09-06)
+
+Money is observable every step, so the winner's lead can simply be
+watched rather than reconstructed from prices and costs. Across 140
+paired games, tracking `farms[player].money` for winner and loser:
+
+| step | median winner lead | share of final margin | eventual winner ahead |
+| ---: | ---: | ---: | ---: |
+| 72 | 0 | 0.0% | **40.0%** |
+| 144 | 0 | 0.0% | 41.4% |
+| 216 | 12 | 0.2% | 56.4% |
+| 360 | 120 | **2.5%** | 56.4% |
+| 432 | 1,224 | 25.3% | 63.6% |
+| 504 | 1,986 | 41.0% | 72.1% |
+| 576 | 2,657 | 54.8% | 75.7% |
+| 648 | 3,978 | **82.1%** | 87.9% |
+| 719 | 4,845 | 100% | 100% |
+
+**Two facts that should govern where effort goes.**
+
+*The game is decided in its second half.* At the halfway mark the eventual
+winner is ahead by 2.5% of the margin they will finish with, and in the
+opening they are behind more often than not -- at step 72 the eventual
+winner leads in only 40% of games. About 97.5% of the final margin forms
+after halfway and roughly three quarters of it in the final third. Opening
+and setup optimisation therefore has very little leverage, which
+retrospectively explains why the animal-placement leads in 9s were so
+weak: they are early-game decisions in a late-game contest.
+
+*The margin is small.* The median winning margin is **4,845 coins against
+rewards near 85,000** -- games are decided by about 5.7% of final money.
+
+**This recalibrates every result in sections 9j-9s.** An edge worth ~1,500
+coins is not marginal here, it is about a third of a typical winning
+margin: the milk price effect in 9r (5.8 coins/unit across ~271 units,
+~1,570 coins) is materially sized after all. Equally, the sell gate's
+-7,000 in 9s was not a small regression but roughly 1.4 entire winning
+margins of self-inflicted damage, which is why it read as so decisively
+bad.
+
+**Consequences for Agent E.**
+
+1. Spend effort on steps ~430-719. That window contains three quarters of
+   the decided margin, and it is wider than Candidate A's terminal
+   liquidation window (700+), so most of it is currently unmanaged.
+2. Judge candidate mechanisms against the 4,845-coin yardstick rather than
+   against total reward. A change worth 1,000-2,000 coins is a real
+   contender; one costing 7,000 is disqualifying.
+3. Stop investing in opening/setup tuning until something specific
+   justifies it.
+
 ## 10. Candidate D: learned residual/Option selector
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
