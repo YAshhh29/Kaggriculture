@@ -126,7 +126,14 @@ def water_value(
     age = day - planted
     start = (spec["max_day"] + 1) // 2
     if age < start or age > spec["max_day"]:
-        # Outside the window watering only prevents weed death.
+        # Outside the window watering adds no yield; it only prevents the
+        # weed death that follows two missed days.
+        #
+        # Pricing this rescue at the plant's *whole* remaining crop was
+        # tried and collapsed the agent to zero reward: the rescue value
+        # then dwarfed every harvest, so workers watered all game and never
+        # banked anything. Job values in a greedy scheduler have to stay
+        # commensurable, so this stays deliberately small.
         at_risk = int(tile.get("consecutive_unwatered", 0)) >= 1
         return price * 0.5 if at_risk else 0.0
     held = int(tile.get("yield_units", 0))

@@ -38,6 +38,8 @@ from rl.runtime import AgentAction, Baseline, clone_action
 
 SWAPPABLE = ("COW", "SHEEP")
 DECISION_DEADLINE_STEP = 240  # ~day 10; after this the herd is committed
+ANIMAL_COST = {"COW": 400, "SHEEP": 500, "GOOSE": 300}
+CASH_BUFFER = 1_200.0
 
 
 class HerdSwapState:
@@ -91,14 +93,33 @@ def apply_herd_swap(
     other = "SHEEP" if target == "COW" else "COW"
     market = [list(o) for o in action["market"]]
     swapped_purchase = False
+
+    # Cash coupling is what killed the first version: a tape's purchase
+    # schedule is tuned to its own cash trajectory with no slack, so
+    # substituting a dearer animal makes a later purchase fail outright and
+    # strands the pasture empty for the rest of the game. Swapping toward
+    # the cheaper animal frees cash and is always safe; swapping toward the
+    # dearer one is only allowed with a real buffer behind it.
+    player = int(observation.get("player", 0))
+    farms = observation.get("farms") or []
+    money = (
+        float(farms[player].get("money", 0.0))
+        if player < len(farms) and isinstance(farms[player], dict)
+        else 0.0
+    )
     for order in market:
-        if (
+        if not (
             len(order) >= 3
             and order[0] == "BUY_ANIMAL"
             and str(order[1]) == other
         ):
-            order[1] = target
-            swapped_purchase = True
+            continue
+        quantity = int(order[2])
+        extra = (ANIMAL_COST[target] - ANIMAL_COST[other]) * quantity
+        if extra > 0 and money < ANIMAL_COST[target] * quantity + CASH_BUFFER:
+            continue
+        order[1] = target
+        swapped_purchase = True
 
     # A bought animal lands in the SHED, not in a worker's hands, so the
     # tape's route is buy -> PICKUP -> PLACE. Rewriting only the purchase

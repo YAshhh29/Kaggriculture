@@ -2325,6 +2325,58 @@ built and tested (`rl/demand.py`, 15 tests) and is the piece worth
 keeping; `rl/herd_swap.py` is retained as the evidence for this section
 and is wired into nothing.
 
+### 9w. Candidate E, first build: a working skeleton, not a contender
+(2026-09-06)
+
+Section 9v concluded E must generate its own actions. This is that build,
+reported honestly: it plays complete legal games and it adapts to demand,
+but it earns **1,153 coins against Candidate D's 107,115** on the same
+seeds and opponent. It is a foundation, not a submission, and D remains
+the agent to ship.
+
+**What is built and works.**
+
+* `rl/economics.py` (27 tests) prices any job in coins from the
+  simulator's own constants.
+* `rl/demand.py` (15 tests) computes exact per-product town demand from
+  `unlocked_shops`, and picks the herd this town actually rewards.
+* `rl/candidate_e.py` schedules every worker each turn by coins per turn
+  including travel, and generates its own market orders. It completes
+  720-step games with zero errors in both seats, buys land, hires, plants,
+  waters, harvests and banks goods.
+
+**What does not work, and why it is instructive.** A pure greedy
+marginal-value scheduler turned out to be unstable, collapsing into a
+different degenerate mode after each fix:
+
+| version | behaviour | reward |
+| --- | --- | ---: |
+| first build | goods harvested but never banked -- `DROP` was only a fallback, so nothing reached the shed to be sold | 1,685 |
+| after adding DROP/PICKUP as scored jobs | 327 pickups against 323 drops -- a worker banked fertilizer, then immediately valued picking it back up | 208 |
+| after excluding working stock from bankable value | ran out of seeds, 1,559 idle turns | 4,058 |
+| after buying seeds wide | built 14 pastures it could not stock, spending the purse that should have bought land and animals | 395 |
+| after gating pens on affordability | stable, but the herd never starts | 1,153 |
+| after pricing a rescue watering at the plant's whole remaining crop | watered all game, banked nothing | **0** |
+
+The last one is the general lesson and is now a comment in
+`rl/economics.py`: **job values in a greedy scheduler have to stay
+commensurable.** A rescue priced at "the entire remaining plant" dwarfs
+every harvest priced at "the units currently in hand", so the agent
+becomes monomaniacal and stops finishing the loop that turns crops into
+money. Greedy value maximisation needs either normalised values or an
+explicit planner that reserves capacity per job class; that is the next
+architectural step, not more constant-tuning.
+
+**Why this was still worth doing.** The two libraries are the durable
+part and both are measured, not guessed. And the failure modes above are
+exactly the couplings section 9v predicted -- cash, shed capacity, working
+stock, and pen-versus-animal ordering -- now demonstrated from the inside
+of an agent that owns its actions rather than from outside a tape.
+
+**Status: E is not a candidate.** It is committed, tested and wired into
+no submission. Candidate D (episode 105520725) is live and unchanged, and
+its seven pre-flight gates still pass.
+
 ## 10. Candidate D: learned residual/Option selector
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
