@@ -68,7 +68,7 @@ from rl.runtime import AgentAction
 PASS: list[str] = ["PASS"]
 BOARD = 10
 MELON_CAP = 12
-TARGET_HANDS = 9
+TARGET_HANDS = 11
 TARGET_PASTURES = 14
 LAND_SURPLUS = 300.0
 LAND_OPEN_TRIGGER = 6
@@ -77,7 +77,7 @@ HERD_FORCE: str | None = None
 MIXED_CAP: int | None = None
 RANKING_MODE = "payback"
 TRAVEL_MODE = "square"
-TRAVEL_EXPONENT = 2.5
+TRAVEL_EXPONENT = 3.0
 TURN_COST = 30.0
 WHEAT_HOARD_CAP = 24
 WHEAT_UNITS_PER_TILE_DAY = 0.6
@@ -93,6 +93,10 @@ SEED_SPEND_SHARE = 0.15
 EMERGENCY_FEED_FLOOR = 600.0
 WHEAT_TILE_CAP = 22
 FEED_RESERVE_PER_ANIMAL = 4
+HERD_CREW = 0
+FERTILIZER_HOLD_CAP = 0
+OPENING_LAND_DAY = 1
+OPENING_LAND_RESERVE = 900.0
 
 
 # --------------------------------------------------------------------------
@@ -630,6 +634,7 @@ def _market_orders(
     ranking: list[str],
     starving: int = 0,
     herd_worth: float = 0.0,
+    fertilizable: int = 0,
 ) -> list[list[Any]]:
     """Spend in a fixed priority order out of one running budget.
 
@@ -688,18 +693,20 @@ def _market_orders(
     wheat_needed = 0 if closing else min(
         animals_on_farm * FEED_RESERVE_PER_ANIMAL, WHEAT_HOARD_CAP
     )
-    # Holding fertilizer back to spread on the fields was tried and cost
-    # about 12,000 coins a game. On paper it should win -- a unit fetches
-    # 36 to 53 on the market against roughly 129 in extra wheat -- but this
-    # agent is capital-starved for the first three weeks, and the cash the
-    # held stock did not raise was cash it could not spend on animals. The
-    # herd fell from 11.4 head to 3.8. Sell it.
+    # Fertilizer doubles what every watering adds for three days, so a
+    # unit spread on wheat is worth about three extra units at wheat's
+    # realised price against 36-53 sold. Holding it back was tried once
+    # before and cost 12,000 coins, but that was a capital-starved agent
+    # that needed the cash for animals; this one is not the same agent.
+    fertilizer_needed = 0 if closing else min(fertilizable, FERTILIZER_HOLD_CAP)
     for item, quantity in sorted(shed.items()):
         if quantity <= 0 or item in ("COW", "SHEEP", "GOOSE"):
             continue
         sellable = quantity
         if item == "WHEAT":
             sellable = max(0, quantity - wheat_needed)
+        elif item == "FERTILIZER":
+            sellable = max(0, quantity - fertilizer_needed)
         if sellable > 0:
             orders.append(["SELL", item, sellable])
             budget += live_price(observation, item) * sellable
@@ -740,12 +747,30 @@ def _market_orders(
     unlocked = len(farm.get("unlocked_quadrants") or [])
     land_price = {1: 1000, 2: 2000}.get(unlocked)
     used = plants + empty_pasture + animals_on_farm
+    # The opening quadrant is 25 tiles, of which the pens take six, so a
+    # crew of ten has nineteen crop tiles to work for the first third of
+    # the game -- and it shows: 95 to 144 idle worker-turns a day through
+    # day eleven, because there is genuinely nothing left to do. The second
+    # quadrant costs 1,000 out of a 3,000 opening and doubles the board.
+    # Waiting to earn it the slow way means never earning it, because the
+    # farm that would earn it is the one being bought.
+    opening = (
+        unlocked < 3
+        and land_price is not None
+        and day <= OPENING_LAND_DAY
+        and budget >= land_price + OPENING_LAND_RESERVE
+    )
     if (
         unlocked < 3
         and land_price
-        and budget >= land_price + LAND_SURPLUS
-        and open_ground <= LAND_OPEN_TRIGGER
-        and used >= 18 * unlocked
+        and (
+            opening
+            or (
+                budget >= land_price + LAND_SURPLUS
+                and open_ground <= LAND_OPEN_TRIGGER
+                and used >= 18 * unlocked
+            )
+        )
     ):
         orders.append(["BUY_LAND"])
         budget -= land_price
@@ -894,6 +919,19 @@ def decide(observation: dict[str, Any]) -> AgentAction:
         and day <= LAST_DAY - ANIMALS[herd]["first"] - 2
     ):
         pen_kind = str(ANIMALS[herd]["structure"])
+    # An animal already paid for and sitting in the shed with nowhere to
+    # stand is the worst thing on the farm: it cost 300 to 500 coins and it
+    # earns nothing at all. This happened whenever the herd plan changed
+    # its mind -- pens were raised as pastures, the plan later preferred
+    # geese, and five geese sat in the shed from day 21 to the end of the
+    # game. Whatever is in the shed gets a pen of its own kind first.
+    for name in LIVESTOCK:
+        if int(shed.get(name, 0)) <= 0:
+            continue
+        structure = str(ANIMALS[name]["structure"])
+        if empty_pens.get(structure, 0) <= 0:
+            pen_kind = structure
+            break
 
     fertilizable = sum(
         1
@@ -988,6 +1026,67 @@ def decide(observation: dict[str, Any]) -> AgentAction:
         claimed.add(target)
         unassigned.discard(worker)
 
+    # ---- the herd crew -------------------------------------------------
+    # Animals are the densest work on the farm and the only work that
+    # renews itself every single day without being asked: the simulator
+    # sets `fertilizer_available` on every surviving animal at each daily
+    # refresh, fed or not, so a seventeen-head herd is 374 free units a
+    # season. E was collecting 51 a game against a good route's 453.
+    #
+    # It is not that the jobs are undervalued -- it is that they are far.
+    # The square-of-distance discount that keeps waterers local also stops
+    # anyone crossing the farm to a pasture. Relaxing that discount for
+    # herd work was measured and cost 9,000 coins, because it pulled the
+    # whole crew off the fields; a plant missed twice is a weed. So instead
+    # a couple of hands are taken off the auction entirely and given the
+    # pasture round as their job, which is how a person would run it.
+    herd_jobs: list[tuple[int, int]] = []
+    for y in range(len(tiles)):
+        for x in range(len(tiles[y])):
+            if (x, y) in claimed or not _owned(tiles, x, y):
+                continue
+            tile = tiles[y][x]
+            if not (isinstance(tile, dict) and "animal" in tile):
+                continue
+            if (
+                tile.get("fertilizer_available")
+                or int(tile.get("yield_units", 0)) > 0
+                or not tile.get("cared_today")
+            ):
+                herd_jobs.append((x, y))
+
+    for _ in range(min(HERD_CREW, len(unassigned), len(herd_jobs))):
+        best: tuple[float, int, tuple[int, int]] | None = None
+        for worker in unassigned:
+            for target in herd_jobs:
+                gap = distance(positions[worker], target)
+                if best is None or gap < best[0]:
+                    best = (gap, worker, target)
+        if best is None:
+            break
+        _, worker, target = best
+        x, y = target
+        tile = tiles[y][x]
+        inventory = _inventory(observation, worker)
+        if tile.get("fertilizer_available"):
+            job = ["COLLECT_FERTILIZER"]
+        elif int(tile.get("yield_units", 0)) > 0:
+            job = ["HARVEST"]
+        elif not tile.get("cared_today"):
+            job = ["CARE"]
+        elif not tile.get("fed_today") and int(inventory.get("WHEAT", 0)) > 0:
+            job = ["FEED"]
+        else:
+            job = ["CARE"]
+        position = positions[worker]
+        actions[worker] = (
+            list(job) if position == target
+            else step_toward(position, target, list(job))
+        )
+        claimed.add(target)
+        unassigned.discard(worker)
+        herd_jobs.remove(target)
+
     for worker in sorted(unassigned):
         position = positions[worker]
         inventory = _inventory(observation, worker)
@@ -1055,7 +1154,8 @@ def decide(observation: dict[str, Any]) -> AgentAction:
         "farmer": actions[0],
         "hands": actions[1:],
         "market": _market_orders(
-            observation, day, herd, ranking, starving, herd_worth
+            observation, day, herd, ranking, starving, herd_worth,
+            fertilizable,
         ),
     }
 
