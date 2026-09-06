@@ -26,6 +26,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from rl.market import marginal_price
+
 
 # --- simulator constants (kaggriculture.py) -------------------------------
 
@@ -217,15 +219,41 @@ def harvest_value(
 
     if day is None:
         return price * units
-    age = day - int(tile.get("planted_day", day))
-    still_growing = age < spec["max_day"] and units < spec["max_yield"]
-    if not still_growing:
+
+    # The simulator refuses HARVEST outright before the crop's first yield
+    # day, and a refused action still costs the worker its turn. Melon
+    # starts accumulating units at age six but cannot be picked until age
+    # ten, so a scheduler that does not know this parks a worker on a melon
+    # and has it harvest thin air every turn for four days -- 659 wasted
+    # worker-turns in one measured game.
+    planted = int(tile.get("planted_day", day))
+    if day - planted < spec["first"]:
+        return 0.0
+
+    headroom = spec["max_yield"] - units
+    if headroom <= 0:
         return price * units
-    # Waiting is only worth it if the season allows the remaining growth.
-    days_to_full = spec["max_day"] - age
-    if days_left(day) <= days_to_full:
+
+    # Count the waterings this plant can still take, today's included.
+    # Getting that count wrong by one is expensive: on the last day of a
+    # crop's window an unwatered plant offered HARVEST at price * units and
+    # WATER at price * units, an exact tie, and the scheduler took the
+    # harvest -- so every single carrot in a game was picked holding one
+    # unit of a possible four. Watering first and picking tomorrow is
+    # strictly better, and this is the number that says so.
+    age = day - planted
+    window_start = (spec["max_day"] + 1) // 2
+    per_watering = 2 if int(tile.get("fertilized_until_day", -1)) >= day else 1
+    today = (
+        1
+        if not tile.get("watered_today") and window_start <= age <= spec["max_day"]
+        else 0
+    )
+    last_window_day = min(planted + spec["max_day"], LAST_DAY)
+    future = max(0, last_window_day - day)
+    forfeited = min(headroom, (today + future) * per_watering)
+    if forfeited <= 0:
         return price * units
-    forfeited = spec["max_yield"] - units
     return price * units - price * forfeited
 
 
@@ -236,23 +264,41 @@ def feed_value(
 ) -> float:
     """Coins protected by feeding this animal now.
 
-    An animal unfed for two consecutive days escapes, forfeiting every
-    remaining unit it would have produced, so feeding is worth the whole
-    remaining production stream when it is about to bolt and much less
-    otherwise.
+    Two separate things hang on a feed, and an earlier version priced
+    neither properly.
+
+    An animal unfed for two consecutive days escapes and the structure is
+    emptied, forfeiting every remaining unit it would have produced *and*
+    the one fertilizer it drops every single day for the rest of the
+    season. Pricing that loss from the product's spot quote alone made
+    feeding look worthless the moment milk or wool bottomed out at a coin,
+    so this agent fed its herd 188 times where it needed 450, bought
+    thirty-one animals and finished with eighteen. Fertilizer keeps its
+    value long after milk does, so it belongs in the number.
+
+    Short of that, feeding is what unlocks the care bonus: the simulator
+    only pays out banked care on a day the animal was fed, so a fed and
+    cared animal yields (interval + 1) units every `interval` days against
+    the single unit an ignored one still produces. Feeding a goose doubles
+    it, a cow triples it, a sheep quadruples it.
     """
     animal = str(tile.get("animal", ""))
     spec = ANIMALS.get(animal)
     if spec is None or tile.get("fed_today"):
         return 0.0
-    price = live_price(observation, spec["product"])
     remaining = days_left(day)
     if remaining <= 0:
         return 0.0
-    future_units = remaining / max(1, spec["interval"])
-    starving = int(tile.get("consecutive_unfed", 0)) >= 1
-    stream = price * future_units
-    return stream if starving else stream * 0.35
+    interval = max(1, int(spec["interval"]))
+    price = marginal_price(observation, spec["product"])
+    manure = marginal_price(observation, "FERTILIZER")
+    if int(tile.get("consecutive_unfed", 0)) >= 1:
+        # About to bolt: the whole remaining stream is on the line.
+        kept = (interval + 1.0) / interval
+        return price * kept * remaining + manure * remaining
+    # Not at risk: the feed buys the care bonus, one extra unit per
+    # interval days on top of the base unit it would get anyway.
+    return price * (remaining / interval)
 
 
 def care_value(
