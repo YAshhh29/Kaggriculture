@@ -56,6 +56,7 @@ from rl.economics import (
     fertilize_value,
     harvest_value,
     live_price,
+    plant_rate_value,
     plant_value,
     water_value,
 )
@@ -67,6 +68,9 @@ BOARD = 10
 MELON_CAP = 12
 TARGET_HANDS = 11
 TARGET_PASTURES = 14
+LAND_SURPLUS = 1500.0
+RESCUE_SHARE = 0.45
+_FIB = (1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377)
 MIN_CASH = 250.0
 SEED_BUFFER = 12
 FEED_RESERVE_PER_ANIMAL = 2
@@ -161,7 +165,7 @@ def crop_ranking(observation: dict[str, Any], day: int) -> list[str]:
     for crop in CROPS:
         if not crop_can_mature(crop, day, day):
             continue
-        value = plant_value(observation, crop, day)
+        value = plant_rate_value(observation, crop, day)
         if value <= 0:
             continue
         appetite = min(1.0, remaining.get(crop, 0.0) / 60.0)
@@ -271,10 +275,10 @@ def _jobs_for_tile(
                 (fertilize_value(observation, tile, day), ["FERTILIZE"])
             )
         if int(tile.get("yield_units", 0)) > 0:
-            jobs.append((harvest_value(observation, tile), ["HARVEST"]))
+            jobs.append((harvest_value(observation, tile, day), ["HARVEST"]))
     elif "animal" in tile:
         if int(tile.get("yield_units", 0)) > 0:
-            jobs.append((harvest_value(observation, tile), ["HARVEST"]))
+            jobs.append((harvest_value(observation, tile, day), ["HARVEST"]))
         if not tile.get("fed_today") and int(inventory.get("WHEAT", 0)) > 0:
             jobs.append((feed_value(observation, tile, day), ["FEED"]))
         if not tile.get("cared_today"):
@@ -330,76 +334,125 @@ def _market_orders(
     herd: str,
     ranking: list[str],
 ) -> list[list[Any]]:
+    """Spend in a fixed priority order out of one running budget.
+
+    Independent per-line thresholds deadlocked this agent twice: seeds
+    gated behind 300 coins meant it never planted and so never earned,
+    and an ungated land rule spent the entire 3,000 opening on two
+    quadrants it had no labour to farm. Priority order with a shared
+    running balance avoids both, because every later item only sees what
+    the earlier ones left behind.
+
+    Order: labour, then seed for fast crops, then feed, then livestock,
+    then land last -- land is the only purchase that produces nothing by
+    itself, so it is bought out of genuine surplus.
+    """
     farm = _farm(observation)
-    money = float(farm.get("money", 0.0))
+    budget = float(farm.get("money", 0.0))
     hands = len(farm.get("hands") or [])
     tiles = _tiles(farm)
     shed = _shed(observation)
     seeds = _seeds(observation)
     orders: list[list[Any]] = []
 
+    plants = sum(
+        1 for row in tiles for t in row
+        if isinstance(t, dict) and t.get("kind") == "PLANT"
+    )
     animals_on_farm = sum(
-        1 for row in tiles for t in row if isinstance(t, dict) and "animal" in t
+        1 for row in tiles for t in row
+        if isinstance(t, dict) and "animal" in t
     )
     empty_pasture = sum(
-        1
-        for row in tiles
-        for t in row
+        1 for row in tiles for t in row
         if isinstance(t, dict)
         and t.get("kind") == "PASTURE"
         and "animal" not in t
     )
+    open_ground = sum(
+        1
+        for y in range(len(tiles))
+        for x in range(len(tiles[y]))
+        if _owned(tiles, x, y) and tiles[y][x] is None
+    )
 
-    # Labour first: hands are priced by a fibonacci of the day's hire count
-    # with a multiplier of 1, so early hands are close to free and pay for
-    # themselves in a single harvest.
-    if hands < TARGET_HANDS and money > 400 and len(orders) < 8:
-        for _ in range(min(3, TARGET_HANDS - hands)):
-            orders.append(["HIRE"])
-
-    # Land: three quadrants, never the fourth (section 9i).
-    unlocked = len(farm.get("unlocked_quadrants") or [])
-    land_price = {1: 1000, 2: 2000}.get(unlocked)
-    if unlocked < 3 and land_price and money > land_price + 1500 and day >= 1:
-        orders.append(["BUY_LAND"])
-
-    # Feed reserve: grow wheat rather than trade it (section 9m).
+    # 0. Sell first. The market list is capped at ten orders, so anything
+    #    placed after the purchases gets truncated away -- selling last
+    #    produced 1,506 harvests and 76 units sold, with the shed
+    #    overflowing its 100-unit cap and the surplus discarded. Proceeds
+    #    also fund everything below, which is why this runs first.
     wheat_needed = animals_on_farm * FEED_RESERVE_PER_ANIMAL
-    wheat_have = shed.get("WHEAT", 0)
-    if wheat_have < wheat_needed and money > 800 and day < LAST_DAY - 1:
-        want = min(6, wheat_needed - wheat_have)
-        if want > 0:
-            orders.append(["BUY_PRODUCT", "WHEAT", want])
-
-    # Livestock, steered by what this town will actually buy.
-    in_shed = int(shed.get(herd, 0))
-    if (
-        empty_pasture > in_shed
-        and money > ANIMALS[herd]["cost"] + 500
-        and day <= LAST_DAY - ANIMALS[herd]["first"] - 1
-    ):
-        want = min(2, empty_pasture - in_shed)
-        orders.append(["BUY_ANIMAL", herd, want])
-
-    # Seeds for everything worth planting. A worker standing idle for want
-    # of a 10-coin seed is the most expensive thing on this farm, so this
-    # buys wide rather than one crop at a time.
-    for crop in ranking[:3]:
-        have = seeds.get(crop, 0)
-        if have < SEED_BUFFER and money > 300:
-            orders.append(["BUY_SEED", crop, SEED_BUFFER - have])
-
-    # Sell surplus, holding back the wheat the animals need.
     for item, quantity in sorted(shed.items()):
-        if quantity <= 0:
+        if quantity <= 0 or item in ("COW", "SHEEP", "GOOSE"):
             continue
         sellable = quantity
         if item == "WHEAT":
             sellable = max(0, quantity - wheat_needed)
-        if item in ("COW", "SHEEP", "GOOSE"):
-            continue
         if sellable > 0:
             orders.append(["SELL", item, sellable])
+            budget += live_price(observation, item) * sellable
+
+    # 1. Labour. The nth hire of a day costs fib(n) with a multiplier of 1,
+    #    so the first hands are close to free and each one multiplies every
+    #    other purchase. Nothing outranks this.
+    if hands < TARGET_HANDS:
+        for index in range(min(3, TARGET_HANDS - hands)):
+            cost = _FIB[min(index + hands, len(_FIB) - 1)]
+            if budget < cost + 30:
+                break
+            orders.append(["HIRE"])
+            budget -= cost
+
+    # 2. Seed, cheapest-and-fastest first. Ranking is by coins per
+    #    tile-day, so wheat leads early and the slow premium crops only
+    #    appear once there is ground and time to spare.
+    for crop in ranking[:3]:
+        if open_ground <= 0:
+            break
+        have = seeds.get(crop, 0)
+        cost = CROPS[crop]["seed"]
+        want = min(SEED_BUFFER - have, open_ground)
+        affordable = int(min(want, budget // max(1, cost * 2)))
+        if affordable > 0:
+            orders.append(["BUY_SEED", crop, affordable])
+            budget -= cost * affordable
+
+    # 3. Feed, so the animals already owned keep producing.
+    wheat_needed = animals_on_farm * FEED_RESERVE_PER_ANIMAL
+    wheat_have = shed.get("WHEAT", 0)
+    if animals_on_farm and wheat_have < wheat_needed and budget > 400:
+        want = min(6, wheat_needed - wheat_have)
+        if want > 0:
+            orders.append(["BUY_PRODUCT", "WHEAT", want])
+            budget -= 40 * want
+
+    # 4. Livestock for pens that already exist and are still worth filling.
+    cost = ANIMALS[herd]["cost"]
+    in_shed = int(shed.get(herd, 0))
+    if (
+        empty_pasture > in_shed
+        and budget > cost + 200
+        and day <= LAST_DAY - ANIMALS[herd]["first"] - 1
+    ):
+        want = int(min(2, empty_pasture - in_shed, budget // cost))
+        if want > 0:
+            orders.append(["BUY_ANIMAL", herd, want])
+            budget -= cost * want
+
+    # 5. Land, last and only out of surplus, and only once the ground we
+    #    already own is genuinely in use. Three quadrants, never four
+    #    (section 9i).
+    unlocked = len(farm.get("unlocked_quadrants") or [])
+    price = {1: 1000, 2: 2000}.get(unlocked)
+    if (
+        unlocked < 3
+        and price
+        and budget > price + LAND_SURPLUS
+        and open_ground <= 4
+        and plants >= 12 * unlocked
+    ):
+        orders.append(["BUY_LAND"])
+        budget -= price
 
     return orders[:10]
 
@@ -478,10 +531,63 @@ def decide(observation: dict[str, Any]) -> AgentAction:
     )
 
     claimed: set[tuple[int, int]] = set()
-    actions: list[list[Any]] = []
+    actions: list[list[Any]] = [None] * len(positions)  # type: ignore[list-item]
     shed_set = set(shed_tiles())
+    unassigned = set(range(len(positions)))
 
-    for worker, position in enumerate(positions):
+    # ---- reserved capacity -------------------------------------------
+    # A plant that misses two consecutive days becomes a weed and forfeits
+    # everything it would still have produced; an animal unfed for two days
+    # escapes. Both are cheap to prevent and ruinous to ignore, but pricing
+    # them high enough to win a value auction made the agent monomaniacal
+    # (it watered all game and banked nothing, reward 0). So rescue work is
+    # given guaranteed labour up front, capped so it can never consume the
+    # whole crew, and everything else competes for what is left.
+    rescue: list[tuple[int, int]] = []
+    for y in range(len(tiles)):
+        for x in range(len(tiles[y])):
+            if not _owned(tiles, x, y):
+                continue
+            tile = tiles[y][x]
+            if not isinstance(tile, dict):
+                continue
+            if (
+                tile.get("kind") == "PLANT"
+                and not tile.get("watered_today")
+                and int(tile.get("consecutive_unwatered", 0)) >= 1
+            ):
+                rescue.append((x, y))
+            elif (
+                "animal" in tile
+                and not tile.get("fed_today")
+                and int(tile.get("consecutive_unfed", 0)) >= 1
+            ):
+                rescue.append((x, y))
+
+    reserve_cap = max(1, int(len(positions) * RESCUE_SHARE))
+    for target in sorted(
+        rescue, key=lambda c: min(distance(p, c) for p in positions)
+    )[:reserve_cap]:
+        if not unassigned:
+            break
+        worker = min(unassigned, key=lambda w: distance(positions[w], target))
+        tile = tiles[target[1]][target[0]]
+        job = ["FEED"] if "animal" in tile else ["WATER"]
+        if job == ["FEED"] and int(
+            _inventory(observation, worker).get("WHEAT", 0)
+        ) <= 0:
+            continue
+        position = positions[worker]
+        actions[worker] = (
+            list(job)
+            if position == target
+            else step_toward(position, target, list(job))
+        )
+        claimed.add(target)
+        unassigned.discard(worker)
+
+    for worker in sorted(unassigned):
+        position = positions[worker]
         inventory = _inventory(observation, worker)
         best_score = 0.0
         best_action: list[Any] = list(PASS)
@@ -525,7 +631,11 @@ def decide(observation: dict[str, Any]) -> AgentAction:
 
         if best_target is not None:
             claimed.add(best_target)
-        actions.append(best_action)
+        actions[worker] = best_action
+
+    for worker, act in enumerate(actions):
+        if act is None:
+            actions[worker] = list(PASS)
 
     return {
         "farmer": actions[0],

@@ -185,15 +185,48 @@ def fertilize_value(
 def harvest_value(
     observation: dict[str, Any],
     tile: dict[str, Any],
+    day: int | None = None,
 ) -> float:
-    """Coins realisable from the units sitting on this tile."""
+    """Coins realisable from the units sitting on this tile.
+
+    For a non-ongoing crop the simulator *destroys the plant* on harvest
+    (`farm["tiles"][fy][fx] = None`), so picking wheat holding one unit
+    when it could still reach six throws five units away. Valuing a
+    harvest at its face amount made an agent harvest 1,714 times for 0.2
+    units apiece where a good route harvests 450 times for 4.75. So an
+    early harvest is priced at what it actually nets: the units in hand
+    minus the units forfeited by ending the plant now.
+
+    Animals and ongoing crops keep producing after collection, so for them
+    the face value is correct.
+    """
     units = int(tile.get("yield_units", 0))
     if units <= 0:
         return 0.0
     if "animal" in tile:
         product = ANIMALS[str(tile["animal"])]["product"]
         return live_price(observation, product) * units
-    return live_price(observation, str(tile.get("crop", ""))) * units
+
+    crop = str(tile.get("crop", ""))
+    spec = CROPS.get(crop)
+    price = live_price(observation, crop)
+    if spec is None:
+        return price * units
+    if spec["ongoing"]:
+        return price * units
+
+    if day is None:
+        return price * units
+    age = day - int(tile.get("planted_day", day))
+    still_growing = age < spec["max_day"] and units < spec["max_yield"]
+    if not still_growing:
+        return price * units
+    # Waiting is only worth it if the season allows the remaining growth.
+    days_to_full = spec["max_day"] - age
+    if days_left(day) <= days_to_full:
+        return price * units
+    forfeited = spec["max_yield"] - units
+    return price * units - price * forfeited
 
 
 def feed_value(
@@ -268,3 +301,34 @@ def plant_value(observation: dict[str, Any], crop: str, day: int) -> float:
         start = (spec["max_day"] + 1) // 2
         units = min(spec["max_yield"], max(0, window - start + 1))
     return price * units - spec["seed"]
+
+
+def plant_tile_days(crop: str, day: int) -> float:
+    """How long a tile is tied up growing this crop, in days.
+
+    A one-shot crop occupies its tile until the last day it can still be
+    harvested; an ongoing crop until it stops producing.
+    """
+    spec = CROPS.get(crop)
+    if spec is None:
+        return 1.0
+    if spec["ongoing"]:
+        span = spec["first"] + spec["interval"] * spec["max_yield"]
+    else:
+        span = spec["max_day"]
+    return float(max(1, min(span, days_left(day))))
+
+
+def plant_rate_value(observation: dict[str, Any], crop: str, day: int) -> float:
+    """Coins per tile-day from planting this crop now.
+
+    Gross value ranks strawberry (120 a unit) above wheat (25), which is
+    how an early agent ends up spending its whole opening bankroll on
+    100-coin seeds that first yield on day 10 and hold the tile for
+    seventeen. Per tile-day is the measure that matters: wheat costs 10,
+    first yields on day 2 and recycles about every five days, so it
+    compounds while strawberry is still growing.
+    """
+    span = plant_tile_days(crop, day)
+    return plant_value(observation, crop, day) / span
+
