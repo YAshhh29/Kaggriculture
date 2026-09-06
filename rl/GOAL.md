@@ -2393,8 +2393,8 @@ simulator's own market curve. It plays complete legal 720-step games in
 both seats with zero errors.
 
 **On 48 held-out games -- three opponents, seeds 6 to 13, both seats,
-none of them used for any tuning -- E earns 50,437 mean with a 21,393
-floor, against Candidate D's 88,863 / 48,748.** It sits at 57% of D, up
+none of them used for any tuning -- E earns 61,644 mean with a 32,075
+floor, against Candidate D's 88,863 / 48,748.** It sits at 69% of D, up
 from 35% at the start of the 2026-09-06 session. On the tuning seeds
 (0-5) it earns 57,827 against D's 89,401; the gap between the two is
 honest overfit and the held-out number is the one to quote.
@@ -2723,6 +2723,67 @@ quantities earlier into an uncrowded market. Its entire deficit is
 **volume: 1,957 units a game against D's 6,414**. Throughput, not pricing,
 is the whole remaining gap, and throughput is routing: E walks 1.55 steps
 per task where D walks 0.94.
+
+### 10.8e The volume round: 50,437 to 61,644, and nine more dead ends
+
+All on 48 held-out games (three opponents, seeds 6-13, both seats).
+Candidate D scores 88,863 on the same panel.
+
+**What worked.**
+
+| change | mean | floor |
+| --- | ---: | ---: |
+| starting point | 50,437 | 21,393 |
+| **buy the second quadrant out of the opening capital** | 56,946 | 32,779 |
+| **crew back up to 11 hands** (reverses the earlier finding) | 58,535 | 37,303 |
+| **travel exponent 2.5 -> 3.0** | **61,644** | 32,075 |
+
+The opening-land change is the one to understand. A day-by-day trace
+showed E working nineteen crop tiles with no animals for the first eleven
+days -- a third of the season -- idling 95 to 144 worker-turns a day
+because the ground it owned had no work left on it. A quadrant is 25
+tiles, the pens take six, and the second quadrant costs 1,000 of a 3,000
+opening. The old rule waited for 2,500 clear surplus, which never arrived,
+because the farm that would have earned it was the farm being bought.
+
+Two settings **reversed** once the board doubled: 11 hands now beat 9
+(they lost by 8,000 on the small farm), and the travel discount wants to
+be steeper, not gentler. Retune after any change that alters farm size.
+
+Also fixed: five geese sat in the shed from day 21 to the end of a game,
+1,500 coins and a season of production wasted, because the herd plan
+changed its mind after the pens were built. Anything in the shed now gets
+a pen of its own kind before anything else is raised.
+
+**What did not work.** Nine attempts, every one measured:
+
+| idea | result | why |
+| --- | ---: | --- |
+| dedicated herd crew, 2-5 hands taken off the auction | 53,110 | tried twice, before and after the farm doubled. The herd is under-served -- 230 CARE against a good route's 413 with an identical seventeen animals -- but taking hands off the fields costs more than the herd gains |
+| **pen clustering**, build pens adjacent to existing pens | 54,961 | the best hypothesis of the day and it failed. Seventeen scattered pens are seventeen journeys; one block is a round. But forcing the block puts pens on ground the crops needed |
+| opportunity-cost travel, `(value - cost*d) / (d+1)` | 53,837 | the principled model: a full animal is worth ~1,000 coins and a cubic discount scores it below a 28-coin watering two tiles nearer. Measured worse anyway -- **locality beats value-weighted travel**, because leaving the neighbourhood weeds the plants behind you |
+| gentler travel for herd work only (exponent 1.0) | 41,447 | same lesson, larger loss |
+| two-tier ranking so idle workers walk to distant work | 49,815 | E's idle turns are idle *because* everything reachable is far |
+| per-worker zones (row-major bands) | 37,192 | worst of the day; bands cut across the shed |
+| hold fertilizer to spread on the fields | 48,148 | re-tested in the new regime; still loses |
+| marginal crop ranking / liquidity floor 0 or 500 | 53,629 / 55,380 / 55,238 | re-tested with capital available; `payback` at floor 1500 still wins |
+| melon cap 6 or 20 | 52,082 / 52,830 | 12 is right |
+
+**The remaining gap, precisely.** E's task count now nearly matches D
+(3,065 a game against 3,488) and its farm matches exactly (17 animals, 18
+pens, 3 quadrants, 11 hands). Two things separate them:
+
+* **crop yield per planting: 2.3 units against 4.2.** E loses 35 plants a
+  game to weeds against D's 18, and its plants do not reach full yield.
+* **animal service: 230 CARE, 229 FEED, 220 COLLECT against 413, 384,
+  373** -- with the same herd. A fed and cared cow yields 1.5 units a day
+  and an ignored one 0.5, which is exactly the 3.2x gap in animal product
+  (233 units a game against 736).
+
+E realises *better prices than D on every shared product* -- wool 170 a
+unit against 34, milk 103 against 92, strawberry 112 against 69 -- because
+it sells less into an uncrowded market. Volume is the entire remaining
+difference and those two numbers are where it lives.
 
 ### 10.9 How to test
 
