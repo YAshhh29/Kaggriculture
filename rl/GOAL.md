@@ -777,7 +777,7 @@ holdout collected after selector freeze. What exists is a strong initial
 signal (28 fresh-seed games, zero losses) two orders of magnitude below
 that gate's own stated scale -- treat this as "promising enough to
 package and keep validating," not as a promotion decision. `rl/GOAL.md`
-section 12's own discipline (state a hypothesis, run the narrow test
+section 13's own discipline (state a hypothesis, run the narrow test
 first, then paired seeds, then larger gates) has been followed through
 the narrow and paired-seed stages; the larger gates are the honest next
 step before this should be trusted as much as Candidate A/B's own
@@ -1049,7 +1049,7 @@ Competition Data handling) with opponent identity, result, and both
 sides' final hand/money/quadrant state. Split policy is
 `sha256(opponent_name.casefold())[0] % 10` (70/20/10 train/validation/test)
 so every game against one opponent stays in one split -- no identity
-leakage. This clears GOAL.md section 10's 200-episode minimum (245 usable,
+leakage. This clears GOAL.md section 11's 200-episode minimum (245 usable,
 168/43/24 unique opponents across the three splits) and is a curation
 pass only: it does not yet call `encode_state` or emit per-step examples,
 because that requires the Option-level label design below to be settled
@@ -1065,7 +1065,7 @@ pages the user linked this session (`boatlee/v16-rc5-...`,
 `reyhanksatria/adaptive-route-agent-v2`,
 `foysalemonshanto/read-the-market-choose-the-farm`) beyond their
 `<title>` -- confirmed for all four, not assumed; Kaggle's notebook pages
-are JS-rendered and this is the same limitation section 11's audit
+are JS-rendered and this is the same limitation section 12's audit
 already worked around by using Kaggle's own score/metadata API instead of
 page scraping. Of the four, one (`farming-score-v3-replay-revised`) is
 already fully audited in `rl/PUBLIC_META_AUDIT.md` ("Replay Revised"),
@@ -1108,7 +1108,7 @@ use. Candidate D's first Option is therefore: run `calendar` (the only
 reentrant, always-safe route) as the default prefix, gather public
 opponent state up to a tunable commit step `k`, then commit once to
 whichever executor -- calendar, elite_pasture, elite_giulio, or a future
-route -- simulator counterfactual branching (section 10's prescribed
+route -- simulator counterfactual branching (section 11's prescribed
 method) scores best against the observed opening. This is genuinely
 different work from Candidate C, not a rename of it, which is why it
 belongs in Candidate D rather than a Candidate C3.
@@ -1116,7 +1116,7 @@ belongs in Candidate D rather than a Candidate C3.
 **Status.** Today's concrete progress is the corpus pipeline, the
 land-quadrant answer, the notebook-research honesty pass, and the
 route-selection mechanism decision above. No Option-labeling harness,
-no model, and no trained selector exist yet -- see section 10 for the
+no model, and no trained selector exist yet -- see section 11 for the
 remaining staged plan (counterfactual labeling, interpretable baseline,
 causal-influence check against a constant selector, only then online RL).
 
@@ -1285,7 +1285,7 @@ exhausted in both directions. And the selector premise -- that we have
 two strong routes worth choosing between -- is measurably worth +2
 games. If Candidate D is going to beat C1 it has to be **genuinely
 adaptive**, i.e. produce actions conditioned on live state rather than
-selecting among frozen tapes, which is what section 10 always specified
+selecting among frozen tapes, which is what section 11 always specified
 and what the Crop Dusta evidence now independently argues the top of the
 leaderboard is already doing.
 
@@ -1773,7 +1773,7 @@ embedded tape, exactly like ours. The genuine top (keiz 3021, Crop Dusta
 the section 9n search already mines.
 
 **On PPO, accurately.** This file never claimed PPO would settle
-anything; section 10 says the opposite -- *"Do not train a
+anything; section 11 says the opposite -- *"Do not train a
 primitive-action PPO policy. Public evidence shows full-action PPO/BC
 often stalls around 40k-80k terminal cash and fails to generalize."*
 Residual PPO over Options appears only under "Online RL", gated behind
@@ -2377,7 +2377,239 @@ of an agent that owns its actions rather than from outside a tape.
 no submission. Candidate D (episode 105520725) is live and unchanged, and
 its seven pre-flight gates still pass.
 
-## 10. Candidate D: learned residual/Option selector
+## 10. AGENT E -- ENGINEERING HANDOFF
+
+**Read this section before touching Agent E.** It is written for someone
+picking the work up cold. It states what exists, what every number is,
+what was tried and failed, and what to do next. Nothing here needs to be
+re-derived; where a claim came from a measurement, the measurement is
+named.
+
+### 10.1 One-paragraph summary
+
+Agent E is a from-scratch agent that generates its own actions instead of
+replaying a recorded game, and steers production using the town's demand
+draw. It plays complete legal 720-step games in both seats with zero
+errors. **It currently earns 1,153 coins against Candidate D's 107,115 on
+identical seeds and opponent, so it is a foundation and not a
+submission.** Candidate D (episode 105520725) is the live agent and must
+stay that way until E beats it on measured evidence.
+
+### 10.2 Why E exists at all
+
+Cloning is capped, and the cap is measured, not assumed:
+
+* We cloned "fog flower" at public score 2882 and the resulting agent
+  settled at **2094.7** live. A frozen tape discards the reactivity that
+  earned the source its score (section 9m).
+* Reaching the top ten by cloning would need a source near 3700; the
+  ladder's best is 3021. **Cloning cannot pass ~2100 for us**, which is
+  where C1 and D both sit.
+* The behaviour that separates the ladder is adapting production to the
+  town's random demand draw. Correlation of demand-to-production, by rank
+  band, 300 player-games (section 9v): **+0.672** for teams at 2850+,
+  **+0.323** for 2400-2849, **+0.000** below 2400. A frozen tape scores
+  structurally zero, which is why every candidate we have shipped sits in
+  the bottom band behaviourally.
+* Retrofitting adaptation onto a tape was tried and is impossible: a
+  tape's actions are coupled through cash, shed space and pickup timing.
+  Swapping a cow for a sheep (identical tile, identical PLACE/FEED/CARE/
+  HARVEST) still broke it, because sheep cost 500 against a cow's 400 and
+  the tape's purchase schedule has no cash slack -- a trace showed money
+  at 39 by step 185 and 1 by step 204, and five pastures stayed empty for
+  the rest of the game (section 9v).
+
+So E must own its actions. That conclusion is demonstrated, not
+preferred.
+
+### 10.3 The measured facts E is built on
+
+Do not re-litigate these; they are the load-bearing results.
+
+| fact | value | source |
+| --- | --- | --- |
+| Town demand is deterministic and observable | every 4 steps each unlocked shop removes 1 unit of each product it sells (2 if the shop sells only one), every 24 steps the town centre removes 1 of everything except FERTILIZER | 9u |
+| Shops unlock at random with replacement | one every ~3 days, capped at 8, visible in `observation["town"]["unlocked_shops"]` | 9u |
+| Demand swings prices enormously | WOOL ends at 24 or 242, MILK at 3 or 122, STRAWBERRY at 41 or 192 depending on the draw | 9u |
+| The demand model is exact | predicted vs actual drain: MELON 30/30, WOOL 390/384, MILK 570/520 | 9u |
+| MELON is in no shop | its only demand is the town centre's ~30 a game, so melon is capped however much is grown | 9u |
+| FERTILIZER has zero natural demand | in no shop, not a town-centre product; every unit sold permanently depresses its price | 9u |
+| EV of steering toward a product | STRAWBERRY 38,070, WOOL 36,652, MILK 28,455, TOMATO 18,135, EGG 704, CARROT 387 | 9v |
+| Games are decided late | ~97.5% of the winning margin forms after halfway, ~75% in the final third | 9t |
+| Winning margins are small | median **4,845** coins on rewards near 85,000 | 9t |
+| Local tape panels mislead | they overstate live win rate by roughly 40 points | 9m |
+| Three quadrants, never four | 4-quadrant players win 8.3% against 51.2%; the top 500 use three essentially always | 9i |
+| Winners grow feed rather than trade it | they sell less wheat and buy less of it (p=0.031) | 9m |
+
+**The 4,845-coin yardstick is the one to judge changes against.** A
+mechanism worth 1,000-2,000 coins is a genuine contender; one costing
+7,000 is disqualifying.
+
+### 10.4 What is built, file by file
+
+**`rl/economics.py` -- job pricing (27 tests, `tests/test_economics.py`)**
+
+Prices any farm action in coins using constants transcribed from the
+installed simulator. This is the piece to trust and reuse.
+
+* `water_value` -- one yield unit inside the crop's window, two if
+  fertilized; zero once the tile is full or the crop cannot mature.
+* `fertilize_value` -- the extra units its three-day window can still
+  boost, **minus** what the unit would have fetched if sold.
+* `harvest_value` -- units on the tile at the live price, for crops and
+  animals alike.
+* `feed_value` -- the whole remaining production stream when an animal is
+  one day from bolting, a fraction otherwise.
+* `care_value`, `collect_fertilizer_value`, `plant_value`.
+* `crop_can_mature` -- the strawberry question: a crop whose first yield
+  lands after day 29 is worth nothing, so no effort spent on it is
+  justified.
+
+**`rl/demand.py` -- town demand (15 tests, `tests/test_demand.py`)**
+
+* `SHOPS` -- the eight shop types and what each consumes.
+* `shop_demand_per_event`, `demand_rate`, `remaining_demand` -- exact
+  per-product demand from the live observation.
+* `preferred_animal` -- which pasture animal this town rewards, requiring
+  a margin so a near-tie changes nothing.
+
+**`rl/candidate_e.py` -- the agent**
+
+Per turn: parse the farm, choose the herd (`preferred_herd`) and a crop
+ranking weighted by remaining demand (`crop_ranking`), enumerate every
+job every worker could do on every owned tile, score each as
+`value / (travel + 1)`, assign greedily with a `claimed` set so two
+workers do not target one tile, then emit market orders (hire toward 11
+hands, buy land to three quadrants, buy seeds wide, buy the preferred
+animal, reserve wheat for feed, sell the rest).
+
+**Not wired into anything, kept as evidence:**
+
+* `rl/sell_gate.py` (12 tests) -- gating sales on market saturation. Cost
+  6-7k coins; wool gating alone -6,376 (9s).
+* `rl/herd_swap.py` -- demand-driven cow/sheep substitution over a tape.
+  Broke the tape three ways (9v).
+* `rl/idle_work.py` (10 tests) -- converting idle turns to fertilize or
+  water. Worth +265 coins, +0.27% (9o).
+
+### 10.5 Every result E produced, in order
+
+| build | change | reward | what broke |
+| --- | --- | ---: | --- |
+| 1 | first working version | 1,685 | goods harvested but never banked; `DROP` was only a fallback so nothing reached the shed to sell |
+| 2 | DROP/PICKUP added as scored jobs | 208 | **327 pickups against 323 drops** -- a worker banked fertilizer then immediately valued picking it back up |
+| 3 | working stock excluded from bankable value | 4,058 | ran out of seeds; **1,559 idle turns** |
+| 4 | buy seeds for the top three crops | 395 | built **14 pastures it could not stock**, spending the purse that should have bought land and animals |
+| 5 | pens gated on affordability and herd size | **1,153** | stable, but the herd never starts and quadrants stall at 1 |
+| 6 | rescue watering priced at the plant's whole remaining crop | **0** | watered all game and banked nothing |
+
+Reference on the same seeds and opponent: **Candidate D = 107,115.**
+
+### 10.6 The central lesson, and the reason for the next step
+
+Build 6 is the important one. Pricing a rescue watering the way a
+starving animal is priced -- at everything it would still produce -- took
+reward to exactly zero. The rescue value then dwarfed every harvest
+priced at "units currently in hand", so workers watered constantly and
+never completed the loop that turns crops into money.
+
+**Job values in a greedy scheduler must stay commensurable.** A pure
+greedy argmax over heterogeneous job types is unstable here: whichever
+class is priced highest absorbs all labour, and the agent becomes
+monomaniacal. Every one of the six builds above is a version of that
+failure. More constant-tuning will keep producing new degenerate modes.
+
+### 10.7 The plan -- what to build next, in order
+
+**Step 1. Replace greedy argmax with a capacity-reserving planner.**
+Decide each turn how many workers each job class may consume before any
+worker is assigned -- for example: all starving animals fed, all at-risk
+plants watered, then N harvesters, then the remainder to planting and
+logistics. Within a class, keep the existing `value / (travel + 1)`
+ranking, which is sound. This directly removes the monomania failure and
+is the single highest-value change.
+
+**Step 2. Bootstrap the economy.** E stalls at one quadrant and no
+animals because it never accumulates cash. Instrument the first 150 steps
+against Candidate D's money curve and fix the opening explicitly: hire
+early (hands are priced by a fibonacci with multiplier 1, so early hands
+are nearly free), plant wheat immediately (2-day first yield, replantable
+about every 5 days, 6 units when fertilized), and get to three quadrants.
+Do not build a pasture before the animal for it is affordable -- that was
+build 4.
+
+**Step 3. Close the throughput gap.** Target the tape's task share.
+Measured: a tape spends **49%** of worker-turns on tasks, our old reactive
+engine **26%**, burning 1,250 more turns walking and 663 more idling
+(9q). The probe used for this lives in the session scratchpad as
+`exec_gap.py` (task/move/idle counts, coins per task-turn) and is worth
+re-creating as a committed tool.
+
+**Step 4. Only then turn on demand steering.** The libraries are ready.
+Expect the gain to be real but second-order compared with steps 1-3: a
+correct product mix on a farm that produces nothing is worth nothing.
+Targets ranked by EV are in 10.3; strawberry and wool lead and are
+effectively tied.
+
+**Step 5. Build an evaluation reactive opponents can participate in.**
+This is the missing instrument. Frozen tapes sell on a fixed script and
+never compete for market space, so they cannot settle any market-timing
+question -- that is why the sell gate's result is uninterpretable. Until
+this exists, treat every sell-side result as unproven.
+
+### 10.8 Dead ends -- do not repeat these
+
+* **Sale gating on market saturation** -- -6,376 to -7,020 coins; wool
+  gating is the damage, milk roughly neutral (9s).
+* **Withholding sales on a price floor** -- -12,466 to -16,570; those
+  cheap sales are logistics, clearing the 100-unit shed and funding feed
+  (9k).
+* **Deferring sales to await a price recovery** -- dips do not
+  mean-revert: 0.1% of MELON dips recovered within 10 steps, mean drift
+  negative (9j).
+* **Eager or accelerated selling** -- -448 to -585 (9k).
+* **A C1/C2 route selector** -- a perfect selector is worth **+2 games in
+  80** (9k).
+* **Buying the fourth quadrant** -- 8.3% win rate against 51.2% (9i).
+* **Retrofitting adaptation onto a tape** -- broken by cash, shed and
+  pickup coupling (9v).
+* **Configuration search over the old reactive engine** -- its fertilizer
+  and feed flags are inert in the high-utilisation config, producing
+  byte-identical output, and holding fertilizer collapses it to 2,642
+  (9v).
+
+### 10.9 How to test
+
+* `python -m tools.validation.preflight_candidate_d` -- seven gates for
+  the live agent; non-zero exit on failure. Includes the loader-order
+  check that the section 9h upload failure would have tripped.
+* `python -m unittest discover -s tests -q` -- **583 tests** currently
+  passing.
+* Local panels: `kaggle_cache/top500_panel.json` holds 92 distinct
+  top-500 opponents built from cached replays. **Remember these are
+  tapes** and overstate live win rate by ~40 points (9m); use own-coin
+  production as the primary signal, since it is nearly self-determined.
+* `kaggle_cache/clones/` holds 245 opponent tapes, and
+  `rl/replay_agent.py` turns any of them into an opponent.
+* `tools/data/profile_agents.py` and `tools/data/strategy_study.py`
+  compute per-game economic profiles and paired winner-versus-loser
+  contrasts over cached replays.
+
+### 10.10 Definition of done for E
+
+E replaces Candidate D only when **all** of these hold:
+
+1. own-coin production at or above D's on a shared seed set;
+2. a win rate at or above D's on the 92-opponent top-500 panel, both
+   seats, with the paired McNemar p-value reported and not hidden;
+3. a demand-to-production correlation materially above zero, since that
+   is the entire point of the architecture;
+4. all seven pre-flight gates green on its own package;
+5. zero errors across at least 100 full games in both seats.
+
+Until then D ships and E stays in the tree.
+
+## 11. Candidate D: the original learned residual/Option selector plan
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
 
@@ -2416,7 +2648,7 @@ Only after free-running BC beats the deterministic selector:
 
 D gate must exceed C on the same 1000-game and temporal holdouts before packaging. Planning range if genuinely stronger: 1800-2500. The 2500-2800 goal is a stretch target requiring both a strong route portfolio and learned meta adaptation.
 
-## 11. Public research that informs implementation
+## 12. Public research that informs implementation
 
 The detailed local audit is at `rl/PUBLIC_META_AUDIT.md`. Key requested public notebooks:
 
@@ -2444,7 +2676,7 @@ Verified recurring ideas:
 
 Do not count correlated forks as independent evidence. Public score is noisy/stale. Optimize per-family win probability, not mean coins.
 
-## 12. Validation and release discipline
+## 13. Validation and release discipline
 
 For every candidate:
 
@@ -2463,7 +2695,7 @@ For every candidate:
 13. Freeze an accepted package by full SHA-256, bytes, submission ID, validation episode, and rewards.
 14. Never guarantee a leaderboard score from local tests.
 
-## 13. Definition of done
+## 14. Definition of done
 
 The project is not done when code exists. It is done when:
 
