@@ -2388,18 +2388,25 @@ named.
 ### 10.1 One-paragraph summary
 
 Agent E is a from-scratch agent that generates its own actions instead of
-replaying a recorded game, and steers production using the town's demand
-draw. It plays complete legal 720-step games in both seats with zero
-errors. On a fair panel -- three opponents, three seeds, both seats, 18
-games -- it earns **29,161 mean with a 17,053 floor against Candidate D's
-136,074 / 70,061**, so it sits at roughly a fifth of D and is a
-foundation, not a submission. Candidate D (episode 105520725) is the live
-agent and must stay that way until E beats it on measured evidence.
+replaying a recorded game, and prices every decision against the
+simulator's own market curve. It plays complete legal 720-step games in
+both seats with zero errors.
 
-E has come from 1,153 to 29,161 (25x) by fixing eight economic defects,
-all listed in 10.5. Its throughput problem is **solved** -- task share
-0.513 against the reference tape's 0.493, idle turns 9 against 322 -- so
-the remaining gap is economic scale, not labour efficiency.
+**On 48 held-out games -- three opponents, seeds 6 to 13, both seats,
+none of them used for any tuning -- E earns 50,437 mean with a 21,393
+floor, against Candidate D's 88,863 / 48,748.** It sits at 57% of D, up
+from 35% at the start of the 2026-09-06 session. On the tuning seeds
+(0-5) it earns 57,827 against D's 89,401; the gap between the two is
+honest overfit and the held-out number is the one to quote.
+
+E still wins no games against elite opposition where D wins 37 of 48, so
+**Candidate D (episode 105520725) remains the live agent** and must stay
+that way until E beats it on measured evidence.
+
+The 2026-09-06 session took E from 28,763 to 50,437 on held-out games
+(+61%) by finding real defects, not by tuning: see 10.5 phase three,
+10.11 for the simulator mechanics that drive them, and 10.12 for the
+market model that reframed the whole strategy.
 
 ### 10.2 Why E exists at all
 
@@ -2452,6 +2459,15 @@ mechanism worth 1,000-2,000 coins is a genuine contender; one costing
 7,000 is disqualifying.
 
 ### 10.4 What is built, file by file
+
+**`rl/market.py` -- what a unit will actually fetch (18 tests,
+`tests/test_market.py`)**
+
+The simulator's own price curve, transcribed. `price_at`, `sale_revenue`
+(which walks the price down unit by unit, and takes a `sold_already`
+offset so production can be valued at the margin), `marginal_price` and
+`headroom`. This is the module that reframed E's whole strategy; read
+10.12 before using it.
 
 **`rl/economics.py` -- job pricing (27 tests, `tests/test_economics.py`)**
 
@@ -2527,7 +2543,28 @@ watching the money curve or the action mix, never by guessing:
 | reserve 70% of labour for watering | 31,555 | **rejected** -- over-reserving starves harvesting and logistics; 45% stays |
 
 Those single-opponent figures are optimistic. On the fair 18-game panel
-the final configuration is **29,161 against D's 136,074**.
+that configuration measured **29,161 against D's 136,074**.
+
+**Phase three -- 2026-09-06.** Measured on a fair panel of 36 games
+(3 opponents x 6 seeds x both seats) unless stated. Every one of these
+was a defect found by instrumenting the agent or reading the simulator,
+not a constant that was tuned:
+
+| fix | mean | the defect |
+| --- | ---: | --- |
+| baseline at session start | 28,763 | -- |
+| feed priced at the escape loss, not the product's spot price | 31,242 | milk and wool bottom out at 1 coin, so feeding looked worthless; E fed its herd 188 times where it needed 450, bought 31 animals and finished with 18 |
+| **harvest prices the growth it forfeits, exactly** | 35,904 | on the last day of a crop's window HARVEST and WATER were priced identically, an exact tie, and the scheduler took the harvest -- so **every carrot in a game was picked holding one unit of a possible four** |
+| seed reserved across workers within a turn | +4,200 | the seed store is shared, so all twelve workers independently planned to plant the same single seed: **215 PLANT actions for one crop**, all but a handful no-ops costing a worker-turn each |
+| HARVEST blocked before `first_yield_day` | -- | the simulator refuses it and still charges the turn; melon accrues units from age 6 but cannot be picked until age 10, so workers parked on melons harvesting nothing -- **659 wasted worker-turns in one game** |
+| **herd capped at what the standing wheat can feed** | 37,756 | on one seed E sold its melon crop on day 11, spent every coin of it on eleven cows inside two turns, then had neither wheat nor money: herd 11 to 0 by day 15, all 34 plants weeded, **game ended on 485 coins** |
+| **travel discounted by the square of distance** | 45,934 | `value / distance` rates a 600-coin job eight tiles away above a 100-coin job next door; E walked 2.0 steps per task against a good route's 0.94. Floor went from 673 to 14,417 |
+| crew re-hired on the closing day too | 48,704 | hands are wiped every night, and the early-return that skipped last-day purchases skipped the hire with them, leaving the farmer to work day 29 alone |
+| seed spend capped at 15% of the purse, crew at 9 | **57,827** | see 10.13 |
+
+**Held-out check.** The same configuration on seeds 6-13, 48 games never
+used for tuning: **50,437 mean, 21,393 floor, against 31,336 / 12,719 for
+the session's starting version.** D scores 88,863 / 48,748 there.
 
 ### 10.6 The central lesson, and the reason for the next step
 
@@ -2611,6 +2648,22 @@ this exists, treat every sell-side result as unproven.
   byte-identical output, and holding fertilizer collapses it to 2,642
   (9v).
 
+### 10.8b Dead ends from 2026-09-06 -- measured, do not repeat
+
+Each of these was a reasonable idea, tested on the same 36-game panel,
+and lost. They are recorded with their numbers so nobody spends another
+session on them.
+
+| idea | result | why it fails |
+| --- | ---: | --- |
+| **A herd of geese only** | 16,551 against 26,049 | eggs are the only product whose price never collapses, and every real game ends 150-300 units *below* equilibrium on egg at 59-68 coins, so this looked like the strongest idea of the session. It only pays for an agent that can keep a large herd fed and cared for every day; E cannot yet, and an under-tended goose yields one egg where a cow yields a premium product. Revisit **only** once feeding is reliable |
+| Hold fertilizer back to spread on the fields | 14,200 against 26,300 | correct on paper -- a unit fetches 36-53 sold against roughly 129 as extra wheat -- but E is capital-starved for three weeks and the cash the held stock did not raise is cash it cannot spend on animals. The herd fell from 11.4 head to 3.8 |
+| Rank crops by true marginal revenue | 22,021 against 30,067 | the more correct model, and it loses. It is right about the season; a hand-to-mouth agent needs a model that is right about tomorrow. The `payback` ranking stays default, `marginal` is kept behind `RANKING_MODE` for when E has working capital |
+| Stop rescue-watering plants with no yield left | 26,890 against 31,242 | a spent plant left to die becomes a weed that holds the tile and costs a DIG to clear; keeping it alive is cheaper than that |
+| Buy land on crew capacity rather than spare ground | 22,171-25,568 against 31,242 | buying the second quadrant early starves seed and livestock; land has to come out of surplus |
+| Crews of 13, 15, 17 | 41,926 / 1,309 / 1,022 | hands are re-hired **every day**, so the 10th through 14th cost 55+89+144+233+377 coins *daily*. A crew of 9 beat 11 and 13 |
+| Travel priced as `value - cost * distance` | 32,863 at best | too blunt; the square-of-distance discount is much better (10.11) |
+
 ### 10.9 How to test
 
 * `python -m tools.validation.preflight_candidate_d` -- seven gates for
@@ -2641,6 +2694,132 @@ E replaces Candidate D only when **all** of these hold:
 5. zero errors across at least 100 full games in both seats.
 
 Until then D ships and E stays in the tree.
+
+### 10.11 The simulator mechanics that actually decide this game (2026-09-06)
+
+Six mechanics were read out of
+`kaggle_environments/envs/kaggriculture/kaggriculture.py` and each one
+changed a decision Agent E was getting wrong. They are stated here so
+nobody has to find them again.
+
+| mechanic | line | why it matters |
+| --- | --- | --- |
+| **Reward is final cash and nothing else** | `s.reward = float(obs0.farms[player]["money"])` | assets, herd and standing crops all score zero, so the last day must liquidate the shed completely |
+| **The crew is deleted every night** | `farm["hands"] = []; farm["hires_today"] = 0` in the daily refresh | the whole crew is re-hired every morning and the Fibonacci price restarts at 1; hiring a few per turn leaves the farm short-handed through every morning |
+| **Structures are free** | `BUILD_COOP` / `BUILD_PASTURE` take no money | a pen costs only its tile and one worker-turn; gating pens on cash was wrong |
+| **Every animal drops one fertilizer a day, fed or not** | `tile["fertilizer_available"] = True`, unconditional | 17 animals is ~450 fertilizer a season; this, not milk or wool, is what a herd is actually for |
+| **Inventories auto-drop to the shed at every day boundary** | `_drop_inventories_to_shed(private, shed_cap)` | workers never need to walk to the shed to bank produce, only to pick things up |
+| **HARVEST is refused before `first_yield_day`** | `if day - tile["planted_day"] < crop_data["first_yield_day"]: return` | melon accrues units from age 6 but cannot be picked until age 10; a scheduler that does not know this parks a worker on it harvesting nothing. Measured: **659 wasted worker-turns in one game** |
+
+### 10.12 The market is one shared pool, and it is the whole economy
+
+`market["inventory"]` is a **single global dictionary for both players**.
+Every unit either side sells depresses the price for both, and the town's
+consumption lifts it back for both. `rl/market.py` transcribes the
+simulator's own curve (18 tests, `tests/test_market.py`) so any unit can
+be priced at the margin instead of at spot.
+
+What the curve says, as coins for the first 400 units sold and the price
+still on offer at the four-hundredth:
+
+| item | 400 units fetch | price at unit 400 |
+| --- | ---: | ---: |
+| MELON | 26,727 | 1 |
+| FERTILIZER | 24,040 | 20 |
+| **EGG** | **16,559** | **40** |
+| TOMATO | 10,453 | 9 |
+| WOOL | 8,269 | 1 |
+| WHEAT | 8,313 | 20 |
+| CARROT | 7,853 | 12 |
+| MILK | 6,505 | 1 |
+| STRAWBERRY | 4,147 | 1 |
+
+And what an elite route **actually realises**, measured by re-pricing
+every one of its sell orders against the market inventory at the moment
+it placed them:
+
+| product | units sold | coins | coins per unit |
+| --- | ---: | ---: | ---: |
+| STRAWBERRY | 333 | 19,720 | 59 |
+| WHEAT | 459 | 19,548 | **43** |
+| FERTILIZER | 455 | 16,198 | 36 |
+| MELON | 72 | 12,927 | **180** |
+| CARROT | 73 | 5,085 | 70 |
+| WOOL | 389 | 4,470 | **11** |
+| MILK | 347 | 3,671 | **11** |
+
+**Wool and milk realise eleven coins a unit.** Every recorded route in
+this repository builds its herd around them, and 736 units of the two
+together are worth 8,141 coins -- half what the same herd's fertilizer
+earns. Wheat sells at 43 against a base of 25 all game, because five of
+the eight shops buy it and both players are short of it for feed.
+
+Three consequences, all of them now in the code:
+
+* an animal is valued at its **marginal** product plus its manure, so the
+  fifth cow is correctly worth 30 coins where the first is worth 3,888;
+* wheat is grown, never bought, and the herd is capped at what the
+  standing wheat can feed;
+* the shed is emptied completely on the last day.
+
+**This also explains Candidate C1's disappointing live rating** better
+than section 9m did. A tape's sell prices were set by what *its*
+opponent did in the recorded game. Replayed against a different opponent
+and a different shop draw, the same orders meet a different inventory
+curve: wool that was worth 200 a unit in the source game is worth 1.
+Nothing about the route is wrong; the market it was priced against no
+longer exists. No amount of better route selection fixes that, which is
+the whole argument for E.
+
+### 10.13 Where the constants came from, and how to retune them
+
+Tuned by coordinate descent on seeds 0-5, then validated on seeds 6-13
+(10.5). Every one of these is a module-level global in
+`rl/candidate_e.py`, so `tools`-free retuning is a matter of setting the
+attribute in a worker process; the panel harness does exactly that.
+
+| constant | value | alternatives measured |
+| --- | ---: | --- |
+| `TRAVEL_EXPONENT` | 2.5 | 1.5 -> 44,943; 2.0 -> 48,704; 3.0 -> 49,296 but a worse floor |
+| `SEED_SPEND_SHARE` | 0.15 | 0.25 -> 57,284; 0.40 -> 47,320; 0.60 -> 48,938 |
+| `TARGET_HANDS` | 9 | 7 -> 50,442; 11 -> 47,320; 13 -> 41,926 |
+| `WHEAT_UNITS_PER_TILE_DAY` | 0.6 | 0.4 -> 53,792; 0.9 -> 49,164 (all within noise of each other) |
+| `RESCUE_SHARE` | 0.45 | 0.25 -> 49,944 best mean but floor 11,760; 0.45 has the best floor at 22,546 |
+
+**Two warnings.** These were tuned one at a time and they do **not**
+compose additively -- `SEED_SPEND_SHARE=0.25` alone measured 57,284 but
+combined with `TARGET_HANDS=9` it fell to 54,154. And 36 games is not
+many: differences under about 4,000 coins are inside the noise, which is
+the same 4,845-coin yardstick section 10.3 already sets. Re-measure any
+change on the held-out seeds before believing it.
+
+### 10.14 What to do next
+
+**Step A. Make feeding reliable, then re-test the goose herd.** This is
+the biggest single opportunity on the board and the one thing that would
+make E's strategy genuinely unlike anything in the field. Egg is the only
+product in the game whose price does not collapse -- it still pays 40
+coins at the four-hundredth unit -- and every measured game ends with egg
+inventory 150 to 300 units *below* equilibrium at 59 to 68 coins, because
+no agent in the top 500 keeps geese. A goose fed and cared for daily
+yields two eggs a day; ignored, it yields one. The blocker is feeding, so
+fix that first (10.8b) and then re-run the herd comparison.
+
+**Step B. Close the volume gap.** E sells roughly 640 units a game; an
+elite route sells 2,140. That ratio, not price realisation, is the whole
+remaining difference -- E realises *better* prices than D on every
+product, because it sells smaller quantities earlier.
+
+**Step C. Stable per-worker assignments.** The square travel discount was
+worth 8,000 coins by keeping workers local. Committing a worker to a
+target across turns, or partitioning the board into per-worker zones,
+attacks the same waste from the other side; E still reverses direction
+mid-journey 5.8% of the time against an elite route's 0.6%.
+
+**Step D. Do not chase task share.** It is not the constraint it was
+believed to be. E idled 1,146 worker-turns a game not because the
+scheduler was weak but because a 25-tile farm cannot occupy twelve
+workers; the fix was capital, not scheduling.
 
 ## 11. Candidate D: the original learned residual/Option selector plan
 
