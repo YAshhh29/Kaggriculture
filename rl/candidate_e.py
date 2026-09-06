@@ -70,10 +70,11 @@ TARGET_HANDS = 11
 TARGET_PASTURES = 14
 LAND_SURPLUS = 1500.0
 RESCUE_SHARE = 0.45
+LIQUIDITY_FLOOR = 1500.0
 _FIB = (1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377)
 MIN_CASH = 250.0
 SEED_BUFFER = 12
-FEED_RESERVE_PER_ANIMAL = 2
+FEED_RESERVE_PER_ANIMAL = 4
 
 
 # --------------------------------------------------------------------------
@@ -156,11 +157,22 @@ def preferred_herd(observation: dict[str, Any]) -> str:
 def crop_ranking(observation: dict[str, Any], day: int) -> list[str]:
     """Crops worth planting now, best first.
 
-    Combines what a tile will yield before the season ends with what the
-    town will still absorb, so a crop nobody buys is never planted however
-    valuable its base price looks.
+    Three factors, and the third one matters more than it looks:
+
+    * coins per tile-day, so a cheap fast crop is not out-ranked by an
+      expensive slow one merely because its gross value is larger;
+    * the town's remaining appetite, so a crop nobody buys is never
+      planted however good its base price;
+    * **time to first cash, while cash is short.** By rate alone melon
+      wins at ~118 coins per tile-day, but it first yields on day 10.
+      Planting it with 30 coins in hand froze this agent at 30 coins for
+      ten days -- no herd, no land, no compounding -- while wheat would
+      have paid on day 2 and recycled every five. When the purse is thin,
+      payback speed is worth more than rate.
     """
     remaining = remaining_demand(observation)
+    money = float(_farm(observation).get("money", 0.0))
+    thin = money < LIQUIDITY_FLOOR
     scored: list[tuple[float, str]] = []
     for crop in CROPS:
         if not crop_can_mature(crop, day, day):
@@ -169,7 +181,10 @@ def crop_ranking(observation: dict[str, Any], day: int) -> list[str]:
         if value <= 0:
             continue
         appetite = min(1.0, remaining.get(crop, 0.0) / 60.0)
-        scored.append((value * (0.25 + 0.75 * appetite), crop))
+        score = value * (0.25 + 0.75 * appetite)
+        if thin:
+            score *= 3.0 / (3.0 + CROPS[crop]["first"])
+        scored.append((score, crop))
     scored.sort(reverse=True)
     return [c for _, c in scored]
 
@@ -248,7 +263,15 @@ def _jobs_for_tile(
             and int(inventory.get("WHEAT", 0)) < 2
             and hungry > 0
         ):
-            jobs.append((45.0, ["PICKUP", "WHEAT", 2]))
+            product = ANIMAL_PRODUCT[herd]
+            preserved = (
+                live_price(observation, product)
+                * max(0, LAST_DAY - day)
+                / max(1, ANIMALS[herd]["interval"])
+            )
+            jobs.append(
+                (preserved * min(hungry, 2) * 0.5, ["PICKUP", "WHEAT", 4])
+            )
 
     if tile is None:
         if want_pasture:
@@ -576,6 +599,18 @@ def decide(observation: dict[str, Any]) -> AgentAction:
         if job == ["FEED"] and int(
             _inventory(observation, worker).get("WHEAT", 0)
         ) <= 0:
+            # Redirect to fetch feed rather than skip: a starving animal
+            # forfeits its whole remaining production stream.
+            if int(_shed(observation).get("WHEAT", 0)) <= 0:
+                continue
+            position = positions[worker]
+            depot = min(shed_set, key=lambda c: distance(position, c))
+            actions[worker] = (
+                ["PICKUP", "WHEAT", 4]
+                if position == depot
+                else step_toward(position, depot, ["PICKUP", "WHEAT", 4])
+            )
+            unassigned.discard(worker)
             continue
         position = positions[worker]
         actions[worker] = (
