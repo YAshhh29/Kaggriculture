@@ -2390,10 +2390,16 @@ named.
 Agent E is a from-scratch agent that generates its own actions instead of
 replaying a recorded game, and steers production using the town's demand
 draw. It plays complete legal 720-step games in both seats with zero
-errors. **It currently earns 1,153 coins against Candidate D's 107,115 on
-identical seeds and opponent, so it is a foundation and not a
-submission.** Candidate D (episode 105520725) is the live agent and must
-stay that way until E beats it on measured evidence.
+errors. On a fair panel -- three opponents, three seeds, both seats, 18
+games -- it earns **29,161 mean with a 17,053 floor against Candidate D's
+136,074 / 70,061**, so it sits at roughly a fifth of D and is a
+foundation, not a submission. Candidate D (episode 105520725) is the live
+agent and must stay that way until E beats it on measured evidence.
+
+E has come from 1,153 to 29,161 (25x) by fixing eight economic defects,
+all listed in 10.5. Its throughput problem is **solved** -- task share
+0.513 against the reference tape's 0.493, idle turns 9 against 322 -- so
+the remaining gap is economic scale, not labour efficiency.
 
 ### 10.2 Why E exists at all
 
@@ -2494,16 +2500,34 @@ animal, reserve wheat for feed, sell the rest).
 
 ### 10.5 Every result E produced, in order
 
+**Phase one -- getting it to run at all** (single opponent, three seeds):
+
 | build | change | reward | what broke |
 | --- | --- | ---: | --- |
-| 1 | first working version | 1,685 | goods harvested but never banked; `DROP` was only a fallback so nothing reached the shed to sell |
-| 2 | DROP/PICKUP added as scored jobs | 208 | **327 pickups against 323 drops** -- a worker banked fertilizer then immediately valued picking it back up |
+| 1 | first working version | 1,685 | goods harvested but never banked; `DROP` was only a fallback |
+| 2 | DROP/PICKUP added as scored jobs | 208 | **327 pickups against 323 drops** -- banked fertilizer, then instantly re-valued picking it up |
 | 3 | working stock excluded from bankable value | 4,058 | ran out of seeds; **1,559 idle turns** |
-| 4 | buy seeds for the top three crops | 395 | built **14 pastures it could not stock**, spending the purse that should have bought land and animals |
-| 5 | pens gated on affordability and herd size | **1,153** | stable, but the herd never starts and quadrants stall at 1 |
-| 6 | rescue watering priced at the plant's whole remaining crop | **0** | watered all game and banked nothing |
+| 4 | buy seeds for the top three crops | 395 | built **14 pastures it could not stock** |
+| 5 | pens gated on affordability | 1,153 | stable, but the herd never started |
+| 6 | rescue watering priced at the whole remaining crop | **0** | watered all game, banked nothing |
 
-Reference on the same seeds and opponent: **Candidate D = 107,115.**
+**Phase two -- making the economy work.** Every one of these was found by
+watching the money curve or the action mix, never by guessing:
+
+| fix | reward | the defect |
+| --- | ---: | --- |
+| lower the seed threshold | 35 | seeds gated behind 300 coins, so E never planted, never earned, never reached 300 -- money frozen at 236 from step 24 to 288 |
+| rank crops by coins per **tile-day** | 12 | gross value bought strawberry and melon seeds at 100 and 80, spending 2,967 of the 3,000 opening in three steps |
+| **rewrite the market as one ordered budget** | 1,330 | independent per-line thresholds deadlocked repeatedly; priority order over a shared running balance fixed it |
+| **sell first, not last** | **5,930** | selling ran last under a ten-order cap and was crowded out: **1,506 harvests produced 76 units sold**, the shed overflowing its 100 cap and discarding the rest |
+| **capacity-reserving planner** | **19,470** | rescue work cannot win a value auction without turning monomaniacal; reserved capacity (45% cap) fixed both failure modes at once. Task share 0.513, idle turns 9 |
+| **reprice early harvest** | 24,229 | the simulator destroys a non-ongoing plant on harvest, so picking wheat at 1 unit when it could reach 6 throws 5 away. E harvested 1,714 times for 0.2 units each against the tape's 450 for 4.75 |
+| **price fetching feed at what feeding preserves** | 37,324 | a flat 45 lost every auction, so nobody carried wheat; animals fed 84 times against the tape's 384, the herd bolted, and **zero milk or wool sold all game** |
+| **weight time-to-first-cash while cash is thin** | **38,099** | melon tops the per-tile-day ranking at ~118 but first yields on day 10; planting it holding 30 coins froze the purse for ten days. Herd went from 3-6 animals to 9-15 |
+| reserve 70% of labour for watering | 31,555 | **rejected** -- over-reserving starves harvesting and logistics; 45% stays |
+
+Those single-opponent figures are optimistic. On the fair 18-game panel
+the final configuration is **29,161 against D's 136,074**.
 
 ### 10.6 The central lesson, and the reason for the next step
 
@@ -2521,16 +2545,24 @@ failure. More constant-tuning will keep producing new degenerate modes.
 
 ### 10.7 The plan -- what to build next, in order
 
-**Step 1. Replace greedy argmax with a capacity-reserving planner.**
-Decide each turn how many workers each job class may consume before any
-worker is assigned -- for example: all starving animals fed, all at-risk
-plants watered, then N harvesters, then the remainder to planting and
-logistics. Within a class, keep the existing `value / (travel + 1)`
-ranking, which is sound. This directly removes the monomania failure and
-is the single highest-value change.
+**Step 1. DONE -- the capacity-reserving planner is built.** Rescue work
+(at-risk plants, starving animals) gets reserved labour up front, capped
+at `RESCUE_SHARE = 0.45` of the crew; everything else competes on
+`value / (travel + 1)`. This took reward from 5,930 to 19,470 and solved
+the throughput problem outright. **Do not raise the share to 0.70** --
+that was tried and cost about 6,500 coins by starving harvesting.
 
-**Step 2. Bootstrap the economy.** E stalls at one quadrant and no
-animals because it never accumulates cash. Instrument the first 150 steps
+**Step 2. DONE -- the opening no longer deadlocks.** E reaches three
+quadrants and 9-15 animals on every seed.
+
+**Step 2b (do this next). Grow the herd and the planted area.** This is
+now the largest revenue gap. E peaks near 47 plants against the tape's 58
+and 9-15 animals against 17, and the tape sells 389 wool and 347 milk
+where E sells a fraction. Start by asking why pasture building stops:
+`TARGET_PASTURES` is 14 but E builds 6-8, and the `pastures <=
+animals_now + 1` guard may be too conservative once cash is healthy.
+Historical note kept because it explains the guard: E used to stall at one
+quadrant and no animals because it never accumulated cash. Instrument the first 150 steps
 against Candidate D's money curve and fix the opening explicitly: hire
 early (hands are priced by a fibonacci with multiplier 1, so early hands
 are nearly free), plant wheat immediately (2-day first yield, replantable
@@ -2538,10 +2570,11 @@ about every 5 days, 6 units when fertilized), and get to three quadrants.
 Do not build a pasture before the animal for it is affordable -- that was
 build 4.
 
-**Step 3. Close the throughput gap.** Target the tape's task share.
-Measured: a tape spends **49%** of worker-turns on tasks, our old reactive
-engine **26%**, burning 1,250 more turns walking and 663 more idling
-(9q). The probe used for this lives in the session scratchpad as
+**Step 3. DONE -- the throughput gap is closed.** E's task share is
+**0.513** against the reference tape's 0.493, with 9 idle turns against
+322; the old reactive engine sat at 0.26. Do not spend more effort here.
+Historical note: a tape spends 49% of worker-turns on tasks and the old
+engine 26%, burning 1,250 more turns walking and 663 more idling (9q). The probe used for this lives in the session scratchpad as
 `exec_gap.py` (task/move/idle counts, coins per task-turn) and is worth
 re-creating as a committed tool.
 
