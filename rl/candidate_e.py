@@ -45,6 +45,7 @@ from typing import Any
 
 from core.routing import distance, step_toward
 from rl.demand import ANIMAL_PRODUCT, remaining_demand
+from rl.market import marginal_price, sale_revenue
 from rl.economics import (
     ANIMALS,
     CROPS,
@@ -52,6 +53,7 @@ from rl.economics import (
     care_value,
     collect_fertilizer_value,
     crop_can_mature,
+    days_left,
     feed_value,
     fertilize_value,
     harvest_value,
@@ -66,14 +68,30 @@ from rl.runtime import AgentAction
 PASS: list[str] = ["PASS"]
 BOARD = 10
 MELON_CAP = 12
-TARGET_HANDS = 11
+TARGET_HANDS = 9
 TARGET_PASTURES = 14
-LAND_SURPLUS = 1500.0
+LAND_SURPLUS = 300.0
+LAND_OPEN_TRIGGER = 6
+TILES_PER_HAND = 6
+HERD_FORCE: str | None = None
+MIXED_CAP: int | None = None
+RANKING_MODE = "payback"
+TRAVEL_MODE = "square"
+TRAVEL_EXPONENT = 2.5
+TURN_COST = 30.0
+WHEAT_HOARD_CAP = 24
+WHEAT_UNITS_PER_TILE_DAY = 0.6
+WORKING_CAPITAL = 400.0
+MAX_ORDERS = 10
+HIRE_FLOOR = 20.0
 RESCUE_SHARE = 0.45
 LIQUIDITY_FLOOR = 1500.0
 _FIB = (1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377)
 MIN_CASH = 250.0
 SEED_BUFFER = 12
+SEED_SPEND_SHARE = 0.15
+EMERGENCY_FEED_FLOOR = 600.0
+WHEAT_TILE_CAP = 22
 FEED_RESERVE_PER_ANIMAL = 4
 
 
@@ -142,38 +160,215 @@ def _owned(tiles: list[list[Any]], x: int, y: int) -> bool:
 # planning
 # --------------------------------------------------------------------------
 
-def preferred_herd(observation: dict[str, Any]) -> str:
-    """Which pasture animal this town's demand actually rewards."""
-    remaining = remaining_demand(observation)
-    best, best_value = "COW", -1.0
-    for animal in ("COW", "SHEEP"):
-        product = ANIMAL_PRODUCT[animal]
-        value = remaining.get(product, 0.0) * live_price(observation, product)
+# Care is only worth taking if the animal is also fed, and the bonus is
+# banked and paid out on the next production day, so an animal that is fed
+# and cared for every day yields (interval + 1) units every `interval`
+# days: two a day for a goose, three every two days for a cow, four every
+# three for a sheep.
+def units_per_day(animal: str) -> float:
+    spec = ANIMALS[animal]
+    interval = max(1, int(spec["interval"]))
+    return (interval + 1.0) / interval
+
+
+def herd_census(tiles: list[list[Any]]) -> tuple[dict[str, int], dict[str, int]]:
+    """Animals standing, and empty structures, both counted by kind."""
+    animals = {"GOOSE": 0, "COW": 0, "SHEEP": 0}
+    pens = {"COOP": 0, "PASTURE": 0}
+    for row in tiles:
+        for tile in row:
+            if not isinstance(tile, dict):
+                continue
+            if "animal" in tile:
+                name = str(tile["animal"])
+                if name in animals:
+                    animals[name] += 1
+            elif tile.get("kind") in pens:
+                pens[str(tile["kind"])] += 1
+    return animals, pens
+
+
+def animal_value(
+    observation: dict[str, Any],
+    animal: str,
+    day: int,
+    animals: dict[str, int],
+) -> float:
+    """Coins one more of this animal returns, priced at the margin.
+
+    This is the calculation that decides Agent E's whole shape, and it is
+    the one every recorded route gets wrong. Valuing an animal at its
+    product's spot price says a sheep is worth 200 a unit and a goose 50,
+    so every tape builds sheep and cows. But the market is a shared
+    depleting pool: wool falls to a single coin after roughly 59 units are
+    sold into it and milk after 76, while egg -- alone among the nine
+    products -- has a logarithmic curve with the largest T in the game and
+    is still paying 40 coins at the four-hundredth unit.
+
+    Priced properly, against the herd already standing:
+
+        existing herd    1st animal     5th animal    17th animal
+        cow (milk)            3,888             30            30
+        sheep (wool)          4,879             26            26
+        goose (egg)           2,244          2,049         1,900
+
+    So a few cows and sheep are worth having for the steep part of their
+    curves, and after that every further pen should hold a goose. In real
+    games against elite opposition egg finishes 150 to 300 units *below*
+    equilibrium at 59 to 68 coins -- above its own base -- because none of
+    them keep geese at all.
+    """
+    spec = ANIMALS[animal]
+    horizon = LAST_DAY - day - int(spec["first"])
+    if horizon <= 0:
+        return -1.0
+    product = spec["product"]
+    rate = units_per_day(animal)
+    units = rate * horizon
+    # What the herd we already own will pour into this product first, less
+    # what the town will lift back out of the market before we get there.
+    committed = sum(
+        count * units_per_day(kind) * max(0, LAST_DAY - day - ANIMALS[kind]["first"])
+        for kind, count in animals.items()
+        if ANIMALS[kind]["product"] == product
+    )
+    absorbed = float(remaining_demand(observation).get(product, 0.0))
+    revenue = sale_revenue(observation, product, units, committed - absorbed)
+
+    # Every surviving animal drops one fertilizer a day, unconditionally --
+    # the simulator sets `fertilizer_available` on the daily refresh whether
+    # or not the animal was fed. It is the same for all three kinds, so it
+    # does not pick between them, but it is most of why a pen pays at all.
+    days = max(0, LAST_DAY - day)
+    fertilizer_committed = sum(animals.values()) * days
+    manure = sale_revenue(
+        observation, "FERTILIZER", days, fertilizer_committed
+    )
+    return revenue + manure - float(spec["cost"])
+
+
+def herd_plan(
+    observation: dict[str, Any],
+    day: int,
+    animals: dict[str, int],
+) -> tuple[str, float]:
+    """The animal worth buying next, and what it is worth."""
+    if HERD_FORCE is not None:
+        return HERD_FORCE, animal_value(observation, HERD_FORCE, day, animals)
+    best, best_value = "GOOSE", -1e9
+    for animal in ("GOOSE", "COW", "SHEEP"):
+        if MIXED_CAP is not None and animal != "GOOSE":
+            if animals.get(animal, 0) >= MIXED_CAP:
+                continue
+        value = animal_value(observation, animal, day, animals)
         if value > best_value:
             best, best_value = animal, value
-    return best
+    return best, best_value
+
+
+def preferred_herd(observation: dict[str, Any]) -> str:
+    """Backwards-compatible single-animal choice."""
+    animals, _ = herd_census(_tiles(_farm(observation)))
+    return herd_plan(observation, int(observation.get("day", 0)), animals)[0]
+
+
+def crop_cycle(crop: str) -> tuple[float, float]:
+    """Units a fully-tended tile yields, and the days it holds the tile."""
+    spec = CROPS[crop]
+    if spec["ongoing"]:
+        units = float(spec["max_yield"])
+        span = float(spec["first"] + spec["interval"] * spec["max_yield"])
+    else:
+        window = spec["max_day"] - (spec["max_day"] + 1) // 2 + 1
+        units = float(min(spec["max_yield"], window))
+        span = float(spec["max_day"] + 1)
+    return units, max(1.0, span)
+
+
+def crop_rate_value(
+    observation: dict[str, Any],
+    crop: str,
+    day: int,
+    standing: int,
+) -> float:
+    """Coins per tile-day from planting this crop now, priced at the margin.
+
+    This is the calculation Agent E's whole field plan rests on, and it is
+    three things at once that no spot-price ranking can be.
+
+    It is **marginal**: a crop is valued at what its units will fetch after
+    everything already growing has been sold into the same market, so the
+    thirteenth melon tile is correctly worth a fraction of the first. It is
+    **demand-aware**: the town lifts inventory back out of the market all
+    game, and that absorption is subtracted before the price is read, which
+    is why carrot is worth planting in a PET_CAFE town and worthless in
+    another. And it is **per tile-day**, so a cheap fast crop is not
+    out-ranked by an expensive slow one merely for having a bigger number
+    on the label.
+
+    Measured against an elite route, this is where the money actually is --
+    realised coins per unit sold, not base price:
+
+        melon 180, tomato 111, carrot 70, strawberry 59, wheat 43,
+        wool 11, milk 11
+
+    Wheat holds 43 against a base of 25 all game because five of the eight
+    shops buy it and both players are short of it for feed. Melon pays 180
+    but the market only absorbs about 150 a game between both players.
+    Wool and milk, which every recorded route builds its herd around, are
+    worth eleven coins a unit.
+    """
+    spec = CROPS.get(crop)
+    if spec is None or not crop_can_mature(crop, day, day):
+        return 0.0
+    units, span = crop_cycle(crop)
+    remaining = days_left(day)
+    if remaining <= 0:
+        return 0.0
+    # Everything already in the ground reaches the market before this does.
+    committed = standing * units * max(1.0, remaining / span)
+    absorbed = float(remaining_demand(observation).get(crop, 0.0))
+    revenue = sale_revenue(observation, crop, units, committed - absorbed)
+    horizon = min(span, float(remaining))
+    return (revenue - spec["seed"]) / max(1.0, horizon)
 
 
 def crop_ranking(observation: dict[str, Any], day: int) -> list[str]:
     """Crops worth planting now, best first.
 
-    Three factors, and the third one matters more than it looks:
+    Two rankings are implemented and both are honest attempts; which one
+    wins is a measured question, not an obvious one.
 
-    * coins per tile-day, so a cheap fast crop is not out-ranked by an
-      expensive slow one merely because its gross value is larger;
-    * the town's remaining appetite, so a crop nobody buys is never
-      planted however good its base price;
-    * **time to first cash, while cash is short.** By rate alone melon
-      wins at ~118 coins per tile-day, but it first yields on day 10.
-      Planting it with 30 coins in hand froze this agent at 30 coins for
-      ten days -- no herd, no land, no compounding -- while wheat would
-      have paid on day 2 and recycled every five. When the purse is thin,
-      payback speed is worth more than rate.
+    `marginal` prices a crop at what its units will really fetch once
+    everything already growing has been sold into the same market, net of
+    what the town lifts back out. It is the more correct model and it says
+    melon is worth 123 coins a tile-day and wheat 25.
+
+    `payback` is the older rule: coins per tile-day at the spot quote,
+    scaled by the town's appetite and, while cash is short, by how soon the
+    crop first pays. It is cruder, but it measured 5,000 coins a game
+    better on a fair panel, because this agent lives hand to mouth for the
+    first three weeks and a model that is right about the season is worth
+    less to it than one that is right about tomorrow.
     """
+    tiles = _tiles(_farm(observation))
+    standing: dict[str, int] = {c: 0 for c in CROPS}
+    for row in tiles:
+        for tile in row:
+            if isinstance(tile, dict) and tile.get("crop") in standing:
+                standing[str(tile["crop"])] += 1
+    scored: list[tuple[float, str]] = []
+    if RANKING_MODE == "marginal":
+        for crop in CROPS:
+            value = crop_rate_value(observation, crop, day, standing[crop])
+            if value > 0:
+                scored.append((value, crop))
+        scored.sort(reverse=True)
+        return [c for _, c in scored]
+
     remaining = remaining_demand(observation)
     money = float(_farm(observation).get("money", 0.0))
     thin = money < LIQUIDITY_FLOOR
-    scored: list[tuple[float, str]] = []
     for crop in CROPS:
         if not crop_can_mature(crop, day, day):
             continue
@@ -215,6 +410,77 @@ def carried_value(
     return total
 
 
+def _travel_score(value: float, travel: int) -> float:
+    """Rank a job by what it is worth net of getting there.
+
+    Dividing a job's value by the distance to it -- the obvious rule, and
+    the one this agent used -- rates a 600-coin job eight tiles away above
+    a 100-coin job next door. That is how a crew ends up crossing the farm
+    past work it could have finished, and it measured 2.0 steps walked for
+    every task done against a good route's 0.94.
+
+    Three models were tried on a fair panel of 36 games. Discounting by the
+    square of the distance is the clear winner, and not by a little:
+
+        value / (d+1)          37,756 mean, floor    673
+        value / (d+1)^2      **45,934 mean, floor 14,417**
+        value - 15*d           32,863 mean, floor  9,676
+        value - 40*d           22,732 mean, floor  7,367
+
+    The floor is the tell. A linear discount lets a distant prize pull the
+    whole crew off the near work, and the near work here is watering --
+    miss a tile two days running and the plant is a weed, so the losses
+    compound into whole-farm collapses. Squaring keeps everyone local
+    enough that the fields survive.
+    """
+    if TRAVEL_MODE == "linear":
+        return value / (travel + 1.0)
+    if TRAVEL_MODE == "net":
+        return value - travel * TURN_COST
+    return value / (travel + 1.0) ** TRAVEL_EXPONENT
+
+
+def _worth_saving(tile: dict[str, Any], day: int) -> bool:
+    """Has this plant any yield left to give?
+
+    A one-shot crop only gains units while it is inside its watering
+    window, so a wheat plant older than four days will never produce
+    another thing however faithfully it is watered -- keeping it alive is
+    pure overhead, and worse, it holds the tile against a replant. The
+    reserved rescue crew was spending its guaranteed labour on exactly
+    those plants, because the old rule rescued anything that had missed a
+    day. Let them go to weed and dig them out instead.
+    """
+    crop = str(tile.get("crop", ""))
+    spec = CROPS.get(crop)
+    if spec is None:
+        return False
+    if int(tile.get("yield_units", 0)) >= spec["max_yield"]:
+        return False
+    age = day - int(tile.get("planted_day", day))
+    if spec["ongoing"]:
+        return age < spec["first"] + spec["interval"] * spec["max_yield"]
+    return age < spec["max_day"]
+
+
+def _stream_value(
+    observation: dict[str, Any], animal: str, day: int
+) -> float:
+    """What the rest of this animal's season is worth, product and manure.
+
+    Priced at the margin rather than at the spot quote, because the fifth
+    cow's milk sells into a market the first four have already flattened.
+    """
+    spec = ANIMALS[animal]
+    horizon = max(0, LAST_DAY - day - int(spec["first"]))
+    product = spec["product"]
+    units = units_per_day(animal) * horizon
+    return (
+        marginal_price(observation, product) * units * 0.5
+        + marginal_price(observation, "FERTILIZER") * max(0, LAST_DAY - day)
+    )
+
+
 def _jobs_for_tile(
     observation: dict[str, Any],
     tile: Any,
@@ -222,8 +488,9 @@ def _jobs_for_tile(
     inventory: dict[str, int],
     *,
     at_shed: bool,
-    want_pasture: bool,
+    pen_kind: str | None,
     herd: str,
+    empty_pens: dict[str, int],
     fertilizable: int = 0,
     hungry: int = 0,
 ) -> list[tuple[float, list[Any]]]:
@@ -237,18 +504,18 @@ def _jobs_for_tile(
         if banked > 0:
             jobs.append((banked, ["DROP"]))
         shed = _shed(observation)
-        if int(shed.get(herd, 0)) > 0 and int(inventory.get(herd, 0)) == 0:
-            # An animal bought into the shed is worth its whole production
-            # stream once it reaches a pasture.
-            product = ANIMAL_PRODUCT[herd]
-            jobs.append(
-                (
-                    live_price(observation, product)
-                    * max(0, LAST_DAY - day)
-                    / max(1, ANIMALS[herd]["interval"]),
-                    ["PICKUP", herd, 1],
-                )
-            )
+        carrying_animal = any(int(inventory.get(a, 0)) > 0 for a in LIVESTOCK)
+        if not carrying_animal:
+            # An animal bought into the shed earns nothing until it reaches
+            # a pen, so fetching one is worth its whole production stream --
+            # but only if a pen of the right kind is standing empty.
+            for name in LIVESTOCK:
+                if int(shed.get(name, 0)) <= 0:
+                    continue
+                if empty_pens.get(ANIMALS[name]["structure"], 0) <= 0:
+                    continue
+                jobs.append((_stream_value(observation, name, day),
+                             ["PICKUP", name, 1]))
         if (
             int(shed.get("FERTILIZER", 0)) > 0
             and int(inventory.get("FERTILIZER", 0)) == 0
@@ -274,15 +541,14 @@ def _jobs_for_tile(
             )
 
     if tile is None:
-        if want_pasture:
-            product = ANIMAL_PRODUCT[herd]
+        if pen_kind is not None:
+            # Structures are free -- the simulator charges nothing for
+            # BUILD_COOP or BUILD_PASTURE -- so a pen is worth half the
+            # stream of the animal that will stand in it, discounted only
+            # for the turn it costs and the wait for the animal.
             jobs.append(
-                (
-                    live_price(observation, product)
-                    * max(0, LAST_DAY - day)
-                    / max(2, ANIMALS[herd]["interval"] * 2),
-                    ["BUILD_PASTURE"],
-                )
+                (_stream_value(observation, herd, day) * 0.5,
+                 ["BUILD_COOP" if pen_kind == "COOP" else "BUILD_PASTURE"])
             )
         return [(v, a) for v, a in jobs if v > 0]
 
@@ -313,17 +579,14 @@ def _jobs_for_tile(
                     ["COLLECT_FERTILIZER"],
                 )
             )
-    elif kind == "PASTURE" and "animal" not in tile:
-        held = int(inventory.get(herd, 0))
-        if held > 0:
-            product = ANIMAL_PRODUCT[herd]
+    elif kind in ("PASTURE", "COOP") and "animal" not in tile:
+        for name in LIVESTOCK:
+            if ANIMALS[name]["structure"] != kind:
+                continue
+            if int(inventory.get(name, 0)) <= 0:
+                continue
             jobs.append(
-                (
-                    live_price(observation, product)
-                    * max(0, LAST_DAY - day)
-                    / max(1, ANIMALS[herd]["interval"]),
-                    ["PLACE", herd],
-                )
+                (_stream_value(observation, name, day), ["PLACE", name])
             )
     elif kind == "WEED":
         jobs.append((25.0, ["DIG"]))
@@ -337,6 +600,16 @@ def _plant_jobs(
     seeds: dict[str, int],
     melons_planted: int,
 ) -> tuple[float, list[Any]] | None:
+    """The best crop this worker could sow here, if a seed is spare.
+
+    `seeds` is decremented by the caller as each worker is committed. It
+    has to be: the seed store is shared, and without reserving against it
+    every idle worker in the crew would independently decide to plant the
+    same single strawberry. That is not hypothetical -- it produced 215
+    PLANT actions for one crop in a game that could never have paid for a
+    fifth of them, and all but a handful were no-ops that cost a
+    worker-turn each.
+    """
     for crop in ranking:
         if seeds.get(crop, 0) <= 0:
             continue
@@ -353,9 +626,10 @@ def _plant_jobs(
 def _market_orders(
     observation: dict[str, Any],
     day: int,
-    step: int,
     herd: str,
     ranking: list[str],
+    starving: int = 0,
+    herd_worth: float = 0.0,
 ) -> list[list[Any]]:
     """Spend in a fixed priority order out of one running budget.
 
@@ -366,9 +640,10 @@ def _market_orders(
     running balance avoids both, because every later item only sees what
     the earlier ones left behind.
 
-    Order: labour, then seed for fast crops, then feed, then livestock,
-    then land last -- land is the only purchase that produces nothing by
-    itself, so it is bought out of genuine surplus.
+    Order: sell, then labour, then land, then livestock, then seed, then
+    emergency feed. Selling runs first because the order list is capped at
+    ten a turn and its proceeds fund everything under it. Livestock sits
+    above seed because an animal drops a fertilizer every day it lives.
     """
     farm = _farm(observation)
     budget = float(farm.get("money", 0.0))
@@ -382,16 +657,16 @@ def _market_orders(
         1 for row in tiles for t in row
         if isinstance(t, dict) and t.get("kind") == "PLANT"
     )
+    wheat_tiles = sum(
+        1 for row in tiles for t in row
+        if isinstance(t, dict) and t.get("crop") == "WHEAT"
+    )
     animals_on_farm = sum(
         1 for row in tiles for t in row
         if isinstance(t, dict) and "animal" in t
     )
-    empty_pasture = sum(
-        1 for row in tiles for t in row
-        if isinstance(t, dict)
-        and t.get("kind") == "PASTURE"
-        and "animal" not in t
-    )
+    herd_counts, empty_pens = herd_census(tiles)
+    empty_pasture = sum(empty_pens.values())
     open_ground = sum(
         1
         for y in range(len(tiles))
@@ -404,7 +679,21 @@ def _market_orders(
     #    produced 1,506 harvests and 76 units sold, with the shed
     #    overflowing its 100-unit cap and the surplus discarded. Proceeds
     #    also fund everything below, which is why this runs first.
-    wheat_needed = animals_on_farm * FEED_RESERVE_PER_ANIMAL
+    #    Reward is nothing but the money on the books at step 720, so
+    #    anything still in the shed when the whistle blows scored zero.
+    #    This agent finished a game holding 60 wheat, 14 milk, 14
+    #    fertilizer and four unplaced cows -- several thousand coins left
+    #    on the table -- so the last day sells the lot.
+    closing = day >= LAST_DAY
+    wheat_needed = 0 if closing else min(
+        animals_on_farm * FEED_RESERVE_PER_ANIMAL, WHEAT_HOARD_CAP
+    )
+    # Holding fertilizer back to spread on the fields was tried and cost
+    # about 12,000 coins a game. On paper it should win -- a unit fetches
+    # 36 to 53 on the market against roughly 129 in extra wheat -- but this
+    # agent is capital-starved for the first three weeks, and the cash the
+    # held stock did not raise was cash it could not spend on animals. The
+    # herd fell from 11.4 head to 3.8. Sell it.
     for item, quantity in sorted(shed.items()):
         if quantity <= 0 or item in ("COW", "SHEEP", "GOOSE"):
             continue
@@ -414,68 +703,125 @@ def _market_orders(
         if sellable > 0:
             orders.append(["SELL", item, sellable])
             budget += live_price(observation, item) * sellable
-
     # 1. Labour. The nth hire of a day costs fib(n) with a multiplier of 1,
     #    so the first hands are close to free and each one multiplies every
     #    other purchase. Nothing outranks this.
-    if hands < TARGET_HANDS:
-        for index in range(min(3, TARGET_HANDS - hands)):
+    #    The crew does not persist: the simulator empties `farm["hands"]`
+    #    at every day boundary and resets the hire counter with it, so the
+    #    whole crew is re-hired each morning and the Fibonacci price starts
+    #    again from one. Hiring three a turn therefore left this agent
+    #    working short-handed through the first quarter of every single
+    #    day. Fill the crew in the opening turn instead, up to the ten
+    #    market orders a turn allows.
+    room = MAX_ORDERS - len(orders)
+    if hands < TARGET_HANDS and room > 0:
+        for index in range(min(room, TARGET_HANDS - hands)):
             cost = _FIB[min(index + hands, len(_FIB) - 1)]
-            if budget < cost + 30:
+            if budget < cost + HIRE_FLOOR:
                 break
             orders.append(["HIRE"])
             budget -= cost
 
-    # 2. Seed, cheapest-and-fastest first. Ranking is by coins per
-    #    tile-day, so wheat leads early and the slow premium crops only
-    #    appear once there is ground and time to spare.
+    if closing:
+        # Nothing bought on the final day can pay for itself, but the crew
+        # still has a full day of harvesting and selling to do -- and the
+        # hands are wiped every night, so skipping the hire here left the
+        # farmer working the last day alone.
+        return orders[:10]
+
+    # 2. Land, as soon as the ground we hold is full. A quadrant is 25
+    #    tiles for 1,000 coins and then 2,000; against eleven hands that is
+    #    the cheapest capacity in the game, and it is the purchase this
+    #    agent kept never making. Under the old rule -- 1,500 clear surplus
+    #    on top of the price -- it farmed a single 25-tile quadrant for a
+    #    whole season while a good route farmed 75, because it never held
+    #    2,500 coins at once until day 22. Three quadrants, never four
+    #    (section 9i).
+    unlocked = len(farm.get("unlocked_quadrants") or [])
+    land_price = {1: 1000, 2: 2000}.get(unlocked)
+    used = plants + empty_pasture + animals_on_farm
+    if (
+        unlocked < 3
+        and land_price
+        and budget >= land_price + LAND_SURPLUS
+        and open_ground <= LAND_OPEN_TRIGGER
+        and used >= 18 * unlocked
+    ):
+        orders.append(["BUY_LAND"])
+        budget -= land_price
+        open_ground += 25
+
+    # 3. Livestock, ahead of seed. An animal yields one fertilizer every
+    #    single day it survives -- unconditionally, whether or not it was
+    #    fed -- on top of its own product, so it is the highest-return
+    #    purchase in the game and the only one whose return compounds with
+    #    the days remaining. Buying seed first is what pinned this agent at
+    #    ten coins from day two to day twenty: it spent the whole 3,000
+    #    opening on melon and strawberry seed and could then afford neither
+    #    hands nor animals.
+    #    An animal eats one wheat every day and bolts after two missed
+    #    meals, so the herd cannot outrun the feed supply. A wheat tile
+    #    returns about six units every five days once it is watered through
+    #    its window, so roughly one animal per wheat tile is what the farm
+    #    can actually carry.
+    #
+    #    Ignoring that is how this agent lost whole games. On one seed it
+    #    sold its melon crop on day eleven, spent every coin of it on
+    #    eleven cows inside two turns, and then had neither the wheat to
+    #    feed them nor the money to buy any: the herd starved from eleven
+    #    head to zero by day fifteen, the crew abandoned the fields to
+    #    chase the dying animals, all thirty-four plants went to weed, and
+    #    the game ended on 485 coins. Buy one at a time, only against feed
+    #    the farm can grow, and never down to the last coin.
+    cost = ANIMALS[herd]["cost"]
+    pen_free = int(empty_pens.get(str(ANIMALS[herd]["structure"]), 0))
+    in_shed = sum(int(shed.get(a, 0)) for a in LIVESTOCK)
+    carryable = int(
+        wheat_tiles * WHEAT_UNITS_PER_TILE_DAY + shed.get("WHEAT", 0) / 4.0
+    )
+    if (
+        herd_worth > 0
+        and pen_free > in_shed
+        and budget > cost + WORKING_CAPITAL
+        and animals_on_farm + in_shed < carryable
+        and day <= LAST_DAY - ANIMALS[herd]["first"] - 1
+    ):
+        orders.append(["BUY_ANIMAL", herd, 1])
+        budget -= cost
+
+    # 4. Seed, cheapest-and-fastest first, and never more than a working
+    #    buffer. Ranking is by coins per tile-day, so wheat leads early and
+    #    the slow premium crops only appear once there is ground and time
+    #    to spare. The spend is capped at a share of what is left so a
+    #    single turn can never drain the purse into the ground.
+    seed_budget = budget * SEED_SPEND_SHARE
     for crop in ranking[:3]:
-        if open_ground <= 0:
+        if open_ground <= 0 or seed_budget <= 0:
             break
         have = seeds.get(crop, 0)
         cost = CROPS[crop]["seed"]
         want = min(SEED_BUFFER - have, open_ground)
-        affordable = int(min(want, budget // max(1, cost * 2)))
+        affordable = int(min(want, seed_budget // max(1, cost)))
         if affordable > 0:
             orders.append(["BUY_SEED", crop, affordable])
             budget -= cost * affordable
+            seed_budget -= cost * affordable
 
-    # 3. Feed, so the animals already owned keep producing.
-    wheat_needed = animals_on_farm * FEED_RESERVE_PER_ANIMAL
+    # 5. Feed. Wheat is grown, not bought. Every animal eats one wheat a
+    #    day, so a seventeen-head herd needs some four hundred units over a
+    #    season -- and because five of the eight town shops buy wheat, the
+    #    market price of it runs at 40 to 48 against a base of 25 for the
+    #    whole game. Buying that feed cost this agent more than the herd
+    #    ever returned: it purchased 248 units at market while its animals
+    #    produced 34 milk and 26 wool, and it sat at twenty coins from day
+    #    two to day twenty-six as a result. So this buys only the emergency
+    #    ration that keeps animals from bolting when the harvest is late.
     wheat_have = shed.get("WHEAT", 0)
-    if animals_on_farm and wheat_have < wheat_needed and budget > 400:
-        want = min(6, wheat_needed - wheat_have)
-        if want > 0:
-            orders.append(["BUY_PRODUCT", "WHEAT", want])
-            budget -= 40 * want
+    if starving > 0 and wheat_have <= 0 and budget > EMERGENCY_FEED_FLOOR:
+        want = min(starving, 4)
+        orders.append(["BUY_PRODUCT", "WHEAT", want])
+        budget -= live_price(observation, "WHEAT") * want
 
-    # 4. Livestock for pens that already exist and are still worth filling.
-    cost = ANIMALS[herd]["cost"]
-    in_shed = int(shed.get(herd, 0))
-    if (
-        empty_pasture > in_shed
-        and budget > cost + 200
-        and day <= LAST_DAY - ANIMALS[herd]["first"] - 1
-    ):
-        want = int(min(2, empty_pasture - in_shed, budget // cost))
-        if want > 0:
-            orders.append(["BUY_ANIMAL", herd, want])
-            budget -= cost * want
-
-    # 5. Land, last and only out of surplus, and only once the ground we
-    #    already own is genuinely in use. Three quadrants, never four
-    #    (section 9i).
-    unlocked = len(farm.get("unlocked_quadrants") or [])
-    price = {1: 1000, 2: 2000}.get(unlocked)
-    if (
-        unlocked < 3
-        and price
-        and budget > price + LAND_SURPLUS
-        and open_ground <= 4
-        and plants >= 12 * unlocked
-    ):
-        orders.append(["BUY_LAND"])
-        budget -= price
 
     return orders[:10]
 
@@ -491,12 +837,31 @@ def decide(observation: dict[str, Any]) -> AgentAction:
         return {"farmer": PASS, "hands": [], "market": []}
 
     day = int(observation.get("day", 0))
-    step = int(observation.get("step", 0))
     positions = _positions(farm)
     shed = _shed(observation)
     seeds = _seeds(observation)
-    herd = preferred_herd(observation)
+    herd_counts, empty_pens = herd_census(tiles)
+    herd, herd_worth = herd_plan(observation, day, herd_counts)
     ranking = crop_ranking(observation, day)
+
+    # Feed comes before profit. One wheat per animal per day is the price
+    # of keeping the herd alive, and a wheat tile returns roughly six units
+    # every five days, so the standing wheat area has to track the herd or
+    # the animals bolt and every coin sunk into them is lost. When the area
+    # is short, wheat jumps the ranking -- both for what gets planted and
+    # for what seed gets bought.
+    wheat_tiles = sum(
+        1
+        for row in tiles
+        for t in row
+        if isinstance(t, dict) and t.get("crop") == "WHEAT"
+    )
+    animals_now = sum(
+        1 for row in tiles for t in row if isinstance(t, dict) and "animal" in t
+    )
+    wheat_wanted = min(WHEAT_TILE_CAP, animals_now + 2)
+    if wheat_tiles < wheat_wanted and "WHEAT" in ranking:
+        ranking = ["WHEAT"] + [c for c in ranking if c != "WHEAT"]
 
     melons = sum(
         1
@@ -504,39 +869,31 @@ def decide(observation: dict[str, Any]) -> AgentAction:
         for t in row
         if isinstance(t, dict) and t.get("crop") == "MELON"
     )
-    pastures = sum(
-        1
-        for row in tiles
-        for t in row
-        if isinstance(t, dict) and t.get("kind") == "PASTURE"
-    )
-    open_tiles = sum(
-        1
-        for y in range(len(tiles))
-        for x in range(len(tiles[y]))
-        if _owned(tiles, x, y) and tiles[y][x] is None
-    )
-    # Livestock pays back over the rest of the season, so a pasture built
-    # late never earns out. Build them while there is time, and only while
-    # there is still open ground for crops too.
-    # A pasture is worth nothing without an animal standing in it, and the
-    # animal costs several times what the ground does. Building ahead of
-    # what we can stock spent the whole purse on empty pens and cost the
-    # land purchases as well, so build only one pen ahead of the herd and
-    # only with an animal's price already in hand.
+    pastures = sum(empty_pens.values()) + sum(herd_counts.values())
+    # BUILD_PASTURE and BUILD_COOP cost nothing -- the simulator charges no
+    # money for either -- so the only price of a pen is the tile it stands
+    # on and the turn spent raising it. The old gate demanded twice an
+    # animal's price in hand before laying a single pen, which is why this
+    # agent capped out at six pens while a good route runs seventeen.
+    #
+    # What a pen must respect instead is feed. An animal eats a wheat a day
+    # and bolts after two missed meals, so pens are built only as far as
+    # the standing wheat can carry them; see the livestock note in
+    # `_market_orders` for the game this rule was learned from.
     money = float(farm.get("money", 0.0))
-    animals_now = sum(
-        1
-        for row in tiles
-        for t in row
-        if isinstance(t, dict) and "animal" in t
+    afford = int(money // ANIMALS[herd]["cost"])
+    in_shed_animals = sum(int(shed.get(a, 0)) for a in LIVESTOCK)
+    carrying = int(
+        wheat_tiles * WHEAT_UNITS_PER_TILE_DAY + shed.get("WHEAT", 0) / 4.0
     )
-    want_pasture = (
-        pastures < TARGET_PASTURES
-        and pastures <= animals_now + 1
-        and money > ANIMALS[herd]["cost"] * 2
+    pen_kind = None
+    if (
+        herd_worth > 0
+        and pastures < min(TARGET_PASTURES, carrying + 1)
+        and pastures <= animals_now + in_shed_animals + afford + 1
         and day <= LAST_DAY - ANIMALS[herd]["first"] - 2
-    )
+    ):
+        pen_kind = str(ANIMALS[herd]["structure"])
 
     fertilizable = sum(
         1
@@ -552,7 +909,17 @@ def decide(observation: dict[str, Any]) -> AgentAction:
         for t in row
         if isinstance(t, dict) and "animal" in t and not t.get("fed_today")
     )
+    starving = sum(
+        1
+        for row in tiles
+        for t in row
+        if isinstance(t, dict)
+        and "animal" in t
+        and not t.get("fed_today")
+        and int(t.get("consecutive_unfed", 0)) >= 1
+    )
 
+    budgeted_seeds = dict(seeds)
     claimed: set[tuple[int, int]] = set()
     actions: list[list[Any]] = [None] * len(positions)  # type: ignore[list-item]
     shed_set = set(shed_tiles())
@@ -626,6 +993,7 @@ def decide(observation: dict[str, Any]) -> AgentAction:
         inventory = _inventory(observation, worker)
         best_score = 0.0
         best_action: list[Any] = list(PASS)
+        best_job: list[Any] = list(PASS)
         best_target: tuple[int, int] | None = None
 
         for y in range(len(tiles)):
@@ -642,22 +1010,24 @@ def decide(observation: dict[str, Any]) -> AgentAction:
                     day,
                     inventory,
                     at_shed=(x, y) in shed_set,
-                    want_pasture=want_pasture,
+                    pen_kind=pen_kind,
                     herd=herd,
+                    empty_pens=empty_pens,
                     fertilizable=fertilizable,
                     hungry=hungry,
                 )
                 if tile is None:
                     planted = _plant_jobs(
-                        observation, day, ranking, seeds, melons
+                        observation, day, ranking, budgeted_seeds, melons
                     )
                     if planted is not None:
                         options = options + [planted]
                 for value, act in options:
-                    score = value / (travel + 1.0)
+                    score = _travel_score(value, travel)
                     if score > best_score:
                         best_score = score
                         best_target = (x, y)
+                        best_job = list(act)
                         best_action = (
                             list(act)
                             if travel == 0
@@ -666,6 +1036,15 @@ def decide(observation: dict[str, Any]) -> AgentAction:
 
         if best_target is not None:
             claimed.add(best_target)
+        # Reserve against the shared stores for the job this worker is
+        # committed to, whether it is standing on the tile or still walking
+        # to it. Without this the whole crew independently picks the same
+        # single seed and eleven of the twelve PLANT actions are no-ops.
+        if len(best_job) > 1 and best_job[0] == "PLANT":
+            crop = str(best_job[1])
+            budgeted_seeds[crop] = budgeted_seeds.get(crop, 0) - 1
+            if crop == "MELON":
+                melons += 1
         actions[worker] = best_action
 
     for worker, act in enumerate(actions):
@@ -675,7 +1054,9 @@ def decide(observation: dict[str, Any]) -> AgentAction:
     return {
         "farmer": actions[0],
         "hands": actions[1:],
-        "market": _market_orders(observation, day, step, herd, ranking),
+        "market": _market_orders(
+            observation, day, herd, ranking, starving, herd_worth
+        ),
     }
 
 
