@@ -2664,6 +2664,66 @@ session on them.
 | Crews of 13, 15, 17 | 41,926 / 1,309 / 1,022 | hands are re-hired **every day**, so the 10th through 14th cost 55+89+144+233+377 coins *daily*. A crew of 9 beat 11 and 13 |
 | Travel priced as `value - cost * distance` | 32,863 at best | too blunt; the square-of-distance discount is much better (10.11) |
 
+### 10.8c The demand engine does not pay on a strong route (2026-09-07)
+
+This is the most important negative result in the file, because the whole
+plan for Agent E after section 9v rested on the opposite. Four independent
+forms of demand steering were built and measured on **48 held-out games**
+-- three opponents, seeds 6-13, both seats -- against Candidate D:
+
+| layer | mean | vs D |
+| --- | ---: | ---: |
+| **D, unchanged** | **88,863** | -- |
+| D + herd swap (`rl/herd_swap.py`) | 88,756 | -107 |
+| D + demand-driven herd *ratio* tilt | 88,996 | +133 |
+| D + sell gate (`rl/sell_gate.py`) | 83,609 | **-5,254** |
+| D forced to an all-sheep herd | 73,153 | **-15,710** |
+| D forced to an all-cow herd | 63,992 | **-24,871** |
+
+**Why, and this is the part worth keeping.** The tape's recorded herd is
+already *six cows and eleven sheep*. Wool falls to a single coin once
+about 59 units have been sold into it and milk once about 76 have, so a
+seventeen-head herd pouring everything into one product destroys that
+product's price. Two half-sized streams sell into two separate curves and
+both stay near the top of theirs. **Diversification, not demand-matching,
+is what this market rewards** -- and the elite human whose game the tape
+records already diversifies.
+
+That reframes 9v. The correlation it measured between a top team's herd
+and the town's demand is real, but it is not a lever: strong players
+diversify, and diversification correlates with demand-matching without
+being caused by it. Steering the herd toward the demanded product gains
++133 coins over 48 games, which is a fortieth of the 4,845-coin median
+winning margin -- indistinguishable from nothing.
+
+The herd swap fires in only **3 of 48 games** even when unblocked, and the
+sell gate fails for the reason its own docstring predicts: withholding
+sales starves the purchases the sales were funding.
+
+**Do not spend another session on demand steering as a bolt-on.** If it
+has value anywhere it is inside an agent that chooses its own production
+from scratch, where the herd size and the crop mix are still free
+variables -- which is Agent E, not a wrapper on a tape.
+
+### 10.8d Four more measured dead ends on E (2026-09-07)
+
+All on the same 48 held-out games, against E's 50,437 baseline.
+
+| idea | result | why it fails |
+| --- | ---: | --- |
+| **Per-worker zones** (contiguous row-major bands, one per hand) | 37,192 | the clear loser of the day. Bands cut across the shed and trap a worker in a strip with nothing to do; the herd collapsed from 12.3 head to 5.2. A better zoning might still work, but not this one |
+| Gentler travel discount for herd work (exponent 1.0 instead of 2.5) | 41,447 | E visits each animal ~10 times in 25 days against a good route's daily, so this looked certain. Pulling workers to distant pens starves the watering, and a weeded plant costs more than a missed collection |
+| Two-tier ranking: idle workers re-rank with distance barely discounted | 49,815 | E idles 4,709 worker-turns a game, so converting them looked free. It is not -- those turns are idle precisely because everything reachable is far, and walking five tiles does not pay. The idleness is a symptom of a thin farm, not a scheduling bug |
+| Liquidity floor at 0 / 400 / 3000 (controls how much slow crops are penalised while cash is short) | 51,549 / 52,708 / 49,250 | all inside noise; the heuristic is not what keeps E off strawberry |
+
+**What the same measurement did establish.** E realises far better prices
+than D on every shared product -- wool 243 a unit against 34, milk 197
+against 92, strawberry 144 against 69 -- because it sells smaller
+quantities earlier into an uncrowded market. Its entire deficit is
+**volume: 1,957 units a game against D's 6,414**. Throughput, not pricing,
+is the whole remaining gap, and throughput is routing: E walks 1.55 steps
+per task where D walks 0.94.
+
 ### 10.9 How to test
 
 * `python -m tools.validation.preflight_candidate_d` -- seven gates for
