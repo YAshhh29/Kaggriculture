@@ -54,11 +54,16 @@ from agents.experimental_distilled_elite_rb25det_agent import (
 from rl.candidate_a import build_candidate_a_agent
 from rl.candidate_b import build_candidate_b_agent
 from rl.demand_sales import paced_orders
+from rl.idle_rescue import build_idle_rescue_agent
 from rl.runtime import AgentAction, Baseline, clone_action
 
 
 # 0.0 disables pacing entirely; see the module docstring.
 SELL_PACE = 0.0
+IDLE_RESCUE = False
+RESCUE_OPS = (
+    "COLLECT_FERTILIZER", "HARVEST", "CARE", "FEED", "WATER", "DIG",
+)
 CASH_FLOOR = 15000.0
 SHED_PRESSURE = 80
 CLOSING_DAY = 29
@@ -76,6 +81,13 @@ def build_candidate_f_agent(
     inner = build_candidate_b_agent(
         baseline=build_candidate_a_agent(baseline=baseline)
     )
+    if IDLE_RESCUE:
+        # Outside the guard stack, not inside it. Candidate A watches the
+        # raw route to decide when the farm has drifted far enough to need
+        # recovery; feeding it a already-repaired action changes what it
+        # sees and it stops placing animals. Wrapping the finished action
+        # instead leaves every guard reading exactly what it expects.
+        inner = build_idle_rescue_agent(inner, frozenset(RESCUE_OPS))
     if pace <= 0.0:
         return inner
 

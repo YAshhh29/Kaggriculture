@@ -1303,6 +1303,8 @@ elite_rb25det_route = elite_andrey_decide
 "Candidate F: the route that wins most often, plus the demand engine.\n\nF differs from Candidate D in exactly two ways, and the first one is the\nlarger.\n\n**A different route, chosen on the right objective.** Kaggle's simulation\nladder rates on match *outcomes*: a game won by one coin counts exactly as\nmuch as a game won by fifty thousand. Every route this project has\nselected -- D's included -- was ranked on mean reward instead. Screened\nunder an identical guard stack against 80 real opponents from the cached\ncorpus, both seats, 160 games each:\n\n    route                       mean coins   win rate\n    D's (Andrey, ep105520725)      100,815        85%   (136/160)\n    **F's (RB25det, ep105419382)**  92,459    **95%**   (152/160)\n\nF gives up about 8,000 coins a game to win sixteen more games in a hundred\nand sixty, which is the trade the ladder actually pays for. Section 10.8j\nrecords the full screen, including the six routes that lost.\n\n**A demand-paced market layer.** `rl.demand_sales` holds a sale back while\nthe town has not yet eaten the last one, because price is a function of a\nshared market inventory and the town's consumption is the only thing\npushing it back up. Whether that pays depends on volume: it is worth about\na thousand coins to Agent E, which sells around a thousand units a game\nand is inside the town's appetite, and it *cost* Candidate D three\nthousand, because D sells 2,138 units against the roughly 3,800 the town\nabsorbs across both players. So the pace is a measured parameter here, not\nan assumption -- and on this route it measured **negative**, which is why\nit defaults to off:\n\n    F, no pacing        92,459 coins   95% wins   (152/160)\n    F, demand pace 48   90,709         86%        (138/160)\n    F, demand pace 24   88,514         72%        (115/160)\n\nRB25det sells 2,000-odd units a game, well past the roughly 3,800 the town\nabsorbs across both players, so holding a unit back only postpones the\nsame floored price while starving the purchases the sale was funding. That\nis the fifth independent confirmation that the demand engine cannot lift a\nhigh-volume clone; the layer is kept wired in because it is the right\nmechanism for any future route that produces *less*.\n\nEverything else is D's proven wrapping: Candidate A's guarded recovery and\nterminal liquidation, then Candidate B's market-timing residuals.\n"
 from typing import Any
 SELL_PACE = 0.0
+IDLE_RESCUE = False
+RESCUE_OPS = ('COLLECT_FERTILIZER', 'HARVEST', 'CARE', 'FEED', 'WATER', 'DIG')
 CASH_FLOOR = 15000.0
 SHED_PRESSURE = 80
 CLOSING_DAY = 29
@@ -1310,6 +1312,8 @@ CLOSING_DAY = 29
 def build_candidate_f_agent(baseline: Baseline=elite_rb25det_route, *, pace: float=SELL_PACE, cash_floor: float=CASH_FLOOR, shed_pressure: int=SHED_PRESSURE, closing_day: int=CLOSING_DAY) -> Baseline:
     """The RB25det route under A+B guards, with optional demand pacing."""
     inner = build_candidate_b_agent(baseline=build_candidate_a_agent(baseline=baseline))
+    if IDLE_RESCUE:
+        inner = build_idle_rescue_agent(inner, frozenset(RESCUE_OPS))
     if pace <= 0.0:
         return inner
 
