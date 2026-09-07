@@ -3095,6 +3095,49 @@ across 1,438 decisions, 12/12 clean games, and the full suite.
 weaker than the players they were recorded from (9m), so 95% is an upper
 bound on live win rate, not a prediction of one.
 
+### 10.8m CORRECTION: the F-beats-D result does not replicate
+
+**Sections 10.8j, 10.8k and 10.8l overstate Candidate F, and this section
+supersedes their conclusion.** Those screens were run against a panel of
+40 and then 80 opponents sampled with `random.seed(11)`. Re-run against
+**120 opponents sampled with a different seed, both seats, 240 games**,
+the ordering reverses:
+
+| agent | 240 games (120 opponents) | 160 games (80 opponents, the earlier panel) |
+| --- | --- | --- |
+| **D** (live, Andrey route) | **99,415 -- 89.6%** (215/240) | 100,815 -- 85% |
+| **F** (RB25det route) | 91,415 -- 86.7% (208/240) | 92,459 -- **95%** |
+
+And head to head, F against D directly over 40 seeds and both seats:
+
+    F wins 39/80    D wins 41/80    F mean 81,173    D mean 88,498
+
+That is a coin flip on wins and a clear loss on coins.
+
+**So the honest position is that F is not better than D.** It is at best
+indistinguishable and probably slightly worse. The 95% figure was an
+artifact of which eighty opponents happened to be drawn.
+
+**The methodological lesson is the important part.** A 160-game panel
+looked like plenty -- it is more than any earlier route decision in this
+project used -- and it still produced a ten-point spread that vanished on
+resampling. Route screens in this repository must therefore:
+
+* draw **at least 120 opponents** and report both seats;
+* be **re-run on a second, independently seeded panel** before any
+  conclusion is drawn from them; and
+* include a **direct head-to-head** against the incumbent, which is the
+  only comparison with no panel-sampling bias in it at all.
+
+None of the earlier route decisions in this file -- 9n, 9p, 10.8j, 10.8k --
+met that bar, which means the choice of Candidate D's own route rests on
+weaker evidence than its section claims too.
+
+**Practical consequence: do not swap the live agent to F.** D stays. F is
+kept, packaged and gated, because the RB25det route is a genuine
+alternative worth re-testing whenever the screening harness improves --
+but it has not earned a submission.
+
 ### 10.9 How to test
 
 * `python -m tools.validation.preflight_candidate_d` -- seven gates for
