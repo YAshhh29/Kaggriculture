@@ -26,7 +26,19 @@ a thousand coins to Agent E, which sells around a thousand units a game
 and is inside the town's appetite, and it *cost* Candidate D three
 thousand, because D sells 2,138 units against the roughly 3,800 the town
 absorbs across both players. So the pace is a measured parameter here, not
-an assumption -- see 10.8l for where it settled on this route.
+an assumption -- and on this route it measured **negative**, which is why
+it defaults to off:
+
+    F, no pacing        92,459 coins   95% wins   (152/160)
+    F, demand pace 48   90,709         86%        (138/160)
+    F, demand pace 24   88,514         72%        (115/160)
+
+RB25det sells 2,000-odd units a game, well past the roughly 3,800 the town
+absorbs across both players, so holding a unit back only postpones the
+same floored price while starving the purchases the sale was funding. That
+is the fifth independent confirmation that the demand engine cannot lift a
+high-volume clone; the layer is kept wired in because it is the right
+mechanism for any future route that produces *less*.
 
 Everything else is D's proven wrapping: Candidate A's guarded recovery and
 terminal liquidation, then Candidate B's market-timing residuals.

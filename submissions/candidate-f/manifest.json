@@ -1,9 +1,9 @@
 {
-  "created_at": "2026-09-07T16:57:33.512436+00:00",
+  "created_at": "2026-09-07T17:22:25.232693+00:00",
   "competition": "kaggriculture",
   "agent": "main.py",
-  "sha256": "cd858a1f05d2fe912b1cba975c232afcf152f878202e5335cb469a0917be6d00",
-  "combined_source_sha256": "860a2ca79f9496fd0bddb134599ebdb275d73a7e8f1a2af5ac8f1151fde3b215",
+  "sha256": "da914c1e57bfd83b03a4db2ae174501496db3a2c6d9050fe86eb4e31bcf75f47",
+  "combined_source_sha256": "790d7fa98e2ea54838680d47dedbb0576d989386fd95d27dfa6ed2ff40e094e7",
   "parent_submission": {
     "note": "built on the Candidate B package",
     "source_files": [

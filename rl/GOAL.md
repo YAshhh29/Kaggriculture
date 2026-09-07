@@ -3059,6 +3059,42 @@ yanbing scored 137,331 in its own game and screens at 48%.
 `tools/data/extract_opening_book.py` reads the same corpus; the screening
 harness lives in the scratchpad and should be promoted to `tools/data/`.
 
+### 10.8l Candidate F, final: the route change pays, the pacing does not
+
+Candidate F = the RB25det route (ep105419382) under Candidate A's guards
+and B's residuals. Measured against **80 real opponents from the cached
+corpus, both seats, 160 games** per configuration:
+
+| agent | mean coins | floor | win rate |
+| --- | ---: | ---: | ---: |
+| D (live) | **100,815** | 49,184 | 85% (136/160) |
+| **F -- RB25det, no pacing** | 92,459 | 43,074 | **95% (152/160)** |
+| F + demand pace 48 | 90,709 | 41,227 | 86% (138/160) |
+| F + demand pace 24 | 88,514 | 39,643 | 72% (115/160) |
+
+**The route change pays and the demand pacing does not.** F wins ten
+points more often than D across the field and, against the forty strongest
+opponents (10.8k), matches D's win rate while scoring 10,000 coins more.
+
+Pacing costs F between 2,000 and 4,000 coins and up to 23 points of win
+rate. That is the **fifth** independent confirmation that the demand
+engine cannot lift a high-volume clone -- after the herd swap, the ratio
+tilt, the sell gate and the same pacing on D -- and it is the same
+arithmetic each time: the town absorbs roughly 3,800 units a game across
+both players, these routes sell more than 2,000 of them each, and above
+that line a held unit only postpones the same floored price. The layer
+stays wired into F because it is the right mechanism for a route that
+produces *less* -- it is worth about a thousand coins to Agent E.
+
+**F passes all seven preflight gates** (`tools/validation/preflight_candidate_f.py`):
+byte-identical rebuild, manifest match, verified model hashes, Kaggle's
+real loader picking a working callable, source == package == simulator
+across 1,438 decisions, 12/12 clean games, and the full suite.
+
+**The standing caveat.** These opponents are frozen tapes and therefore
+weaker than the players they were recorded from (9m), so 95% is an upper
+bound on live win rate, not a prediction of one.
+
 ### 10.9 How to test
 
 * `python -m tools.validation.preflight_candidate_d` -- seven gates for
