@@ -2987,6 +2987,47 @@ match and writes a self-contained HTML replay:
 Open it in VS Code with Ctrl+Shift+P -> "Simple Browser: Show". The files
 are about 47 MB each and `artifacts/replays/` is git-ignored.
 
+### 10.8j Routes have been selected on the wrong objective all along
+
+Kaggle's simulation ladder rates on **match outcomes**, not on coins. A
+game won by one coin counts exactly as much as a game won by fifty
+thousand. Every route decision in this repository -- including Candidate
+D's, chosen in 9n and 9p -- ranked candidates by **mean reward**, which is
+the wrong objective for the thing we are being scored on.
+
+The two orderings are genuinely different. Screening the strongest cached
+sides under the same A+B guard stack, against 40 real opponents from the
+corpus, both seats, 80 games each:
+
+| route | mean coins | floor | **win rate** |
+| --- | ---: | ---: | ---: |
+| **D** (the live route) | **98,731** | 53,598 | 85% |
+| Shangshang Zhang ep105139789 | 92,559 | **0** | **92%** |
+| RB25det ep105419382 | 88,517 | 46,492 | **90%** |
+| Jaydon J P ep105432233 | 90,785 | 45,547 | 64% |
+| Yuxiao Wang ep105403679 | 86,484 | 38,438 | 66% |
+| Alexander Gremyakov ep105385395 | 85,750 | 37,946 | 45% |
+| ASH ep105392925 | 83,874 | 37,417 | 48% |
+| fan yanbing ep105406950 | 81,855 | 32,080 | 48% |
+
+D has the best mean and only the *third* best win rate. RB25det scores
+10,000 fewer coins a game and wins five points more often, with a sound
+floor. Shangshang Zhang wins most of all but posts a zero-coin game, which
+is a robustness flag worth understanding before trusting it.
+
+Two further things this screen confirms, both consistent with 9k:
+
+* **A side's own reward does not predict its strength as a route.** fan
+  yanbing scored 137,331 in its own game and screens at 81,855 with a 48%
+  win rate; Shangshang Zhang scored 116,423 and screens at 92%.
+* **The spread is enormous** -- 45% to 92% win rate among sides that all
+  scored six figures. Route choice is worth far more than any mechanism
+  this project has tuned.
+
+`tools/data/extract_opening_book.py` reads the same corpus; the screening
+harness lives in the scratchpad and should be promoted to `tools/data/`
+once the wider re-screen settles which route Candidate F should carry.
+
 ### 10.9 How to test
 
 * `python -m tools.validation.preflight_candidate_d` -- seven gates for

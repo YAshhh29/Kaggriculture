@@ -49,6 +49,8 @@ def main() -> None:
     parser.add_argument("--seat", type=int, default=0, choices=(0, 1))
     parser.add_argument("--steps", type=int, default=720)
     parser.add_argument("--out", default=None)
+    parser.add_argument("--open", action="store_true",
+                        help="open the replay in the default browser")
     args = parser.parse_args()
 
     from kaggle_environments import make
@@ -84,7 +86,13 @@ def main() -> None:
     out.write_text(environment.render(mode="html", width=1000, height=760),
                    encoding="utf-8")
     print(f"replay written to {out}")
-    print("open it with VS Code: Ctrl+Shift+P -> 'Simple Browser: Show'")
+    if args.open:
+        import webbrowser
+        webbrowser.open(out.resolve().as_uri())
+        print("opened in your default browser")
+    else:
+        print(f"open it with:  start \"\" \"{out}\"     (Windows)")
+        print("or re-run with --open to launch it automatically")
 
 
 if __name__ == "__main__":
