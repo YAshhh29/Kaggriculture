@@ -45,7 +45,7 @@ from typing import Any
 
 from core.routing import distance, step_toward
 from rl.demand import ANIMAL_PRODUCT, remaining_demand
-from rl.market import marginal_price, sale_revenue
+from rl.market import headroom, marginal_price, sale_revenue
 from rl.economics import (
     ANIMALS,
     CROPS,
@@ -80,6 +80,9 @@ TRAVEL_MODE = "square"
 TRAVEL_EXPONENT = 3.0
 TURN_COST = 30.0
 WHEAT_HOARD_CAP = 24
+SELL_FLOOR = 15.0
+SELL_CASH_FLOOR = 1500.0
+SHED_PRESSURE = 70
 WHEAT_UNITS_PER_TILE_DAY = 0.6
 WORKING_CAPITAL = 400.0
 MAX_ORDERS = 10
@@ -707,6 +710,21 @@ def _market_orders(
             sellable = max(0, quantity - wheat_needed)
         elif item == "FERTILIZER":
             sellable = max(0, quantity - fertilizer_needed)
+        # Selling is where this agent already beats every tape: it
+        # realises 170 coins a unit on wool where a good route gets 34,
+        # and 112 on strawberry against 69, because it sells less into a
+        # less crowded market. The market is a shared pool the town drains
+        # all game, so a unit held while its price is on the floor is
+        # worth more a few days later. Sell down to the point where the
+        # next unit stops paying -- unless cash is short, the shed is
+        # filling toward its 100-unit cap, or the season is over.
+        if (
+            sellable > 0
+            and SELL_FLOOR > 0.0
+            and budget > SELL_CASH_FLOOR
+            and sum(shed.values()) < SHED_PRESSURE
+        ):
+            sellable = min(sellable, headroom(observation, item, SELL_FLOOR))
         if sellable > 0:
             orders.append(["SELL", item, sellable])
             budget += live_price(observation, item) * sellable
