@@ -2857,6 +2857,45 @@ cow can be bought on day three. Closing the last 23,000 coins needs a
 scheduler that plans a day or a week at a time, or an explicit opening
 book for the first ten days. Do not spend another session on weights.
 
+### 10.8g What the whole field actually does in its first ten days
+
+Extracted from the cached corpus with `tools/data/extract_opening_book.py`
+-- 245 real Kaggle episodes, **490 sides**, both players of each.
+
+| by day | 1 | 4 | 8 | 10 | 2nd quadrant | 3rd |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| **top 20 sides** (mean reward 141,731) | 4 animals | 5 | 10 | 12 | day 6 | day 9 |
+| **middle 20 sides** (mean 77,772) | 4 | 5 | 9 | 12 | day 6 | day 10 |
+| **Agent E** | **0** | **0** | **3** | **9** | day 1 | -- |
+
+Seeds bought by day 10 are the same for both groups too: about 40 wheat,
+27 strawberry, 14 melon, 2 carrot; and about 34 wheat, 24 strawberry and
+12 melon actually planted, with 68 hire orders.
+
+**The finding is that the opening does not separate strong from weak.**
+The top sides and the median sides open almost identically -- it is a
+solved problem the entire field has solved -- so rank is won somewhere
+later. But E was behind *all* of them, standing no animals at all on day
+one where every real side stands four, which is the whole of its
+271-against-396 animal-day deficit.
+
+They pay for it by spending the entire 3,000 opening on day one -- their
+money drops to 46 by the end of it -- and it goes on **animals first**.
+Land comes on day six, out of what the farm has earned by then.
+
+**Transplanting that book into E cost 11,500 coins** (50,762 against
+62,273). The reason is precise and worth keeping: four animals on day one
+consume exactly the cash E needs for its day-one second quadrant, and that
+quadrant is worth +8,000 on its own. E cannot afford both, and for E the
+land is worth more.
+
+**So an opening is not portable between architectures.** It pays only
+alongside the rest of the play it was recorded with -- the field's herd-
+first opening works because their labour routes feed and tend those
+animals from day one, and E's does not. This is the same lesson as 10.8c
+in a different place: what correlates with strength in a corpus of
+recorded games is not automatically a lever you can pull.
+
 ### 10.9 How to test
 
 * `python -m tools.validation.preflight_candidate_d` -- seven gates for
