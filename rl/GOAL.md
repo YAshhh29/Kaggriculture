@@ -2950,6 +2950,43 @@ commitment, herd composition, herd timing and opening crop choice has been
 tried and lost. The remaining gap is not reachable by editing how a
 per-turn auction scores its options.
 
+### 10.8i Against the real ladder, not three elite tapes (2026-09-07)
+
+Every measurement in 10.5 through 10.8h used the same three elite tapes as
+opponents. That is a hard panel and it was never checked against the field
+E will actually meet. The cached corpus holds **245 real Kaggle opponents**
+as replayable clones (`kaggle_cache/clones/`), spanning the whole ladder --
+their own rewards run from 146,514 down to 2,645, median 74,812.
+
+Forty of them, sampled at random, both seats, 80 games each:
+
+| agent | mean | floor | wins |
+| --- | ---: | ---: | ---: |
+| **D** (live) | **101,535** | 48,455 | **74/80 (92%)** |
+| F (clone + demand pacing) | 97,098 | 48,299 | 70/80 (88%) |
+| **E** (bespoke) | 70,930 | 19,482 | **4/80 (5%)** |
+
+**E is not stronger against weaker opponents.** The hope that its price
+advantage would widen against a less crowded market does not survive
+contact with the data: it wins 5% here against 6% on the elite panel. Its
+deficit is production volume, and volume does not depend on who it is
+playing.
+
+**D wins 92% of games against real cached opponents.** Whatever its live
+rating says, on this measure it is a strong agent and the right thing to
+have deployed. Note the standing caveat from 9m: these opponents are
+frozen tapes of games their authors played live, and a tape is weaker than
+the player it was recorded from, so 92% here is an upper bound on the live
+figure.
+
+**Use `tools/viewer/render_match.py` to watch any of this.** It plays one
+match and writes a self-contained HTML replay:
+
+    python tools/viewer/render_match.py --agent rl.candidate_e:agent         --opponent agents/experimental_distilled_elite_andrey_agent.py         --seed 6 --out artifacts/replays/e_seed6.html
+
+Open it in VS Code with Ctrl+Shift+P -> "Simple Browser: Show". The files
+are about 47 MB each and `artifacts/replays/` is git-ignored.
+
 ### 10.9 How to test
 
 * `python -m tools.validation.preflight_candidate_d` -- seven gates for

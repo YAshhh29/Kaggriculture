@@ -27,3 +27,6 @@ rl/runs/
 # Standalone upload outputs are reproducible from packaging scripts. Keep the
 # legacy packages locally without adding every generated bundle.
 submissions/legacy/
+
+# Rendered match replays are ~47MB of embedded replay JSON each.
+artifacts/replays/
