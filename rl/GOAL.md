@@ -2896,6 +2896,60 @@ animals from day one, and E's does not. This is the same lesson as 10.8c
 in a different place: what correlates with strength in a corpus of
 recorded games is not automatically a lever you can pull.
 
+### 10.8h The animal gap, decomposed exactly -- and five more failures
+
+E's shortfall against a strong route is entirely in its herd, and it
+factors cleanly into two independent numbers. Measured by diffing every
+animal tile's `yield_units` turn by turn, over three seeds:
+
+| | animal-days | fed **and** cared | units per animal-day | units produced | units harvested |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| **Agent E** | 283 | **69.7%** | 0.82 | 231 | 229 |
+| **elite route** | 412 | **90.5%** | 1.13 | 467 | 467 |
+
+0.69 x 0.73 = 0.50, which is exactly E's 231 against 467. So:
+
+* **Harvesting is not the problem.** E collects essentially everything its
+  animals produce (229 of 231).
+* **Half the gap is animal-days** -- the herd arrives late, and 10.8f
+  established that is a capital constraint, not a scheduling one.
+* **Half is the feed-and-care coincidence.** The care bonus is only paid
+  out on a day the animal was *also* fed, so the two must land together.
+  E manages both on 69.7% of animal-days against 90.5%; it feeds on ~80%
+  and cares on ~79%, and those two 80%s multiply out to 70%.
+
+**Five more interventions were measured against this and all failed:**
+
+| intervention | result vs 63,270 |
+| --- | ---: |
+| weight animal jobs 1.6x to 8x over crop jobs | 55,630-58,227 |
+| carry a full feed round per shed trip (4 -> 8, 14, 20 wheat) | 53,816-59,554 |
+| **sticky assignments** -- a worker keeps walking to its target across turns instead of re-auctioning every turn | **53,150** |
+| demand-paced selling at 12 and 96 steps (24 is right) | 60,164-62,150 |
+| the opening book from 490 real sides (10.8g) | 50,762 |
+
+The feed-round result is worth a note because the mechanism looked
+certain: worker inventories have **no capacity limit at all** in the
+simulator -- `_inv_add` simply adds -- so fetching four wheat at a time
+for a seventeen-head herd is five shed trips a day where one would do.
+Raising it still lost, because the threshold that triggers the trip pulls
+workers off other work more often than the bigger load saves.
+
+The sticky-assignment result is the one that closes the routing question.
+E reverses direction on 5.8% of its moves against an elite route's 0.6%
+and walks 1.37 steps per task against 0.94, so committing a worker to its
+target looked like the obvious repair. It costs 10,000 coins, because a
+commitment made on stale information is worse than re-deciding: the job a
+worker was sent to do is frequently done by someone nearer, or stops being
+worth doing, before it arrives.
+
+**Taken with 10.8d, 10.8e and 10.8f, that is roughly thirty measured
+interventions on this scheduler since its last real gain.** Every one of
+labour allocation, job weighting, travel pricing, spatial assignment,
+commitment, herd composition, herd timing and opening crop choice has been
+tried and lost. The remaining gap is not reachable by editing how a
+per-turn auction scores its options.
+
 ### 10.9 How to test
 
 * `python -m tools.validation.preflight_candidate_d` -- seven gates for
