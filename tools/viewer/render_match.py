@@ -4,8 +4,16 @@
         --opponent agents/experimental_distilled_elite_andrey_agent.py \
         --seed 6 --out artifacts/replays/e_vs_andrey_seed6.html
 
-Open the resulting file in VS Code's Simple Browser (Ctrl+Shift+P ->
-"Simple Browser: Show") or any browser, and step through the game.
+Then watch it:
+
+    python tools/viewer/render_match.py --seed 6 --serve
+
+**The replay must be served over HTTP, not opened as a file.** The
+Kaggriculture visualiser is built as an ES module (`<script
+type="module">`), and every browser refuses to execute module scripts from
+a `file://` URL under its CORS rules -- so double-clicking the HTML gives
+a blank page with no error. `--serve` starts a throwaway local web server
+on the output directory and opens the right URL, which fixes it.
 """
 
 from __future__ import annotations
@@ -38,6 +46,42 @@ def load_agent(spec: str):
     return module.agent
 
 
+def serve(path: Path, port: int) -> None:
+    """Serve the replay over http and open it.
+
+    A `file://` page cannot run the visualiser, which is an ES module, so
+    the replay has to come off a real origin. This starts a plain static
+    server on the replay's own directory, opens the page, and keeps
+    running until interrupted.
+    """
+    import functools
+    import http.server
+    import socketserver
+    import threading
+    import webbrowser
+
+    handler = functools.partial(
+        http.server.SimpleHTTPRequestHandler, directory=str(path.parent)
+    )
+    socketserver.TCPServer.allow_reuse_address = True
+    while True:
+        try:
+            httpd = socketserver.TCPServer(("127.0.0.1", port), handler)
+            break
+        except OSError:
+            port += 1
+    url = f"http://127.0.0.1:{port}/{path.name}"
+    threading.Thread(target=httpd.serve_forever, daemon=True).start()
+    print("")
+    print(f"serving at {url}")
+    print("opening it now -- press Ctrl+C here when you are done watching")
+    webbrowser.open(url)
+    try:
+        threading.Event().wait()
+    except KeyboardInterrupt:
+        print("stopped")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--agent", default="rl.candidate_e:agent")
@@ -51,6 +95,10 @@ def main() -> None:
     parser.add_argument("--out", default=None)
     parser.add_argument("--open", action="store_true",
                         help="open the replay in the default browser")
+    parser.add_argument("--serve", action="store_true",
+                        help="serve the replay over http and open it "
+                             "(required: file:// cannot run module scripts)")
+    parser.add_argument("--port", type=int, default=8777)
     args = parser.parse_args()
 
     from kaggle_environments import make
@@ -86,13 +134,16 @@ def main() -> None:
     out.write_text(environment.render(mode="html", width=1000, height=760),
                    encoding="utf-8")
     print(f"replay written to {out}")
-    if args.open:
+    if args.serve:
+        serve(out, args.port)
+    elif args.open:
         import webbrowser
         webbrowser.open(out.resolve().as_uri())
-        print("opened in your default browser")
+        print("NOTE: a file:// page cannot run the visualiser's module "
+              "scripts and will render blank -- use --serve instead.")
     else:
-        print(f"open it with:  start \"\" \"{out}\"     (Windows)")
-        print("or re-run with --open to launch it automatically")
+        print("watch it with:  python tools/viewer/render_match.py "
+              f"--seed {args.seed} --serve")
 
 
 if __name__ == "__main__":

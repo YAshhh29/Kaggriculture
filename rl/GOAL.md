@@ -3024,9 +3024,40 @@ Two further things this screen confirms, both consistent with 9k:
   scored six figures. Route choice is worth far more than any mechanism
   this project has tuned.
 
+### 10.8k The wider re-screen, and the answer to the coins objection
+
+The 24-game screen above is noisy, so the leaders were re-run against **80
+real opponents, both seats, 160 games each** -- and then again against the
+**40 strongest** opponents in the corpus, which is the regime where the
+Andrey docstring's objection (tape win rates overstate live strength)
+would bite hardest.
+
+| route | 160 games vs the field | 80 games vs the strongest 40 |
+| --- | --- | --- |
+| **D** (Andrey ep105520725) | 100,815 · **85%** (136/160) | 100,865 · 84% (67/80) |
+| **RB25det ep105419382** | 92,459 · **95%** (152/160) | **111,210** · 84% (67/80) |
+| Shangshang ep105139789 | 95,865 · 93% (149/160) | -- (floor 0 game) |
+| Jaydon J P ep105432233 | 93,980 · 69% (111/160) | -- |
+
+**RB25det is better or equal on both measures.** Against the general field
+it wins ten points more often. Against the strongest opponents it matches
+D's win rate exactly and scores **10,000 coins a game more**. So the route
+change does not depend on preferring wins to coins at all -- which
+disposes of the objection the Andrey agent's docstring raises, since that
+objection only had force if the two orderings disagreed where it matters.
+
+Shangshang wins nearly as often but posted a **zero-coin game** on the
+panel. That is an unexplained collapse and disqualifies it until somebody
+understands it.
+
+Two cautions that still stand. These opponents are frozen tapes and
+therefore weaker than the players they were recorded from (9m), so all of
+these win rates are upper bounds on live performance. And a route's own
+recorded reward remains a poor predictor of its strength as a clone: fan
+yanbing scored 137,331 in its own game and screens at 48%.
+
 `tools/data/extract_opening_book.py` reads the same corpus; the screening
-harness lives in the scratchpad and should be promoted to `tools/data/`
-once the wider re-screen settles which route Candidate F should carry.
+harness lives in the scratchpad and should be promoted to `tools/data/`.
 
 ### 10.9 How to test
 

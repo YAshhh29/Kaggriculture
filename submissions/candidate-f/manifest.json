@@ -1,0 +1,38 @@
+{
+  "created_at": "2026-09-07T16:57:33.512436+00:00",
+  "competition": "kaggriculture",
+  "agent": "main.py",
+  "sha256": "cd858a1f05d2fe912b1cba975c232afcf152f878202e5335cb469a0917be6d00",
+  "combined_source_sha256": "860a2ca79f9496fd0bddb134599ebdb275d73a7e8f1a2af5ac8f1151fde3b215",
+  "parent_submission": {
+    "note": "built on the Candidate B package",
+    "source_files": [
+      "submissions/candidate-b/main.py (parent)"
+    ]
+  },
+  "source_files": [
+    "submissions/candidate-b/main.py (parent)",
+    "agents/experimental_distilled_elite_rb25det_agent.py",
+    "models/v1327-public-elite-rb25det-105419382.json",
+    "rl/candidate_f.py"
+  ],
+  "policy": "Candidate A's guarded recovery and live terminal liquidation, plus Candidate B's market-timing residuals (land priority off), over the physical route that won a systematic search. 191 candidate tapes -- every side of every cached replay from a team rated 2400+, on a game that team won -- were scored on our own final reward under this exact stack, then the leaders were re-screened against real top-500 opponents. Episode 105520725 (Andrey Tikhomirov, LB 2920.0, rank 4) led all three evaluations: the search, a 60-game stratified panel (70.0%) and a 184-game full panel (64.1%).",
+  "training_data": {
+    "source_episode_id": 105419382,
+    "source_team": "RB25det",
+    "source_context": null,
+    "actions_sha256": "91a7a155942c314590251ea8e9a24e10760746279e9562bda121267062769c96"
+  },
+  "validation": {
+    "top500_panel": {
+      "games": "184 per agent (92 distinct top-500 opponents x 2 seats)",
+      "candidate_f_andrey": "118/184 = 64.1%, mean 91199, floor 42858",
+      "prev_route_giulio": "108/184 = 58.7%, mean 86859, floor 47689",
+      "candidate_c1": "103/184 = 56.0%, mean 85811, floor 35703",
+      "significance": "paired McNemar: Andrey vs Giulio p=0.19, Andrey vs C1 p=0.079 -- NOT significant at p<0.05; selection rests on leading three independent evaluations, not one test"
+    },
+    "stratified_panel": "60 games: Andrey 70.0%, Giulio 61.7%, C1 48.3%; Andrey vs C1 p=0.0124",
+    "search": "191 tapes scored on own final reward",
+    "caveat": "rl/GOAL.md section 9m: win rate against frozen tapes overstates live strength by roughly forty points. Own-reward improvement (+12% mean, +8% floor over C1) is the transferable part of this result; the win-rate figures are not a live forecast."
+  }
+}
