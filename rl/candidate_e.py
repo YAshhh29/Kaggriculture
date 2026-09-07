@@ -45,6 +45,7 @@ from typing import Any
 
 from core.routing import distance, step_toward
 from rl.demand import ANIMAL_PRODUCT, remaining_demand
+from rl.demand_sales import paced_orders
 from rl.market import headroom, marginal_price, sale_revenue
 from rl.economics import (
     ANIMALS,
@@ -81,6 +82,7 @@ TRAVEL_EXPONENT = 3.0
 TURN_COST = 30.0
 WHEAT_HOARD_CAP = 24
 SELL_FLOOR = 15.0
+SELL_PACE = 24.0
 SELL_CASH_FLOOR = 1500.0
 SHED_PRESSURE = 70
 WHEAT_UNITS_PER_TILE_DAY = 0.6
@@ -728,6 +730,18 @@ def _market_orders(
         if sellable > 0:
             orders.append(["SELL", item, sellable])
             budget += live_price(observation, item) * sellable
+    if SELL_PACE > 0.0:
+        # Pace the whole list against what the town will actually eat.
+        # E sells roughly a thousand units a game where the town absorbs
+        # some 3,800 across both players, so unlike a high-volume tape it
+        # is genuinely inside the town's appetite -- which is exactly the
+        # condition under which holding a unit back raises its price
+        # rather than merely postponing it. See rl/demand_sales.py.
+        orders = paced_orders(
+            observation, orders, pace=SELL_PACE,
+            cash_floor=SELL_CASH_FLOOR, shed_pressure=SHED_PRESSURE,
+            closing_day=LAST_DAY,
+        )
     # 1. Labour. The nth hire of a day costs fib(n) with a multiplier of 1,
     #    so the first hands are close to free and each one multiplies every
     #    other purchase. Nothing outranks this.
