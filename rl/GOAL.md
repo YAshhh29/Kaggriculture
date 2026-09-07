@@ -2392,10 +2392,10 @@ replaying a recorded game, and prices every decision against the
 simulator's own market curve. It plays complete legal 720-step games in
 both seats with zero errors.
 
-**On 48 held-out games -- three opponents, seeds 6 to 13, both seats,
-none of them used for any tuning -- E earns 61,644 mean with a 32,075
-floor, against Candidate D's 88,863 / 48,748.** It sits at 69% of D, up
-from 35% at the start of the 2026-09-06 session. On the tuning seeds
+**On 72 held-out games -- three opponents, twelve seeds, both seats,
+none of them used for any tuning -- E earns 64,407 mean with a 35,261
+floor and wins 4, against Candidate D's 87,730 / 48,748 / 55.** It sits
+at 73% of D, up from 33% at the start of the 2026-09-06 session. On the tuning seeds
 (0-5) it earns 57,827 against D's 89,401; the gap between the two is
 honest overfit and the held-out number is the one to quote.
 
@@ -2784,6 +2784,78 @@ E realises *better prices than D on every shared product* -- wool 170 a
 unit against 34, milk 103 against 92, strawberry 112 against 69 -- because
 it sells less into an uncrowded market. Volume is the entire remaining
 difference and those two numbers are where it lives.
+
+### 10.8f Agent E is at a local optimum: 64,407, and 21 measured failures
+
+**Where E stands.** On 72 held-out games -- three opponents, twelve
+seeds, both seats, none used for tuning -- E earns **64,407 mean with a
+35,261 floor and wins 4**, against Candidate D's 87,730 / 48,748 / 55.
+That is up from 28,763 at the start of 2026-09-06.
+
+Only one change landed in this round: **do not sell a unit while its
+price is under 15 coins** (62,273 -> 64,407 on the wide panel, floor
+32,075 -> 35,261), guarded so it never holds when cash is short, when the
+shed is filling toward the 100-unit cap that discards overflow, or on the
+final day. It works because selling is the one thing E already does
+better than any tape -- 170 coins a unit on wool where a good route gets
+34 -- and the town keeps draining the shared market all game, so a unit
+held while its price is on the floor is worth more a few days later.
+
+**Twenty-one other interventions were measured and failed.** They are
+listed so the next person does not repeat them. Against the 61,644-62,273
+baseline of the time:
+
+| intervention | result |
+| --- | ---: |
+| dedicated herd crew (2-5 hands), tried before *and* after the farm doubled | 50,202-53,110 |
+| per-worker zones (row-major bands) | 37,192 |
+| pen clustering (build pens adjacent to pens) | 52,246-54,961 |
+| pens near the shed, where the crew respawns each morning | 55,064-61,494 |
+| gentler travel discount for herd work only | 41,447 |
+| opportunity-cost travel, `(value - cost*d)/(d+1)` | 31,874-53,837 |
+| two-tier ranking so idle workers walk to distant work | 49,476-49,815 |
+| hold fertilizer to spread on fields (re-tested in the new regime) | 48,036-48,500 |
+| the **fourth quadrant**, with and without extra hands and pens | 42,863-57,084 |
+| earlier opening herd -- pen gate only, then **both** gates | 51,069-58,713 |
+| goose-first opening herd (cheapest animal, fastest first yield) | 51,697-52,940 |
+| fast-paying crops only in the opening (four windows) | 55,408-58,017 |
+| marginal crop ranking, liquidity floors 0/500, melon caps 6/20 | 52,082-55,380 |
+| crews of 13, four quadrants plus 13 hands | 42,863-49,029 |
+
+**What the diagnostics ruled out, with numbers.** These are the reason the
+list above is not worth re-running:
+
+* **Crops are at parity.** E harvests 2.97 units per pick against a good
+  route's 3.05, and takes *more* picks a game (245 against 207). An
+  earlier claim of "2.3 against 4.2" was wrong -- it divided units sold by
+  PLANT *actions*, which counts actions the simulator refused.
+* **Animals are full only 3% of animal-days**, so "a full animal stops
+  producing" is not the bottleneck.
+* **Escapes are 1.5 a game** against 19 bought, and **shed overflow
+  discards 1.5 units a game**. Neither is a leak.
+* **Idle turns are idle because everything reachable is far**, not
+  because the scheduler is confused -- which is why every re-weighting
+  failed and why adding hands loses money.
+
+**The one real gap left is animal-days: 271 a game against 396.** E has
+no animals on day two where a good route has four, and nine by day twelve
+where it has seventeen. Every animal-day is worth roughly 1.5 units of
+produce plus a unit of manure, and that arithmetic accounts for almost
+exactly the remaining difference.
+
+**And it is not a scheduling problem -- it is capital.** Every direct
+attempt to buy the herd earlier loses money, because the same coins
+compound faster in land and seed first. That was tested three ways
+(pen-gate floor, both-gate floor, and a cheap fast-yielding goose herd)
+and all three lost. E's herd timing is the *correct* consequence of its
+opening; a recorded human route reaches four animals on day two because
+it is replaying a season somebody else already financed.
+
+**So the next gain is not a constant.** A per-turn greedy auction cannot
+plan an opening -- it cannot decide to under-plant on day two so that a
+cow can be bought on day three. Closing the last 23,000 coins needs a
+scheduler that plans a day or a week at a time, or an explicit opening
+book for the first ten days. Do not spend another session on weights.
 
 ### 10.9 How to test
 
