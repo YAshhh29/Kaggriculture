@@ -30,3 +30,6 @@ submissions/legacy/
 
 # Rendered match replays are ~47MB of embedded replay JSON each.
 artifacts/replays/
+
+# Live opponent tapes fetched from the ladder (large, refetchable).
+kaggle_cache/live_clones/

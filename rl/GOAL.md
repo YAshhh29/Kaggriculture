@@ -3294,6 +3294,66 @@ cannot change how much farm the clone built or when it built it, and that
 is where the remaining value is. **Anyone continuing this work should stop
 wrapping clones.**
 
+### 10.8r THE LOCAL PANEL IS THE PROBLEM (2026-09-08, live data)
+
+With a working Kaggle token, the live record of our own submission
+(`ListEpisodes{submissionId: 56076097}`, 167 episodes) can be read
+directly. It does not resemble the local panel at all.
+
+| | local panel (cached tapes) | **live ladder** |
+| --- | --- | --- |
+| Candidate D win rate | 85-92% | **45.2%** (75 of 166) |
+| rating | -- | peaked 1999, now **1762 and falling** |
+
+**We are not being out-produced.** Our mean reward is 85,499 against
+opponents' 82,954. We score more and lose more, because the margins are
+tiny:
+
+| | coins |
+| --- | ---: |
+| median winning margin | **1,151** |
+| median losing margin | **2,889** |
+| losses inside 500 | 17 -> flipping them gives **55.4%** |
+| losses inside 1,000 | 26 -> 60.8% |
+| losses inside 2,500 | 43 -> **71.1%** |
+| losses inside 5,000 | 61 -> 81.9% |
+
+**+2,500 coins a game is worth about 26 points of win rate.**
+
+**This invalidates the evaluation behind most of section 10.8.** The
+cached panel is a set of stale, weaker tapes: on it D wins by margins so
+large that a 1,000-coin change disappears into noise, which is exactly how
+this file came to record the demand engine's small gains as "within noise"
+and drop them. On the ladder those gains are decisive. Several layers
+dismissed earlier deserve re-measurement **in coins, on paired identical
+games**, before anyone concludes they do not work.
+
+Three consequences for how this project should measure anything:
+
+1. **Score improvements in coins, not in win rate against cached tapes.**
+   A paired coin delta on identical games is the only signal fine enough
+   to see a change worth 26 points of live rating.
+2. **Evaluate against current opposition.** `tools/data/fetch_live_opponents.py`
+   builds a panel from submissions actually on the ladder now, several
+   games per player rather than one (9k: tape quality belongs to the
+   game, not the player).
+3. **Stop chasing a better clone.** D already out-produces the field on
+   mean reward. The gap is consistency worth a few thousand coins, not a
+   fundamentally stronger route.
+
+**Live API notes** (all endpoints verified 2026-09-08):
+
+* `POST .../competitions.EpisodeService/ListEpisodes` accepts `{"ids": [...]}`
+  -- all ids must belong to one competition -- or `{"submissionId": N}`,
+  which returns every episode that submission has played (167 for ours,
+  223 for an active opponent). There is no team- or competition-wide
+  filter; `{"teamId": N}` is rejected.
+* Episode records carry `initialScore` / `updatedScore` per agent, which
+  are the live ladder ratings at that moment -- no leaderboard join needed.
+* Full replays come from `https://www.kaggleusercontent.com/episodes/<id>.json`
+  (~30 MB each), not from any `kaggle.com/api` path.
+* The API rate-limits hard; 3-4 seconds between calls is sustainable.
+
 ### 10.9 How to test
 
 * `python -m tools.validation.preflight_candidate_d` -- seven gates for
