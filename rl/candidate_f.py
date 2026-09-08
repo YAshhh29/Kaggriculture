@@ -1,44 +1,45 @@
-"""Candidate F: the route that wins most often, plus the demand engine.
+"""Candidate F: a route taken from the live ladder, plus the demand engine.
 
-F differs from Candidate D in exactly two ways, and the first one is the
-larger.
+**The route now comes from the current ladder, and that is the whole
+change.** Until 2026-09-08, F ran RB25det from `kaggle_cache/`, captured
+on 2026-09-04 and chosen by screening 245 routes against opponents drawn
+from that same cache. Profiling the live corpus by what each agent *buys*
+showed why that could not work: fourteen of the twenty-four teams we are
+actually drawn against post an identical fingerprint -- 5 carrot seeds,
+198 wheat, no geese -- which is the public getting-started notebook run
+unmodified. RB25det's fingerprint is 6 carrot, 185 wheat, no geese. F was
+a clone of the field it was trying to beat, and it landed at the field's
+rating. None of the nine teams above 2765 runs that opening.
 
-**A different route, chosen on the right objective.** Kaggle's simulation
-ladder rates on match *outcomes*: a game won by one coin counts exactly as
-much as a game won by fifty thousand. Every route this project has
-selected -- D's included -- was ranked on mean reward instead. Screened
-under an identical guard stack against 80 real opponents from the cached
-corpus, both seats, 160 games each:
+Screened under an identical guard stack against 32 live ladder opponents
+the route was **not** selected against, both seats, 64 games:
 
-    route                       mean coins   win rate
-    D's (Andrey, ep105520725)      100,815        85%   (136/160)
-    **F's (RB25det, ep105419382)**  92,459    **95%**   (152/160)
+    route                            mean coins   win rate   median margin
+    D's (Andrey, ep105520725)            64,501     40.6%          -1,085
+    RB25det (F until now)                67,514     37.5%          -3,786
+    **Matthew Huang, ep106610780**       78,554   **92.2%**      **+18,030**
 
-F gives up about 8,000 coins a game to win sixteen more games in a hundred
-and sixty, which is the trade the ladder actually pays for. Section 10.8j
-records the full screen, including the six routes that lost.
+That is not a trade of coins against wins, which is what the previous
+route change was. It is more of both.
 
 **A demand-paced market layer.** `rl.demand_sales` holds a sale back while
 the town has not yet eaten the last one, because price is a function of a
 shared market inventory and the town's consumption is the only thing
-pushing it back up. Whether that pays depends on volume: it is worth about
-a thousand coins to Agent E, which sells around a thousand units a game
-and is inside the town's appetite, and it *cost* Candidate D three
-thousand, because D sells 2,138 units against the roughly 3,800 the town
-absorbs across both players. So the pace is a measured parameter here, not
-an assumption -- and on this route it measured **negative**, which is why
-it defaults to off:
+pushing it back up. Whether that pays depends on volume: on a high-volume
+clone it measured negative five separate times (10.8c, 10.8l), and it
+costs Candidate D three thousand coins, because D sells 2,138 units
+against the roughly 3,800 the town absorbs across both players. It stays
+wired in and defaults to **off** for that reason.
 
-    F, no pacing        92,459 coins   95% wins   (152/160)
-    F, demand pace 48   90,709         86%        (138/160)
-    F, demand pace 24   88,514         72%        (115/160)
-
-RB25det sells 2,000-odd units a game, well past the roughly 3,800 the town
-absorbs across both players, so holding a unit back only postpones the
-same floored price while starving the purchases the sale was funding. That
-is the fifth independent confirmation that the demand engine cannot lift a
-high-volume clone; the layer is kept wired in because it is the right
-mechanism for any future route that produces *less*.
+The held-out screen above also settled what the layer is really worth:
+Agent E, which sells around a thousand units a game and realises the best
+price per unit of anything here, earns the most coins of any agent in this
+project (89,278) and wins **zero** games out of sixty-four. The same
+frozen opponent tapes score about 67,000 against D and about 141,000
+against E. Selling less does not only forgo revenue; it leaves the shared
+market intact for the opponent to sell into. Pacing is not a small
+positive that got lost in the noise -- on this ladder it is the mechanism
+by which an agent hands its opponent the game.
 
 Everything else is D's proven wrapping: Candidate A's guarded recovery and
 terminal liquidation, then Candidate B's market-timing residuals.
@@ -48,8 +49,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from agents.experimental_distilled_elite_rb25det_agent import (
-    agent as elite_rb25det_route,
+from agents.experimental_distilled_elite_mhuang_agent import (
+    agent as elite_mhuang_route,
 )
 from rl.candidate_a import build_candidate_a_agent
 from rl.candidate_b import build_candidate_b_agent
@@ -70,14 +71,14 @@ CLOSING_DAY = 29
 
 
 def build_candidate_f_agent(
-    baseline: Baseline = elite_rb25det_route,
+    baseline: Baseline = elite_mhuang_route,
     *,
     pace: float = SELL_PACE,
     cash_floor: float = CASH_FLOOR,
     shed_pressure: int = SHED_PRESSURE,
     closing_day: int = CLOSING_DAY,
 ) -> Baseline:
-    """The RB25det route under A+B guards, with optional demand pacing."""
+    """The live-ladder route under A+B guards, with optional pacing."""
     inner = build_candidate_b_agent(
         baseline=build_candidate_a_agent(baseline=baseline)
     )

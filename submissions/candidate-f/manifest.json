@@ -1,9 +1,9 @@
 {
-  "created_at": "2026-09-07T21:26:51.567989+00:00",
+  "created_at": "2026-09-08T10:44:48.492427+00:00",
   "competition": "kaggriculture",
   "agent": "main.py",
-  "sha256": "e9d82f43f861c39d81a504e7528abfb0ba920b7ba84500bf66dc3d8e1831bdae",
-  "combined_source_sha256": "9b09d4121996f3c7d00be04214f1eea45236764e85ea61e8b53deea96bef2f77",
+  "sha256": "9717dd76290ace80bfe70f63ad2f765f12ab45051531c8ec66eb06759ad9c100",
+  "combined_source_sha256": "36c61f7e772a4499d42b35bfc0e279f8c78c8e329111eca7f5409fae75ae51c1",
   "parent_submission": {
     "note": "built on the Candidate B package",
     "source_files": [
@@ -18,10 +18,10 @@
   ],
   "policy": "Candidate A's guarded recovery and live terminal liquidation, plus Candidate B's market-timing residuals (land priority off), over the physical route that won a systematic search. 191 candidate tapes -- every side of every cached replay from a team rated 2400+, on a game that team won -- were scored on our own final reward under this exact stack, then the leaders were re-screened against real top-500 opponents. Episode 105520725 (Andrey Tikhomirov, LB 2920.0, rank 4) led all three evaluations: the search, a 60-game stratified panel (70.0%) and a 184-game full panel (64.1%).",
   "training_data": {
-    "source_episode_id": 105419382,
-    "source_team": "RB25det",
-    "source_context": null,
-    "actions_sha256": "91a7a155942c314590251ea8e9a24e10760746279e9562bda121267062769c96"
+    "source_episode_id": 106610780,
+    "source_team": "MatthewHuang",
+    "source_context": "captured from the live ladder by tools.data.fetch_live_opponents",
+    "actions_sha256": "1ae9793a513fb5e68a182afd8d34d1893f2b62e8b173bebf365cdcbbe1c012d5"
   },
   "validation": {
     "top500_panel": {

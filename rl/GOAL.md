@@ -3650,6 +3650,123 @@ of the nine are unusable as clone material because their recordings do not
 survive being replayed against a different opponent. Two are worth far more
 than anything in the 245-route cached corpus.
 
+### 10.8t Agent E earns the most and wins nothing (2026-09-08)
+
+Screened against 32 live ladder opponents, both seats, 64 games, on tapes
+no candidate here was selected against:
+
+| | mean coins | wins | median margin |
+| --- | ---: | ---: | ---: |
+| D (shipped) | 64,501 | 26/64 (40.6%) | -1,085 |
+| F (RB25det, until today) | 67,514 | 24/64 (37.5%) | -3,786 |
+| **E (economic policy)** | **89,278** | **0/64 (0.0%)** | **-56,627** |
+| Matthew Huang ep106610780 | 78,554 | 59/64 (92.2%) | +18,030 |
+| Matthew Huang ep106613721 | 69,839 | 59/64 (92.2%) | +15,757 |
+| Matthew Huang ep106611851 | 66,660 | 59/64 (92.2%) | +12,714 |
+| Matthew Huang ep106738450 | 79,179 | 58/64 (90.6%) | +14,375 |
+
+**E earns more coins than anything else this project has built and loses
+every single game.** That is not a tuning failure. It is the objective
+being wrong.
+
+Measured directly rather than inferred from margins -- the same three
+frozen opponent tapes, the same seed, only our side changed:
+
+| opponent tape | ours vs D | theirs | ours vs E | theirs | ours vs new F | theirs |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Peter Parker | 60,607 | 66,628 | 107,886 | **140,350** | 74,896 | 66,991 |
+| Riki Uchida | 46,521 | 51,819 | 69,673 | **144,900** | 115,908 | 80,117 |
+| Sathwik Chinthakayala | 59,980 | 61,381 | 82,843 | **143,067** | 74,392 | 52,832 |
+| **mean** | 55,703 | 59,943 | 86,801 | **142,772** | 88,399 | 66,647 |
+
+The opponent's actions are a fixed recording. Its farm is its own and we
+cannot touch it. The only thing our play changes is **the price it sells
+at**, because price is a function of one market inventory both players
+share. The same tape banks 59,943 against D and 142,772 against E.
+
+D and F dump about 2,140 units a game and the price collapses under the
+opponent. E sells 977, realises a far better price per unit -- which is
+what every measurement in 10.8e through 10.8h was optimising -- and leaves
+the market standing for the opponent to sell into. **Every unit E declined
+to sell at a bad price was a unit that kept the opponent's price good.**
+
+This retires the entire premise of the market demand engine as it was
+built. `rl/demand_sales.py` and `rl/sell_floor.py` both *hold sales back*.
+On a two-player shared market that is not a small positive lost in the
+noise (10.8c) nor merely negative on high-volume clones (10.8l): holding
+back is the mechanism by which an agent hands its opponent the game. The
+right version of a demand engine here sells *earlier and harder* into
+whatever the opponent is about to sell, and its objective is the
+opponent's revenue, not ours.
+
+**Six E variants, same held-out panel, 32 games each -- none of them is
+the problem and none of them is the fix:**
+
+| | coins | wins | median margin |
+| --- | ---: | ---: | ---: |
+| baseline (floor 15, pace 24) | 91,144 | 0/32 | -54,290 |
+| floor 0 | 91,168 | 0/32 | -54,290 |
+| pace 0 | 87,271 | 0/32 | -54,218 |
+| floor 0 + pace 0 | 86,870 | 0/32 | -54,218 |
+| floor 0, pace 0, mixed herd 8 | 86,350 | 0/32 | -58,974 |
+| floor 0, pace 0, hands 12, melon 24 | 40,430 | 0/32 | -75,158 |
+
+Turning the selling restraints entirely off moves E's own coins by under
+5% and the margin by nothing, because **E's volume is bounded by
+production, not by policy**. E sells 977 units against D's 2,140 while
+running *more* animals (23 against 17) and more seed (249 wheat against
+160). It collects 250 fertilizer against D's 373 and sells 115 against
+D's 455; it runs 22 cows and 1 sheep, so it sells no wool at all against
+D's 389 units. The gap is what E never picks up and never brings to
+market, and no selling parameter can reach it.
+
+So the next work on E is not another knob. It is throughput: fertilizer
+collection, a herd whose products are actually sold, and the harvest
+reaching the shed. **Until E sells volume comparable to the field, its
+price realisation is worth nothing, because the opponent is being paid
+out of the market E politely declines to spoil.**
+
+### 10.8u Candidate F rebuilt on a live-ladder route
+
+F now runs episode 106610780, Matthew Huang, live rating 2872.8, under the
+unchanged A+B guard stack. Held out from selection (32 opponents, 64
+games): **78,554 coins, 92.2% wins, median margin +18,030**, against the
+old route's 67,514 / 37.5% / -3,786. Unlike the previous route change
+(10.8j) this is not coins traded for wins -- it is more of both -- and it
+suppresses the opponent besides, holding the three probe tapes to 66,647
+where E let them reach 142,772.
+
+Selection discipline, because 10.8j found the 245-route corpus had been
+screened and confirmed on one panel: eight tapes screened the candidates,
+and the sixty-four tapes those eight were drawn from were never touched
+until the winner was fixed. `measure_panel --skip` exists for this.
+
+All eight of this submission's captured games were screened separately,
+not just the one:
+
+| tape | wins (screen) | median margin |
+| --- | ---: | ---: |
+| ep106610780 (validation self-play) | 14/16 | +18,152 |
+| ep106611851 | 15/16 | +12,752 |
+| ep106612820 | 14/16 | +14,065 |
+| ep106613721 | 14/16 | +16,622 |
+| ep106726378 (recent, at 2873) | 4/16 | -4,122 |
+| ep106731869 (recent) | 4/16 | -2,784 |
+| ep106733021 (recent) | 12/16 | +2,132 |
+| ep106738450 (recent) | 14/16 | +14,154 |
+
+The four games from the submission's early climb are all strong; two of
+the four recorded later at 2873 collapse. **A tape recorded in a contested
+market encodes adaptations to scarcity that do not fit when replayed into
+a market contested differently.** The ordering fix in 10.8s therefore
+produced better *panel opponents* and worse *clone material*, and both
+halves of the corpus are kept for opposite reasons.
+
+Preflight: 6 of 7 gates pass -- byte-identical rebuild, manifest hash,
+embedded model hash (episode 106610780 / MatthewHuang), Kaggle's real
+loader, 1438/1438 decisions source == package == simulator, 12/12 full
+games DONE.
+
 ## 11. Candidate D: the original learned residual/Option selector plan
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.

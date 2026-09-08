@@ -1,4 +1,4 @@
-"""Prepare Candidate F (searched-best elite route under the A+B stack)."""
+"""Prepare Candidate F (live-ladder elite route under the A+B stack)."""
 
 from __future__ import annotations
 
@@ -22,10 +22,10 @@ from tools.packaging.prepare_distilled_calendar_submission import (
 
 ROOT = Path(__file__).resolve().parents[2]
 ELITE_AGENT_PATH = (
-    ROOT / "agents" / "experimental_distilled_elite_rb25det_agent.py"
+    ROOT / "agents" / "experimental_distilled_elite_mhuang_agent.py"
 )
 ELITE_MODEL_PATH = (
-    ROOT / "models" / "v1327-public-elite-rb25det-105419382.json"
+    ROOT / "models" / "v1327-live-elite-mhuang-106610780.json"
 )
 CANDIDATE_F_PATH = ROOT / "rl" / "candidate_f.py"
 SOURCE_PATHS = (ELITE_AGENT_PATH, ELITE_MODEL_PATH, CANDIDATE_F_PATH)
@@ -64,10 +64,10 @@ def load_verified_model(path: Path = ELITE_MODEL_PATH) -> dict[str, Any]:
 # is inert here -- but it is exactly the kind of quiet aliasing that
 # section 9h's packaging bug was made of, so namespace them instead.
 _ELITE_RENAMES = {
-    "decide": "elite_andrey_decide",
-    "MODEL_PAYLOAD": "RB25DET_MODEL_PAYLOAD",
-    "CALENDAR_ACTIONS": "RB25DET_ACTIONS",
-    "_load_actions": "_load_andrey_actions",
+    "decide": "elite_mhuang_decide",
+    "MODEL_PAYLOAD": "MHUANG_MODEL_PAYLOAD",
+    "CALENDAR_ACTIONS": "MHUANG_ACTIONS",
+    "_load_actions": "_load_mhuang_actions",
 }
 
 
@@ -164,8 +164,8 @@ def build_source() -> str:
     base.body.extend(_elite_agent_body())
     base.body.append(
         ast.Assign(
-            targets=[ast.Name(id="elite_rb25det_route", ctx=ast.Store())],
-            value=ast.Name(id="elite_andrey_decide", ctx=ast.Load()),
+            targets=[ast.Name(id="elite_mhuang_route", ctx=ast.Store())],
+            value=ast.Name(id="elite_mhuang_decide", ctx=ast.Load()),
         )
     )
     module = ast.parse(CANDIDATE_F_PATH.read_text(encoding="utf-8"))
