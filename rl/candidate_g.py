@@ -65,7 +65,7 @@ from typing import Any
 from core.routing import distance, step_toward
 from rl.demand import remaining_demand
 from rl.economics import CROPS
-from rl.market import inventory_of, price_at
+from rl.market import MARKET_PARAMS, inventory_of, price_at
 from rl.runtime import AgentAction
 
 PASS: list[str] = ["PASS"]
@@ -343,7 +343,7 @@ def job_value(
             abs(x - sx) + abs(y - sy) for sx, sy in shed_tiles()
         ))
         if (counts["wheat"] < wheat_target
-                and int(seeds.get("WHEAT", 0)) > 0
+                and counts.get("seed_WHEAT", int(seeds.get("WHEAT", 0))) > 0
                 and day <= LAST_DAY - 8):
             jobs.append(((BAND_WHEAT + egg) * near, ["PLANT", "WHEAT"]))
         elif (
@@ -369,7 +369,7 @@ def job_value(
                 spec = CROPS.get(crop)
                 if spec is None or counts.get("crop_" + crop, 0) >= cap:
                     continue
-                if int(seeds.get(crop, 0)) <= 0:
+                if counts.get("seed_" + crop, int(seeds.get(crop, 0))) <= 0:
                     continue
                 if day > LAST_DAY - int(spec["first"]) - 2:
                     continue
@@ -433,6 +433,10 @@ def claim(counts: dict[str, int], action: list[Any]) -> None:
     literally what happened: all thirteen built a coop on the same turn.
     """
     op = action[0] if action else "PASS"
+    if op == "PLANT":
+        crop = str(action[1]) if len(action) > 1 else "WHEAT"
+        key = "seed_" + crop
+        counts[key] = max(0, counts.get(key, 0) - 1)
     if op == "BUILD_PASTURE":
         counts["empty_pastures"] += 1
         counts["free"] = max(0, counts["free"] - 1)
@@ -500,6 +504,51 @@ def preferred_bird(observation: dict[str, Any]) -> str:
 
 ANIMAL_HOME = {"GOOSE": "COOP", "COW": "PASTURE", "SHEEP": "PASTURE"}
 
+# What price the top of the ladder actually accepts, as a multiple of each
+# good's base. Measured by pairing every sale in thirty elite games with
+# the market inventory at that instant and pricing it:
+#
+#     WHEAT 1.72   TOMATO 1.32   EGG 1.06   CARROT 0.83   MELON 0.73
+#     MILK 0.71    WOOL 0.65     FERTILIZER 0.54   STRAWBERRY 0.15
+#
+# They are not selling on a schedule. They hold wheat until the town has
+# drained it to nearly twice base and they let fertilizer go at half,
+# because wheat is consumed by five of the eight shops and manure is
+# produced by every animal on both farms. Strawberry at 0.15 is what a
+# good looks like when both players flood a 62-unit book.
+#
+# G sold everything the turn it had it, which takes the average price
+# rather than the good one.
+SELL_TARGET = {
+    "WHEAT": 1.55, "TOMATO": 1.25, "EGG": 1.05, "CARROT": 0.85,
+    "MELON": 0.75, "MILK": 0.72, "WOOL": 0.66, "FERTILIZER": 0.55,
+    "STRAWBERRY": 0.30,
+}
+# Scales every threshold, and it is 0.0 -- sell on sight -- because the
+# thresholds above do not pay: 32,693 selling immediately against 32,588,
+# 31,856 and 24,891 as patience rises.
+#
+# This is the sixth independent test of holding stock for a better price
+# (rl/sell_floor.py, rl/demand_sales.py pacing, rl/trickle.py, and this),
+# and all six say no. The reading of the elite ratios above was wrong:
+# they are a market *state*, not a decision. Wheat trades at 1.72x base
+# because five of the eight shops eat it and it is chronically scarce, not
+# because anyone waited. Meanwhile a coin banked on day 6 buys a bird that
+# lays for the rest of the season, so patience costs compounding and buys
+# a price the market was going to offer anyway.
+SELL_PATIENCE = 0.0
+# Track seeds as a claimable resource within a turn.
+#
+# Without it thirteen workers all read the same seed count and all issue
+# PLANT when only the first can spend the seed. Turning it on moves the
+# action profile onto the elite's -- PLANT 402 to 214 against their 224,
+# CARE up to 322 against their 339 -- and is worth nothing: 6 of 12 paired
+# seeds, medians 25,412 against 25,418. The wasted plant was displacing a
+# job of about equal value, so correcting it just changes which turn is
+# spent. Kept because the model is right and the action counts now match
+# the corpus, not because it pays.
+SEED_CLAIM = True
+
 
 def crop_priority(observation: dict[str, Any]) -> list[tuple[str, int]]:
     """Crops worth ground here, best first, with the tile cap for each.
@@ -543,14 +592,25 @@ def market_orders(
     #    enough that waiting only forfeits the sale (10.8ad measured
     #    metering the same units onto more turns as strictly worse).
     reserve = 0 if closing else int(counts["animals"] * 2)
+    # Patience decays to nothing over the season: a good held past the
+    # close is worth zero, so the threshold has to reach zero before then.
+    slack = max(0.0, (LAST_DAY - 2 - day) / float(max(1, LAST_DAY - 2)))
+    total_shed = sum(shed.values())
     for item in ("EGG", "FERTILIZER", "MILK", "WOOL", "CARROT",
-                 "TOMATO", "STRAWBERRY", "MELON"):
+                 "TOMATO", "STRAWBERRY", "MELON", "WHEAT"):
         held = int(shed.get(item, 0))
-        if held > 0:
+        if item == "WHEAT":
+            held = max(0, held - reserve)
+        if held <= 0 or len(orders) >= MAX_ORDERS:
+            continue
+        base = float(MARKET_PARAMS.get(item, {}).get("base", 1))
+        want = base * SELL_TARGET.get(item, 0.8) * SELL_PATIENCE * slack
+        now = price_at(item, inventory_of(observation, item))
+        # Sell when the price is worth taking, when the season is closing,
+        # or when the shed is near its hundred-unit cap and the overflow
+        # would be discarded at the day boundary anyway.
+        if now >= want or closing or total_shed >= 85:
             orders.append(["SELL", item, held])
-    wheat = int(shed.get("WHEAT", 0))
-    if wheat > reserve:
-        orders.append(["SELL", "WHEAT", wheat - reserve])
 
     if closing:
         return orders[:MAX_ORDERS]
@@ -672,6 +732,14 @@ def decide(observation: dict[str, Any]) -> AgentAction:
     # nowhere leaves it standing in the shed, which is exactly what the
     # first attempt at this did.
     counts["bird"] = preferred_bird(observation)
+    # Seeds are a claimable resource, not a constant. Thirteen workers all
+    # read the same seed count and all issue PLANT, but only the first can
+    # spend the seed -- the rest walk to a tile and do nothing. G issued
+    # 402 PLANT actions a game against the elite's 224 on a larger farm,
+    # and that gap is workers planting seed that was already gone.
+    if SEED_CLAIM:
+        for crop, have in seeds.items():
+            counts["seed_" + crop] = int(have)
     # crop_priority is deliberately not used to reorder planting. Ranking
     # crops by remaining demand times price measured 24,257 against 32,693
     # for the fixed order, because that product is the coins available in a
