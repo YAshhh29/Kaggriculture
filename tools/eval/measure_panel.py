@@ -130,6 +130,8 @@ def resolve(spec: str):
       constants overridden, so a sweep needs no edit to the agent itself
     * `trickle:<module>:<attr>:<n>`      -- that agent, metering each good
       onto the market n units a turn instead of in one lump
+    * `handover:<day>:<open>|<late>`     -- one spec until that day, the
+      other after it; the halves are specs, so a pipe separates them
     """
     from rl.candidate_a import build_candidate_a_agent
     from rl.candidate_b import build_candidate_b_agent
@@ -158,6 +160,17 @@ def resolve(spec: str):
             chooser = portfolio.sticky(chooser)
         inner = portfolio.build_portfolio_agent(routes, chooser=chooser)
         return inner if bare else guarded(inner)
+    if spec.startswith("handover:"):
+        from rl.handover import build_handover_agent
+
+        # The two halves are specs and contain colons themselves, so the
+        # switch day comes first and a pipe separates the pair.
+        rest = spec[len("handover:"):]
+        day, _, pair = rest.partition(":")
+        opening, _, endgame = pair.partition("|")
+        return build_handover_agent(
+            resolve(opening), resolve(endgame), switch_day=int(day)
+        )
     if spec.startswith("trickle:"):
         from rl.trickle import build_trickle_agent
 
