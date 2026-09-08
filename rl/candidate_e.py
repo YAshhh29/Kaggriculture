@@ -249,6 +249,14 @@ def animal_value(
         if ANIMALS[kind]["product"] == product
     )
     absorbed = float(remaining_demand(observation).get(product, 0.0))
+    # `committed - absorbed` goes negative whenever the town's appetite
+    # exceeds our own supply, which prices the next unit *above* base.
+    # That looks indefensible and it is: it values a thirteenth cow's milk
+    # at 6,813 coins where its own margin is 27, because milk floors 76
+    # units past equilibrium. Clamping it at zero was measured and costs E
+    # two thirds of its coins (10.8w) -- the herd is not being paid for
+    # milk, it is being paid for the fertilizer every animal drops daily,
+    # and the overvaluation is what sizes it. Left exactly as measured.
     revenue = sale_revenue(observation, product, units, committed - absorbed)
 
     # Every surviving animal drops one fertilizer a day, unconditionally --
@@ -344,6 +352,7 @@ def crop_rate_value(
     # Everything already in the ground reaches the market before this does.
     committed = standing * units * max(1.0, remaining / span)
     absorbed = float(remaining_demand(observation).get(crop, 0.0))
+    # Same offset as animal_value, and the same measured verdict (10.8w).
     revenue = sale_revenue(observation, crop, units, committed - absorbed)
     horizon = min(span, float(remaining))
     return (revenue - spec["seed"]) / max(1.0, horizon)

@@ -3896,6 +3896,59 @@ tested and understood; whether it pays is a separate question from whether
 it is real, and this project has repeatedly answered the first by assuming
 the second.
 
+### 10.8w The indefensible offset in E's valuation is load-bearing
+
+`animal_value` and `crop_rate_value` both price the next unit with
+
+    sale_revenue(observation, product, units, committed - absorbed)
+
+where `committed` is what the herd or field we already own will pour into
+that product and `absorbed` is the town's remaining appetite. That
+expression goes **negative** whenever the town wants more than we supply,
+which is most of the game -- remaining milk demand climbs from 30 to 450
+as the milk shops unlock, against a twelve-cow herd's 324 units. A negative
+offset makes `sale_revenue` start below equilibrium and quote milk *above*
+its base of 160:
+
+| offset | price of the next milk unit | revenue for a 13th cow's 27 units |
+| ---: | ---: | ---: |
+| -126 (what E computes) | 258 | **6,813** |
+| 0 (untouched market) | 160 | 3,585 |
+| +324 (our own committed supply) | 1 | **27** |
+
+A 250-fold overvaluation, and it looked like the whole explanation for
+10.8s: E ends every game on 22 cows and no geese, the exact inverse of the
+2765+ fingerprint, and milk floors 76 units past equilibrium (10.8v) while
+egg never floors at all.
+
+**Clamping the offset at zero was measured and it is much worse.** Same
+held-out panel, 32 games:
+
+| | coins | wins | median margin |
+| --- | ---: | ---: | ---: |
+| **as written, offset unclamped** | **91,144** | 0/32 | -54,290 |
+| clamped, full town credit | 30,538 | 0/32 | -64,102 |
+| clamped, half town credit | 45,023 | 0/32 | -59,934 |
+| clamped, no town credit | 41,445 | 0/32 | -61,760 |
+
+Correcting it costs E two thirds of its coins. The overvaluation is
+load-bearing: **the herd is not being paid for milk, it is being paid for
+manure.** Every animal drops one fertilizer a day unconditionally whether
+or not it is fed, fertilizer absorbs 493 units before it floors against
+milk's 76, and `animal_value` already carries that stream as its `manure`
+term. The inflated milk figure is what sizes a herd whose actual return is
+the fertilizer, so pricing milk honestly without re-deriving the herd
+target simply buys fewer animals and collects less manure.
+
+Reverted to exactly what was measured, with the arithmetic recorded in
+place so the next reader does not "fix" it again. **The lesson is not that
+the offset is right. It is that E's parameters were fitted around it, so
+the milk term cannot be corrected on its own -- the herd sizing, the
+fertilizer stream and the crop mix have to move together or not at all.**
+
+That is now twelve measured E variants on this panel, none of which wins a
+single game, with the untouched agent the best of them.
+
 ## 11. Candidate D: the original learned residual/Option selector plan
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
