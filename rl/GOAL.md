@@ -3182,6 +3182,51 @@ validated properly.** D's own floors -- 47,463 and 48,455 across the two
 panels -- are the best of any route tested, which is a stronger reason to
 keep it than its coin mean ever was.
 
+### 10.8o Why every layer on a clone fails: there is no spare work
+
+Eight distinct mechanisms have now been built and measured on top of a
+frozen route. Every one is negative:
+
+| layer | result | section |
+| --- | ---: | --- |
+| herd swap (cow/sheep) | -107 over 48 games | 10.8c |
+| demand-driven herd ratio | +133 (noise) | 10.8c |
+| sell gate (inventory thresholds) | -5,254 | 10.8c |
+| demand-paced selling | -3,000 to -23 points of win rate | 10.8l |
+| eager selling | nothing to gain -- 0.5-2 units sit unsold | 10.8l |
+| buy-side arbitrage | **impossible** -- `BUY_PRODUCT` accepts only WHEAT and FERTILIZER | 10.8l |
+| dead-turn substitution | 90% -> 41% win rate | 10.8n |
+| **extra hired hands** | **148,328 -> 101,274** | this section |
+
+The last one is the most informative, because it was designed to *add*
+rather than interfere and it provably did not disturb the clone at all.
+`rl/extra_hands.py` hires workers beyond the count a route recorded and
+drives them with our own valuation. The route's own action counts come out
+byte-identical with the surplus attached -- WATER 1229, HARVEST 450, CARE
+413, FEED 384, COLLECT_FERTILIZER 373 -- so the mechanism is sound.
+
+**It still lost 47,000 coins, because the extra hands had nothing to do.**
+They spent 2,308 of roughly 2,900 worker-turns on PASS, about 76% idle,
+while their Fibonacci wages ran on regardless. (Two bugs were found and
+fixed on the way, both worth knowing: hiring while the route is still
+filling its own crew inserts workers mid-roster and misaddresses every
+later instruction; and a cap phrased relative to the route's own hand-list
+length re-arms as that length swings, running the roster to 19 hands and a
+13,000-coin daily wage.)
+
+**So the binding constraint in this game is available work, not labour and
+not scheduling.** A 75-tile farm with about 58 plants and 17 animals
+generates on the order of 120 tasks a day, and twelve hands already cover
+them. That single fact explains every failure in the table above, and it
+explains Agent E's 680 idle worker-turns and why adding hands loses money
+there too (10.8e, 10.8f).
+
+The only thing that changes it is a **bigger farm** -- more tiles, more
+plants, more animals -- which needs capital committed earlier in the
+season. That is exactly the decision a frozen route has already made and
+cannot revisit, and it is why the remaining upside is in an agent that
+chooses its own opening, not in another wrapper.
+
 ### 10.9 How to test
 
 * `python -m tools.validation.preflight_candidate_d` -- seven gates for
