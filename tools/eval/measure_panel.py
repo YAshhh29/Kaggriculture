@@ -49,7 +49,26 @@ INDEX = ROOT / "rl" / "data" / "live_opponents.jsonl"
 ELITE_FLOOR = 2500.0
 
 
-def panel(kind: str, limit: int = 0) -> list[dict[str, Any]]:
+def _round_robin(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Reorder so that taking a prefix takes one tape per team in turn."""
+    by_team: dict[str, list[dict[str, Any]]] = {}
+    for row in rows:
+        by_team.setdefault(row["name"], []).append(row)
+    ordered: list[dict[str, Any]] = []
+    depth = 0
+    while len(ordered) < len(rows):
+        added = False
+        for team in sorted(by_team):
+            if depth < len(by_team[team]):
+                ordered.append(by_team[team][depth])
+                added = True
+        if not added:
+            break
+        depth += 1
+    return ordered
+
+
+def panel(kind: str, limit: int = 0, skip: int = 0) -> list[dict[str, Any]]:
     """Tapes on disk, filtered by the rating of the team that recorded them.
 
     `limit` trims the panel by taking one tape per team in turn rather
@@ -57,6 +76,11 @@ def panel(kind: str, limit: int = 0) -> list[dict[str, Any]]:
     of the top one or two teams and call that a panel; round-robin keeps
     the breadth of opponents, which is the only thing a small panel can
     still be honest about.
+
+    `skip` drops that many tapes from the front of the same ordering, so
+    `--limit 8` selects a candidate and `--skip 8` then confirms it on
+    opposition it was not selected against. Screening and confirming on
+    one panel is how a route search talks itself into a route.
     """
     rows: list[dict[str, Any]] = []
     seen: set[int] = set()
@@ -72,22 +96,10 @@ def panel(kind: str, limit: int = 0) -> list[dict[str, Any]]:
         seen.add(row["episode_id"])
         row["path"] = str(path)
         rows.append(row)
-    if limit and len(rows) > limit:
-        by_team: dict[str, list[dict[str, Any]]] = {}
-        for row in rows:
-            by_team.setdefault(row["name"], []).append(row)
-        picked: list[dict[str, Any]] = []
-        depth = 0
-        while len(picked) < limit:
-            added = False
-            for team in sorted(by_team):
-                if depth < len(by_team[team]) and len(picked) < limit:
-                    picked.append(by_team[team][depth])
-                    added = True
-            if not added:
-                break
-            depth += 1
-        rows = picked
+    if skip or (limit and len(rows) > limit):
+        rows = _round_robin(rows)[skip:]
+        if limit:
+            rows = rows[:limit]
     return rows
 
 
@@ -250,6 +262,9 @@ def main() -> None:
     parser.add_argument("--out", default=None)
     parser.add_argument("--limit", type=int, default=0,
                         help="cap panel size, one tape per team in turn")
+    parser.add_argument("--skip", type=int, default=0,
+                        help="drop this many tapes from the front, to "
+                             "confirm on opposition not selected against")
     parser.add_argument(
         "--screen", default=None, choices=("elite", "ladder"),
         help="also screen every tape of this band as a clone candidate",
@@ -270,7 +285,7 @@ def main() -> None:
     kinds = ("ladder", "elite") if args.panel == "both" else (args.panel,)
     results = []
     for kind in kinds:
-        rows = panel(kind, args.limit)
+        rows = panel(kind, args.limit, args.skip)
         if not rows:
             print(f"{kind}: no tapes on disk", flush=True)
             continue
