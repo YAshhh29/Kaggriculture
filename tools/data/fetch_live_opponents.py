@@ -139,6 +139,12 @@ def main() -> None:
     parser.add_argument("--per-opponent", type=int, default=3)
     parser.add_argument("--min-rating", type=float, default=1700.0)
     parser.add_argument("--pause", type=float, default=3.0)
+    parser.add_argument(
+        "--submissions", default=None,
+        help="explicit 'rating:name:submissionId' triples, comma separated; "
+             "use this to target the top of the leaderboard rather than our "
+             "own rating neighbourhood",
+    )
     args = parser.parse_args()
 
     token = os.environ.get("KAGGLE_API_TOKEN")
@@ -152,8 +158,15 @@ def main() -> None:
         for line in INDEX.read_text(encoding="utf-8").splitlines():
             done.add(int(json.loads(line)["episode_id"]))
 
-    rows = [r for r in live_opponents(token, args.pause)
-            if r["rating"] >= args.min_rating][:args.opponents]
+    if args.submissions:
+        rows = []
+        for entry in args.submissions.split(","):
+            rating, name, sid = entry.split(":", 2)
+            rows.append({"team_id": 0, "submission_id": int(sid),
+                         "name": name, "rating": float(rating)})
+    else:
+        rows = [r for r in live_opponents(token, args.pause)
+                if r["rating"] >= args.min_rating][:args.opponents]
     print(f"{len(rows)} live opponents rated >= {args.min_rating:.0f}",
           flush=True)
 
@@ -164,9 +177,19 @@ def main() -> None:
             if payload is None:
                 print("  list failed, stopping", flush=True)
                 break
-            episodes = [e["id"] for e in (payload.get("episodes") or [])]
+            # Sort explicitly rather than trusting the listing order. The
+            # endpoint returns episodes newest-first, so the `reversed()`
+            # this line used to do handed back each submission's *oldest*
+            # games -- its 600-rated validation self-play and its first
+            # climb against weak opposition -- when the whole point was to
+            # capture play at the top of the ladder. Episode ids increase
+            # with time, so descending id is newest-first regardless.
+            episodes = sorted(
+                (e["id"] for e in (payload.get("episodes") or [])),
+                reverse=True,
+            )
             taken = 0
-            for episode in reversed(episodes):     # newest first
+            for episode in episodes:
                 if taken >= args.per_opponent:
                     break
                 if episode in done:
