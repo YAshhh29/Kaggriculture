@@ -3227,6 +3227,73 @@ season. That is exactly the decision a frozen route has already made and
 cannot revisit, and it is why the remaining upside is in an agent that
 chooses its own opening, not in another wrapper.
 
+### 10.8p Buying the fourth quadrant with the clone's idle cash
+
+The last idea 10.8o pointed at: if the constraint is *available work*, then
+create some. A route holds 16,483 coins on day 12 and 130,062 by day 28
+and never buys the fourth quadrant, which costs 4,000 -- so 25 tiles sit
+locked while its own 75 are full. `rl/expansion.py` buys that quadrant out
+of surplus, hires hands beyond the count the route recorded, and works the
+new ground **only inside the new quadrant**, so the two crews can never
+contend for a tile.
+
+**The mechanism works and the economics do not.**
+
+| extra hands | 0 | 1 | 2 | 3 | 4 | 6 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| reward | **148,328** | 131,934 | 133,234 | 116,867 | 96,860 | 24,358 |
+
+The new quadrant genuinely gets farmed -- four tiles in production by the
+end, against zero for the plain route. But reward is the cash on the books
+at step 720, so every coin spent must return before the whistle, and
+buying on day twelve leaves seventeen days. The route's own crew needed
+twelve days and twelve hands to develop the 75 tiles it has; two to four
+extra hands cannot clear, plant, water and harvest 25 more in the time
+left. Four tiles is worth perhaps a thousand coins against roughly ten
+thousand spent on land, seed and livestock.
+
+**Even one extra hand loses 16,000 while its entire wage bill is 3,961**,
+which places the loss squarely on the capital rather than the payroll.
+Buying early enough to develop the ground is the other branch, and that is
+precisely what 9i measured losing -- it starves the farm the route is
+already building.
+
+Three bugs were found and fixed proving the mechanism, all worth knowing:
+
+1. hiring while the route is still filling its crew inserts workers
+   mid-roster and misaddresses every later instruction;
+2. a roster cap phrased relative to the route's own hand-list length
+   re-arms as that length swings through the day -- the crew ran to
+   nineteen hands on a 13,000-coin daily wage;
+3. **Candidates A and B pad the hand list out to the live roster**, so the
+   surplus cannot be identified from the wrapped action (it must come from
+   the raw tape) and surplus instructions must *overwrite* the padded
+   slots rather than being appended, or they fall off the end and are
+   silently discarded.
+
+### 10.8q The ceiling on wrapping a clone, stated plainly
+
+Ten mechanisms have now been built and measured on top of a frozen route.
+Every one is neutral or negative: herd swap, demand herd ratio, sell gate,
+demand-paced selling, eager selling, buy-side arbitrage (blocked by the
+simulator), dead-turn substitution, extra hired hands, the fourth-quadrant
+expansion, and the route swap itself (10.8m).
+
+Two facts explain all of them, and both are properties of the game rather
+than of any particular layer:
+
+* **There is no spare work.** A full farm generates ~120 tasks a day and
+  twelve hands cover them, so nothing that reallocates or adds labour can
+  find anything to do (10.8o).
+* **There is no spare time.** Reward is final cash, so new capacity has to
+  be bought early enough to pay back -- and a frozen route has already
+  spent the early game the way it spent it (10.8p).
+
+A wrapper can change *when* a clone sells and *which* animal it buys. It
+cannot change how much farm the clone built or when it built it, and that
+is where the remaining value is. **Anyone continuing this work should stop
+wrapping clones.**
+
 ### 10.9 How to test
 
 * `python -m tools.validation.preflight_candidate_d` -- seven gates for
