@@ -35,10 +35,20 @@ worthless if it fires:
   recover -- fertilizer has no shop and no town-centre demand at all.
 
 Unlike `rl/demand_sales.py`, which caps *how much* may be sold per turn
-against the town's absorption rate, this caps *at what price* -- and on a
-high-volume route that distinction is the difference between deferring a
-loss and avoiding one. Pacing measured negative on a clone (GOAL.md
-10.8l); this is the other half of the idea and is measured separately.
+against the town's absorption rate, this caps *at what price*.
+
+**Measured on Candidate D and it loses: -7,336 coins over 120 paired
+identical games at a floor of 8, win rate 85.8% down to 65.8%.** So both
+halves of the idea now have the same verdict on a high-volume clone, and
+for the same reason (10.8l): the route sells more than the town can
+absorb, so a unit held back is a unit whose price never recovers, while
+the cash it did not raise is cash the route's own purchases needed.
+
+It remains switched on in Agent E, where it is worth roughly +1,000
+coins, because E sells about a thousand units a game against the roughly
+3,800 the town absorbs -- inside the appetite, where holding genuinely
+lets a price recover. **The dividing line is production volume, not the
+mechanism.**
 """
 
 from __future__ import annotations
