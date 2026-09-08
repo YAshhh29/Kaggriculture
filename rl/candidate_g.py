@@ -501,6 +501,29 @@ def preferred_bird(observation: dict[str, Any]) -> str:
 ANIMAL_HOME = {"GOOSE": "COOP", "COW": "PASTURE", "SHEEP": "PASTURE"}
 
 
+def crop_priority(observation: dict[str, Any]) -> list[tuple[str, int]]:
+    """Crops worth ground here, best first, with the tile cap for each.
+
+    The same argument as the animal choice. A fixed list plants melon in a
+    town that never draws a PIZZA_SHOP and carrot in one that draws three,
+    which is planting by habit. `remaining_demand` says what this town will
+    still absorb; multiplying by the live price gives the coins actually
+    available in each crop, and the cap keeps us from filling a book we
+    have already saturated.
+
+    Wheat is excluded deliberately: it is feed, and its acreage is set by
+    the size of the flock rather than by what the town wants.
+    """
+    demand = remaining_demand(observation)
+    ranked = []
+    for crop, cap in CROP_TILES:
+        pull = demand.get(crop, 0.0) * price_at(
+            crop, inventory_of(observation, crop))
+        ranked.append((pull, crop, cap))
+    ranked.sort(reverse=True)
+    return [(crop, cap) for pull, crop, cap in ranked if pull > 0]
+
+
 def market_orders(
     observation: dict[str, Any],
     day: int,
@@ -649,6 +672,13 @@ def decide(observation: dict[str, Any]) -> AgentAction:
     # nowhere leaves it standing in the shed, which is exactly what the
     # first attempt at this did.
     counts["bird"] = preferred_bird(observation)
+    # crop_priority is deliberately not used to reorder planting. Ranking
+    # crops by remaining demand times price measured 24,257 against 32,693
+    # for the fixed order, because that product is the coins available in a
+    # crop while the binding constraint is *tiles*: melon's demand is small
+    # and it still pays 250 a unit, so a total-coins ranking buries it
+    # under carrot. The animal choice does not have this problem -- a pen
+    # is a pen -- which is why demand drives that and not this.
 
     # Workers are assigned in order, each taking the best job left on the
     # board. Claimed tiles are struck out so two workers never walk to the
