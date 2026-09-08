@@ -128,6 +128,8 @@ def resolve(spec: str):
       switched between at block boundaries by the named chooser
     * `tuned:<module>:<attr>:<K=V,...>`  -- a coded agent with module-level
       constants overridden, so a sweep needs no edit to the agent itself
+    * `trickle:<module>:<attr>:<n>`      -- that agent, metering each good
+      onto the market n units a turn instead of in one lump
     """
     from rl.candidate_a import build_candidate_a_agent
     from rl.candidate_b import build_candidate_b_agent
@@ -156,6 +158,14 @@ def resolve(spec: str):
             chooser = portfolio.sticky(chooser)
         inner = portfolio.build_portfolio_agent(routes, chooser=chooser)
         return inner if bare else guarded(inner)
+    if spec.startswith("trickle:"):
+        from rl.trickle import build_trickle_agent
+
+        _, name, attribute, per_turn = spec.split(":", 3)
+        module = importlib.import_module(name)
+        return build_trickle_agent(
+            getattr(module, attribute), per_turn=int(per_turn)
+        )
     if spec.startswith("tuned:"):
         _, name, attribute, overrides = spec.split(":", 3)
         module = importlib.import_module(name)

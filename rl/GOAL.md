@@ -4377,6 +4377,67 @@ while the opponent is still deciding what it can afford.
 **Fixing that is a rewrite of E's opening, not a knob**, which is the
 honest conclusion after fifteen variants that moved nothing.
 
+### 10.8ad E sells the same volume as F, at 102 coins a unit against 66
+
+The last unexplained difference between E and F was that E issues sell
+orders on 88 turns a game and F on 254. Counting what each actually holds
+and asks for, rather than what it requests, removes the volume
+explanation entirely:
+
+| | E | F |
+| --- | ---: | ---: |
+| turns with sellable stock in the shed | 376 | 713 |
+| turns it issued a sell order | **88** | **254** |
+| units both sellable and asked for | **1,053** | **1,127** |
+| final money | **107,886** | 74,896 |
+| **coins per unit sold** | **102** | **66** |
+
+**They move the same volume.** Every earlier claim in this file that E
+"sells 977 units against D's 2,138" was comparing *requests*, which the
+engine clamps against the shed and which a tape can inflate to 999,999.
+E's problem was never production and never volume.
+
+`rl/trickle.py` was built to test the only remaining hypothesis -- that
+the same units spread over more turns would hold the price down where 88
+lumps let the town digest them between deliveries. It is the opposite of
+`rl/demand_sales.py`, which caps a turn's sales against town absorption
+and so *reduces* market occupancy. Held-out ladder panel, 32 games:
+
+| | coins | wins |
+| --- | ---: | ---: |
+| **E as shipped** | **91,144** | 0/32 |
+| trickle 16 a turn | 89,132 | 0/32 |
+| trickle 8 a turn | 53,325 | 0/32 |
+| trickle 4 a turn | 50,161 | 0/32 |
+| trickle 2 a turn | 45,004 | 0/32 |
+
+Monotone: the tighter the meter, the worse. **E's selling schedule is
+already optimal for E's own revenue and no wrapper can improve it.** That
+is the seventeenth variant to win nothing, and between them they have now
+excluded selling policy, throughput, herd composition, feed, crop mix,
+opening timing and sale timing.
+
+#### What is actually wrong, stated exactly
+
+E realises 102 coins for every unit it sells and F realises 66. E is not
+playing badly; it is solving a different problem correctly. It maximises
+the coins *it* receives, choosing the high-value goods and the moments
+when prices are best -- and every one of the seventeen variants failed
+because each was an attempt to make E better at that same problem.
+
+The game is two-sided. F's 66 coins a unit buys something E's 102 does
+not: fertilizer driven to +493, milk held at +70 instead of -98, and an
+opponent that finishes on 11.6 animals instead of 15.4 because the cash
+its purchases were clamped against never arrived.
+
+**So the next work on E is not its market layer.** Its selling is optimal
+given what is in its shed. What has to change is *what it produces* --
+composition chosen against the opponent's supply rather than against our
+own price. `rl/denial.py` already computes that term and is deliberately
+wired into nothing; the honest next step is to route E's crop and herd
+planning through it and re-measure, which is a change to the objective in
+`rl/economics.py` and not another wrapper.
+
 ## 11. Candidate D: the original learned residual/Option selector plan
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
