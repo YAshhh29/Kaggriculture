@@ -4493,6 +4493,77 @@ hundred points below the routed portfolios and a thousand below the
 target**, which is consistent with 10.8aa: the routes that would lift the
 ceiling are exactly the ones that do not transfer.
 
+### 10.8af A goose is worth six cows, and the whole field misprices it
+
+Read straight from the simulator's constants rather than from any panel.
+`ANIMALS` gives GOOSE cost 300, first yield day 4, interval 1, max_held 4,
+product EGG; COW cost 400, first yield 8, interval 2, product MILK; SHEEP
+cost 500, first yield 6, interval 3, product WOOL. `_daily_refresh_animals`
+adds `base = 1` per interval plus a care bonus of 1 when the animal was
+both fed and cared, so a tended goose yields **2 eggs a day from day 4**
+and a tended cow 1.5 milk a day from day 8.
+
+Priced against each product's own curve (10.8v):
+
+| twenty head, tended, to day 29 | units | revenue | birds cost |
+| --- | ---: | ---: | ---: |
+| **GOOSE -> EGG** | 1,000 | **39,799** | 6,000 |
+| COW -> MILK | 630 | 6,735 | 8,000 |
+| SHEEP -> WOOL | 613 | 8,482 | 10,000 |
+
+Six to one, for the cheapest animal on the board. Three rules compound:
+egg's curve is logarithmic so the thousandth unit still fetches 38 while
+milk floors at 1 after 76 units and wool after 59; the goose interval is
+half the cow's; and it starts four days sooner.
+
+**Nobody exploits this.** The nine highest-rated teams average 2.1 geese
+against 7.9 cows and 7.5 sheep (10.8z), and Agent E buys 22 cows and no
+geese. The entire field crowds the two commodities that collapse and
+leaves the one that never does.
+
+**Agent E cannot cash it in.** `HERD_FORCE=GOOSE` builds the flock -- 19
+birds by day 18 -- and still loses: 40,247 coins against its own baseline
+61,383, head to head against Candidate D. Tracing it shows why: shed wheat
+sits at **zero all game**, so the birds are never fed, so they produce
+`base` alone and not the doubled yield the arithmetic above assumes. The
+fix does not take either. Raising `WHEAT_HOARD_CAP` to 200 and halving
+`FEED_RESERVE_PER_ANIMAL` gives 39,851, and raising the wheat tile cap on
+top is byte-identical. **Twenty-four measured E variants, none of which
+wins a game.**
+
+The opportunity is real and E is not the vehicle for it. Realising it
+needs a scheduler that feeds, cares for and harvests every bird every day
+-- roughly sixty worker actions a day for twenty geese -- which is a
+purpose-built agent, not a parameter on this one.
+
+### 10.8ag No local metric ranks our own two agents correctly
+
+Live: Candidate D holds mu 1743.6 over 182 games, Candidate F mu 1690.7
+over 92. D is ahead by ~53. (F's displayed 1356.4 is mu minus an
+uncertainty margin that shrinks with games played; an earlier reading of
+that as a 390-point deficit was wrong.)
+
+Every local instrument disagrees:
+
+| | D | F | live truth |
+| --- | ---: | ---: | --- |
+| frozen-tape ladder panel | 67.2% | **85.9%** | D ahead |
+| head to head, D as reference | -- | 50.0% | D ahead |
+| five-agent adaptive field | 47.5% | **71.2%** | D ahead |
+
+The field metric was built specifically to fix the tape panel -- five
+opponents that can all respond, including two coded agents and two
+guard-wrapped routes -- and it fails the same way. Worse, the bias has a
+shape: **every MatthewHuang-family tape scores 61-75% on it** (F 71.2%,
+ep106613721 75.0%, ep106738450 61.3%) while Candidate D and a kaggricodex
+route sit at 47-49%. Whatever those routes exploit, our local opponents
+are vulnerable to it and the ladder is not.
+
+**So route selection cannot currently be done locally at all**, and the
+only defensible position is that Candidate D at mu 1744 is the best agent
+this project has produced and no measured candidate has earned the right
+to replace it.
+
 ## 11. Candidate D: the original learned residual/Option selector plan
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.

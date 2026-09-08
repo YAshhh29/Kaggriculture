@@ -57,7 +57,7 @@ def play(job) -> dict[str, Any]:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("specs", nargs="+")
-    parser.add_argument("--reference", default="rl.candidate_d:agent")
+    parser.add_argument("--reference", action="append", default=None)
     parser.add_argument("--seeds", type=int, default=16)
     parser.add_argument("--workers", type=int, default=11)
     parser.add_argument("--label", action="append", default=None)
@@ -66,14 +66,15 @@ def main() -> None:
     seeds = SEEDS[: args.seeds]
     labels = list(args.label or [])
     labels += [s for s in args.specs[len(labels):]]
-    print(f"reference: {args.reference}")
-    print(f"{len(seeds)} seeds x 2 seats = {len(seeds) * 2} games each\n",
-          flush=True)
+    references = args.reference or ["rl.candidate_d:agent"]
+    print("field: " + ", ".join(references))
+    print(f"{len(seeds)} seeds x 2 seats x {len(references)} opponents = "
+          f"{len(seeds) * 2 * len(references)} games each\n", flush=True)
     print(f"  {'candidate':34s} {'wins':>10s} {'ours':>10s} "
           f"{'theirs':>10s} {'median margin':>14s}")
     for spec, label in zip(args.specs, labels):
-        jobs = [(spec, args.reference, s, seat)
-                for s in seeds for seat in (0, 1)]
+        jobs = [(spec, ref, s, seat)
+                for ref in references for s in seeds for seat in (0, 1)]
         with Pool(min(args.workers, len(jobs))) as pool:
             out = pool.map(play, jobs)
         wins = sum(1 for g in out if g["won"])
