@@ -3511,6 +3511,145 @@ believed to be. E idled 1,146 worker-turns a game not because the
 scheduler was weak but because a 25-tile farm cannot occupy twelve
 workers; the fix was capital, not scheduling.
 
+### 10.8s What the top of this leaderboard actually runs (2026-09-08)
+
+Section 10.8r established that the local panel was the problem and built a
+live one. Two things were still wrong with it, and fixing them changes the
+conclusions rather than refining them.
+
+**The fetch was taking the wrong games.** `fetch_live_opponents` iterated
+`reversed(episodes)`, but `ListEpisodes` already returns newest-first, so
+every tape captured was a submission's *oldest* game. The episode records
+show it plainly -- each team's first captured game is a 600-rated
+validation self-play, then 715, 806, 898 as the submission climbs:
+
+    ep106024653  Mengfei Li=77,089@600  vs Mengfei Li=80,800@600
+    ep106025721  prajval_p=40,809@617   vs Mengfei Li=113,641@715
+    ep106026559  Simon=49,146@648       vs Mengfei Li=136,365@806
+
+Fixed by sorting on episode id descending. All 36 original tapes were
+re-verified against the episode listing and every one does belong to the
+team it is labelled with, so the corpus was mislabelled in *recency*, not
+in identity. Both halves are kept: 71 elite tapes from 9 teams.
+
+**Reward is not a skill measure, and this is why the panel misled.** The
+same submission scores 67-80k against itself and 113-177k against a weak
+draw. Mean reward therefore measures who you were drawn against. Only
+margin measures play, and `tools/eval/measure_panel.py` now reports margin,
+win rate and near-losses on two panels -- **ladder** (1917-2108, the field
+we are actually drawn from) and **elite** (2765-2882).
+
+#### The field is one public notebook
+
+Profiling all 135 captured tapes by what they *buy* (`tools/data/
+profile_tapes.py`) separates the bands cleanly. Fourteen of the
+twenty-four ladder teams post an identical fingerprint:
+
+    carrot 5   wheat ~198   goose 0   FERTILIZE 75
+
+That is not convergence, it is one shared starting notebook --
+`bovard/kaggriculture-getting-started`, 1007 votes, itself rated 272.2.
+**Not one of the nine teams above 2765 runs it.** Every elite team buys
+31-55 carrot seeds and 1.5-3.1 geese.
+
+| per game | elite 2765+ | ladder <2500 | D | E | F |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| carrot seeds | **46** | 16 | 22 | 25 | **6** |
+| wheat seeds | 147 | 188 | 160 | 249 | 185 |
+| geese | **2.2** | 0.9 | **0** | **0** | **0** |
+| animals total | 17.0 | 17.7 | 17 | 23 | 14 |
+| FERTILIZE | 116 | 79 | none | 123 | none |
+| first land day | 5.6 | 6.0 | 6.0 | **0.0** | 6.0 |
+| PASS share | 9.9% | 7.9% | 4.4% | 9.8% | 7.0% |
+
+Two readings follow directly.
+
+**Candidate F clones a member of the baseline family.** Carrot 6, wheat
+185, no geese is the public starter's fingerprint. F is a clone of the
+field, which is the whole explanation for F landing at the field's rating.
+The route search that produced it ranked 245 cached routes on win rate
+against a panel drawn from that same family, so it could only ever have
+found a good member of it.
+
+**No agent of ours buys a single goose**, against a unanimous 2-3 among
+the leaders. E's own valuation explains why and is not naive: the town
+unlocks milk-consuming shops around day 3 and remaining MILK demand goes
+30 -> 450 while EGG and WOOL stay near 18, so COW dominates E's ranking
+from day 3 onward and E ends on 22 cows and 1 sheep. But at the end of
+that same game, 400 units fetch **EGG 17,783, MILK 13,294, WOOL 400** --
+wool crushed to a coin a unit by the opponent's dumping, and egg, which E
+never produces, holding up best. The elite spread is not about mean
+demand; it is about not standing in the good everyone else is dumping.
+
+#### The 2450-2611 tier is a route portfolio, and it carries no guards
+
+Pulled from the competition's public notebooks
+(`kernels.KernelsService/ListKernels`, then `kernels/scriptcontent/<id>/
+download`). The highest-rated public agent, `ahmedberatozer` at **2611.8**,
+is a derivative: it downloads `thomastschinkel/kaggriculture-95-5-win-rate-
+via-replay-routing` (itself **2534.5**), extracts the embedded payload and
+asserts
+
+    assert len(SCHEDULES) == 5
+    assert all(len(route) == 719 for route in SCHEDULES)
+
+The donor's agent is 120 lines around those five recordings. Every 72
+turns it walks a per-block decision tree over a public feature vector --
+market inventory and price for all nine goods, which shops the town has
+unlocked, **both** farms' crop and animal populations, both players' money
+and the difference, our shed, quadrants owned -- and commits to one of the
+five schedules for the next block. Tree nodes are `(feature, yes, no,
+route, cut)`; `feature == -2` tests which route is already running, which
+is hysteresis. `market_order` rewrites any unparseable order as
+`['SELL','WHEAT',0]` so a dead slot cannot collapse the slot indices.
+
+It has **no refusal guards at all**. Candidate F carries the full A+B guard
+stack and sits 700 points below it. At this tier the lever is switching,
+not guarding.
+
+#### Switching between independent recordings does not work
+
+The obvious cheap version of that architecture -- take several games of one
+strong submission and switch between them -- was built
+(`rl/route_portfolio.py`) and measured. It fails completely.
+
+| Mengfei Li's 8 tapes, ladder panel, 16 paired games | coins | wins | median margin |
+| --- | ---: | ---: | ---: |
+| `fixed_route` (control, one tape) | 76,063 | 7/16 (43.8%) | -12,538 |
+| `cycling_route` (switch every block) | 32,573 | **0/16** | -81,802 |
+| `matching_route` (nearest crew/land/herd) | 37,312 | **0/16** | -88,910 |
+| `matching_route`, guards removed | 54,635 | **0/16** | -41,317 |
+
+A tape's action at turn t assumes the farm its own past actions built. Two
+games of one submission diverge from the first contested market, so
+switching lands route B's plan on route A's farm, and the crew mismatch
+misdirects every hand instruction at once. The guards recover about a third
+of the loss and no more. **The five schedules in the 2534 notebook must be
+co-designed variants sharing a build order, not independent recordings** --
+which means that architecture cannot be reached by harvesting replays, only
+by generating a compatible family ourselves.
+
+#### The repaired panel, and the two routes worth having
+
+On the ladder panel (8 teams, paired seats, 16 games), which is harsher
+than the live ladder and therefore the right place to develop:
+
+| | coins | wins | median margin |
+| --- | ---: | ---: | ---: |
+| **D** (shipped, live ~1762) | 63,409 | 5/16 (31.2%) | -1,245 |
+| **F** (RB25det clone) | 68,782 | 5/16 (31.2%) | -4,485 |
+| Matthew Huang tapes | 75,791 | **14/16 (87.5%)** | **+18,152** |
+| Gleb Tumanov tapes | 74,200 | 13/16 (81.2%) | +2,991 |
+| bharat tapes | 62,520 | 8/16 (50.0%) | +1,102 |
+| kaggricodex / mandgeee | 41-45k | 1/16 | -37k to -49k |
+| THUNDER / AdSpace / kwa | 13-27k | **0/16** | -96k to -125k |
+
+The spread across nine teams all rated 2765-2882 is the same lesson as 9k
+in a harsher form: **an elite rating does not make an elite tape.** Seven
+of the nine are unusable as clone material because their recordings do not
+survive being replayed against a different opponent. Two are worth far more
+than anything in the 245-route cached corpus.
+
 ## 11. Candidate D: the original learned residual/Option selector plan
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
