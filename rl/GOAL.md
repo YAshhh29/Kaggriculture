@@ -3818,6 +3818,69 @@ where the agent we currently have live wins four and loses the median game
 by 7,639 coins. This is the first candidate in the project that is ahead
 on the panel it would need to beat to be worth 2500.
 
+### 10.8v Which goods survive being dumped, and which do not
+
+Read straight out of `MARKET_PARAMS`. Each good has its own curve *above*
+equilibrium, and the shapes are not close to each other. Counting units
+past `MARKET_I0` until the quote reaches the price floor of 1:
+
+| good | above-curve | units to the floor | price at +100 | price at +400 |
+| --- | --- | ---: | ---: | ---: |
+| **EGG** | log | **never** | 42 | 40 |
+| **WHEAT** | log | **never** | 21 | 20 |
+| CARROT | sqrt | 842 | 23 | 12 |
+| TOMATO | sqrt | 529 | 35 | 9 |
+| FERTILIZER | linear | 493 | 80 | 20 |
+| MELON | sq | 158 | 150 | 1 |
+| **MILK** | linear | **76** | 1 | 1 |
+| **STRAWBERRY** | linear | **62** | 1 | 1 |
+| **WOOL** | sq | **59** | 1 | 1 |
+
+This single table explains most of what the last three sections measured.
+
+**It explains the elite fingerprint** (10.8s). Every team above 2765 buys
+31-55 carrot seeds and 2-3 geese, against the public baseline's 5 carrot
+and no geese. Carrot absorbs 842 units before it floors and egg never
+floors at all; they are the only two goods a farm can pour production into
+without destroying its own price. The leaders are not picking crops by
+taste, they are picking the two commodities with the deepest books.
+
+**It quantifies Agent E's herd.** E runs 22 cows and produces about 306
+milk. Milk floors 76 units past equilibrium. Roughly two hundred and
+thirty of those units sell for **one coin**. Section 10.8h decomposed the
+herd gap by counting animals; the count was never the problem. E's own
+`animal_value` chases remaining town demand for milk, which rises from 30
+to 450 as milk shops unlock, without ever asking what the 450th unit
+fetches.
+
+**It explains the denial result** (10.8t) mechanically. D sells 347 milk
+and 389 wool a game. Both floor inside eighty units, so D is not merely
+out-selling the opponent, it is **erasing the entire market value of the
+opponent's cows and sheep** -- and the opponent is a recording that will
+go on producing milk and wool into a market worth one coin a unit
+regardless. E sells 306 milk and no wool at all, so it floors nothing and
+the same opponent banks 142,772 instead of 59,943.
+
+**And it bounds the idea.** Denial is a mid-curve effect: once a good is on
+the floor, further selling takes nothing more from anyone. It is also
+worthless against wheat and egg, whose logarithmic curves barely move at
+any volume this game can reach. So an agent cannot deny its way through
+the whole market -- there are exactly four goods worth flooding (wool,
+strawberry, milk, melon) and two that are immune.
+
+`rl/denial.py` is the first thing in this project that can price any of
+this. `rival_supply` reads the opponent's visible tiles for what they can
+still bring to market, and `denial_value` prices our sale by the stretch
+of curve it pushes them down. Against a rival holding a large herd the
+opponent's loss is the same order as our own revenue -- so an agent
+pricing only its own gain, which is every value function in
+`rl/economics`, is discarding about half the value of every sale.
+
+**Not yet wired into any shipped agent.** The mechanism is measured, unit
+tested and understood; whether it pays is a separate question from whether
+it is real, and this project has repeatedly answered the first by assuming
+the second.
+
 ## 11. Candidate D: the original learned residual/Option selector plan
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
