@@ -86,8 +86,15 @@ HIRE_UNTIL_DAY = 27          # the crew is wiped nightly; stopping early
 # and go broke doing it, because a quadrant bought on day 5 is worked for
 # twenty-four days. Waiting for a 1,200 reserve on fixed days left G on
 # one quadrant for most of the season.
-LAND_RESERVE = 500.0
-MAX_QUADRANTS = 3           # 9i: four-quadrant players win 8.3% against 51.2%
+# Measured, and it inverts the corpus. Buying ground as soon as affordable
+# -- their behaviour -- gives 11,083 at three quadrants and 19,326 at two,
+# against 21,235 for two fixed purchases behind a 1,200 reserve. G's limit
+# is worker throughput, not ground: it already leaves tiles idle, so a
+# quadrant only spends cash and spreads the crew thinner. The elite buy
+# early because they have a thousand waterings to put on it.
+LAND_DAYS = (4, 9)
+LAND_RESERVE = 1200.0
+MAX_QUADRANTS = 3
 GOOSE_COST = 300
 GOOSE_CASH_FLOOR = 450.0    # keep a bird's worth of change in hand
 WHEAT_PER_BIRD = 1.2        # a tile yields ~6 units per 5 days
@@ -369,7 +376,10 @@ def job_value(
     elif kind == "WEED":
         # The corpus digs 36 weeds a game. A weed occupies ground
         # that could hold a coop or a crop for the rest of the season.
-        jobs.append((BAND_WATER * 1.05, ["DIG"]))
+        # The corpus digs 36 weeds a game, but raising DIG to compete with
+        # watering measured neutral at best (19,326 against 19,583 at two
+        # quadrants) and the baseline value is kept.
+        jobs.append((BAND_WATER * 0.4, ["DIG"]))
 
     return [(v, a) for v, a in jobs if v > 0]
 
@@ -472,9 +482,9 @@ def market_orders(
         ].get("unlocked_quadrants") or []
     )
     if (
-        quadrants < MAX_QUADRANTS
+        day in LAND_DAYS
+        and quadrants < MAX_QUADRANTS
         and budget > LAND_RESERVE
-        and day <= LAST_DAY - 8
         and len(orders) < MAX_ORDERS
     ):
         orders.append(["BUY_LAND"])
