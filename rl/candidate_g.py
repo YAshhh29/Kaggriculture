@@ -88,10 +88,11 @@ WHEAT_PER_BIRD = 1.2        # a tile yields ~6 units per 5 days
 # Wheat area is a plan, not a function of the flock. Deriving it from the
 # animals standing gave a target of three tiles with no animals, which
 # fed no birds, so none were bought, so the target never grew.
-WHEAT_TILES = 14
+WHEAT_TILES = 20
 COOPS_AFTER_WHEAT = 8
 EARLY_BIRDS = 6
 EARLY_COOPS = 6
+COOP_LEAD = 2
 # Cash crops for the ground the flock does not need. The goose economy is
 # an addition to a farm, not a replacement for one: with wheat and coops
 # satisfied it was leaving roughly thirty of seventy-one tiles idle all
@@ -105,6 +106,9 @@ CROP_TILES = (("MELON", 12), ("CARROT", 16), ("STRAWBERRY", 8))
 # Wheat carried per trip to the shed. At four, PICKUP was the single most
 # common action in the game -- 1,270 of them, more than harvest, feed, care
 # and collect together -- because every four meals cost a round trip.
+# Settled on eight seeds: 12 gives a mean of 21,031 against Candidate D,
+# 18 gives 18,150 and 24 gives 19,267. A two-seed comparison had 24 ahead
+# by 1,200 and it was noise -- the spread across seeds is 13,000.
 FEED_CARRY = 12
 # Cap on the crew ramp. Twelve hands cost about 376 a day in fibonacci
 # wages, some 10,500 across a season, against roughly 51,000 of gross
@@ -113,6 +117,21 @@ HAND_CAP = 12
 HARVEST_AT = 2              # eggs held before a bird is worth the walk
 SEED_BUFFER = 10
 TRAVEL_EXPONENT = 2.0
+# Where a coop or a wheat tile goes matters as much as that it exists.
+# Feed comes out of the shed and every meal is a round trip, so a flock
+# housed at the far edge spends the season walking: PICKUP was the single
+# most frequent action in the game at 1,102, with 3,160 turns of movement
+# behind it, against 408 harvests. Ground near the shed is therefore worth
+# more than ground far from it, and this is the discount for distance.
+# Zoning. Workers pick jobs independently by value over distance squared,
+# so they scatter: PICKUP and movement take some 4,200 of 7,000 worker
+# turns while feeding, harvesting, watering and collecting share the rest,
+# and the farm runs at roughly a third of what its flock is worth. Giving
+# each worker a strip of the board to serve and taxing jobs outside it
+# should convert walking into work. 1.0 disables the tax.
+ZONE_TAX = 1.0
+COMPACT = 0.0               # measured: clustering near the shed costs
+                            # 5,000 coins, so it stays off
 
 # Priority bands. The chain is feed -> wheat -> housing -> birds, because
 # each link is worthless without the one before it, and a coin-valued
@@ -271,10 +290,17 @@ def job_value(
             jobs.append((BAND_PLACE * 0.9, ["PICKUP", "GOOSE", 1]))
 
     if tile is None:
-        if counts["wheat"] < wheat_target and int(seeds.get("WHEAT", 0)) > 0                 and day <= LAST_DAY - 8:
-            jobs.append((BAND_WHEAT + egg, ["PLANT", "WHEAT"]))
+        # Everything built here is worked from the shed for the rest of the
+        # season, so near ground is worth more than far ground.
+        near = 1.0 / (1.0 + COMPACT * min(
+            abs(x - sx) + abs(y - sy) for sx, sy in shed_tiles()
+        ))
+        if (counts["wheat"] < wheat_target
+                and int(seeds.get("WHEAT", 0)) > 0
+                and day <= LAST_DAY - 8):
+            jobs.append(((BAND_WHEAT + egg) * near, ["PLANT", "WHEAT"]))
         elif (
-            counts["empty_coops"] < 2
+            counts["empty_coops"] < COOP_LEAD
             and days_left > 5
             and (
                 counts["geese"] + counts["empty_coops"] < EARLY_COOPS
@@ -283,7 +309,7 @@ def job_value(
         ):
             early = counts["geese"] + counts["empty_coops"] < EARLY_COOPS
             jobs.append((
-                (BAND_WHEAT + 1.0 if early else BAND_BUILD) + egg,
+                ((BAND_WHEAT + 1.0 if early else BAND_BUILD) + egg) * near,
                 ["BUILD_COOP"],
             ))
         else:
@@ -298,7 +324,8 @@ def job_value(
                 if day > LAST_DAY - int(spec["first"]) - 2:
                     continue
                 price = price_at(crop, inventory_of(observation, crop))
-                jobs.append((BAND_CROP + price, ["PLANT", crop]))
+                jobs.append(((BAND_CROP + price) * near,
+                             ["PLANT", crop]))
                 break
         return jobs
 
@@ -516,11 +543,24 @@ def decide(observation: dict[str, Any]) -> AgentAction:
                 if (x, y) in claimed or not _owned(tiles, x, y):
                     continue
                 travel = distance(position, (x, y))
+                # Each worker serves a vertical strip. Jobs outside it are
+                # still legal -- a hungry bird anywhere still beats an
+                # empty tile next door -- but they are taxed, so the crew
+                # spreads across the board instead of chasing the same
+                # corner.
+                if ZONE_TAX < 1.0 and len(positions) > 1:
+                    width = max(1, len(tiles[y]) // len(positions))
+                    home = worker * width
+                    in_zone = home <= x < home + width
+                else:
+                    in_zone = True
                 for value, act in job_value(
                     observation, tiles[y][x], x, y, inventory, day,
                     shed, seeds, counts, closing,
                 ):
                     score = value / (travel + 1.0) ** TRAVEL_EXPONENT
+                    if not in_zone:
+                        score *= ZONE_TAX
                     if score > best_score:
                         best_score = score
                         best_cell = (x, y)
