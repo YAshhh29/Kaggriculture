@@ -4288,6 +4288,95 @@ worse overall. Trading a 21.9% matchup for a lower aggregate is not an
 improvement, and the only real fix -- reacting to the opponent that is
 beating you -- is precisely what a recording cannot do.
 
+### 10.8ac Agent E does not merely fail to deny the opponent -- it funds them
+
+Fifteen parameter variants have now been measured on the held-out ladder
+panel and every one wins nothing: six selling knobs (10.8t), four
+throughput levers, the animal demand clamp (10.8w), the crop-only clamp,
+wheat-feed tile caps, and the feed reserve cap at 24, 60, 100 and 200.
+Two of those deserve recording individually because they looked
+compelling and were not.
+
+**The feed reserve cap is a real defect that changes nothing.** Line 730
+computes `min(animals_on_farm * FEED_RESERVE_PER_ANIMAL, WHEAT_HOARD_CAP)`
+= `min(23 * 4, 24)` = **24**: twenty-four units of wheat reserved to feed
+twenty-three animals, one each, with the rest sold. The cap defeats the
+calculation it is capping, and the simulator escapes any animal unfed for
+two consecutive days outright. Raising it measured 91,144 -> 90,583 ->
+92,971 -> 92,971 coins at caps of 24, 60, 100 and 200, still 0/32
+throughout, and raising the per-animal reserve to 8 alongside it collapsed
+E to 23,515.
+
+**The crop-only clamp is byte-identical to the baseline.** 10.8w found
+that clamping the negative demand offset costs E two thirds of its coins,
+and argued the offset is load-bearing because the herd's real return is
+manure rather than milk. A crop drops no manure, so the clamp was worth
+testing on crops alone. It never binds: `committed - absorbed` does not go
+negative for crops in play.
+
+#### Tracing the milk
+
+E runs 22 cows and the milk market sits 100-140 units *below* equilibrium
+all game. Same opponent tape, same seed, E's game against F's game:
+
+| | d5 | d10 | d15 | d20 | d25 | d29 | mean price d10-29 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| MILK inventory, E's game | -17 | -70 | -120 | -142 | -115 | -98 | **254.0** |
+| MILK inventory, F's game | -17 | -31 | +21 | +74 | +66 | +70 | **71.8** |
+| turns spent selling | | | | | | | E **88**, F **254** |
+
+The obvious reading -- E hoards its milk -- is wrong. Counting the whole
+chain day by day shows `yield_units` held on the cows and `shed["MILK"]`
+are both **zero at every checkpoint** for E. It harvests promptly and
+sells promptly. It simply has almost no milk, because **it buys its cows
+too late for them to produce**:
+
+| day | 5 | 8 | 10 | 12 | 15 | 18 | 24 | 29 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| E's cows | 2 | 3 | 4 | 13 | 15 | 18 | 19 | 19 |
+| F's cows | 4 | 6 | 6 | 6 | 6 | 6 | 6 | 6 |
+
+A cow's `first_yield_day` is 8 and it yields one unit every two days
+thereafter. E goes from four cows on day 10 to eighteen on day 18, so most
+of its herd first yields on day 26 or later and returns two or three units
+before the season ends. E pays 400 coins each for animals that arrive too
+late to be anything but manure -- which is exactly why 10.8w found the
+herd "paid for by manure", and that finding now reads as a symptom rather
+than an explanation.
+
+#### The part that had been missed entirely
+
+**The opponent's farm is not independent of ours.** A frozen tape's own
+production looked untouchable -- its actions are fixed and its farm is its
+own -- so the market-denial reading in 10.8t treated the opponent's reward
+as a pure price effect. It is not. The tape's `BUY_ANIMAL` and `BUY_SEED`
+orders are clamped by the cash it holds, and that cash comes from the
+prices *we* set.
+
+Against E the opponent sells early milk at 254 coins instead of 72, gets
+rich, and finishes with a materially larger herd. 10.8y measured exactly
+that from F's side: F wins when the opponent ends on 11.6 animals and
+loses when it ends on 15.4, on the same tapes. So an agent that leaves
+prices high is not merely forgoing revenue and not merely failing to deny
+-- **it is buying the opponent a bigger farm**, and the effect compounds
+from the day it starts.
+
+That is why every one of E's collapses has the same shape: level at day
+10, thirty thousand coins behind by day 15. Day 10 to 15 is when the
+opponent's inflated early revenue converts into animals.
+
+#### What this prescribes
+
+Not another parameter. E's opening spends its first capital on ground --
+`OPENING_LAND_DAY = 1`, against a top-14 mean first land purchase on day
+5.2 -- and reaches four cows by day 10 where a competitive route has six
+by day 8. The herd has to be standing early enough to produce, and the
+early production has to reach the market early enough to hold prices down
+while the opponent is still deciding what it can afford.
+
+**Fixing that is a rewrite of E's opening, not a knob**, which is the
+honest conclusion after fifteen variants that moved nothing.
+
 ## 11. Candidate D: the original learned residual/Option selector plan
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
