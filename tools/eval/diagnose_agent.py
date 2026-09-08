@@ -124,7 +124,11 @@ def one(job) -> dict[str, Any]:
     env = make("kaggriculture",
                configuration={"episodeSteps": 720, "seed": seed}, debug=False)
     env.run(players)
-    steps = env.toJSON()["steps"]
+    # `env.steps` rather than `env.toJSON()`, which deep-copies the whole
+    # 720-step replay including every observation. Eleven workers each
+    # holding a copy of that exhausted memory outright; the raw list is
+    # the same data and we only read from it.
+    steps = env.steps
     final = steps[-1]
     ours = float(final[seat].get("reward") or 0.0)
     rival = float(final[1 - seat].get("reward") or 0.0)
@@ -202,7 +206,7 @@ def main() -> None:
     parser.add_argument("--limit", type=int, default=16)
     parser.add_argument("--skip", type=int, default=8)
     parser.add_argument("--seeds", default="11,29")
-    parser.add_argument("--workers", type=int, default=11)
+    parser.add_argument("--workers", type=int, default=6)
     parser.add_argument("--out", default=None)
     args = parser.parse_args()
 
