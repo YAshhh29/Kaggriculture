@@ -45,6 +45,7 @@ from typing import Any
 
 from core.routing import distance, step_toward
 from rl.demand import ANIMAL_PRODUCT, remaining_demand
+from rl.denial import denial_value
 from rl.demand_sales import paced_orders
 from rl.market import headroom, marginal_price, sale_revenue
 from rl.economics import (
@@ -92,6 +93,21 @@ COLLECT_WEIGHT = 1.0
 # Clamp the demand offset when pricing a *crop* only. False reproduces the
 # behaviour every measurement so far was taken against.
 CROP_CLAMP = False
+# How much of the opponent's loss to count when valuing what we grow.
+#
+# Every value in rl/economics prices a job by the coins *we* receive, and
+# E is measurably excellent at that: it realises 102 coins a unit against
+# Candidate F's 66 on the same volume (10.8ad). It loses every game anyway,
+# because the other half of the result is the coins the opponent does not
+# receive -- and against E a frozen tape banks 140,824 where it banks
+# 59,943 against D, then spends the difference on a herd that finishes at
+# 15.4 animals instead of 11.6 (10.8ac).
+#
+# 0.0 is the behaviour all seventeen failed variants were measured
+# against. Above zero, a good the rival can also supply is worth more to
+# grow than its own price says, because selling it takes their price down
+# with ours.
+DENIAL_WEIGHT = 0.0
 SELL_PACE = 24.0
 SELL_CASH_FLOOR = 1500.0
 SHED_PRESSURE = 70
@@ -271,7 +287,11 @@ def animal_value(
     manure = sale_revenue(
         observation, "FERTILIZER", days, fertilizer_committed
     )
-    return revenue + manure - float(spec["cost"])
+    denial = (
+        DENIAL_WEIGHT * denial_value(observation, product, units)
+        if DENIAL_WEIGHT else 0.0
+    )
+    return revenue + manure + denial - float(spec["cost"])
 
 
 def herd_plan(
@@ -368,6 +388,8 @@ def crop_rate_value(
         else committed - absorbed
     )
     revenue = sale_revenue(observation, crop, units, offset)
+    if DENIAL_WEIGHT:
+        revenue += DENIAL_WEIGHT * denial_value(observation, crop, units)
     horizon = min(span, float(remaining))
     return (revenue - spec["seed"]) / max(1.0, horizon)
 

@@ -4438,6 +4438,61 @@ wired into nothing; the honest next step is to route E's crop and herd
 planning through it and re-measure, which is a change to the objective in
 `rl/economics.py` and not another wrapper.
 
+### 10.8ae The tape panel overstates by 22-31 points, measured (2026-09-08)
+
+Candidate F went live. Its record after 88 games, against the panel
+prediction made from the same tapes:
+
+| | tape panel | live |
+| --- | ---: | ---: |
+| Candidate D | 67.2% | **45.2%** (166 games, 10.8r) |
+| Candidate F | 85.9% | **54.9%** vs 1600-2000 (51 games) |
+
+Section 9m estimated the gap at "roughly forty points" and was close. It
+is **22 to 31 points**, and this is the first time it has been measured
+on a candidate rather than assumed.
+
+F's live detail: 57 wins in 88 games overall, mean reward 88,198 against
+opponents' 77,562, median margin +4,253, rating climbing 724 -> 1690. It
+has met nobody above 2000 yet, so the elite-panel figure is still
+untested. **1689.7 is a partial climb from a 600 start, not a converged
+rating** -- the top of the board has 99 to 379 games -- but 54.9% against
+the 1600-2000 band implies an equilibrium near 1850, not the 2200-2400
+the panel implied.
+
+#### The bias is not uniform, and that matters for E
+
+A frozen tape cannot respond to having its market spoiled. It sells its
+recorded quantities into whatever price it finds, so an agent that floods
+the market takes the whole benefit and the tape absorbs the whole cost. A
+live opponent sells less, sells later, or sells something else.
+
+So the panel systematically **flatters agents whose edge is suppression**.
+D and F are both suppression-heavy and both are overstated by about the
+same margin. Against tapes D holds opponents to 59,943; against live
+opposition its opponents average 82,954 (10.8r).
+
+Agent E is the opposite kind of agent: it realises 102 coins a unit
+against F's 66 and suppresses nothing (10.8ad). The panel's failure mode
+points directly at it, and E's 0/32 is therefore measured on a yardstick
+bent in exactly the direction that punishes E's strategy.
+
+**This is not evidence that E is secretly strong.** It is evidence that
+seventeen variants were rejected on a measurement whose calibration error
+is larger than several of the effects being tested, and that no local
+panel can settle what E is worth. The only instrument that can is the
+ladder.
+
+#### What it says about cloning
+
+The public notebooks running this architecture rate 2450-2611 -- and they
+are five co-designed schedules behind a public-state router, not one
+frozen route. Our single-route clones land at 1762 (D) and are heading
+for roughly 1850 (F). **Harvested replays appear to cap out several
+hundred points below the routed portfolios and a thousand below the
+target**, which is consistent with 10.8aa: the routes that would lift the
+ceiling are exactly the ones that do not transfer.
+
 ## 11. Candidate D: the original learned residual/Option selector plan
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
