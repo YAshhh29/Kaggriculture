@@ -3765,7 +3765,26 @@ halves of the corpus are kept for opposite reasons.
 Preflight: 6 of 7 gates pass -- byte-identical rebuild, manifest hash,
 embedded model hash (episode 106610780 / MatthewHuang), Kaggle's real
 loader, 1438/1438 decisions source == package == simulator, 12/12 full
-games DONE.
+games DONE. The seventh gate runs the full suite, which fails on two
+retired experiment packagers (`gated-late-strawberry`, `tiered-fertilizer`)
+that generate a `_distance` NameError. Both predate this work and neither
+is reachable from A, B, C1, C2, D, E or F; 647 tests pass. pytest was not
+installed in `.conda` at all until today, so no gate in this repository had
+ever actually run the suite it claimed to check.
+
+**And it holds up against the people who hold the rating.** Against the
+elite panel -- 24 tapes from the nine teams rated 2765-2882, both seats,
+48 games:
+
+| | mean coins | wins | median margin |
+| --- | ---: | ---: | ---: |
+| D (shipped) | 74,708 | 20/48 (41.7%) | -7,639 |
+| **F (Matthew Huang route)** | **86,979** | **34/48 (70.8%)** | **+12,984** |
+
+So F wins roughly seven games in ten against the top of this leaderboard,
+where the agent we currently have live wins four and loses the median game
+by 7,639 coins. This is the first candidate in the project that is ahead
+on the panel it would need to beat to be worth 2500.
 
 ## 11. Candidate D: the original learned residual/Option selector plan
 
