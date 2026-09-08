@@ -3949,6 +3949,89 @@ fertilizer stream and the crop mix have to move together or not at all.**
 That is now twelve measured E variants on this panel, none of which wins a
 single game, with the untouched agent the best of them.
 
+### 10.8x The real leaderboard, and 5,835 matches of live play (2026-09-08)
+
+Everything before this used a corpus of opponents *our own submission
+happened to be drawn against*, which is a sample of the ladder around our
+rating and not the top of it. `LeaderboardService/GetLeaderboard` gives the
+ranked board directly, and `ListEpisodes` then gives each top submission's
+complete match history -- every opponent, both rewards, both ratings -- for
+one request per team and no replay downloads at all.
+
+Top 40: **2939.6 (SpaTaro) down to 2720.5**, and 5,835 contested matches.
+
+#### What a rating is actually made of
+
+A top team's own reward, grouped by the strength of the opponent it drew:
+
+| opponent band | games | their reward | opponent's reward | margin | win rate |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 2700+ | 2,893 | 95,845 | 95,125 | +720 | **52.7%** |
+| 2400-2700 | 1,895 | 99,403 | 89,062 | +10,341 | 82.0% |
+| 2000-2400 | 387 | 100,771 | 89,340 | +11,431 | 91.0% |
+| 1600-2000 | 203 | 98,275 | 81,176 | +17,098 | **97.0%** |
+| under 1600 | 457 | 113,706 | 69,447 | +44,259 | **100.0%** |
+
+**Everything below 2400 is a free win.** The top of the board takes 97-100%
+of those games. A rating is therefore decided almost entirely by the 2700+
+bracket, where the field wins 52.7% of the time by construction, and the
+individual spread is what separates rank 1 from rank 20:
+
+| team | rating | vs 2700+ | vs under 2400 |
+| --- | ---: | ---: | ---: |
+| SpaTaro | 2939.6 | 96,402 (**77%**) | 110,157 (100%) |
+| Ad Space Available | 2845.2 | 101,777 (71%) | 104,752 (83%) |
+| carbonapi | 2809.5 | 95,442 (71%) | 104,464 (96%) |
+| binghua | 2878.1 | 101,875 (68%) | 109,096 (100%) |
+| Matthew Huang | 2823.7 | 100,036 (58%) | 120,362 (100%) |
+| Peter Parker | 2769.4 | 94,627 (49%) | 98,241 (100%) |
+
+**So the target is concrete for the first time: beat 2700+ opposition
+somewhere between 55% and 77%, and never drop a game below 2400.** Rank 1
+is 77% against the top bracket; rank 20 is 49%.
+
+#### Two corrections this forces
+
+**Our panel's ratings are wrong, and wrong in the direction that flatters
+nothing.** `live_opponents.jsonl` records the rating each opponent carried
+*at the moment we played them*, which was early in their submission's life.
+Peter Parker is labelled 1946 in that file and is **rank 20 at 2769.4**
+today. So the panel called "ladder, 1917-2108" contains agents now rated up
+to 2769, and the elite/ladder split in `measure_panel` is a split by
+*rating-when-met*, not by current strength. The measurements are unaffected
+-- the tapes are what they are -- but the labels understate the opposition.
+
+**The frozen-tape panel exaggerates market denial in both directions.**
+10.8t measured the same tape banking 59,943 against D and 142,772 against
+E, and read that as D suppressing the opponent's prices. The live record
+says no live agent ever reaches 142,772 against a top opponent: the ceiling
+across 2,893 top-versus-top games is about 95,000, and even a sub-1600
+agent drawn against the best still banks 69,447. Both of our numbers are
+outside the range live play produces.
+
+The reason is that **a recording cannot adapt and a live opponent can.** A
+tape sells its recorded quantities into whatever market it finds; flood
+that market and it takes the floor price, leave it alone and it takes the
+top. A live agent facing a flood sells less, or sells something else, or
+sells later. So the denial effect is real -- the mechanism in 10.8v is
+arithmetic -- but its *size* on a tape panel is an artefact, and any
+estimate of what denial is worth must come from live play or from an
+opponent that reacts.
+
+This does not overturn 10.8t's conclusion that E's objective is wrong; a
+top agent scoring 95,845 while its opponent scores 95,125 is still playing
+a two-sided game. It does mean the 2.4x figure is a panel artefact and
+should not be quoted as what denial is worth.
+
+#### And the standing caveat is now quantified from the other side
+
+Section 9m estimated that win rate against frozen tapes overstates live
+strength by roughly forty points. This is consistent with it: the top of
+the board wins 52.7% against its own bracket, while our candidates score
+70-97% against recordings of that same bracket. **No agent on this
+leaderboard wins 92% of anything.** A tape-panel win rate is a relative
+ordering tool and nothing more.
+
 ## 11. Candidate D: the original learned residual/Option selector plan
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
