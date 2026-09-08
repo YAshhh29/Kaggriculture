@@ -3720,11 +3720,43 @@ D's 455; it runs 22 cows and 1 sheep, so it sells no wool at all against
 D's 389 units. The gap is what E never picks up and never brings to
 market, and no selling parameter can reach it.
 
-So the next work on E is not another knob. It is throughput: fertilizer
-collection, a herd whose products are actually sold, and the harvest
-reaching the shed. **Until E sells volume comparable to the field, its
-price realisation is worth nothing, because the opponent is being paid
-out of the market E politely declines to spoil.**
+**Four throughput levers, measured, all worse -- the shortfall is not
+reachable by reweighting either:**
+
+| | coins | wins | median margin |
+| --- | ---: | ---: | ---: |
+| baseline | 91,144 | 0/32 | -54,290 |
+| collect x2.5 | 47,264 | 0/32 | -56,816 |
+| collect x6 | 38,267 | 0/32 | -64,492 |
+| melon cap 24 | 45,737 | 0/32 | -57,888 |
+| collect x4 + melon 20 | 25,760 | 0/32 | -60,406 |
+
+Raising the value of picking up a dropped fertilizer unit *halves* E's
+coins. `COLLECT_WEIGHT` is left in at 1.0 for this reason: the knob exists,
+it is documented, and moving it is measured harm.
+
+That is ten E variants on this panel and every one of them wins nothing,
+with the untouched baseline the best of them. This is the same wall as
+10.8o from a third direction: E's workers are not idle and have no spare
+capacity to redirect, so reweighting one job class only starves another.
+E sells 977 units because 977 units is what its schedule can actually
+carry to market, and the six selling knobs and four throughput knobs are
+all downstream of that.
+
+**So E is at a genuine local optimum for its architecture, and the
+architecture optimises the wrong quantity.** Every value in `rl/economics`
+prices a job by the coins *we* gain. On a shared market half the result is
+the coins the opponent does not gain, and nothing in E can see that term:
+the same frozen tape banks 59,943 against D and 142,772 against E. The
+next real work on E is not throughput and not another knob -- it is
+pricing a sale by what it costs the opponent as well as what it pays us,
+which is a change to the objective, not to a parameter.
+
+Agent E against the elite panel, for completeness: 88,782 coins, **6/48
+(12.5%)**, median margin -34,713. It does better against 2765-2882
+opposition than against the 1917-2108 ladder, where it won 0 of 64,
+because opponents who dump heavily have already spoiled the market
+themselves and E's failure to spoil it costs less.
 
 ### 10.8u Candidate F rebuilt on a live-ladder route
 

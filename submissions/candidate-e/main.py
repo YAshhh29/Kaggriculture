@@ -539,6 +539,7 @@ TRAVEL_EXPONENT = 3.0
 TURN_COST = 30.0
 WHEAT_HOARD_CAP = 24
 SELL_FLOOR = 15.0
+COLLECT_WEIGHT = 1.0
 SELL_PACE = 24.0
 SELL_CASH_FLOOR = 1500.0
 SHED_PRESSURE = 70
@@ -902,7 +903,7 @@ def _jobs_for_tile(observation: dict[str, Any], tile: Any, day: int, inventory: 
         if not tile.get('cared_today'):
             jobs.append((care_value(observation, tile, day), ['CARE']))
         if tile.get('fertilizer_available'):
-            jobs.append((collect_fertilizer_value(observation, tile), ['COLLECT_FERTILIZER']))
+            jobs.append((COLLECT_WEIGHT * collect_fertilizer_value(observation, tile), ['COLLECT_FERTILIZER']))
     elif kind in ('PASTURE', 'COOP') and 'animal' not in tile:
         for name in LIVESTOCK:
             if ANIMALS[name]['structure'] != kind:

@@ -1,9 +1,9 @@
 {
-  "created_at": "2026-09-08T10:10:16.517832+00:00",
+  "created_at": "2026-09-08T11:03:04.749465+00:00",
   "competition": "kaggriculture",
   "agent": "main.py",
-  "sha256": "d7d90489f528559fcba39ee2f2fa8f0a6f7a5702603060cb5ded6acf99645cf7",
-  "combined_source_sha256": "03f13afa67e00d27e6334082255197b51f2270b668cc4ace93979ee4222b70f2",
+  "sha256": "aa4fb2a68d6f8833b3c2876bca69961bacb93e208cffd47fb1dbda4e233c9aa3",
+  "combined_source_sha256": "bded6c2beba63d360b52fb6bb0cef4b4ce351d0a3be597074a7d05107e275cba",
   "kind": "closed_loop_policy",
   "note": "Candidate E carries no recorded route. It reads the observation and prices each decision, so the package is the inlined source of rl/candidate_e.py and its five local dependencies.",
   "source_files": [
