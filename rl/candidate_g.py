@@ -47,10 +47,11 @@ The design follows from that and from three more rules:
   optional and the wheat area has to track the flock;
 * reward is the money on the books at step 720, so everything sells.
 
-What it deliberately does not do: grow melon, strawberry or wool for
-volume. Those books hold 59 to 158 units and both players fill them early
-(10.8z measured the top of the board and the field reaching them on the
-same days), so there is no edge there for anyone.
+It grows melon, carrot and strawberry on ground the flock does not need
+(`CROP_TILES`), but it does not chase wool or milk. In a contested game
+both collapse: measured across a real D-against-C1 match, milk runs
+160 -> 203 -> 13 and wool 200 -> 217 -> 1, while egg goes 50 -> 92 because
+the town keeps draining a book nobody floods.
 
 Agent E failed twenty-six times because its economics priced every job by
 the coins *it* received and its scheduler could not follow a build order.
@@ -62,6 +63,7 @@ from __future__ import annotations
 from typing import Any
 
 from core.routing import distance, step_toward
+from rl.demand import remaining_demand
 from rl.economics import CROPS
 from rl.market import inventory_of, price_at
 from rl.runtime import AgentAction
@@ -80,12 +82,10 @@ MAX_ORDERS = 10
 HAND_RAMP = ((0, 4), (6, 5), (8, 8), (11, 10), (14, 12))
 HIRE_UNTIL_DAY = 27          # the crew is wiped nightly; stopping early
                             # starved a 22-bird flock down to five
-# Ground is bought the moment it is affordable, not on a calendar. Across
-# twenty elite games the median cash held at the instant a quadrant was
-# bought is **644** and the minimum is 22: they buy the moment they can
-# and go broke doing it, because a quadrant bought on day 5 is worked for
-# twenty-four days. Waiting for a 1,200 reserve on fixed days left G on
-# one quadrant for most of the season.
+# Two fixed purchases behind a reserve. The corpus buys ground the instant
+# it is affordable -- median cash 644 at the moment of purchase -- and
+# copying that measured 11,083 at three quadrants against 22,438 here,
+# because G's limit is worker throughput and it already leaves tiles idle.
 # Measured, and it inverts the corpus. Buying ground as soon as affordable
 # -- their behaviour -- gives 11,083 at three quadrants and 19,326 at two,
 # against 21,235 for two fixed purchases behind a 1,200 reserve. G's limit
@@ -97,7 +97,12 @@ LAND_RESERVE = 1200.0
 MAX_QUADRANTS = 3
 GOOSE_COST = 300
 GOOSE_CASH_FLOOR = 450.0    # keep a bird's worth of change in hand
-WHEAT_PER_BIRD = 1.2        # a tile yields ~6 units per 5 days
+# A wheat tile yields about four units over five days unfertilized, which
+# is 0.8 a day. The 1.2 here assumed the fertilized figure (1 + 3x2 = 6),
+# and this agent never issues FERTILIZE -- it collects manure and sells
+# it. The feed plan was therefore 50% optimistic and the flock chronically
+# underfed, which is the same failure that killed Agent E's goose runs.
+WHEAT_PER_BIRD = 0.8
 # Wheat area is a plan, not a function of the flock. Deriving it from the
 # animals standing gave a target of three tiles with no animals, which
 # fed no birds, so none were bought, so the target never grew.
@@ -116,6 +121,20 @@ COOP_LEAD = 2
 # and floors after 62; carrot only 35 but absorbs 842, which is why the
 # top of the board plants it and the field does not (10.8z).
 CROP_TILES = (("MELON", 12), ("CARROT", 16), ("STRAWBERRY", 8))
+# Let the town choose, instead of assuming one animal always wins.
+#
+# `observation["town"]["unlocked_shops"]` is public and exact, and
+# `rl/demand.py` turns it into units the town will still absorb before the
+# season ends. GOAL.md section 9v measured adapting production to that
+# draw as the cleanest correlate of rank there is: +0.672 for teams above
+# 2850 and +0.000 below 2400. Nothing this project has shipped uses it.
+#
+# The flock stays geese by default -- in a contested game egg runs
+# 50 -> 92 while milk collapses 160 -> 13 and wool 200 -> 1, because the
+# town keeps draining a book nobody floods. But a town that drew YARN_STORE
+# twice wants wool badly enough to beat that, and this is how the agent
+# notices.
+DEMAND_MARGIN = 1.6         # measured: 26,971 against 18,346 for geese only
 # Wheat carried per trip to the shed. At four, PICKUP was the single most
 # common action in the game -- 1,270 of them, more than harvest, feed, care
 # and collect together -- because every four meals cost a round trip.
@@ -204,7 +223,16 @@ def shed_tiles() -> list[tuple[int, int]]:
 
 
 def _shed_adjacent(x: int, y: int) -> bool:
-    return any(abs(x - sx) + abs(y - sy) <= 1 for sx, sy in shed_tiles())
+    """Standing *on* a shed-access tile, which is what the simulator wants.
+
+    `_is_shed_adjacent` in kaggriculture.py is
+    `tuple(pos) in set(_shed_access_tiles(board_size))` -- membership of
+    exactly four tiles, not proximity to them. Accepting the twelve tiles
+    within one step of the shed made 1,067 of 1,273 PICKUP actions in a
+    game silent no-ops: the worker stood next to the right square, asked
+    for wheat, got nothing, and walked off to feed birds empty-handed.
+    """
+    return (x, y) in set(shed_tiles())
 
 
 def _owned(tiles: list[list[Any]], x: int, y: int) -> bool:
@@ -297,10 +325,12 @@ def job_value(
         carrying = int(inventory.get("WHEAT", 0))
         if counts["unfed"] > 0 and carrying <= 0 and shed.get("WHEAT", 0) > 0:
             jobs.append((BAND_FEED * 0.9, ["PICKUP", "WHEAT", FEED_CARRY]))
-        if (int(shed.get("GOOSE", 0)) > 0
-                and int(inventory.get("GOOSE", 0)) <= 0
-                and counts["empty_coops"] > 0):
-            jobs.append((BAND_PLACE * 0.9, ["PICKUP", "GOOSE", 1]))
+        bird = counts.get("bird", "GOOSE")
+        home = "empty_coops" if ANIMAL_HOME[bird] == "COOP"             else "empty_pastures"
+        if (int(shed.get(bird, 0)) > 0
+                and int(inventory.get(bird, 0)) <= 0
+                and counts[home] > 0):
+            jobs.append((BAND_PLACE * 0.9, ["PICKUP", bird, 1]))
 
     if tile is None:
         # Everything built here is worked from the shed for the rest of the
@@ -313,7 +343,8 @@ def job_value(
                 and day <= LAST_DAY - 8):
             jobs.append(((BAND_WHEAT + egg) * near, ["PLANT", "WHEAT"]))
         elif (
-            counts["empty_coops"] < COOP_LEAD
+            counts["empty_coops" if ANIMAL_HOME[counts.get("bird", "GOOSE")]
+                   == "COOP" else "empty_pastures"] < COOP_LEAD
             and days_left > 5
             and (
                 counts["geese"] + counts["empty_coops"] < EARLY_COOPS
@@ -323,7 +354,9 @@ def job_value(
             early = counts["geese"] + counts["empty_coops"] < EARLY_COOPS
             jobs.append((
                 ((BAND_WHEAT + 1.0 if early else BAND_BUILD) + egg) * near,
-                ["BUILD_COOP"],
+                ["BUILD_COOP"
+                 if ANIMAL_HOME[counts.get("bird", "GOOSE")] == "COOP"
+                 else "BUILD_PASTURE"],
             ))
         else:
             # Spare ground goes to cash crops, best price per tile first,
@@ -356,8 +389,12 @@ def job_value(
             jobs.append((BAND_SERVICE + manure, ["COLLECT_FERTILIZER"]))
         if not tile.get("cared_today") and tile.get("fed_today"):
             jobs.append((BAND_SERVICE + egg * 0.9, ["CARE"]))
-    elif kind == "COOP" and int(inventory.get("GOOSE", 0)) > 0:
-        jobs.append((BAND_PLACE + egg * days_left * 0.1, ["PLACE", "GOOSE"]))
+    elif kind in ("COOP", "PASTURE"):
+        for animal, house in ANIMAL_HOME.items():
+            if house == kind and int(inventory.get(animal, 0)) > 0:
+                jobs.append((BAND_PLACE + egg * days_left * 0.1,
+                             ["PLACE", animal]))
+                break
     elif kind == "PLANT":
         if not tile.get("watered_today"):
             jobs.append((BAND_WATER + egg * 0.5, ["WATER"]))
@@ -392,7 +429,10 @@ def claim(counts: dict[str, int], action: list[Any]) -> None:
     literally what happened: all thirteen built a coop on the same turn.
     """
     op = action[0] if action else "PASS"
-    if op == "BUILD_COOP":
+    if op == "BUILD_PASTURE":
+        counts["empty_pastures"] += 1
+        counts["free"] = max(0, counts["free"] - 1)
+    elif op == "BUILD_COOP":
         counts["empty_coops"] += 1
         counts["free"] = max(0, counts["free"] - 1)
     elif op == "PLANT":
@@ -413,7 +453,10 @@ def claim(counts: dict[str, int], action: list[Any]) -> None:
     elif op == "WATER":
         counts["dry"] = max(0, counts["dry"] - 1)
     elif op == "PLACE":
-        counts["empty_coops"] = max(0, counts["empty_coops"] - 1)
+        animal = str(action[1]) if len(action) > 1 else "GOOSE"
+        key = ("empty_coops" if ANIMAL_HOME.get(animal) == "COOP"
+               else "empty_pastures")
+        counts[key] = max(0, counts[key] - 1)
         counts["animals"] += 1
         counts["geese"] += 1
 
@@ -425,6 +468,33 @@ def hands_target(day: int) -> int:
         if day >= start:
             wanted = size
     return min(wanted, HAND_CAP)
+
+
+def preferred_bird(observation: dict[str, Any]) -> str:
+    """Goose unless this town's own draw clearly wants otherwise.
+
+    `observation["town"]["unlocked_shops"]` is public and exact, and
+    `rl/demand.py` turns it into the units the town will still absorb.
+    Section 9v measured adapting production to that draw as the cleanest
+    correlate of rank in the data: +0.672 for teams above 2850, +0.000
+    below 2400.
+
+    Egg is the default because in a contested game it runs 50 -> 92 while
+    milk collapses 160 -> 13 and wool 200 -> 1 -- the town keeps draining a
+    book neither player floods. It takes a clear margin to beat that.
+    """
+    demand = remaining_demand(observation)
+    best, score = "GOOSE", demand.get("EGG", 0.0) * price_at(
+        "EGG", inventory_of(observation, "EGG"))
+    for animal, product in (("SHEEP", "WOOL"), ("COW", "MILK")):
+        pull = demand.get(product, 0.0) * price_at(
+            product, inventory_of(observation, product))
+        if pull > score * DEMAND_MARGIN:
+            best, score = animal, pull
+    return best
+
+
+ANIMAL_HOME = {"GOOSE": "COOP", "COW": "PASTURE", "SHEEP": "PASTURE"}
 
 
 def market_orders(
@@ -490,21 +560,35 @@ def market_orders(
         orders.append(["BUY_LAND"])
         budget -= LAND_RESERVE
 
+    # 4a. Which bird. Geese unless the town's own draw says otherwise by a
+    #     clear margin -- a coop and a pasture are both free to build, so
+    #     the only cost of following the town is noticing in time.
+    bird = counts.get("bird", "GOOSE")
+    demand = remaining_demand(observation)
+    egg_pull = demand.get("EGG", 0.0) * price_at(
+        "EGG", inventory_of(observation, "EGG"))
+    for other, product in (("SHEEP", "WOOL"), ("COW", "MILK")):
+        pull = demand.get(product, 0.0) * price_at(
+            product, inventory_of(observation, product))
+        if pull > egg_pull * DEMAND_MARGIN:
+            bird, egg_pull = other, pull
+
     # 4. Birds. One per turn, only into a coop that is standing empty and
     #    only while the wheat area can feed what we already have -- the
     #    flock must never outrun its feed, because two missed meals lose
     #    the animal outright.
-    in_shed = int(shed.get("GOOSE", 0))
+    in_shed = int(shed.get(bird, 0))
     feedable = counts["wheat"] * WHEAT_PER_BIRD + shed.get("WHEAT", 0) / 3.0
     if (
-        counts["empty_coops"] > in_shed
+        counts["empty_coops" if ANIMAL_HOME[bird] == "COOP"
+               else "empty_pastures"] > in_shed
         and budget > GOOSE_COST + GOOSE_CASH_FLOOR
         and (counts["animals"] + in_shed < EARLY_BIRDS
              or counts["animals"] + in_shed < feedable)
         and day <= LAST_DAY - 5
         and len(orders) < MAX_ORDERS
     ):
-        orders.append(["BUY_ANIMAL", "GOOSE", 1])
+        orders.append(["BUY_ANIMAL", bird, 1])
         budget -= GOOSE_COST
 
     # 5. Seed, wheat only. Every other crop grows into a book that floors
@@ -555,6 +639,12 @@ def decide(observation: dict[str, Any]) -> AgentAction:
     seeds = _seeds(observation)
     counts = census(tiles)
     money = float(farm.get("money", 0.0) or 0.0)
+    # Which animal this town actually wants. The scheduler needs to know
+    # before it builds anything, because a cow needs a pasture and a goose
+    # needs a coop -- buying the animal the town wants and then housing it
+    # nowhere leaves it standing in the shed, which is exactly what the
+    # first attempt at this did.
+    counts["bird"] = preferred_bird(observation)
 
     # Workers are assigned in order, each taking the best job left on the
     # board. Claimed tiles are struck out so two workers never walk to the
