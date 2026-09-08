@@ -4032,6 +4032,146 @@ the board wins 52.7% against its own bracket, while our candidates score
 leaderboard wins 92% of anything.** A tape-panel win rate is a relative
 ordering tool and nothing more.
 
+### 10.8y What Candidate F actually loses on
+
+`tools/eval/diagnose_agent.py` replays a panel and keeps, for every game,
+the money curve of both farms, the farm each side finished with, and where
+each good ended relative to market equilibrium. Then it groups by outcome.
+"92% wins" says nothing about what to build next; this does.
+
+| | ladder (24 tapes, 96 games) | elite (24 tapes, 96 games) |
+| --- | --- | --- |
+| F wins | **91/96 = 94.8%** | **77/96 = 80.2%** |
+
+#### The opponent's herd is what separates a loss from a win
+
+| ladder | our reward | theirs | margin | our herd | **their herd** |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| wins (91) | 91,457 | 69,328 | +22,128 | 14.0 | **11.6** |
+| losses (5) | 81,477 | 88,324 | -6,848 | 14.0 | **15.4** |
+
+F's own herd is **14.0 in both**, because F is a recording and cannot
+respond to anything. It wins when the opponent builds 11.6 animals and
+loses when the opponent builds 15.4.
+
+The mechanism is in the market line. In the games it loses F ends with
+
+    FERTILIZER +493   MELON +114   MILK +55   STRAWBERRY +24
+
+and 493 is *exactly* where fertilizer reaches the price floor (10.8v). F's
+revenue is concentrated in the deepest book on the board and it has filled
+that book completely. Past that point another animal earns F nothing at
+all, while an opponent with a larger herd goes on converting its animals
+into milk, wool and eggs -- goods F leaves at +55, +24 and untouched.
+
+**So F's ceiling is a fertilizer ceiling.** It is not out-played in the
+sense of being out-manoeuvred; it saturates one commodity and has no
+second act.
+
+#### The game forks between day 10 and day 20, and not before
+
+Mean lead in coins over the opponent, by day:
+
+| | d5 | d10 | d15 | d20 | d25 | d29 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| ladder, wins | -61 | +287 | +4,033 | +11,275 | +18,193 | +21,506 |
+| ladder, losses | +34 | -106 | -27 | -1,202 | -3,524 | -7,456 |
+| elite, wins | -110 | -501 | +7,019 | +13,215 | +20,639 | +26,055 |
+| elite, losses | -382 | **-443** | -4,109 | -8,256 | -11,814 | -14,369 |
+
+On the elite panel the games F wins and the games F loses are
+**indistinguishable at day 10** -- behind by 501 coins in the wins and 443
+in the losses. Everything that decides the match happens in the following
+five to ten days. Any future work that hopes to move F's win rate has to
+act in that window; nothing before day 10 is diagnostic and nothing after
+day 20 is recoverable.
+
+#### Two questions closed
+
+**The fourth quadrant is not in play.** `quadrants 3.0` in every one of the
+192 games, won and lost, on both panels. F buys three and never a fourth,
+consistent with 9i measuring 4-quadrant players at 8.3% against 51.2%.
+
+**Losses are concentrated, not spread.** On the elite panel 9 of the 19
+losses are to two opponents (kaggricodex four times, worst at -46,579;
+bharat five times). On the ladder 3 of the 5 losses are to one opponent
+(Takahiro Saito). This is a matchup profile rather than a general
+weakness, which is the shape a frozen route should have: it has one plan
+and there are specific opponents that plan does badly against.
+
+Seat matters too, and more than it should: 13 of 19 elite losses and 4 of
+5 ladder losses come from seat 1. The market is a single shared inventory
+and seat order decides who sells into a glut first.
+
+### 10.8z How the top fourteen actually play, from 180 of their games
+
+Ten games each from the fourteen highest-rated teams on the board
+(SpaTaro 2939.6 down to carbonapi 2809.5), profiled by what they buy and
+when they sell. The fingerprint from 10.8s holds at four times the sample:
+
+| per game | top 14 (180 games) | the field (72 games) |
+| --- | ---: | ---: |
+| carrot seeds | **47** | 16 |
+| wheat seeds | 144 | 188 |
+| geese | **2.1** | 0.9 |
+| first land day | 5.2 | 6.0 |
+| FERTILIZE | 124 | absent from the top eight tasks |
+| PASS share | 10.5% | 7.9% |
+
+#### The edge is entirely in the deep books
+
+Quantities in a tape are requests the engine clamps, so they are useless.
+The *turn* an order was issued on is not. Per good, the day it first
+reaches the market and how many turns are spent selling it:
+
+| good | book depth | top 14 | the field |
+| --- | ---: | --- | --- |
+| **CARROT** | 842 | **day 18.8, 13.2 turns** | day 27.9, 5.5 turns |
+| **EGG** | never floors | **day 12.9, 16.7 turns, 66% of games** | day 17.2, 4.2 turns, 39% |
+| **TOMATO** | 529 | 41% of games | 10% of games |
+| WOOL | 59 | day 6.0, 31.8 turns | day 6.0, 41.0 turns |
+| MILK | 76 | day 8.1, 43.0 turns | day 8.0, 50.5 turns |
+| STRAWBERRY | 62 | day 15.1 | day 15.5 |
+| MELON | 158 | day 10.5 | day 10.0 |
+| FERTILIZER | 493 | day 1.2, 90.2 turns | day 1.0, 86.5 turns |
+
+**On every shallow good the two bands are indistinguishable.** Wool on day
+6, milk on day 8, strawberry on day 15, melon on day 10 -- identical.
+Those books hold 59 to 158 units, both players fill them early, and there
+is no edge available in them for anyone.
+
+**Every difference is in the goods whose price barely moves.** The top
+gets carrot to market nine days earlier and sells it across 2.4 times as
+many turns; it sells eggs in two games out of three against the field's
+one in three, starting four days sooner with four times the selling turns;
+it grows tomato at all.
+
+This is the same fact as 10.8v seen from the other side. A deep book pays
+for *volume over time*: carrot absorbs 842 units before it floors, so the
+constraint is how many selling turns remain, and a first sale on day 28
+leaves only 5.5 of them. A shallow book pays 59 units to whoever gets
+there and nothing to anyone afterwards, so both players race to it and
+neither gains.
+
+**Which corrects the reading of "sell before the opponent."** Being first
+is worth having, but not as a race for the shallow books -- everyone
+already ties that race. It is worth having because starting a deep good
+early buys selling turns, and selling turns are what a deep book converts
+into money.
+
+#### What this prescribes for Agent E
+
+E buys 25 carrot seeds against the top's 47, 249 wheat against 144, and
+no geese against 2.1. It is on the wrong side of the only three
+differences that separate the top of the board from the field, and on the
+right side of none of them.
+
+The instruction is therefore specific rather than "sell more": grow the
+deep books, get them to market early enough to have selling turns left,
+keep a small goose flock for a commodity whose price never falls, and stop
+treating milk and wool as though volume in them were worth anything past
+the first eighty units.
+
 ## 11. Candidate D: the original learned residual/Option selector plan
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
