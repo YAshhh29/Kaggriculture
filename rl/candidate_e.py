@@ -89,6 +89,9 @@ SELL_FLOOR = 15.0
 # opponent bank 142,772 coins where D holds it to 59,943 (10.8t). 1.0
 # leaves the schedule exactly as it was measured.
 COLLECT_WEIGHT = 1.0
+# Clamp the demand offset when pricing a *crop* only. False reproduces the
+# behaviour every measurement so far was taken against.
+CROP_CLAMP = False
 SELL_PACE = 24.0
 SELL_CASH_FLOOR = 1500.0
 SHED_PRESSURE = 70
@@ -352,8 +355,19 @@ def crop_rate_value(
     # Everything already in the ground reaches the market before this does.
     committed = standing * units * max(1.0, remaining / span)
     absorbed = float(remaining_demand(observation).get(crop, 0.0))
-    # Same offset as animal_value, and the same measured verdict (10.8w).
-    revenue = sale_revenue(observation, crop, units, committed - absorbed)
+    # `committed - absorbed` goes negative when the town wants more of this
+    # crop than we grow, which prices the next unit above an untouched
+    # market. 10.8w measured that clamping it at zero costs E two thirds of
+    # its coins -- but that verdict was about *animals*, whose real return
+    # is the fertilizer every one of them drops daily, not the milk the
+    # inflated figure was pricing. A crop drops no fertilizer, so the
+    # argument does not carry over and the clamp is worth measuring here on
+    # its own.
+    offset = (
+        max(0.0, committed - absorbed) if CROP_CLAMP
+        else committed - absorbed
+    )
+    revenue = sale_revenue(observation, crop, units, offset)
     horizon = min(span, float(remaining))
     return (revenue - spec["seed"]) / max(1.0, horizon)
 

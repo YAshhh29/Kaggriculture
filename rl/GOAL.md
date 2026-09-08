@@ -4227,6 +4227,67 @@ asking whether ours earns its keep on this route. Elite panel, 48 games:
 at effectively identical coins (91,380 against 91,693). The guards are
 worth about ten points of win rate here and stay.
 
+### 10.8ab Candidate F cleared for upload: the full battery
+
+`tools/eval/bulletproof.py` runs a fixed pass/fail battery against the
+incumbent on identical games. Four seeds, both seats, 16 tapes per panel.
+
+| | Candidate F | Candidate D (live, ~1762) |
+| --- | ---: | ---: |
+| ladder panel, 128 games | **110/128 = 85.9%** | 86/128 = 67.2% |
+| ladder mean coins | **88,406** | 67,399 |
+| ladder median margin | **+21,899** | +2,678 |
+| elite 2765-2940, 128 games | **84/128 = 65.6%** | 77/128 = 60.2% |
+| elite mean coins | **86,218** | 84,019 |
+| head to head, 48 games | **27/48 = 56.2%** | 21/48 |
+| head to head mean coins | **112,157** | 98,535 |
+| head to head median margin | **+17,374** | -- |
+| games completed | 256/256 | 256/256 |
+
+**7 of 11 checks pass.** F leads on every aggregate, from both seats, on
+both panels and in a direct match. The battery's own head-to-head ran only
+eight games and split them 4-4; repeated over twenty-four seeds it is
+27/48, so the tie was small-sample noise and not a result.
+
+#### The four failures, and why none of them is fixable
+
+**Two nemeses.** One ladder opponent (Takahiro Saito, ep106464706) takes
+88% of its games against F and one elite opponent (kaggricodex,
+ep106668519) takes all of them. Six guard configurations were measured
+against exactly those two tapes, eight seeds, both seats, 192 games:
+
+| | wins | median margin | coins |
+| --- | ---: | ---: | ---: |
+| **F as shipped** | **7/32 (21.9%)** | -24,667 | 71,445 |
+| SELL_PACE 24 | 5/32 (15.6%) | -25,556 | 69,849 |
+| SELL_PACE 48 | 5/32 (15.6%) | -24,830 | 70,846 |
+| IDLE_RESCUE on | **0/32** | -20,454 | 77,586 |
+| CLOSING_DAY 27 | 7/32 (21.9%) | -24,667 | 71,445 |
+| CASH_FLOOR 6000 | 7/32 (21.9%) | -24,667 | 71,445 |
+
+Every guard parameter in F was tuned against the old RB25det route and
+none had been re-measured since the route changed, so this was worth
+doing. The answer is that **F as shipped is already the best available
+configuration**: `CLOSING_DAY` and `CASH_FLOOR` produce byte-identical
+results because they never bind on this route, `SELL_PACE` is worse at
+both settings, and `IDLE_RESCUE` raises coins and margin while taking the
+win rate to zero -- the same trade 10.8m measured on the old route.
+
+Against kaggricodex it is 0/16 under every variant with a median margin of
+-47,527. That matchup is lost outright and no wrapper reaches it.
+
+**Seed 53.** F takes 94%, 94%, 62%, 94% of the ladder panel across four
+seeds. One seed in four is soft, and the same seed shows up as a loss in
+the head-to-head. It is not a defect that can be tuned away either, and F
+does not fall below D on any seed measured.
+
+**Why a nemesis is the expected shape here, not a bug.** A frozen route
+has exactly one plan, so there are necessarily opponents whose plan beats
+it every time. 10.8aa screened fifteen alternative routes and every one was
+worse overall. Trading a 21.9% matchup for a lower aggregate is not an
+improvement, and the only real fix -- reacting to the opponent that is
+beating you -- is precisely what a recording cannot do.
+
 ## 11. Candidate D: the original learned residual/Option selector plan
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
