@@ -46,6 +46,7 @@ from typing import Any
 from core.routing import distance, step_toward
 from rl.demand import ANIMAL_PRODUCT, remaining_demand
 from rl.denial import denial_value
+from rl import macro_plan
 from rl.demand_sales import paced_orders
 from rl.market import headroom, marginal_price, sale_revenue
 from rl.economics import (
@@ -111,6 +112,9 @@ DENIAL_WEIGHT = 0.0
 # Let the herd lead the harvest until this day, backed by bought feed.
 # 0 disables it and restores the behaviour every earlier measurement used.
 EARLY_HERD_DAY = 0
+# Take acquisitions from the corpus build order rather than E's own
+# valuation. False keeps the behaviour every earlier measurement used.
+MACRO_PLAN = False
 FEED_COVER_DAYS = 3
 SELL_PACE = 24.0
 SELL_CASH_FLOOR = 1500.0
@@ -999,6 +1003,37 @@ def decide(observation: dict[str, Any]) -> AgentAction:
     herd_counts, empty_pens = herd_census(tiles)
     herd, herd_worth = herd_plan(observation, day, herd_counts)
     ranking = crop_ranking(observation, day)
+
+    # Follow the corpus instead of our own valuation.
+    #
+    # E's economics is the part that fails. It prices every decision by the
+    # coins E receives and is measurably excellent at that -- 102 a unit
+    # against Candidate F's 66 -- and it loses every game, and twenty-four
+    # variants of it have failed to change that. What does not fail is E's
+    # executor: the worker scheduler that reads the board and prices the
+    # work in front of it.
+    #
+    # So the acquisition decisions come from `rl/macro_plan`, the build
+    # order 204 games by 27 players rated 2700+ agree on, and the executor
+    # is left alone. A plan can say what to own; only the board can say
+    # which worker should walk where.
+    if MACRO_PLAN and macro_plan.available():
+        planned_animal, deficit = macro_plan.next_animal(day, herd_counts)
+        if deficit > 0:
+            herd = planned_animal
+            herd_worth = max(herd_worth, 1.0)
+        planted_now = {
+            crop: sum(
+                1 for row in tiles for t in row
+                if isinstance(t, dict) and t.get("crop") == crop
+            )
+            for crop in macro_plan.CROPS
+        }
+        planned_order = macro_plan.crop_order(day, planted_now)
+        if planned_order:
+            ranking = planned_order + [
+                c for c in ranking if c not in planned_order
+            ]
 
     # Feed comes before profit. One wheat per animal per day is the price
     # of keeping the herd alive, and a wheat tile returns roughly six units

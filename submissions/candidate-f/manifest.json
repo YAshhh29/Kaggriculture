@@ -1,9 +1,9 @@
 {
-  "created_at": "2026-09-08T11:02:15.445916+00:00",
+  "created_at": "2026-09-08T19:43:13.335371+00:00",
   "competition": "kaggriculture",
   "agent": "main.py",
-  "sha256": "9717dd76290ace80bfe70f63ad2f765f12ab45051531c8ec66eb06759ad9c100",
-  "combined_source_sha256": "36c61f7e772a4499d42b35bfc0e279f8c78c8e329111eca7f5409fae75ae51c1",
+  "sha256": "08c825ee24b485a92cf3bfd1eccd93800f00cd2afb39e04d0dc3012ec769d827",
+  "combined_source_sha256": "5bdeaec76b71a76e62f1900db5a6d2227328dac39b289fdfb0ad3feb3a7466ef",
   "parent_submission": {
     "note": "built on the Candidate B package",
     "source_files": [
@@ -12,17 +12,17 @@
   },
   "source_files": [
     "submissions/candidate-b/main.py (parent)",
-    "agents/experimental_distilled_elite_mhuang_agent.py",
-    "models/v1327-live-elite-mhuang-106610780.json",
+    "agents/experimental_distilled_elite_try_agent.py",
+    "models/v1327-live-elite-try-106683123.json",
     "rl/candidate_f.py"
   ],
   "policy": "Candidate A's guarded recovery and live terminal liquidation, plus Candidate B's market-timing residuals (land priority off), over a route captured from the CURRENT ladder rather than the 2026-09-04 cache. Every route this project could previously choose from came from that cache and was screened against opponents drawn from it; profiling the live corpus showed fourteen of the twenty-four teams we are drawn against run one public notebook unmodified (5 carrot seeds, 198 wheat, no geese), and the previous route shared that fingerprint. All eight captured games of this submission were screened separately, because tape quality belongs to the game rather than the player.",
   "training_data": {
-    "source_episode_id": 106610780,
-    "source_team": "MatthewHuang",
-    "source_team_rating": 2872.8,
+    "source_episode_id": 106683123,
+    "source_team": "try",
+    "source_team_rating": 2782.598062255377,
     "source_context": "captured from the live ladder by tools.data.fetch_live_opponents",
-    "actions_sha256": "1ae9793a513fb5e68a182afd8d34d1893f2b62e8b173bebf365cdcbbe1c012d5"
+    "actions_sha256": "c5c36e0a9c5b6734aa048ab3b779f55836a0063eba97f2cda9c2b092c85d3200"
   },
   "validation": {
     "selection": "8 live ladder tapes screened 18 candidates; the 64 tapes those 8 were drawn from were held out until the winner was fixed",

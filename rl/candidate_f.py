@@ -49,8 +49,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from agents.experimental_distilled_elite_mhuang_agent import (
-    agent as elite_mhuang_route,
+from agents.experimental_distilled_elite_try_agent import (
+    agent as elite_try_route,
 )
 from rl.candidate_a import build_candidate_a_agent
 from rl.candidate_b import build_candidate_b_agent
@@ -71,7 +71,7 @@ CLOSING_DAY = 29
 
 
 def build_candidate_f_agent(
-    baseline: Baseline = elite_mhuang_route,
+    baseline: Baseline = elite_try_route,
     *,
     pace: float = SELL_PACE,
     cash_floor: float = CASH_FLOOR,
