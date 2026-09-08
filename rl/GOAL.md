@@ -3818,6 +3818,21 @@ where the agent we currently have live wins four and loses the median game
 by 7,639 coins. This is the first candidate in the project that is ahead
 on the panel it would need to beat to be worth 2500.
 
+**Confirmed on a second seed, which matters more here than it looks.** Seed
+variance on this panel is large -- Candidate D swings from 40.6% at seed 11
+to 62.5% at seed 29 on the identical 64 games -- so a single-seed result is
+not a result. Repeating the held-out ladder screen at seed 29:
+
+| | mean coins | wins | median margin |
+| --- | ---: | ---: | ---: |
+| D, seed 11 | 64,501 | 26/64 (40.6%) | -1,085 |
+| D, seed 29 | 70,465 | 40/64 (62.5%) | +2,100 |
+| **F, seed 11** | 78,554 | 59/64 (92.2%) | +18,030 |
+| **F, seed 29** | 104,749 | **62/64 (96.9%)** | **+24,879** |
+
+F is ahead at both seeds by a margin far wider than the seed spread
+itself, which is the only reason the comparison can carry any weight.
+
 ### 10.8v Which goods survive being dumped, and which do not
 
 Read straight out of `MARKET_PARAMS`. Each good has its own curve *above*
