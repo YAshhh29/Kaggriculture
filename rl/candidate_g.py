@@ -549,6 +549,20 @@ SELL_PATIENCE = 0.0
 # the corpus, not because it pays.
 SEED_CLAIM = True
 
+# A mixed herd, because the two products pay at opposite ends of the game.
+#
+# In a contested match milk opens at 160 and wool at 200, and both are
+# still near that through day 6 -- then they collapse to 13 and 1 as both
+# farms flood books that hold 76 and 59 units. Egg opens at 50 and *rises*
+# to 92, because its curve is logarithmic and the town keeps draining a
+# book nobody floods.
+#
+# So the first animals should be whichever pasture beast the town wants,
+# bought early enough to sell into that opening window, and the rest
+# geese for the twenty days after it closes. A monoculture takes one half
+# of that and leaves the other.
+MIXED_EARLY = 6
+
 
 def crop_priority(observation: dict[str, Any]) -> list[tuple[str, int]]:
     """Crops worth ground here, best first, with the tile cap for each.
@@ -651,14 +665,14 @@ def market_orders(
     #     clear margin -- a coop and a pasture are both free to build, so
     #     the only cost of following the town is noticing in time.
     bird = counts.get("bird", "GOOSE")
-    demand = remaining_demand(observation)
-    egg_pull = demand.get("EGG", 0.0) * price_at(
-        "EGG", inventory_of(observation, "EGG"))
-    for other, product in (("SHEEP", "WOOL"), ("COW", "MILK")):
-        pull = demand.get(product, 0.0) * price_at(
-            product, inventory_of(observation, product))
-        if pull > egg_pull * DEMAND_MARGIN:
-            bird, egg_pull = other, pull
+    # Early birds chase the opening price window on milk and wool; the
+    # rest are geese, whose book never floors.
+    # `preferred_bird` already made this decision in decide() and the
+    # scheduler has been building housing for it all turn. Recomputing it
+    # here duplicated the logic and silently overrode MIXED_EARLY, which is
+    # why the mixed-herd sweep returned four identical numbers.
+    if MIXED_EARLY and counts["animals"] >= MIXED_EARLY:
+        bird = "GOOSE"
 
     # 4. Birds. One per turn, only into a coop that is standing empty and
     #    only while the wheat area can feed what we already have -- the
