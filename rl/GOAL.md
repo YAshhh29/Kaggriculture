@@ -4564,6 +4564,73 @@ only defensible position is that Candidate D at mu 1744 is the best agent
 this project has produced and no measured candidate has earned the right
 to replace it.
 
+### 10.8ah What the top of the ladder actually does, mechanism by mechanism
+
+Twenty elite games replayed with full state reconstruction, so each action
+is paired with the board it was taken on. These are the questions
+Candidate G was built without answering.
+
+| | elite (20 games) |
+| --- | --- |
+| movement share of worker turns | **43.2%** |
+| PASS share | 9.7% |
+| actions per game | WATER **1065**, HARVEST 476, COLLECT_FERTILIZER 380, FEED 346, CARE 339, PLANT 224, PICKUP 201, FERTILIZE 132, PLACE 107 |
+
+**Watering is their most common action by a factor of two.** They are crop
+farms first: 1,065 waterings against 346 feedings. Candidate G waters
+about 400 and carries 1,100 PICKUPs -- five times their 201 -- because its
+flock is fed by hand from the shed while theirs is a side business.
+
+**Weeds are dug.** 1,168 weed-tile sightings a game and 36 DIG actions, so
+a weed is cleared rather than farmed around.
+
+**Hiring is a single morning burst.** 188 hires at hour 1 and 93 at hour
+2, then essentially none for the rest of the day -- the crew is wiped
+nightly and rebuilt each morning before the wage escalates. Per day it
+ramps 6, 4, 4, 5, 5, 5, 7, 8, 9, 10, 11, 11.
+
+**Ground is bought the moment it is affordable.** Median cash held at the
+instant a quadrant is bought is **644**, minimum 22. They buy and go
+broke, because a quadrant bought early is worked for the rest of the
+season.
+
+**And the market-demand answer, at last.** Pairing every sale with the
+market inventory at that moment (negative = the market is short, price
+above base):
+
+| good | median inventory at sale | q1 | q3 |
+| --- | ---: | ---: | ---: |
+| WHEAT | **-275** | -426 | -35 |
+| TOMATO | **-159** | -259 | -113 |
+| EGG | -28 | -94 | 27 |
+| CARROT | 11 | -57 | 82 |
+| MILK | 11 | -20 | 70 |
+| WOOL | 33 | 16 | 58 |
+| STRAWBERRY | 52 | 9 | 59 |
+| MELON | 82 | 49 | 109 |
+| FERTILIZER | **+226** | 94 | 357 |
+
+Wheat and tomato are sold into scarcity and fertilizer is dumped into a
+glut 226 units deep. Some of that is the market's natural state rather
+than a timing decision -- everyone produces manure and consumes wheat --
+but it is the first direct measurement of where on the curve each good
+actually changes hands.
+
+#### And the finding that constrains G
+
+Applying two of these to G -- buy ground as soon as affordable, and dig
+weeds -- took it from 21,235 to **11,083**, while lifting it from one
+quadrant to three on every seed. **More land makes G worse.** Its binding
+constraint is worker throughput, not ground: it already leaves tiles
+idle, and a second quadrant spends cash and spreads the crew thinner over
+work it could not finish on one.
+
+That is worth stating plainly because it inverts the obvious reading of
+the corpus. The elite buy land early *because they have 1,065 waterings
+of crop work to put on it*. An agent whose thesis is a flock does not,
+and copying the land timing without the crop programme behind it buys the
+cost and none of the benefit.
+
 ## 11. Candidate D: the original learned residual/Option selector plan
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.

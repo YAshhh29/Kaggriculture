@@ -80,8 +80,14 @@ MAX_ORDERS = 10
 HAND_RAMP = ((0, 4), (6, 5), (8, 8), (11, 10), (14, 12))
 HIRE_UNTIL_DAY = 27          # the crew is wiped nightly; stopping early
                             # starved a 22-bird flock down to five
-LAND_DAYS = (4, 9)          # buy the second and third quadrant here
-LAND_RESERVE = 1200.0       # never spend the last coin on ground
+# Ground is bought the moment it is affordable, not on a calendar. Across
+# twenty elite games the median cash held at the instant a quadrant was
+# bought is **644** and the minimum is 22: they buy the moment they can
+# and go broke doing it, because a quadrant bought on day 5 is worked for
+# twenty-four days. Waiting for a 1,200 reserve on fixed days left G on
+# one quadrant for most of the season.
+LAND_RESERVE = 500.0
+MAX_QUADRANTS = 3           # 9i: four-quadrant players win 8.3% against 51.2%
 GOOSE_COST = 300
 GOOSE_CASH_FLOOR = 450.0    # keep a bird's worth of change in hand
 WHEAT_PER_BIRD = 1.2        # a tile yields ~6 units per 5 days
@@ -361,7 +367,9 @@ def job_value(
             jobs.append((BAND_HARVEST + egg * 0.5 * int(tile["yield_units"]),
                          ["HARVEST"]))
     elif kind == "WEED":
-        jobs.append((BAND_WATER * 0.4, ["DIG"]))
+        # The corpus digs 36 weeds a game. A weed occupies ground
+        # that could hold a coop or a crop for the rest of the season.
+        jobs.append((BAND_WATER * 1.05, ["DIG"]))
 
     return [(v, a) for v, a in jobs if v > 0]
 
@@ -457,8 +465,18 @@ def market_orders(
                 break
             orders.append(["HIRE"])
 
-    # 3. Ground, twice, on the days the corpus buys it.
-    if day in LAND_DAYS and budget > LAND_RESERVE and len(orders) < MAX_ORDERS:
+    # 3. Ground, as soon as it is affordable.
+    quadrants = len(
+        (observation.get("farms") or [{}])[
+            int(observation.get("player", 0))
+        ].get("unlocked_quadrants") or []
+    )
+    if (
+        quadrants < MAX_QUADRANTS
+        and budget > LAND_RESERVE
+        and day <= LAST_DAY - 8
+        and len(orders) < MAX_ORDERS
+    ):
         orders.append(["BUY_LAND"])
         budget -= LAND_RESERVE
 
