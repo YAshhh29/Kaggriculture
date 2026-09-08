@@ -1,5 +1,5 @@
 {
-  "created_at": "2026-09-08T10:44:48.492427+00:00",
+  "created_at": "2026-09-08T11:02:15.445916+00:00",
   "competition": "kaggriculture",
   "agent": "main.py",
   "sha256": "9717dd76290ace80bfe70f63ad2f765f12ab45051531c8ec66eb06759ad9c100",
@@ -12,27 +12,31 @@
   },
   "source_files": [
     "submissions/candidate-b/main.py (parent)",
-    "agents/experimental_distilled_elite_rb25det_agent.py",
-    "models/v1327-public-elite-rb25det-105419382.json",
+    "agents/experimental_distilled_elite_mhuang_agent.py",
+    "models/v1327-live-elite-mhuang-106610780.json",
     "rl/candidate_f.py"
   ],
-  "policy": "Candidate A's guarded recovery and live terminal liquidation, plus Candidate B's market-timing residuals (land priority off), over the physical route that won a systematic search. 191 candidate tapes -- every side of every cached replay from a team rated 2400+, on a game that team won -- were scored on our own final reward under this exact stack, then the leaders were re-screened against real top-500 opponents. Episode 105520725 (Andrey Tikhomirov, LB 2920.0, rank 4) led all three evaluations: the search, a 60-game stratified panel (70.0%) and a 184-game full panel (64.1%).",
+  "policy": "Candidate A's guarded recovery and live terminal liquidation, plus Candidate B's market-timing residuals (land priority off), over a route captured from the CURRENT ladder rather than the 2026-09-04 cache. Every route this project could previously choose from came from that cache and was screened against opponents drawn from it; profiling the live corpus showed fourteen of the twenty-four teams we are drawn against run one public notebook unmodified (5 carrot seeds, 198 wheat, no geese), and the previous route shared that fingerprint. All eight captured games of this submission were screened separately, because tape quality belongs to the game rather than the player.",
   "training_data": {
     "source_episode_id": 106610780,
     "source_team": "MatthewHuang",
+    "source_team_rating": 2872.8,
     "source_context": "captured from the live ladder by tools.data.fetch_live_opponents",
     "actions_sha256": "1ae9793a513fb5e68a182afd8d34d1893f2b62e8b173bebf365cdcbbe1c012d5"
   },
   "validation": {
-    "top500_panel": {
-      "games": "184 per agent (92 distinct top-500 opponents x 2 seats)",
-      "candidate_f_andrey": "118/184 = 64.1%, mean 91199, floor 42858",
-      "prev_route_giulio": "108/184 = 58.7%, mean 86859, floor 47689",
-      "candidate_c1": "103/184 = 56.0%, mean 85811, floor 35703",
-      "significance": "paired McNemar: Andrey vs Giulio p=0.19, Andrey vs C1 p=0.079 -- NOT significant at p<0.05; selection rests on leading three independent evaluations, not one test"
+    "selection": "8 live ladder tapes screened 18 candidates; the 64 tapes those 8 were drawn from were held out until the winner was fixed",
+    "ladder_holdout": {
+      "games": "64 per agent (32 held-out live opponents x 2 seats)",
+      "candidate_f_mhuang": "59/64 = 92.2%, mean 78554, median margin +18030",
+      "prev_route_rb25det": "24/64 = 37.5%, mean 67514, median margin -3786",
+      "candidate_d_andrey": "26/64 = 40.6%, mean 64501, median margin -1085"
     },
-    "stratified_panel": "60 games: Andrey 70.0%, Giulio 61.7%, C1 48.3%; Andrey vs C1 p=0.0124",
-    "search": "191 tapes scored on own final reward",
-    "caveat": "rl/GOAL.md section 9m: win rate against frozen tapes overstates live strength by roughly forty points. Own-reward improvement (+12% mean, +8% floor over C1) is the transferable part of this result; the win-rate figures are not a live forecast."
+    "elite_panel": {
+      "games": "48 per agent (24 tapes from the nine teams rated 2765-2882 x 2 seats)",
+      "candidate_f_mhuang": "34/48 = 70.8%, mean 86979, median margin +12984",
+      "candidate_d_andrey": "20/48 = 41.7%, mean 74708, median margin -7639"
+    },
+    "caveat": "rl/GOAL.md section 9m: win rate against frozen tapes overstates live strength, because a recording cannot react to us. The panels above are built from current ladder play rather than the stale cache that produced section 10.8's 85-92% figures against a real 45.2%, but they are still tapes and are not a live forecast."
   }
 }
