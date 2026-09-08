@@ -134,7 +134,11 @@ CROP_TILES = (("MELON", 12), ("CARROT", 16), ("STRAWBERRY", 8))
 # town keeps draining a book nobody floods. But a town that drew YARN_STORE
 # twice wants wool badly enough to beat that, and this is how the agent
 # notices.
-DEMAND_MARGIN = 1.6         # measured: 26,971 against 18,346 for geese only
+# Below 1.0 the agent leaves egg for a good the town wants even when egg
+# still prices higher, and that measures best: on eight seeds 0.8 gives
+# 32,693 against 26,971 at 1.6 and 20,783 at 0.65. The seed spread is wide
+# (11,415 to 43,007) so treat the peak as approximate, not tuned.
+DEMAND_MARGIN = 0.8
 # Wheat carried per trip to the shed. At four, PICKUP was the single most
 # common action in the game -- 1,270 of them, more than harvest, feed, care
 # and collect together -- because every four meals cost a round trip.
