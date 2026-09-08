@@ -108,6 +108,10 @@ CROP_CLAMP = False
 # grow than its own price says, because selling it takes their price down
 # with ours.
 DENIAL_WEIGHT = 0.0
+# Let the herd lead the harvest until this day, backed by bought feed.
+# 0 disables it and restores the behaviour every earlier measurement used.
+EARLY_HERD_DAY = 0
+FEED_COVER_DAYS = 3
 SELL_PACE = 24.0
 SELL_CASH_FLOOR = 1500.0
 SHED_PRESSURE = 70
@@ -889,6 +893,28 @@ def _market_orders(
     carryable = int(
         wheat_tiles * WHEAT_UNITS_PER_TILE_DAY + shed.get("WHEAT", 0) / 4.0
     )
+    # Feed the farm can *buy*, not only feed it grows.
+    #
+    # 67 live games say the herd at days 8-12 is the whole match: we win
+    # with 17.0 head against their 15.3 and lose with 14.6 against their
+    # 16.4, while the day-29 market, the planted count and the action mix
+    # are indistinguishable between the two (10.8af). The rule above caps
+    # the herd at roughly one animal per wheat tile, and early on there
+    # are few wheat tiles, so it is exactly what stops the herd reaching
+    # the size that wins.
+    #
+    # The cap exists because this agent once bought eleven cows in two
+    # turns and starved every one of them by day fifteen. That failure was
+    # about *cover*, not about growing versus buying: BUY_PRODUCT accepts
+    # WHEAT, so a purse can carry a herd the fields cannot yet. This adds
+    # only the head that the money on hand could feed for FEED_COVER_DAYS,
+    # after the working capital is set aside, and only before
+    # EARLY_HERD_DAY -- so the herd can lead the harvest through the days
+    # that decide the game and never past what it can pay to feed.
+    if day < EARLY_HERD_DAY and FEED_COVER_DAYS > 0:
+        spare = max(0.0, budget - WORKING_CAPITAL - float(ANIMALS[herd]["cost"]))
+        price = max(1.0, live_price(observation, "WHEAT"))
+        carryable += int(spare / price / float(FEED_COVER_DAYS))
     if (
         herd_worth > 0
         and pen_free > in_shed
@@ -931,6 +957,26 @@ def _market_orders(
         want = min(starving, 4)
         orders.append(["BUY_PRODUCT", "WHEAT", want])
         budget -= live_price(observation, "WHEAT") * want
+    elif (
+        day < EARLY_HERD_DAY
+        and FEED_COVER_DAYS > 0
+        and animals_on_farm > 0
+        and wheat_have < animals_on_farm * 2
+        and budget > EMERGENCY_FEED_FLOOR
+        and len(orders) < MAX_ORDERS
+    ):
+        # The other half of the same decision. A herd allowed to lead the
+        # harvest has to be fed from the market until the fields catch up,
+        # and buying only once an animal is already starving is a turn too
+        # late -- it bolts after two missed meals. Capped at two days of
+        # cover so this cannot become the 248-unit spree that pinned an
+        # earlier version at twenty coins for most of a season.
+        want = int(min(animals_on_farm * 2 - wheat_have,
+                       (budget - EMERGENCY_FEED_FLOOR)
+                       // max(1.0, live_price(observation, "WHEAT"))))
+        if want > 0:
+            orders.append(["BUY_PRODUCT", "WHEAT", want])
+            budget -= live_price(observation, "WHEAT") * want
 
 
     return orders[:10]
