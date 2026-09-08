@@ -4172,6 +4172,61 @@ keep a small goose flock for a commodity whose price never falls, and stop
 treating milk and wool as though volume in them were worth anything past
 the first eighty units.
 
+### 10.8aa A bigger recorded herd does not transfer (2026-09-08)
+
+10.8y found Candidate F's ceiling: it loses when the opponent out-builds
+its herd, because F's own herd is fixed at 14.0 by the recording and its
+revenue saturates fertilizer at +493, exactly the price floor. The obvious
+remedy is a route that built more animals. Ten games each were captured
+from the top fourteen teams on the board and the sixteen tapes with the
+largest herds and deepest carrot programmes were screened under the
+identical guard stack, elite panel, 24 games each:
+
+| route | herd | carrot | wins | median margin |
+| --- | ---: | ---: | ---: | ---: |
+| **F's current (Matthew Huang ep106610780)** | **14** | 6 | **17/24 (70.8%)** | **+9,030** |
+| ep106473162 | 24 | 47 | 14/24 (58.3%) | +6,814 |
+| ep106777479 | 24 | 26 | 14/24 (58.3%) | +5,801 |
+| ep106780789 | 25 | 25 | 13/24 (54.2%) | +3,220 |
+| ep106733927 | 22 | 77 | 9/24 (37.5%) | -54,875 |
+| ep106786295 | 22 | 82 | 6/24 (25.0%) | -11,573 |
+| ep106771305 | 23 | 87 | 5/24 (20.8%) | -17,128 |
+| ep106791922 | 23 | 68 | 5/24 (20.8%) | -8,708 |
+| ep106780780 | 20 | 44 | 3/24 (12.5%) | -13,272 |
+| ep106786306 | **30** | 61 | 1/24 (4.2%) | -58,862 |
+| ep106766507 | **42** | 4 | 1/24 (4.2%) | -42,461 |
+| ep106756360 | 28 | **116** | **0/24** | -65,708 |
+| ep106766510 | **39** | 0 | **0/24** | -69,610 |
+| ep106162235 | 22 | 71 | **0/24** | -63,242 |
+| ep106734324 | 23 | 31 | **0/24** | -35,844 |
+
+**The correlation runs backwards.** The three largest herds -- 42, 39 and
+30 animals -- score 4.2%, 0% and 4.2%. The deepest carrot programme, 116
+seeds from the rank-1 team, scores **zero**. F's fourteen-animal route
+beats all fifteen alternatives.
+
+The reason is the same one 9k and 10.8s found and this is now the third
+independent confirmation: **a route's value is how well it replays, not how
+well its author played.** A recording that reached 42 animals did so by
+reacting inside its own game -- to the cash it happened to have, the market
+it happened to face, the opponent it happened to draw. Replayed into a
+different game those purchases arrive when the money is not there and the
+placements land on ground that is not clear, and the guard stack spends the
+season recovering.
+
+**So the herd ceiling in 10.8y is structural to cloning, not a property of
+this tape.** It cannot be fixed by finding a better recording, because the
+recordings that would fix it are exactly the ones that do not transfer. A
+larger herd has to be *decided* during the game, which is what a
+closed-loop agent does and a tape cannot.
+
+Also measured, and it settles a question the public notebooks raised: the
+2534-rated public agent carries no guard layer at all, so it was worth
+asking whether ours earns its keep on this route. Elite panel, 48 games:
+**route under the A+B guards 38/48 (79.2%), the raw route 33/48 (68.8%)**,
+at effectively identical coins (91,380 against 91,693). The guards are
+worth about ten points of win rate here and stay.
+
 ## 11. Candidate D: the original learned residual/Option selector plan
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
