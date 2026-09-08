@@ -77,7 +77,7 @@ MAX_ORDERS = 10
 # 3,000 of starting capital -- hiring twelve immediately bankrupted the
 # farm by day six before it had any income at all. The corpus hires 4 by
 # day 2, 8 by day 6 and 11 by day 10, and pays for each from the last.
-HAND_RAMP = ((0, 4), (3, 6), (5, 8), (8, 10), (11, 12))
+HAND_RAMP = ((0, 4), (6, 5), (8, 8), (11, 10), (14, 12))
 HIRE_UNTIL_DAY = 27          # the crew is wiped nightly; stopping early
                             # starved a 22-bird flock down to five
 LAND_DAYS = (4, 9)          # buy the second and third quadrant here
@@ -90,6 +90,8 @@ WHEAT_PER_BIRD = 1.2        # a tile yields ~6 units per 5 days
 # fed no birds, so none were bought, so the target never grew.
 WHEAT_TILES = 14
 COOPS_AFTER_WHEAT = 8
+EARLY_BIRDS = 6
+EARLY_COOPS = 6
 # Cash crops for the ground the flock does not need. The goose economy is
 # an addition to a farm, not a replacement for one: with wheat and coops
 # satisfied it was leaving roughly thirty of seventy-one tiles idle all
@@ -271,10 +273,19 @@ def job_value(
     if tile is None:
         if counts["wheat"] < wheat_target and int(seeds.get("WHEAT", 0)) > 0                 and day <= LAST_DAY - 8:
             jobs.append((BAND_WHEAT + egg, ["PLANT", "WHEAT"]))
-        elif (counts["empty_coops"] < 2
-                and counts["wheat"] >= COOPS_AFTER_WHEAT
-                and days_left > 5):
-            jobs.append((BAND_BUILD + egg, ["BUILD_COOP"]))
+        elif (
+            counts["empty_coops"] < 2
+            and days_left > 5
+            and (
+                counts["geese"] + counts["empty_coops"] < EARLY_COOPS
+                or counts["wheat"] >= COOPS_AFTER_WHEAT
+            )
+        ):
+            early = counts["geese"] + counts["empty_coops"] < EARLY_COOPS
+            jobs.append((
+                (BAND_WHEAT + 1.0 if early else BAND_BUILD) + egg,
+                ["BUILD_COOP"],
+            ))
         else:
             # Spare ground goes to cash crops, best price per tile first,
             # each capped at what its book will actually absorb.
@@ -433,7 +444,8 @@ def market_orders(
     if (
         counts["empty_coops"] > in_shed
         and budget > GOOSE_COST + GOOSE_CASH_FLOOR
-        and counts["animals"] + in_shed < feedable
+        and (counts["animals"] + in_shed < EARLY_BIRDS
+             or counts["animals"] + in_shed < feedable)
         and day <= LAST_DAY - 5
         and len(orders) < MAX_ORDERS
     ):
