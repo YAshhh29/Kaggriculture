@@ -3138,6 +3138,50 @@ kept, packaged and gated, because the RB25det route is a genuine
 alternative worth re-testing whenever the screening harness improves --
 but it has not earned a submission.
 
+### 10.8n All 245 routes screened -- and Candidate D survives
+
+`tools/data/screen_routes.py` screened **every one of the 245 cached
+routes** under the same A+B guard stack, ranked by win rate rather than by
+coins, 24 games each. Results in `rl/data/route_screen.jsonl`.
+
+The spread confirms that route choice dominates everything this project
+has tuned: **0/24 to 22/24 wins, median 8/24.** And a side's own recorded
+reward is again worthless as a predictor -- the best route by win rate
+scored 49,048 in its own game, near the bottom of the corpus.
+
+Leaders on the 24-game screen:
+
+| route | episode | W/24 | mean | floor |
+| --- | --- | ---: | ---: | ---: |
+| TIM | 105244791 | 22/24 | 104,995 | 73,844 |
+| senkin13 | 105295052 | 22/24 | 103,159 | 59,950 |
+| Sergey Kutepov | 105423147 | 21/24 | 101,387 | 49,423 |
+| RB25det (Candidate F) | 105419382 | 19/24 -- **rank 21** | 87,656 | -- |
+
+**Then the 10.8m standard disqualified both leaders.** Two independent
+120-opponent panels and a direct head-to-head against D:
+
+| | panel 23 (240 games) | panel 77 (240 games) | head-to-head vs D |
+| --- | --- | --- | --- |
+| **D (incumbent)** | 99,415 -- 89.6% | 98,028 -- 90.4% | -- |
+| TIM | 99,038 -- **94.2%** | 99,553 -- 91.2%, **floor 0** | **wins 0/80** |
+| senkin13 | 101,451 -- 82.9% | 98,930 -- 84.6% | wins 6/80 |
+
+TIM posts the best panel win rate in the corpus and then loses **every
+single one of eighty** games to D, finishing with **exactly zero coins**
+each time -- `status=DONE`, not an error, just a farm that produced
+nothing. Its floor was 0 on the second panel too.
+
+**The lesson to carry: mean and win rate hide catastrophic tails; the
+floor is the diagnostic that exposes them.** A route with a zero floor on
+any panel is disqualified regardless of how good its average looks. That
+is the same flag Shangshang Zhang raised in 10.8k, and it was right there.
+
+**Conclusion: Candidate D stays. Nothing in 245 routes beat it once
+validated properly.** D's own floors -- 47,463 and 48,455 across the two
+panels -- are the best of any route tested, which is a stronger reason to
+keep it than its coin mean ever was.
+
 ### 10.9 How to test
 
 * `python -m tools.validation.preflight_candidate_d` -- seven gates for
