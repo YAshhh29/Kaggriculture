@@ -244,6 +244,22 @@ CROP_SEED_BATCH = 4
 # coins of wheat, and an escaped animal takes its whole remaining stream
 # with it.
 RATION_FLOOR = 60.0
+# Feed bought from the market rather than grown, which is the corpus's
+# opening move: their first order of the game is BUY_PRODUCT WHEAT 13.
+# Days of feed to keep in the shed, the flock size to plan for before one
+# exists, the last day worth buying on, and the cash kept back.
+# Measured and OFF: a coin flip at every level, on sixty paired games
+# each against top-of-ladder routes. Days 2 gives 45,436 mean / 49,340
+# median, days 3 gives 45,460 / 48,034, days 5 gives 45,656 / 47,772,
+# against 47,395 / 47,137 with it off -- and 30/60, 30/60, 31/60 paired,
+# which is exactly chance. It lifts the median and the floor and lowers
+# the mean, because on our purse the feed order competes with the animal
+# it is meant to feed. The corpus can open this way because it has income
+# we do not.
+FEED_STOCK_DAYS = 0
+FEED_MIN_FLOCK = 4
+FEED_BUY_UNTIL = 6
+FEED_STOCK_FLOOR = 150.0
 # Hold a non-ongoing crop to its last yield day instead of pulling it the
 # day it ripens.
 #
@@ -455,6 +471,36 @@ def fertilizer_gain(tile: dict[str, Any], day: int) -> int:
     return max(0, min(room, min(3, remaining)))
 
 
+def house_needed(counts: dict[str, int], preferred: str) -> str | None:
+    """Which pen to build next, or None. Housing follows the animals we
+    already own, never the animal the town happens to want today.
+
+    The old gate asked only whether the *preferred* animal's pen type had
+    fewer than COOP_LEAD empties. When demand moved to cows the goose
+    branch stopped being consulted, no coop was ever built again, and
+    every goose bought after that sat in the shed for the rest of the
+    game. A census across three seeds showed the herd frozen from day 9
+    to day 28 -- 10 animals, 61 free tiles and 57,000 idle coins on one
+    seed, thirteen geese stacked in the shed on another.
+
+    So an animal already bought is housed unconditionally; only the
+    speculative lead is rationed, and only by whether the wheat is there
+    to feed what it would hold.
+    """
+    for house in ("COOP", "PASTURE"):
+        empty = counts["empty_coops" if house == "COOP" else "empty_pastures"]
+        waiting = counts.get("shed_" + house, 0)
+        carried = counts.get("unplaced_" + house, 0)
+        lead = 0
+        if (ANIMAL_HOME.get(preferred) == house
+                and (counts["animals"] < EARLY_BIRDS
+                     or counts["wheat"] >= COOPS_AFTER_WHEAT)):
+            lead = COOP_LEAD
+        if empty < waiting + carried + lead:
+            return house
+    return None
+
+
 def job_value(
     observation: dict[str, Any],
     tile: Any,
@@ -494,7 +540,8 @@ def job_value(
 
     if _shed_adjacent(x, y):
         carrying = int(inventory.get("WHEAT", 0))
-        if counts["unfed"] > 0 and carrying <= 0 and shed.get("WHEAT", 0) > 0:
+        if (counts["unfed"] > 0 and carrying <= 0
+                and counts.get("shed_WHEAT", int(shed.get("WHEAT", 0))) > 0):
             jobs.append((BAND_FEED * 0.9, ["PICKUP", "WHEAT", FEED_CARRY]))
         # Collect *any* animal the shed is holding, not just the one the
         # town happens to want today.
@@ -511,12 +558,18 @@ def job_value(
             for animal in sorted(
                 ANIMAL_HOME, key=lambda a: (a != preferred, a)
             ):
-                waiting = int(shed.get(animal, 0))
-                home = ("empty_coops" if ANIMAL_HOME[animal] == "COOP"
+                house = ANIMAL_HOME[animal]
+                waiting = int(counts.get("shed_" + animal,
+                                         int(shed.get(animal, 0))))
+                home = ("empty_coops" if house == "COOP"
                         else "empty_pastures")
-                if waiting <= 0 or counts[home] <= 0:
+                # Pens already spoken for by an animal in someone's arms
+                # are not free, or four workers fetch eight animals for
+                # two pens and six of the trips are silent no-ops.
+                free_pens = counts[home] - counts.get("unplaced_" + house, 0)
+                if waiting <= 0 or free_pens <= 0:
                     continue
-                carry = max(1, min(BIRDS_CARRIED, waiting, counts[home]))
+                carry = max(1, min(BIRDS_CARRIED, waiting, free_pens))
                 jobs.append((BAND_PLACE * 0.95, ["PICKUP", animal, carry]))
                 break
 
@@ -530,21 +583,38 @@ def job_value(
                 and counts.get("seed_WHEAT", int(seeds.get("WHEAT", 0))) > 0
                 and day <= LAST_DAY - 8):
             jobs.append(((BAND_WHEAT + egg) * near, ["PLANT", "WHEAT"]))
-        elif (
-            counts["empty_coops" if ANIMAL_HOME[counts.get("bird", "GOOSE")]
-                   == "COOP" else "empty_pastures"] < COOP_LEAD
-            and days_left > 5
-            and (
-                counts["geese"] + counts["empty_coops"] < EARLY_COOPS
-                or counts["wheat"] >= COOPS_AFTER_WHEAT
-            )
-        ):
-            early = counts["geese"] + counts["empty_coops"] < EARLY_COOPS
+        # Deliberately still an if/elif chain, which is a real limitation
+        # and is recorded as one.
+        #
+        # Because every empty tile offers the same jobs, exclusivity means
+        # no tile offers a pen while the wheat quota is short -- and
+        # harvesting destroys a wheat tile, so the quota is short most
+        # turns. Making these additive does unfreeze the herd (25 animals
+        # on a seed that had 7) and it costs 7,000: 40,379 against 47,395
+        # on sixty paired games.
+        #
+        # The reason is the wage curve. Hands are priced on a fibonacci in
+        # the number hired that day, so a crew of 12 costs 11,280 a season,
+        # 14 costs 29,580 and 16 costs 77,490 -- more than the game pays.
+        # Labour is hard-capped near twelve, a flock of 25 needs some 62
+        # worker-turns a day to feed, care for and harvest, and the crew
+        # cannot be bought. Filling sixty idle tiles with pens buys animals
+        # nobody can tend.
+        #
+        # So the ceiling here is labour, not housing, and unblocking the
+        # housing alone is not the answer.
+        elif days_left > 5 and house_needed(
+                counts, counts.get("bird", "GOOSE")) is not None:
+            house = house_needed(counts, counts.get("bird", "GOOSE"))
+            # An animal standing in the shed is capital already spent, so
+            # housing it outranks housing one we have not bought yet.
+            urgent = (counts.get("shed_" + house, 0)
+                      + counts.get("unplaced_" + house, 0)) > 0
+            early = counts["animals"] < EARLY_COOPS
+            band = BAND_WHEAT + 1.0 if (urgent or early) else BAND_BUILD
             jobs.append((
-                ((BAND_WHEAT + 1.0 if early else BAND_BUILD) + egg) * near,
-                ["BUILD_COOP"
-                 if ANIMAL_HOME[counts.get("bird", "GOOSE")] == "COOP"
-                 else "BUILD_PASTURE"],
+                (band + egg) * near,
+                ["BUILD_COOP" if house == "COOP" else "BUILD_PASTURE"],
             ))
         else:
             # Spare ground goes to cash crops, best price per tile first,
@@ -685,7 +755,25 @@ def claim(counts: dict[str, int], action: list[Any]) -> None:
                else "empty_pastures")
         counts[key] = max(0, counts[key] - 1)
         counts["animals"] += 1
-        counts["geese"] += 1
+        if animal == "GOOSE":
+            counts["geese"] += 1
+        house = ANIMAL_HOME.get(animal, "COOP")
+        counts["unplaced_" + house] = max(
+            0, counts.get("unplaced_" + house, 0) - 1)
+    elif op == "PICKUP":
+        # Without this the shed reads full to every worker at once: three
+        # of them fetch the same single goose and two of the trips are
+        # silent no-ops. Measured at 48 to 58 wasted pickups a game.
+        item = str(action[1]) if len(action) > 1 else ""
+        qty = int(action[2]) if len(action) > 2 else 1
+        key = "shed_" + item
+        counts[key] = max(0, counts.get(key, 0) - qty)
+        if item in ANIMAL_HOME:
+            house = ANIMAL_HOME[item]
+            counts["shed_" + house] = max(
+                0, counts.get("shed_" + house, 0) - qty)
+            counts["unplaced_" + house] = counts.get(
+                "unplaced_" + house, 0) + qty
 
 
 def hands_target(day: int) -> int:
@@ -916,6 +1004,42 @@ def market_orders(
         orders.append(["BUY_ANIMAL", bird, want])
         budget -= GOOSE_COST * want
 
+    # 4b. Feed bought from the market, which is how the top of the ladder
+    #     opens. Their very first order of the game is BUY_PRODUCT WHEAT
+    #     13, before a single hire or animal, and only then do they hire
+    #     five hands and buy four animals -- all on day zero.
+    #
+    #     G grew every grain it ever ate, which left a hole it could not
+    #     cover: nothing is harvestable before day two, and now that crops
+    #     are held to their last yield day, nothing arrives before day
+    #     four. An animal unfed two days running escapes, so a flock
+    #     bought on day zero cannot survive to its first harvest on grain
+    #     alone.
+    #
+    #     The trade is heavily favourable. Wheat costs about 28 a unit to
+    #     buy; a goose eats one a day and lays an egg worth 50 to 92. The
+    #     old note that buying feed cost 4,000 was measured against the
+    #     broken opening -- before the harvest hold widened the gap and
+    #     while the ration floor sat above the farm's operating cash.
+    stock_target = int(
+        max(counts["animals"] + int(shed.get(bird, 0)), FEED_MIN_FLOCK)
+        * FEED_STOCK_DAYS
+    )
+    have_wheat = int(shed.get("WHEAT", 0))
+    if (
+        FEED_STOCK_DAYS > 0
+        and day <= FEED_BUY_UNTIL
+        and have_wheat < stock_target
+        and budget > FEED_STOCK_FLOOR
+        and len(orders) < MAX_ORDERS
+    ):
+        want = min(stock_target - have_wheat,
+                   int((budget - FEED_STOCK_FLOOR) // 30))
+        if want > 0:
+            orders.append(["BUY_PRODUCT", "WHEAT", want])
+            budget -= 30.0 * want
+
+
     # 5. Seed, wheat only. Every other crop grows into a book that floors
     #    before the season ends; wheat feeds the flock and its own curve
     #    never falls.
@@ -979,6 +1103,22 @@ def decide(observation: dict[str, Any]) -> AgentAction:
     if SEED_CLAIM:
         for crop, have in seeds.items():
             counts["seed_" + crop] = int(have)
+    # Mirror the shed and every worker's arms into the census, so that
+    # claim() can decrement them as jobs are handed out. Without this the
+    # thirteen workers all read the same full shed and the same empty
+    # pens, and most of the resulting trips are silent no-ops.
+    counts["shed_WHEAT"] = int(shed.get("WHEAT", 0))
+    for house in ("COOP", "PASTURE"):
+        counts["shed_" + house] = 0
+        counts["unplaced_" + house] = 0
+    for animal, house in ANIMAL_HOME.items():
+        waiting = int(shed.get(animal, 0))
+        counts["shed_" + animal] = waiting
+        counts["shed_" + house] += waiting
+        for worker in range(len(positions)):
+            counts["unplaced_" + house] += int(
+                _inventory(observation, worker).get(animal, 0)
+            )
     # crop_priority is deliberately not used to reorder planting. Ranking
     # crops by remaining demand times price measured 24,257 against 32,693
     # for the fixed order, because that product is the coins available in a
