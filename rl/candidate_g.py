@@ -141,11 +141,38 @@ EARLY_COOPS = 6
 # the lead to four costs 7,700, because pens are built by the same workers
 # that feed and harvest.
 BIRDS_PER_TURN = 1
+# Animals carried per trip to the shed, and how long placement outranks
+# routine tending.
+#
+# The opening is throttled by the buy -> shed -> carry -> place chain: G
+# orders four animals inside 26 turns and has one standing on a tile at
+# turn 24. A worker that walks to the shed for one bird and back has spent
+# two trips to place two, so carrying three makes the existing trip cheaper
+# rather than asking the crew for more trips.
+#
+# Thirty paired games across three top-of-ladder routes: carrying three
+# means 38,749 against 34,219 at one, and wins 21 of the 30 pairs. The
+# medians are level (30,303 against 30,098), so the gain is in the upper
+# half of the spread -- it lifts the good games and does not rescue the
+# bad ones.
+BIRDS_CARRIED = 3
+# Placement did *not* deserve to outrank tending, which is the opposite of
+# what the arithmetic above suggests. Making PLACE outbid feeding costs
+# 9,500: a bird that goes unfed two days escapes and takes its whole
+# remaining stream with it, so the crew must finish tending before it
+# starts placing.
+#
+# That is the third failure of the same shape. Every change that asks the
+# opening crew for *more* work loses -- more pens 7,700, more land 10,000,
+# placement priority 9,500 -- because the crew is saturated from day one.
+# Only changes that make the work it already does cheaper have paid:
+# FEED_CARRY 4 -> 12, and BIRDS_CARRIED 1 -> 3.
+PLACE_PRIORITY_DAY = -1
 COOP_LEAD = 2
 # Cash crops for the ground the flock does not need. The goose economy is
 # an addition to a farm, not a replacement for one: with wheat and coops
 # satisfied it was leaving roughly thirty of seventy-one tiles idle all
-# game while Candidate D farmed the whole board for ~107,000.
+# game, where the corpus has twenty-nine tiles planted by turn 168.
 #
 # Tile counts come from each good's book depth (10.8v) rather than its
 # base price. Melon pays 250 and floors after 158 units; strawberry 120
@@ -365,7 +392,9 @@ def job_value(
         if (int(shed.get(bird, 0)) > 0
                 and int(inventory.get(bird, 0)) <= 0
                 and counts[home] > 0):
-            jobs.append((BAND_PLACE * 0.9, ["PICKUP", bird, 1]))
+            carry = max(1, min(BIRDS_CARRIED, int(shed.get(bird, 0)),
+                               counts[home]))
+            jobs.append((BAND_PLACE * 0.95, ["PICKUP", bird, carry]))
 
     if tile is None:
         # Everything built here is worked from the shed for the rest of the
@@ -427,7 +456,12 @@ def job_value(
     elif kind in ("COOP", "PASTURE"):
         for animal, house in ANIMAL_HOME.items():
             if house == kind and int(inventory.get(animal, 0)) > 0:
-                jobs.append((BAND_PLACE + egg * days_left * 0.1,
+                # Placing beats tending while the flock is still being
+                # built: the bird earns for every remaining day, the
+                # watering earns once.
+                band = (BAND_FEED * 0.95 if day <= PLACE_PRIORITY_DAY
+                        else BAND_PLACE)
+                jobs.append((band + egg * days_left * 0.1,
                              ["PLACE", animal]))
                 break
     elif kind == "PLANT":
