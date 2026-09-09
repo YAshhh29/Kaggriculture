@@ -270,6 +270,16 @@ FEED_STOCK_FLOOR = 150.0
 # on G -- 44,364 against 40,072 on sixty paired games against
 # top-of-ladder routes, ahead in 43 of the 60.
 HARVEST_HOLD = True
+# The last errand of the season: tip carried goods into the shed so the
+# closing sell can reach them.
+#
+# Keyed to the step, not to `closing`, which spans two whole days. At that
+# width the drop job pulled workers off the field for 48 turns to recover
+# a few hundred coins and cost 707 (47,995 against 48,702). Confined to
+# the last handful of turns it is worth 48,755 -- a gain of 53, which is
+# noise, but it never loses a game and it is recovering goods that were
+# otherwise thrown away, so it stays.
+DROP_FROM_STEP = 713
 TRAVEL_EXPONENT = 2.0
 # Where a coop or a wheat tile goes matters as much as that it exists.
 # Feed comes out of the shed and every meal is a round trip, so a flock
@@ -554,6 +564,24 @@ def job_value(
     wheat_target = WHEAT_TILES
 
     if _shed_adjacent(x, y):
+        # Everything still in a worker's arms when the game stops is
+        # thrown away. Inventories are tipped into the shed on the nightly
+        # refresh, which for day 29 happens *after* the last market tick,
+        # so the final day's harvest is never sold. Measured: two wheat,
+        # three fertilizer and four eggs left in hand at the last step.
+        #
+        # A DROP puts the lot in the shed in one action, and the closing
+        # sell empties the shed the same turn, so the last errand of the
+        # season is worth making. It is priced by what is actually being
+        # carried, so a worker holding nothing valuable stays in the field.
+        if int(observation.get("step", 0)) >= DROP_FROM_STEP:
+            haul = 0.0
+            for item, qty in inventory.items():
+                if int(qty) > 0 and item in MARKET_PARAMS:
+                    haul += int(qty) * price_at(
+                        item, inventory_of(observation, item))
+            if haul > 0:
+                jobs.append((BAND_HARVEST + haul, ["DROP"]))
         carrying = int(inventory.get("WHEAT", 0))
         if (counts["unfed"] > 0 and carrying <= 0
                 and counts.get("shed_WHEAT", int(shed.get("WHEAT", 0))) > 0):
