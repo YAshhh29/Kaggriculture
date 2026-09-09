@@ -64,7 +64,7 @@ from typing import Any
 
 from core.routing import distance, step_toward
 from rl.demand import remaining_demand
-from rl.economics import CROPS
+from rl.economics import ANIMALS, CROPS
 from rl.market import MARKET_PARAMS, inventory_of, price_at
 from rl.runtime import AgentAction
 
@@ -119,6 +119,35 @@ WHEAT_PER_BIRD = 0.8
 WHEAT_TILES = 20
 COOPS_AFTER_WHEAT = 8
 EARLY_BIRDS = 6
+# Herd size and mix.
+#
+# 332 elite tapes buy a median of 3 geese, 8 cows and 6 sheep -- about
+# seventeen animals, permanently mixed, never a single species. G ran six
+# or seven of one. Adopting the *mix* is worth a great deal; adopting the
+# *size* is ruinous:
+#
+#     target  6   49,106 mean   51,168 median   31,382 min
+#     target  8   49,378        51,205          27,221
+#     target 10   45,307        43,704          25,893
+#     target 12   40,021        35,501          14,716
+#     target 17   35,486        27,236          13,543
+#
+# Two reasons the elite herd does not transfer. Labour: hands are priced
+# on a fibonacci, the crew is capped near twelve, and every animal wants
+# feeding and caring daily whatever it produces. And the books: milk dies
+# after 76 units and wool after 59, while egg never floors. Eight cows
+# make some 128 units of milk, half of it worth a coin. Their cattle are a
+# capital engine for the first twelve days -- dump 50 units at 160 before
+# the collapse, bank the manure -- not a season-long line, and we have
+# neither the crew nor the opening to run it that way.
+#
+# Six, mixed, is ours. 8 wins the mean by 272 and the median by 37, both
+# noise at 33/60 paired, and gives up 4,161 of floor to get them.
+HERD_TARGET = 6
+# The share a line keeps once we own any of it. A pen and the animal in it
+# are capital already spent and a shift in the town's draw does not refund
+# them, so demand decides which line *grows*, never which line survives.
+HERD_FLOOR = 0.15
 EARLY_COOPS = 6
 # How many birds may be bought in one turn while the opening is still
 # being built.
@@ -411,6 +440,7 @@ def census(tiles: list[list[Any]]) -> dict[str, int]:
         "geese": 0, "animals": 0, "empty_coops": 0, "empty_pastures": 0,
         "wheat": 0, "free": 0, "unfed": 0, "uncared": 0,
         "manure": 0, "ripe": 0, "dry": 0,
+        "have_GOOSE": 0, "have_COW": 0, "have_SHEEP": 0,
     }
     for row in tiles:
         for tile in row:
@@ -423,7 +453,11 @@ def census(tiles: list[list[Any]]) -> dict[str, int]:
                 continue
             if "animal" in tile:
                 out["animals"] += 1
-                if tile.get("animal") == "GOOSE":
+                kind_of = str(tile.get("animal", ""))
+                key = "have_" + kind_of
+                if key in out:
+                    out[key] += 1
+                if kind_of == "GOOSE":
                     out["geese"] += 1
                 if not tile.get("fed_today"):
                     out["unfed"] += 1
@@ -516,11 +550,20 @@ def house_needed(counts: dict[str, int], preferred: str) -> str | None:
         empty = counts["empty_coops" if house == "COOP" else "empty_pastures"]
         waiting = counts.get("shed_" + house, 0)
         carried = counts.get("unplaced_" + house, 0)
+        # Room to grow the lines that live in this house, capped by the
+        # herd plan so the farm does not build pens for animals it can
+        # neither feed nor tend.
+        wanted = 0
+        for animal, home in ANIMAL_HOME.items():
+            if home != house:
+                continue
+            wanted += max(0, counts.get("want_" + animal, 0)
+                          - counts.get("have_" + animal, 0))
         lead = 0
-        if (ANIMAL_HOME.get(preferred) == house
+        if (wanted > 0
                 and (counts["animals"] < EARLY_BIRDS
                      or counts["wheat"] >= COOPS_AFTER_WHEAT)):
-            lead = COOP_LEAD
+            lead = min(COOP_LEAD, wanted)
         if empty < waiting + carried + lead:
             return house
     return None
@@ -869,6 +912,46 @@ def preferred_bird(observation: dict[str, Any]) -> str:
 
 
 ANIMAL_HOME = {"GOOSE": "COOP", "COW": "PASTURE", "SHEEP": "PASTURE"}
+ANIMAL_PRODUCT = {"GOOSE": "EGG", "COW": "MILK", "SHEEP": "WOOL"}
+
+
+def herd_plan(observation: dict[str, Any], counts: dict[str, int],
+              total: int) -> dict[str, int]:
+    """How many of each animal we want standing.
+
+    This replaces picking a single `preferred_bird` and building only for
+    it, which is what froze the farm after day six: once the town's draw
+    moved, the winning animal's pen type was the only one ever considered,
+    the other had no empty pen, and the buy gate refused for the rest of
+    the game.
+
+    It is also the wrong shape economically. A pen and the animal standing
+    in it are capital already spent, and a shift in demand does not refund
+    it -- the right response to falling demand is to stop *growing* that
+    line, not to abandon what it already produces. So demand decides who
+    gets the growth, every line that we already own keeps a floor share,
+    and nothing is ever torn down.
+
+    332 elite tapes buy a median of 3 geese, 8 cows and 6 sheep: a
+    permanently mixed herd of about seventeen, never a single species.
+    """
+    demand = remaining_demand(observation)
+    pull: dict[str, float] = {}
+    for animal, product in ANIMAL_PRODUCT.items():
+        pull[animal] = max(0.0, demand.get(product, 0.0) * price_at(
+            product, inventory_of(observation, product)))
+    weight = sum(pull.values())
+    if weight <= 0.0:
+        share = {a: 1.0 / len(pull) for a in pull}
+    else:
+        share = {a: pull[a] / weight for a in pull}
+    # A line we already keep never drops below its floor, however the
+    # town's appetite moves.
+    for animal in share:
+        if counts.get("have_" + animal, 0) > 0:
+            share[animal] = max(share[animal], HERD_FLOOR)
+    scale = sum(share.values()) or 1.0
+    return {a: int(round(share[a] / scale * total)) for a in share}
 
 # What price the top of the ladder actually accepts, as a multiple of each
 # good's base. Measured by pairing every sale in thirty elite games with
@@ -1037,31 +1120,45 @@ def market_orders(
     # scheduler has been building housing for it all turn. Recomputing it
     # here duplicated the logic and silently overrode MIXED_EARLY, which is
     # why the mixed-herd sweep returned four identical numbers.
-    if MIXED_EARLY and counts["animals"] >= MIXED_EARLY:
-        bird = "GOOSE"
 
     # 4. Birds. One per turn, only into a coop that is standing empty and
     #    only while the wheat area can feed what we already have -- the
     #    flock must never outrun its feed, because two missed meals lose
     #    the animal outright.
-    in_shed = int(shed.get(bird, 0))
+    # Buy whichever line is furthest below its target and has a pen
+    # standing empty. Choosing by deficit rather than by today's favourite
+    # is what stops the farm freezing: the old gate asked only whether the
+    # *preferred* animal's house had room, so a farm holding pastures and
+    # wanting geese bought nothing at all, for the rest of the game.
+    total_animals = counts["animals"] + sum(
+        int(shed.get(a, 0)) for a in ANIMAL_HOME)
     feedable = counts["wheat"] * WHEAT_PER_BIRD + shed.get("WHEAT", 0) / 3.0
     if (
-        counts["empty_coops" if ANIMAL_HOME[bird] == "COOP"
-               else "empty_pastures"] > in_shed
-        and budget > GOOSE_COST + GOOSE_CASH_FLOOR
-        and (counts["animals"] + in_shed < EARLY_BIRDS
-             or counts["animals"] + in_shed < feedable)
+        budget > GOOSE_COST + GOOSE_CASH_FLOOR
+        and (total_animals < EARLY_BIRDS or total_animals < feedable)
         and day <= LAST_DAY - 5
         and len(orders) < MAX_ORDERS
     ):
-        # Fill the pens that are standing empty, not one bird a turn.
-        room = counts["empty_coops" if ANIMAL_HOME[bird] == "COOP"
-                      else "empty_pastures"] - in_shed
-        affordable = int((budget - GOOSE_CASH_FLOOR) // GOOSE_COST)
-        want = max(1, min(BIRDS_PER_TURN, room, affordable))
-        orders.append(["BUY_ANIMAL", bird, want])
-        budget -= GOOSE_COST * want
+        best_gap, pick = 0, None
+        for animal in ANIMAL_HOME:
+            waiting = int(shed.get(animal, 0))
+            pens = counts["empty_coops" if ANIMAL_HOME[animal] == "COOP"
+                          else "empty_pastures"]
+            if pens <= waiting:
+                continue
+            gap = (counts.get("want_" + animal, 0)
+                   - counts.get("have_" + animal, 0) - waiting)
+            if gap > best_gap:
+                best_gap, pick = gap, animal
+        if pick is not None:
+            cost = ANIMALS[pick]["cost"]
+            room = counts["empty_coops" if ANIMAL_HOME[pick] == "COOP"
+                          else "empty_pastures"] - int(shed.get(pick, 0))
+            affordable = int((budget - GOOSE_CASH_FLOOR) // cost)
+            want = max(0, min(BIRDS_PER_TURN, room, affordable, best_gap))
+            if want > 0:
+                orders.append(["BUY_ANIMAL", pick, want])
+                budget -= cost * want
 
     # 4b. Feed bought from the market, which is how the top of the ladder
     #     opens. Their very first order of the game is BUY_PRODUCT WHEAT
@@ -1167,6 +1264,10 @@ def decide(observation: dict[str, Any]) -> AgentAction:
     # thirteen workers all read the same full shed and the same empty
     # pens, and most of the resulting trips are silent no-ops.
     counts["shed_WHEAT"] = int(shed.get("WHEAT", 0))
+    # The herd we are aiming at, recomputed each turn so the mix follows
+    # the town without ever abandoning a line already paid for.
+    for animal, wanted in herd_plan(observation, counts, HERD_TARGET).items():
+        counts["want_" + animal] = wanted
     for house in ("COOP", "PASTURE"):
         counts["shed_" + house] = 0
         counts["unplaced_" + house] = 0
