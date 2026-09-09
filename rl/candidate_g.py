@@ -836,6 +836,15 @@ def job_value(
         #
         # So the ceiling here is labour, not housing, and unblocking the
         # housing alone is not the answer.
+        #
+        # Re-tested once the crew was assigned globally, on the theory
+        # that jobs now go to whoever is nearest and the extra options
+        # would fill idle workers with local work. On coins it looked
+        # tempting -- the floor rose 6,864 to 47,472 while mean and median
+        # fell about 2,000 -- and on the forty-opponent panel it halves
+        # the win rate, 4 games of 160 against 10. The floor was buying
+        # consistency at the price of ever winning. Coins could not
+        # resolve that and the win rate could.
         elif days_left > 5 and house_needed(
                 counts, counts.get("bird", "GOOSE")) is not None:
             house = house_needed(counts, counts.get("bird", "GOOSE"))
