@@ -697,6 +697,22 @@ def job_value(
             # Unless the flock is actually going hungry, in which case
             # grain in two days is worth nothing to a bird that starves
             # tomorrow.
+            #
+            # This is a board-wide flag, not a per-tile one: any animal
+            # unfed with an empty shed releases *every* ripe wheat tile at
+            # once. That looks like a bug, and an audit flagged it as one
+            # -- some seventy per cent of wheat is taken early at 1.69
+            # units against a possible four, around 210 units a game.
+            #
+            # Rationing it to roughly the number of hungry animals costs
+            # 5,140 mean and 8,628 median (42,346 / 41,430 against
+            # 47,486 / 50,058 on sixty paired games), so the greedy
+            # version stays. The arithmetic is not close: two extra units
+            # of wheat are worth about 42 coins, while an animal that
+            # misses two meals escapes and forfeits its whole remaining
+            # output, on the order of 1,000 to 1,800. On this farm keeping
+            # animals alive dominates yield per tile, and it is worth
+            # over-harvesting to be sure of it.
             starving = (crop == "WHEAT" and counts["unfed"] > 0
                         and int(shed.get("WHEAT", 0)) <= 0)
             if urgent or starving or spec["ongoing"] or not HARVEST_HOLD:
