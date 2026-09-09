@@ -484,6 +484,8 @@ CROP_TILES = (('MELON', 12), ('CARROT', 16), ('STRAWBERRY', 8))
 DEMAND_MARGIN = 0.8
 FEED_CARRY = 12
 HAND_CAP = 12
+CREW_TO_WORK = 0.3
+CREW_FLOOR = 4
 HARVEST_AT = 2
 SEED_BUFFER = 10
 CROP_SEED_FLOOR = 1500.0
@@ -859,13 +861,34 @@ def claim(counts: dict[str, int], action: list[Any]) -> None:
             counts['shed_' + house] = max(0, counts.get('shed_' + house, 0) - qty)
             counts['unplaced_' + house] = counts.get('unplaced_' + house, 0) + qty
 
-def hands_target(day: int) -> int:
-    """How large the crew should be today, ramped with income."""
+def hands_target(day: int, counts: dict[str, int] | None=None) -> int:
+    """How large the crew should be today.
+
+    Ramped with income, and then capped by the work actually standing on
+    the board. Instrumenting every idle turn shows they are not spread
+    across the game at all: days 0 to 20 are almost fully employed, and
+    roughly forty per cent of all idle turns fall in days 27 to 29, when
+    the crops are harvested out and there is nothing left to do. The farm
+    was paying a full crew to watch.
+
+    The wage makes that expensive. It is fibonacci in the number hired
+    that day, so the tenth, eleventh and twelfth hands cost 288 of the 376
+    a day a crew of twelve costs -- four idle days is some 1,500 coins for
+    no work at all.
+
+    So the crew is sized to the jobs standing: dry ground, ripe tiles,
+    hungry and uncared animals, manure waiting to be collected. A floor
+    keeps enough hands to feed the flock however quiet the board goes.
+    """
     wanted = HAND_RAMP[0][1]
     for start, size in HAND_RAMP:
         if day >= start:
             wanted = size
-    return min(wanted, HAND_CAP)
+    wanted = min(wanted, HAND_CAP)
+    if counts is not None and CREW_TO_WORK:
+        standing = counts.get('dry', 0) + counts.get('ripe', 0) + counts.get('unfed', 0) + counts.get('uncared', 0) + counts.get('manure', 0)
+        wanted = min(wanted, max(CREW_FLOOR, int(standing * CREW_TO_WORK)))
+    return wanted
 
 def preferred_bird(observation: dict[str, Any]) -> str:
     """Goose unless this town's own draw clearly wants otherwise.
@@ -908,6 +931,20 @@ def herd_plan(observation: dict[str, Any], counts: dict[str, int], total: int) -
 
     332 elite tapes buy a median of 3 geese, 8 cows and 6 sheep: a
     permanently mixed herd of about seventeen, never a single species.
+
+    A known defect, left in place because the fix measured worse. Weighing
+    by `demand x price` favours milk and wool -- bases of 160 and 200
+    against egg's 50 -- and those are exactly the two books that collapse,
+    after 76 and 59 units. A trace shows `want_GOOSE` pinned at 1 for all
+    thirty days, the farm holding one goose and five cows, in an agent
+    whose thesis is the goose.
+
+    Pricing each line by `sale_revenue` instead, so the curve is walked
+    down as units are sold and a sixth cow is valued into the book its
+    five predecessors flooded, gives a more balanced herd -- 2 geese, 4
+    cows, 2 sheep -- and costs 11,087 (55,826 against 66,913). The
+    balanced herd is worth less than the lopsided one, so whatever is
+    wrong here, the animal mix is not it. Recorded rather than repeated.
     """
     demand = remaining_demand(observation)
     pull: dict[str, float] = {}
@@ -969,7 +1006,7 @@ def market_orders(observation: dict[str, Any], day: int, counts: dict[str, int],
         if now >= want or closing or total_shed >= 85:
             orders.append(['SELL', item, held])
     hour = int(observation.get('step', 0)) % 24
-    target = hands_target(day)
+    target = hands_target(day, counts)
     if day <= HIRE_UNTIL_DAY and hands < target and (hour <= 2):
         wanted = min(target - hands, 4)
         for _ in range(wanted):

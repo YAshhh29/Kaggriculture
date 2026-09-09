@@ -350,6 +350,19 @@ FEED_CARRY = 12
 # wages, some 10,500 across a season, against roughly 51,000 of gross
 # production. Labour is the largest cost in this design, not the birds.
 HAND_CAP = 12
+# Hands per standing job, and the smallest crew worth keeping. Set
+# CREW_TO_WORK to 0.0 to size the crew by the ramp alone.
+#
+#     1.0   66,913 mean   67,662 median   (cap never binds)
+#     0.5   66,952        67,918          (12/60)
+#     0.3   67,308        68,763          (32/60)
+#
+# Small, and taken because nothing gets worse: the floor is identical at
+# every setting and the wage saved on a crew that has nothing to do is
+# real money. It is not the answer to the idle turns, though -- see
+# hands_target.
+CREW_TO_WORK = 0.3
+CREW_FLOOR = 4
 HARVEST_AT = 2              # eggs held before a bird is worth the walk
 SEED_BUFFER = 10
 # Cash held before cash-crop seed is bought, and how much is bought.
@@ -1056,13 +1069,36 @@ def claim(counts: dict[str, int], action: list[Any]) -> None:
                 "unplaced_" + house, 0) + qty
 
 
-def hands_target(day: int) -> int:
-    """How large the crew should be today, ramped with income."""
+def hands_target(day: int, counts: dict[str, int] | None = None) -> int:
+    """How large the crew should be today.
+
+    Ramped with income, and then capped by the work actually standing on
+    the board. Instrumenting every idle turn shows they are not spread
+    across the game at all: days 0 to 20 are almost fully employed, and
+    roughly forty per cent of all idle turns fall in days 27 to 29, when
+    the crops are harvested out and there is nothing left to do. The farm
+    was paying a full crew to watch.
+
+    The wage makes that expensive. It is fibonacci in the number hired
+    that day, so the tenth, eleventh and twelfth hands cost 288 of the 376
+    a day a crew of twelve costs -- four idle days is some 1,500 coins for
+    no work at all.
+
+    So the crew is sized to the jobs standing: dry ground, ripe tiles,
+    hungry and uncared animals, manure waiting to be collected. A floor
+    keeps enough hands to feed the flock however quiet the board goes.
+    """
     wanted = HAND_RAMP[0][1]
     for start, size in HAND_RAMP:
         if day >= start:
             wanted = size
-    return min(wanted, HAND_CAP)
+    wanted = min(wanted, HAND_CAP)
+    if counts is not None and CREW_TO_WORK:
+        standing = (counts.get("dry", 0) + counts.get("ripe", 0)
+                    + counts.get("unfed", 0) + counts.get("uncared", 0)
+                    + counts.get("manure", 0))
+        wanted = min(wanted, max(CREW_FLOOR, int(standing * CREW_TO_WORK)))
+    return wanted
 
 
 def preferred_bird(observation: dict[str, Any]) -> str:
@@ -1276,7 +1312,7 @@ def market_orders(
     # took the opening purse from 2,846 to nothing by day eight, leaving
     # one hand to work the whole farm.
     hour = int(observation.get("step", 0)) % 24
-    target = hands_target(day)
+    target = hands_target(day, counts)
     if day <= HIRE_UNTIL_DAY and hands < target and hour <= 2:
         wanted = min(target - hands, 4)
         for _ in range(wanted):
