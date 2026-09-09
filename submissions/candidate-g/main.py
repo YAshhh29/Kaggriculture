@@ -785,6 +785,26 @@ def job_value(observation: dict[str, Any], tile: Any, x: int, y: int, inventory:
         jobs.append((BAND_WATER * 0.4, ['DIG']))
     return [(v, a) for v, a in jobs if v > 0]
 
+def still_possible(counts: dict[str, int], action: list[Any]) -> bool:
+    """Can this job still be done, given what has been handed out already?
+
+    Jobs are scored against one snapshot of the board and then assigned in
+    order, so by the time a job is reached the seed, the pen or the shed
+    animal it needs may already be spoken for.
+    """
+    op = action[0] if action else 'PASS'
+    if op == 'PLANT':
+        crop = str(action[1]) if len(action) > 1 else 'WHEAT'
+        return counts.get('seed_' + crop, 0) > 0
+    if op == 'PICKUP':
+        item = str(action[1]) if len(action) > 1 else ''
+        return counts.get('shed_' + item, 0) > 0
+    if op == 'PLACE':
+        animal = str(action[1]) if len(action) > 1 else 'GOOSE'
+        key = 'empty_coops' if ANIMAL_HOME.get(animal) == 'COOP' else 'empty_pastures'
+        return counts.get(key, 0) > 0
+    return True
+
 def claim(counts: dict[str, int], action: list[Any]) -> None:
     """Update the board census for a job just handed to a worker.
 
@@ -1035,15 +1055,13 @@ def decide(observation: dict[str, Any]) -> AgentAction:
     claimed: set[tuple[int, int]] = set()
     actions: list[list[Any]] = []
     reserved = int(len(positions) * RESCUE_SHARE)
+    candidates: list[tuple[float, int, tuple[int, int], list[Any], int]] = []
     for worker, position in enumerate(positions):
         tending_only = worker < reserved
         inventory = _inventory(observation, worker)
-        best_score = 0.0
-        best: list[Any] = list(PASS)
-        best_cell: tuple[int, int] | None = None
         for y in range(len(tiles)):
             for x in range(len(tiles[y])):
-                if (x, y) in claimed or not _owned(tiles, x, y):
+                if not _owned(tiles, x, y):
                     continue
                 travel = distance(position, (x, y))
                 if ZONE_TAX < 1.0 and len(positions) > 1:
@@ -1058,14 +1076,20 @@ def decide(observation: dict[str, Any]) -> AgentAction:
                     score = value / (travel + 1.0) ** TRAVEL_EXPONENT
                     if not in_zone:
                         score *= ZONE_TAX
-                    if score > best_score:
-                        best_score = score
-                        best_cell = (x, y)
-                        best = list(act) if travel == 0 else step_toward(position, (x, y), list(act))
-        if best_cell is not None:
-            claimed.add(best_cell)
-            claim(counts, best)
-        actions.append(best)
+                    if score > 0.0:
+                        candidates.append((score, worker, (x, y), list(act), travel))
+    candidates.sort(key=lambda c: -c[0])
+    chosen: dict[int, list[Any]] = {}
+    for _score, worker, cell, act, travel in candidates:
+        if worker in chosen or cell in claimed:
+            continue
+        if travel == 0 and (not still_possible(counts, act)):
+            continue
+        final = act if travel == 0 else step_toward(positions[worker], cell, act)
+        chosen[worker] = final
+        claimed.add(cell)
+        claim(counts, final)
+    actions = [chosen.get(worker, list(PASS)) for worker in range(len(positions))]
     return {'farmer': actions[0] if actions else list(PASS), 'hands': actions[1:], 'market': market_orders(observation, day, counts, shed, seeds, money, len(farm.get('hands') or []))}
 
 def agent(observation: dict[str, Any]) -> AgentAction:

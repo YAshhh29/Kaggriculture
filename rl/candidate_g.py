@@ -963,6 +963,28 @@ def job_value(
     return [(v, a) for v, a in jobs if v > 0]
 
 
+def still_possible(counts: dict[str, int], action: list[Any]) -> bool:
+    """Can this job still be done, given what has been handed out already?
+
+    Jobs are scored against one snapshot of the board and then assigned in
+    order, so by the time a job is reached the seed, the pen or the shed
+    animal it needs may already be spoken for.
+    """
+    op = action[0] if action else "PASS"
+    if op == "PLANT":
+        crop = str(action[1]) if len(action) > 1 else "WHEAT"
+        return counts.get("seed_" + crop, 0) > 0
+    if op == "PICKUP":
+        item = str(action[1]) if len(action) > 1 else ""
+        return counts.get("shed_" + item, 0) > 0
+    if op == "PLACE":
+        animal = str(action[1]) if len(action) > 1 else "GOOSE"
+        key = ("empty_coops" if ANIMAL_HOME.get(animal) == "COOP"
+               else "empty_pastures")
+        return counts.get(key, 0) > 0
+    return True
+
+
 def claim(counts: dict[str, int], action: list[Any]) -> None:
     """Update the board census for a job just handed to a worker.
 
@@ -1452,22 +1474,27 @@ def decide(observation: dict[str, Any]) -> AgentAction:
     # and a plant unwatered two days becomes a weed, an animal unfed two
     # days escapes. This reserves capacity against that.
     reserved = int(len(positions) * RESCUE_SHARE)
+    # Every worker against every job, then assign best pair first.
+    #
+    # This used to run worker by worker: worker 0 scanned the whole board,
+    # took the highest-scoring job anywhere on it, and only then did
+    # worker 1 choose from what was left. So the first worker would walk
+    # twelve tiles to a job that a worker already standing on it would
+    # have taken for nothing, and that worker would then walk somewhere
+    # else. 54% of all worker turns were movement.
+    #
+    # Scoring every (worker, job) pair and assigning the best pair first
+    # costs no more calls to job_value -- it is the same crew against the
+    # same board -- and lets proximity settle who goes where.
+    candidates: list[tuple[float, int, tuple[int, int], list[Any], int]] = []
     for worker, position in enumerate(positions):
         tending_only = worker < reserved
         inventory = _inventory(observation, worker)
-        best_score = 0.0
-        best: list[Any] = list(PASS)
-        best_cell: tuple[int, int] | None = None
         for y in range(len(tiles)):
             for x in range(len(tiles[y])):
-                if (x, y) in claimed or not _owned(tiles, x, y):
+                if not _owned(tiles, x, y):
                     continue
                 travel = distance(position, (x, y))
-                # Each worker serves a vertical strip. Jobs outside it are
-                # still legal -- a hungry bird anywhere still beats an
-                # empty tile next door -- but they are taxed, so the crew
-                # spreads across the board instead of chasing the same
-                # corner.
                 if ZONE_TAX < 1.0 and len(positions) > 1:
                     width = max(1, len(tiles[y]) // len(positions))
                     home = worker * width
@@ -1483,15 +1510,27 @@ def decide(observation: dict[str, Any]) -> AgentAction:
                     score = value / (travel + 1.0) ** TRAVEL_EXPONENT
                     if not in_zone:
                         score *= ZONE_TAX
-                    if score > best_score:
-                        best_score = score
-                        best_cell = (x, y)
-                        best = (list(act) if travel == 0
-                                else step_toward(position, (x, y), list(act)))
-        if best_cell is not None:
-            claimed.add(best_cell)
-            claim(counts, best)
-        actions.append(best)
+                    if score > 0.0:
+                        candidates.append((score, worker, (x, y), list(act),
+                                           travel))
+    candidates.sort(key=lambda c: -c[0])
+
+    chosen: dict[int, list[Any]] = {}
+    for _score, worker, cell, act, travel in candidates:
+        if worker in chosen or cell in claimed:
+            continue
+        # Scores were computed before any of this turn's jobs were handed
+        # out, so a job that needed the last seed or the last empty pen
+        # may no longer be possible by the time it is reached.
+        if travel == 0 and not still_possible(counts, act):
+            continue
+        final = (act if travel == 0
+                 else step_toward(positions[worker], cell, act))
+        chosen[worker] = final
+        claimed.add(cell)
+        claim(counts, final)
+    actions = [chosen.get(worker, list(PASS))
+               for worker in range(len(positions))]
 
     return {
         "farmer": actions[0] if actions else list(PASS),
