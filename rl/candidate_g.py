@@ -423,6 +423,10 @@ TRAVEL_EXPONENT = 2.0
 # and the farm runs at roughly a third of what its flock is worth. Giving
 # each worker a strip of the board to serve and taxing jobs outside it
 # should convert walking into work. 1.0 disables the tax.
+# Re-checked with compactness on, and still off. Strips fight the shed:
+# 59,444 at 1.0 against 52,866 at 0.7 (19/60) and 49,769 at 0.4 (16/60).
+# The crew already clusters near the shed for good reason, and cutting the
+# board into vertical lanes pulls it away from there.
 ZONE_TAX = 1.0
 # How much nearer ground is worth than far ground, as a discount on the
 # walk from the shed.
