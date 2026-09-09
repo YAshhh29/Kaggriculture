@@ -127,6 +127,9 @@ GOOSE_COST = 300
 # The corpus runs broke on purpose: median cash at the moment they buy
 # ground is 644 and the minimum is 22. Capital held in the opening is
 # capital not laying eggs.
+# Re-checked after the ground moved to day one, and unchanged: 450 gives
+# 57,044, against 53,572 at 200 (23/60) and 49,198 at 900 (17/60). Not
+# every measurement taken on the old farm went stale -- this one held.
 GOOSE_CASH_FLOOR = 450.0
 # A wheat tile yields about four units over five days unfertilized, which
 # is 0.8 a day. The 1.2 here assumed the fertilized figure (1 + 3x2 = 6),
