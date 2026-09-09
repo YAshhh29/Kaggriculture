@@ -424,7 +424,23 @@ TRAVEL_EXPONENT = 2.0
 # each worker a strip of the board to serve and taxing jobs outside it
 # should convert walking into work. 1.0 disables the tax.
 ZONE_TAX = 1.0
-COMPACT = 0.0               # measured: clustering near the shed costs
+# How much nearer ground is worth than far ground, as a discount on the
+# walk from the shed.
+#
+# This was 0.0, and the note said compactness cost 5,000. It did -- on a
+# farm holding one quadrant, where there was no far ground to avoid. The
+# second quadrant now arrives on day one, the board is twice the size from
+# the start, and the same setting is worth:
+#
+#     0.00   57,044 mean   53,373 median   36,839 min
+#     0.15   59,444        62,392          38,628   (30/60)
+#     0.35   57,824        60,852          32,319   (30/60)
+#
+# 30 of 60 is chance, and it is taken anyway because mean, median and the
+# worst game all improve together and the reason is plain: with twelve
+# hands and half their turns already spent walking, ground near the shed
+# is worked and ground far from it is not.
+COMPACT = 0.15               # measured: clustering near the shed costs
                             # 5,000 coins, so it stays off
 
 # Priority bands. The chain is feed -> wheat -> housing -> birds, because
