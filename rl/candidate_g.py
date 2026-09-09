@@ -214,6 +214,37 @@ COOP_LEAD = 2
 # base price. Melon pays 250 and floors after 158 units; strawberry 120
 # and floors after 62; carrot only 35 but absorbs 842, which is why the
 # top of the board plants it and the field does not (10.8z).
+# Measured against every alternative worth trying, and unchanged.
+#
+# 332 elite tapes plant a median of 31 carrots and 33 strawberries to our
+# 16 and 8, which reads as a large gap. It is not one:
+#
+#     now 12/16/8      49,106 mean   51,168 median   31,382 min
+#     carrot 31        49,106         51,168          31,382   (0/60)
+#     strawberry 24    49,531         51,633          31,382   (21/60)
+#     melon 18         48,186         48,075          29,501   (26/60)
+#     melon 24 carr 8  47,757         50,902          29,501   (23/60)
+#
+# Raising the carrot cap changes nothing at all -- bit-identical over
+# sixty games -- because the cap has never once bound. A census finds the
+# farm holding 15 carrots against a cap of 16, 8 strawberries against 8
+# and 12 melons against 12: the binding constraint is *tiles*, roughly 55
+# of them across 20 wheat and 35 crop, not the caps.
+#
+# So the question is which crop deserves a scarce tile, and the books
+# answer it. Melon pays 225 a unit at +50 against carrot's 27, thirteen
+# times more per tile -- but it floors after 158 units, and twelve tiles
+# at six units over two cycles is 144. The cap is already sized just under
+# its own book, which is why every attempt to raise it loses: the marginal
+# melon sells for a coin. Strawberry's book is the shallowest in the game
+# at 62 units, so its cap of 8 is likewise near its ceiling, and the 24
+# variant wins only 21 of 60 games for its 425 -- it wins rarely and
+# hugely and loses often, which is not a trade worth taking.
+#
+# The elite plant carrots because carrot's 842-unit book is the only one
+# deep enough to absorb *their* volume. Ours is limited by tiles and
+# labour long before any book runs out, and the two farms are correctly
+# solving different problems.
 CROP_TILES = (("MELON", 12), ("CARROT", 16), ("STRAWBERRY", 8))
 # Let the town choose, instead of assuming one animal always wins.
 #
