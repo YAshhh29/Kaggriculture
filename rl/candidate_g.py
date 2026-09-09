@@ -262,11 +262,24 @@ COOP_LEAD = 2
 # every day from sowing or they go to weed, and tomato waits eight days
 # before it yields anything at all.
 #
-# This is why a high price is not an opportunity by itself. Against the
-# reference route the town drains 378 units of tomato and its price runs
-# to 257, four times base, while we plant none -- and planting it anyway
-# costs 18,971 (38,073 against 57,044, at any cap). The premium exists
-# *because* it is not worth the labour to collect.
+# That table is an input, not a rule, and it was overstated when first
+# written here. It does explain tomato: against the reference route the
+# town drains 378 units of it and the price runs to 257, four times base,
+# while we plant none -- and planting it anyway costs 18,971 (38,073
+# against 57,044, at any cap), because eight days of daily watering come
+# before the first unit.
+#
+# But it does not explain strawberry, which is dearer still at eighteen
+# turns a tile and pays for itself anyway. Dropping it costs 3,974
+# (53,070 against 57,044). Two things the turn count misses: an ongoing
+# crop keeps its tile and produces again without being resown, and
+# strawberry is the one crop the manure gate accepts, which doubles it
+# from four units to eight.
+#
+# Diversity itself is worth something too -- carrot alone, at any cap,
+# scores 42,507. So the honest reading is that cheap labour, a persistent
+# tile and a deep enough book each count, and no single number ranks the
+# crops.
 #
 # Measured against every alternative worth trying, and unchanged.
 #
