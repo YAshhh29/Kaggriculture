@@ -297,42 +297,38 @@ BAND_WHEAT = 4000.0
 BAND_PLACE = 3000.0
 BAND_SERVICE = 2000.0
 BAND_WATER = 1500.0
-# Manure on a growing tile. Measured, and OFF: spreading it loses.
+# Manure on a growing tile -- and *which* tile is the whole question.
 #
-# The corpus issues 114 FERTILIZE a game and G issues none, which looked
-# like a plain miss. The mechanic is real and generous -- a watering
-# inside the yield window adds one unit, or two on a fertilized tile, and
-# one application covers wheat's whole three-day window, taking a tile
-# from four units to its cap of six for one worker turn and one unit of
-# manure the animals drop free every morning.
+# Spreading manure was measured as a clear loss and switched off: band
+# 1600 scored 35,359, band 900 scored 33,089, band 300 scored 38,130,
+# against 44,364 with it off. The reasoning behind that looked sound.
+# FERTILIZER needs 493 units past equilibrium to fall to a price of 1, so
+# the good reads as worthless, but we only produce about 190 a game and
+# the marginal unit really fetches 62 -- while the two extra units of
+# wheat it creates fetch 21 each. Three to one against.
 #
-# It still loses, at every priority tried, on sixty paired games each
-# against top-of-ladder routes:
+# All of which is true, and none of which applied to the crops that
+# matter, because `fertilizer_gain` returned zero for every *ongoing*
+# crop. The simulator applies the bonus to those as well, in
+# `_daily_refresh_plants`: a fertilized production day yields two units
+# rather than one. Strawberry sells around 235 a unit. Two extra units is
+# 470 coins for a unit of manure worth 62 to 84.
 #
-#     band 1600   35,359   (20/60 against the same farm without it)
-#     band  900   33,089   (12/60)
-#     band  300   38,130   (20/60)
-#     off         44,364
+# So the earlier test never covered the only case where this pays. The
+# job now values every application against what the same manure would
+# fetch sold, and only fires when the crop wins -- which rejects wheat and
+# melon on their own numbers and accepts strawberry and tomato.
 #
-# The reason is the price of manure at *our* volume, and it is the
-# opposite of what the headline curve suggests. FERTILIZER needs 493
-# units past equilibrium to fall to 1, so the good reads as worthless --
-# but G only produces about 190 units a game and never approaches that
-# floor. The marginal unit actually fetches:
+#     off     47,486 mean   50,058 median   17,863 min
+#     1600    48,702         50,738         25,334
+#     3000    48,129         50,758         17,633
 #
-#     +191 (ours)     62        +371 (corpus)   26
-#     +257            49        +400            20
-#
-# against wheat at 21. Trading a 62-coin unit of manure and a worker turn
-# for two units of 21-coin wheat destroys value three times over.
-#
-# The corpus fertilizes because its herd floods the manure book until the
-# marginal unit is worth *less* than the grain it buys -- the crossover is
-# somewhere near 350 units collected. So this is not a technique we were
-# missing; it is a consequence of flock size, and both farms are right for
-# their own scale. If G's flock ever reaches that volume this becomes live
-# again, which is why the job and `fertilizer_gain` are kept intact.
-BAND_FERTILIZE = 0.0        # > 0 enables the job; see above
+# Honest about the strength of this: 31 of 60 paired games is a coin
+# flip. It is kept because every summary statistic improves and the floor
+# improves by 7,471, which is the largest gain in the worst case measured
+# on this agent, and because the mechanism behind it is verified rather
+# than inferred.
+BAND_FERTILIZE = 1600.0     # 0 disables the job entirely
 
 BAND_BUILD = 800.0
 BAND_CROP = 600.0
@@ -456,9 +452,29 @@ def fertilizer_gain(tile: dict[str, Any], day: int) -> int:
     if tile.get("fertilized_until_day", -1) >= day:
         return 0
     spec = CROPS.get(str(tile.get("crop", "")))
-    if spec is None or spec["ongoing"]:
+    if spec is None:
         return 0
-    age = day - int(tile.get("planted_day", day))
+    held = int(tile.get("yield_units", 0) or 0)
+    planted = int(tile.get("planted_day", day))
+    if spec["ongoing"]:
+        # An ongoing crop produces on a fixed cadence rather than on
+        # watering, and a fertilized production day yields two units in
+        # place of one. So the gain is the number of its production days
+        # that fall inside the three days the manure covers.
+        #
+        # This branch used to return zero, which forbade the only case
+        # where spreading manure pays. Strawberry sells around 235 a unit
+        # against wheat's 21, so two extra units return some 470 for a
+        # unit of manure worth 62 to 84 -- where wheat returns 42 for the
+        # same input and loses.
+        interval = max(1, int(spec["interval"]))
+        gain = 0
+        for ahead in (0, 1, 2):
+            since = (day + ahead) - planted - int(spec["first"])
+            if since >= 0 and since % interval == 0:
+                gain += 1
+        return max(0, min(gain, int(spec["max_yield"]) - held))
+    age = day - planted
     start = (int(spec["max_day"]) + 1) // 2
     last = int(spec["max_day"])
     if age > last:
@@ -466,7 +482,6 @@ def fertilizer_gain(tile: dict[str, Any], day: int) -> int:
     remaining = last - max(age, start) + 1
     if remaining <= 0:
         return 0
-    held = int(tile.get("yield_units", 0) or 0)
     room = int(spec["max_yield"]) - held - remaining
     return max(0, min(room, min(3, remaining)))
 
@@ -664,13 +679,13 @@ def job_value(
         if BAND_FERTILIZE > 0 and int(inventory.get("FERTILIZER", 0)) > 0:
             gain = fertilizer_gain(tile, day)
             if gain > 0:
-                jobs.append((
-                    BAND_FERTILIZE + gain * price_at(
-                        str(tile.get("crop", "WHEAT")),
-                        inventory_of(observation, str(tile.get("crop", "WHEAT"))),
-                    ),
-                    ["FERTILIZE"],
-                ))
+                grown = str(tile.get("crop", "WHEAT"))
+                worth = gain * price_at(grown, inventory_of(observation, grown))
+                # Manure is a good with a price, not a free input. Spread
+                # it only where the crop it creates beats what the same
+                # unit would fetch sold, which is 62 to 84 at our volume.
+                if worth > manure:
+                    jobs.append((BAND_FERTILIZE + worth, ["FERTILIZE"]))
         # Only once it is actually ripe. `_new_plant` gives a non-ongoing
         # crop `yield_units = 1` the moment it goes in the ground, so a
         # bare "has yield" test made every worker harvest wheat on the
