@@ -4792,6 +4792,100 @@ two of every game for exactly this reason.
 Wheat costs about 25 a unit. A ration floor of 60 buys two meals, which
 is all this guard has to do.
 
+### 10.8an The herd was frozen for half of every game (2026-09-09)
+
+An independent audit rated Candidate G 4/10 and found the reason. A daily
+census confirmed it before any code was changed:
+
+```
+seed 23:  10 animals from day 9 to day 28,  61 free tiles,  57,549 idle coins
+seed  5:   8 animals from day 9,            60 free tiles
+seed 11:  13 geese stacked in the shed, coops built after day 6: none
+```
+
+Three separate causes, all fixed:
+
+* **Housing followed demand, not ownership.** The build gate asked only
+  whether *today's preferred animal's* pen type had fewer than
+  `COOP_LEAD` empties. Demand moves; once it moved to cows the goose
+  branch stopped being consulted and no coop was built for the rest of
+  the game. This is the same bug as 10.8ak in the other half of the
+  pipeline -- that one was fixed in the morning and this one was left.
+* **`claim()` had no PICKUP branch**, so all thirteen workers read the
+  same full shed: 48 to 58 silent no-op trips a game.
+* **`claim()` counted every PLACE as a goose**, cows and sheep included,
+  corrupting the gate that decides when early coop building stops.
+
+Fixing all three measures **neutral** -- 28 of 60 paired games, mean flat,
+median +2,921 -- and they are kept as correctness rather than as a win.
+
+### 10.8ao Labour is the ceiling, and it cannot be bought
+
+The obvious follow-up to the frozen herd is to let the farm build pens
+freely. The empty-tile jobs are an if/elif chain -- wheat, then housing,
+then crops -- and because every empty tile offers the same list, no tile
+ever offers a pen while the wheat quota is short. Harvest destroys a
+wheat tile, so the quota is short most turns and the build branch is
+close to unreachable.
+
+Making the jobs additive does exactly what it should: the herd on one
+seed goes from 7 animals to 25. **It costs 7,000** -- 40,379 against
+47,395 on sixty paired games.
+
+The reason is the wage curve, which is fibonacci in the number hired that
+day:
+
+| crew | cost/day | cost/season |
+|---|---|---|
+| 12 | 376 | 11,280 |
+| 13 | 609 | 18,270 |
+| 14 | 986 | 29,580 |
+| 16 | 2,583 | 77,490 |
+| 20 | 17,710 | 531,300 |
+
+A sixteenth hand costs more than the entire game pays. The crew is hard
+capped near twelve, roughly 288 worker-turns a day of which half is
+walking. A flock of 25 needs some 62 turns a day to feed, care for and
+harvest on top of the field work.
+
+**So the binding constraint on this farm is labour, not land, feed,
+housing or capital.** Sixty idle tiles are not sixty tiles of forgone
+production; they are tiles nobody can afford to work. Every attempt this
+project has made to spend its way past that -- more pens, more land, more
+animals, buying feed -- has lost, and this is why.
+
+### 10.8ap Three inversions in one day, all the same mistake
+
+Each of these looked obviously right and measured backwards:
+
+1. **"The opening crew is saturated."** Wrong: 21.4% of worker turns are
+   PASS against the corpus's 8.8%.
+2. **"Manure is worthless, so spread it."** Wrong at our volume -- it
+   fetches 62 a unit where wheat fetches 21 -- and then wrong again in
+   the other direction, because the test excluded ongoing crops and
+   strawberry returns 470 for the same input.
+3. **"The starvation override is throwing away 210 units of wheat."**
+   True, and rationing it costs 5,140. An escaped animal forfeits 1,000
+   to 1,800 of remaining output; two units of wheat are worth 42. The
+   greedy version is buying insurance at twenty to one.
+
+The common thread is valuing a quantity in isolation instead of against
+what it displaces, at the volume actually traded. The price curve of a
+good says nothing useful until you know how many units you will move.
+
+### 10.8aq Where G stands
+
+Sixty paired games, three top-of-ladder routes, ten seeds, both seats:
+
+| state | mean | median | floor |
+|---|---|---|---|
+| start of session | 40,072 | 42,132 | -- |
+| + harvest held to last yield day | 44,364 | 46,025 | 22,206 |
+| + emergency ration affordable | 47,395 | 47,137 | 17,940 |
+| + housing and pickup correctness | 47,486 | 50,058 | 17,863 |
+| + manure priced against the crop | 48,702 | 50,738 | 25,334 |
+| + arms emptied before the whistle | **48,755** | **50,790** | **25,334** |
+
 ## 11. Candidate D: the original learned residual/Option selector plan
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
