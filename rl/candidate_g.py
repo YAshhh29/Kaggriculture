@@ -87,12 +87,33 @@ HIRE_UNTIL_DAY = 27          # the crew is wiped nightly; stopping early
 # copying that measured 11,083 at three quadrants against 22,438 here,
 # because G's limit is worker throughput and it already leaves tiles idle.
 # Measured, and it inverts the corpus. Buying ground as soon as affordable
-# -- their behaviour -- gives 11,083 at three quadrants and 19,326 at two,
-# against 21,235 for two fixed purchases behind a 1,200 reserve. G's limit
-# is worker throughput, not ground: it already leaves tiles idle, so a
-# quadrant only spends cash and spreads the crew thinner. The elite buy
-# early because they have a thousand waterings to put on it.
-LAND_DAYS = (4, 9)
+# -- their behaviour -- gave 11,083 at three quadrants and 19,326 at two,
+# against 21,235 for two fixed purchases behind a 1,200 reserve, and the
+# note here read: G's limit is worker throughput, not ground, so a
+# quadrant only spends cash and spreads the crew thinner.
+#
+# **That note was measured on a farm that could not use the ground, and
+# it was wrong by the time it was being quoted.** With the harvest held to
+# its last yield day, the housing following what we own and the herd
+# mixed, the same purchase moved four days earlier is the largest single
+# gain measured on this agent:
+#
+#     days 1,5    55,157 mean   55,625 median   40,132 min   (38/60)
+#     days 0,4    55,535        57,878          30,116       (33/60)
+#     days 2,7    50,826        51,502          35,945       (25/60)
+#     days 4,9    49,106        51,168          31,382
+#     days 6,12   47,697        50,617          27,384       (27/60)
+#     days 1,5,10 52,505        52,048          33,162       (11/60)
+#
+# Day 0 buys a slightly better median and gives up 10,016 of floor, since
+# it spends the opening purse before the farm knows anything. A third
+# quadrant still loses. And the spacing is sharp rather than smooth --
+# days 1,4 collapses to 36,530, winning 2 games of 60, because the second
+# purchase catches the farm with just enough to spend and nothing left to
+# work it with. That cliff sits one day from the chosen value, so this is
+# a fixed schedule standing next to a hole; a cash-gated rule would be the
+# sturdier shape if it can be made to measure as well.
+LAND_DAYS = (1, 5)
 LAND_RESERVE = 1200.0
 MAX_QUADRANTS = 3
 GOOSE_COST = 300
