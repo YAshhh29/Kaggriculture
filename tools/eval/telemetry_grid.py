@@ -69,20 +69,36 @@ def farm_state(step: list[dict[str, Any]], side: int) -> dict[str, Any] | None:
 
 def walk(steps, actions_of_side: int, marks: tuple[int, ...]
         ) -> dict[int, dict[str, Any]]:
-    """State at each mark, plus cumulative sales up to that point."""
+    """State at each mark, plus cumulative sales up to that point.
+
+    Sale quantities in a tape are *requests*, not fills: the engine clamps
+    every SELL to what the shed actually holds, and the strong agents ask
+    for far more than they have. Counting the request made the corpus look
+    as though it sold 145 wheat on day one out of a shed that starts
+    empty. So each order is clamped here the same way the engine clamps
+    it, against the shed in that step's own observation.
+    """
     sold: Counter[str] = Counter()
     out: dict[int, dict[str, Any]] = {}
     for step_index, step in enumerate(steps):
         if actions_of_side < len(step):
-            action = step[actions_of_side].get("action")
+            view = step[actions_of_side]
+            observation = view.get("observation") or {}
+            shed = dict(((observation.get("private") or {}).get("shed")) or {})
+            action = view.get("action")
             if isinstance(action, dict):
                 for order in action.get("market") or []:
                     if (isinstance(order, list) and len(order) > 2
                             and order[0] == "SELL"):
                         try:
-                            sold[str(order[1])] += int(order[2])
+                            good = str(order[1])
+                            fill = min(int(order[2]),
+                                       int(shed.get(good, 0) or 0))
                         except (TypeError, ValueError):
-                            pass
+                            continue
+                        if fill > 0:
+                            sold[good] += fill
+                            shed[good] = int(shed.get(good, 0)) - fill
         if step_index in marks:
             state = farm_state(step, actions_of_side)
             if state is None:
