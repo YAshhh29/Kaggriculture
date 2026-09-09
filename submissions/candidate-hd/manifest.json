@@ -1,0 +1,29 @@
+{
+  "built_at": "2026-09-09T14:02:29.388954+00:00",
+  "bytes": 43456,
+  "candidate": "candidate-hd",
+  "entry": "main.py",
+  "sha256": "1aff129cff6db215e05a2c64c33abf385212273278857adb33e32a32e5d84ed9",
+  "sources": [
+    {
+      "path": "core/routing.py",
+      "sha256": "3014124128732a7a1d2542b0b046d33616e6e4df30748a2eb24f20ffa7a47c11"
+    },
+    {
+      "path": "rl/market.py",
+      "sha256": "f490ba2175bf7b2727b3a59fe4b61baa97d6f002233af235dd6010722e60be34"
+    },
+    {
+      "path": "rl/demand.py",
+      "sha256": "c4c4e408cc18c369eb88fbd0baf00b5a016d32227569404021581c380d95682f"
+    },
+    {
+      "path": "rl/economics.py",
+      "sha256": "b12209574986568e9d0e40f3d0bc866f2cb952c07c791fef1febb106d561b6e6"
+    },
+    {
+      "path": "rl/candidateHdeepseek.py",
+      "sha256": "383879ce576b8cf4adc02e52ae0be4bb11c36f38f0e37f979f89c301cc2904d6"
+    }
+  ]
+}
