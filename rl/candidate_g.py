@@ -96,7 +96,17 @@ LAND_DAYS = (4, 9)
 LAND_RESERVE = 1200.0
 MAX_QUADRANTS = 3
 GOOSE_COST = 300
-GOOSE_CASH_FLOOR = 450.0    # keep a bird's worth of change in hand
+# Working capital, and it was strangling the opening. Turn-by-turn against
+# sixteen elite games: G holds 367 coins at turn 24 against their 67, 481
+# at turn 96 against their 203 -- more cash than the corpus the whole way
+# -- and stalls at three animals from turn 48 to turn 168 while they climb
+# to eight. A bird costs 300, so a 450 floor demands 750 in hand, and G
+# never clears it during the window that decides the game.
+#
+# The corpus runs broke on purpose: median cash at the moment they buy
+# ground is 644 and the minimum is 22. Capital held in the opening is
+# capital not laying eggs.
+GOOSE_CASH_FLOOR = 450.0
 # A wheat tile yields about four units over five days unfertilized, which
 # is 0.8 a day. The 1.2 here assumed the fertilized figure (1 + 3x2 = 6),
 # and this agent never issues FERTILIZE -- it collects manure and sells
@@ -110,6 +120,27 @@ WHEAT_TILES = 20
 COOPS_AFTER_WHEAT = 8
 EARLY_BIRDS = 6
 EARLY_COOPS = 6
+# How many birds may be bought in one turn while the opening is still
+# being built.
+#
+# One a turn looks safe and starves the opening. A bought animal lands in
+# the shed and then needs a worker to pick it up, walk it to a pen and
+# place it, so at one purchase a turn the pipeline never fills: G stands
+# at one animal on turn 24 and three on turn 48 where the corpus has four
+# and four. Those are the turns that compound for the rest of the game.
+#
+# Measured, and it changes nothing: 36,892 against 36,913 at one a turn,
+# because the real bottleneck is not the purchase. Tracing the opening
+# shows G already buys four animals inside the first 26 turns -- three
+# cows and a sheep, the same count the corpus has -- and only *one* is
+# standing on a tile at turn 24. The rest are in the shed waiting for a
+# worker to pick them up, walk them to a pen and place them.
+#
+# So the opening is throttled by the placement chain and by COOP_LEAD
+# holding only two pens open, not by how many birds are ordered. Raising
+# the lead to four costs 7,700, because pens are built by the same workers
+# that feed and harvest.
+BIRDS_PER_TURN = 1
 COOP_LEAD = 2
 # Cash crops for the ground the flock does not need. The goose economy is
 # an addition to a farm, not a replacement for one: with wheat and coops
@@ -689,8 +720,13 @@ def market_orders(
         and day <= LAST_DAY - 5
         and len(orders) < MAX_ORDERS
     ):
-        orders.append(["BUY_ANIMAL", bird, 1])
-        budget -= GOOSE_COST
+        # Fill the pens that are standing empty, not one bird a turn.
+        room = counts["empty_coops" if ANIMAL_HOME[bird] == "COOP"
+                      else "empty_pastures"] - in_shed
+        affordable = int((budget - GOOSE_CASH_FLOOR) // GOOSE_COST)
+        want = max(1, min(BIRDS_PER_TURN, room, affordable))
+        orders.append(["BUY_ANIMAL", bird, want])
+        budget -= GOOSE_COST * want
 
     # 5. Seed, wheat only. Every other crop grows into a book that floors
     #    before the season ends; wheat feeds the flock and its own curve
