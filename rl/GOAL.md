@@ -4631,6 +4631,129 @@ of crop work to put on it*. An agent whose thesis is a flock does not,
 and copying the land timing without the crop programme behind it buys the
 cost and none of the benefit.
 
+### 10.8ai Candidate G is idle a fifth of the game (2026-09-09)
+
+Three changes to G's opening had lost in a row -- more pens (-7,700),
+more land (-10,000), prioritising animal placement over tending (-9,500)
+-- and I read them as one rule: the opening crew is saturated, so any new
+job displaces a better one, and only work that makes existing work
+cheaper can pay.
+
+That reading was wrong, and it is worth recording as wrong because it
+would have closed off the entire line of work that followed.
+
+Counting what G's workers actually do, over a full game against a
+top-of-ladder route:
+
+| | Candidate G | corpus (12 games) |
+|---|---|---|
+| PASS (idle) | **21.4%** | **8.8%** |
+| movement | 51.2% | 44.0% |
+| WATER | 629 | 1,091 |
+| HARVEST | 301 | 487 |
+| CARE | 133 | 338 |
+| FEED | 135 | 324 |
+| COLLECT_FERTILIZER | 136 | 371 |
+| FERTILIZE | **0** | **114** |
+| PLACE | <9 | 102 |
+
+1,368 of 6,401 worker turns are spent doing nothing, and 43% of day one
+is. A worker in this design PASSes only when the entire board offers it
+no job at all, so the farm is running out of *work*, not out of hands.
+
+The three losses have three different causes, and none of them is
+crowding. Pens and land lose because they cost capital the opening has
+not got. Placement priority loses because it starves what is already
+standing. Work that costs nothing and starves nothing is free to add.
+
+### 10.8aj Manure is worth three times more spread than sold
+
+G collected 136 units of fertilizer a game and sold every one of them,
+into the one book that has no floor worth reaching: FERTILIZER takes 493
+units past equilibrium to hit a price of 1, and in a contested game it
+runs 100 -> 1. The corpus issues 114 FERTILIZE a game. G issued zero.
+
+From the engine, for a non-ongoing crop, watering inside the yield window
+is what creates yield:
+
+```python
+window_start = (crop_data["max_yield_day"] + 1) // 2
+if window_start <= age_days <= crop_data["max_yield_day"]:
+    bonus = 2 if tile["fertilized_until_day"] >= day else 1
+    tile["yield_units"] = min(max_yield, tile["yield_units"] + bonus)
+```
+
+and one FERTILIZE costs a single unit and stays active for that day and
+the two after it. For wheat -- `max_yield_day` 4, so the window is ages
+2, 3 and 4, and `_new_plant` starts the tile at 1 unit:
+
+* watered on schedule, unfertilized: 1 + 1 + 1 + 1 = **4 units**
+* watered on schedule, fertilized once at age 2: 1 + 2 + 2 + 2 = 7,
+  capped at **6 units**
+
+One worker turn and one unit of manure the animals drop free every
+morning, for 50% more grain on the tile that feeds the flock. That is
+exactly the 0.8 -> 1.2 a day behind `WHEAT_PER_BIRD`, and the reason the
+constant had to be set to the pessimistic figure was that the agent never
+fertilized.
+
+The gain is computed per tile rather than assumed, which matters because
+it is not universal:
+
+```python
+remaining = last - max(age, start) + 1
+room = max_yield - held - remaining
+gain = max(0, min(room, min(3, remaining)))
+```
+
+Melon has seven watering days and a cap of six, so it reaches the cap
+unaided and correctly scores zero. Wheat scores 2, carrot 1.
+
+### 10.8ak An animal was stranded in the shed for eleven days
+
+A daily census of the farm showed the flock frozen at two animals from
+day 0 to day 11 -- a third of the season -- with five empty pens standing
+and one animal sitting in the shed the entire time.
+
+The pickup gate read the *demand-preferred* animal only:
+
+```python
+bird = counts.get("bird", "GOOSE")
+if int(shed.get(bird, 0)) > 0 and counts[home] > 0:
+```
+
+Demand moves. The moment it moved off whatever was already in the shed,
+that animal was orphaned permanently, and its pen type was not even
+checked against what was waiting. Preference decides what to *buy*; it
+has no business deciding what to carry. The gate now walks every animal
+in the shed, preferred first.
+
+### 10.8al Harvesting a crop destroys the tile, so pulling it early throws the rest away
+
+`HARVEST` on a non-ongoing crop sets the tile to `None`. G harvested the
+moment a tile was ripe -- `age >= first_yield_day`, which for wheat is
+age 2 -- and wheat at age 2 holds two units of the six it can reach.
+
+Same seed, same ground, same watering: pulled at age 2 it yields 2,
+left to age 4 it yields 4, and fertilized it yields 6. After `max_day`
+the tile bleeds one unit every other step before going to weed, so
+waiting is safe rather than a race.
+
+### 10.8am The death spiral: an emergency ration the farm could never afford
+
+G buys animals down to `GOOSE_CASH_FLOOR` (450) and stops, so its
+operating cash sat between 318 and 562 for the first ten days. The
+emergency feed ration was gated at `budget > 400.0`.
+
+Those two numbers overlap, and the farm lost the race every time: spend
+300 on a goose, have nothing left for the wheat it eats, and an animal
+unfed two consecutive days escapes -- taking the 300 and its whole
+remaining stream with it. The census showed the flock going 4 -> 2 on day
+two of every game for exactly this reason.
+
+Wheat costs about 25 a unit. A ration floor of 60 buys two meals, which
+is all this guard has to do.
+
 ## 11. Candidate D: the original learned residual/Option selector plan
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
