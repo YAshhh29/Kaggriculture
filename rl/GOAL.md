@@ -4666,7 +4666,7 @@ crowding. Pens and land lose because they cost capital the opening has
 not got. Placement priority loses because it starves what is already
 standing. Work that costs nothing and starves nothing is free to add.
 
-### 10.8aj Manure is worth three times more spread than sold
+### 10.8aj Manure is worth three times more SOLD than spread, and the corpus is right too
 
 G collected 136 units of fertilizer a game and sold every one of them,
 into the one book that has no floor worth reaching: FERTILIZER takes 493
@@ -4692,10 +4692,48 @@ the two after it. For wheat -- `max_yield_day` 4, so the window is ages
   capped at **6 units**
 
 One worker turn and one unit of manure the animals drop free every
-morning, for 50% more grain on the tile that feeds the flock. That is
-exactly the 0.8 -> 1.2 a day behind `WHEAT_PER_BIRD`, and the reason the
-constant had to be set to the pessimistic figure was that the agent never
-fertilized.
+morning, for 50% more grain -- exactly the 0.8 -> 1.2 a day behind
+`WHEAT_PER_BIRD`.
+
+**And it loses anyway.** Sixty paired games per band against
+top-of-ladder routes, each against the same farm with the job disabled:
+
+| band | mean | paired |
+|---|---|---|
+| 1600 | 35,359 | 20/60 |
+| 900 | 33,089 | 12/60 |
+| 300 | 38,130 | 20/60 |
+| off | **44,364** | -- |
+
+Lowering the band below watering made it *worse*, which rules out the
+obvious explanation that the job was stealing the waterings the bonus
+depends on. The real reason is the price of manure at our own volume, and
+it inverts the headline reading of the curve.
+
+FERTILIZER needs 493 units past equilibrium to fall to a price of 1. That
+number is in section 10.1 and I had been carrying it as "fertilizer is
+worthless". G produces about 190 units a game and never goes near it. The
+marginal unit actually fetches:
+
+| units collected | marginal price |
+|---|---|
+| **191 (ours)** | **62** |
+| 257 | 49 |
+| **371 (corpus)** | **26** |
+| 400 | 20 |
+
+against wheat at 21. Spending a 62-coin unit of manure plus a worker turn
+to create two units of 21-coin wheat destroys value three times over.
+
+The corpus fertilizes 114 times a game because its herd floods the manure
+book until the marginal unit is worth *less* than the grain it buys --
+the crossover sits near 350 units collected. So this was never a
+technique we were missing. It is a consequence of flock size, and both
+farms are behaving correctly for their own scale.
+
+The general lesson, which cost two wrong conclusions in one day: a price
+floor far outside our operating range says nothing about what a good is
+worth to us. Value the marginal unit at the volume we actually trade.
 
 The gain is computed per tile rather than assumed, which matters because
 it is not universal:

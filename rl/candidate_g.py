@@ -162,11 +162,18 @@ BIRDS_CARRIED = 3
 # remaining stream with it, so the crew must finish tending before it
 # starts placing.
 #
-# That is the third failure of the same shape. Every change that asks the
-# opening crew for *more* work loses -- more pens 7,700, more land 10,000,
-# placement priority 9,500 -- because the crew is saturated from day one.
-# Only changes that make the work it already does cheaper have paid:
-# FEED_CARRY 4 -> 12, and BIRDS_CARRIED 1 -> 3.
+# It is tempting to read that alongside the pen and land losses (7,700 and
+# 10,000) as one rule -- that the opening crew is saturated and any new
+# job displaces a better one. That reading is wrong, and worth recording
+# as wrong: G spends 21.4% of its worker turns on PASS, 1,368 of 6,401,
+# against 8.8% for the corpus. A worker PASSes only when the entire board
+# offers it nothing, so the farm runs out of *work*, not out of hands.
+#
+# The three losses have three different causes. Pens and land lose because
+# they cost capital the opening has not got. Placement priority loses
+# because it starves what is already standing. None of them is crowding.
+# Work that costs nothing and starves nothing -- FERTILIZE, cheap seed --
+# is free to add, and that is where the idle fifth of the crew goes.
 PLACE_PRIORITY_DAY = -1
 COOP_LEAD = 2
 # Cash crops for the ground the flock does not need. The goose economy is
@@ -210,6 +217,43 @@ FEED_CARRY = 12
 HAND_CAP = 12
 HARVEST_AT = 2              # eggs held before a bird is worth the walk
 SEED_BUFFER = 10
+# Cash held before cash-crop seed is bought, and how much is bought.
+#
+# G is idle 21.4% of its worker turns -- 1,368 of 6,401 across a game, and
+# 43% of day one -- because a worker PASSes only when the whole board
+# offers it no job at all. The farm runs out of work, not out of hands.
+# Land and pens did not fix that because they cost capital G has not got
+# in the opening; seed is the cheap way to turn an idle turn into a tile.
+CROP_SEED_FLOOR = 1500.0
+CROP_SEED_BATCH = 4
+# Cash kept back to buy feed in an emergency.
+#
+# This was 400, which is above the cash G actually operates on: a daily
+# census had it between 318 and 562 for the first ten days, because it
+# buys animals down to GOOSE_CASH_FLOOR and stops. So the emergency
+# ration could never fire, and the farm ran a death spiral -- spend 300 on
+# a goose, have nothing left for the wheat it eats, lose the goose on day
+# two and the 300 with it. Wheat is about 25 a unit, so a floor of 60
+# buys two meals and that is all this needs to do.
+#
+# Honest about the evidence: on sixty paired games this is worth +3,031
+# mean and +1,112 median but wins only 32 of 60, and the worst game is
+# worse (17,940 against 22,206). That is a coin flip, not a proven gain.
+# It is kept for the mechanism rather than the average -- a daily census
+# showed the flock going 4 -> 2 on day two of every game for want of 25
+# coins of wheat, and an escaped animal takes its whole remaining stream
+# with it.
+RATION_FLOOR = 60.0
+# Hold a non-ongoing crop to its last yield day instead of pulling it the
+# day it ripens.
+#
+# Harvest destroys the tile, so taking wheat the moment it ripens throws
+# away everything the tile had left to give: pulled at age two it yields
+# two units, left to age four it yields four, from the same seed, the same
+# ground and the same watering. This is the largest single gain measured
+# on G -- 44,364 against 40,072 on sixty paired games against
+# top-of-ladder routes, ahead in 43 of the 60.
+HARVEST_HOLD = True
 TRAVEL_EXPONENT = 2.0
 # Where a coop or a wheat tile goes matters as much as that it exists.
 # Feed comes out of the shed and every meal is a round trip, so a flock
@@ -237,6 +281,43 @@ BAND_WHEAT = 4000.0
 BAND_PLACE = 3000.0
 BAND_SERVICE = 2000.0
 BAND_WATER = 1500.0
+# Manure on a growing tile. Measured, and OFF: spreading it loses.
+#
+# The corpus issues 114 FERTILIZE a game and G issues none, which looked
+# like a plain miss. The mechanic is real and generous -- a watering
+# inside the yield window adds one unit, or two on a fertilized tile, and
+# one application covers wheat's whole three-day window, taking a tile
+# from four units to its cap of six for one worker turn and one unit of
+# manure the animals drop free every morning.
+#
+# It still loses, at every priority tried, on sixty paired games each
+# against top-of-ladder routes:
+#
+#     band 1600   35,359   (20/60 against the same farm without it)
+#     band  900   33,089   (12/60)
+#     band  300   38,130   (20/60)
+#     off         44,364
+#
+# The reason is the price of manure at *our* volume, and it is the
+# opposite of what the headline curve suggests. FERTILIZER needs 493
+# units past equilibrium to fall to 1, so the good reads as worthless --
+# but G only produces about 190 units a game and never approaches that
+# floor. The marginal unit actually fetches:
+#
+#     +191 (ours)     62        +371 (corpus)   26
+#     +257            49        +400            20
+#
+# against wheat at 21. Trading a 62-coin unit of manure and a worker turn
+# for two units of 21-coin wheat destroys value three times over.
+#
+# The corpus fertilizes because its herd floods the manure book until the
+# marginal unit is worth *less* than the grain it buys -- the crossover is
+# somewhere near 350 units collected. So this is not a technique we were
+# missing; it is a consequence of flock size, and both farms are right for
+# their own scale. If G's flock ever reaches that volume this becomes live
+# again, which is why the job and `fertilizer_gain` are kept intact.
+BAND_FERTILIZE = 0.0        # > 0 enables the job; see above
+
 BAND_BUILD = 800.0
 BAND_CROP = 600.0
 
@@ -346,6 +427,34 @@ def census(tiles: list[list[Any]]) -> dict[str, int]:
     return out
 
 
+def fertilizer_gain(tile: dict[str, Any], day: int) -> int:
+    """Extra units this tile would yield if manure went on it today.
+
+    Watering inside the window adds one unit, or two on a fertilized
+    tile, and the effect lasts three days. So the gain is the number of
+    remaining window days the manure would cover -- but only up to the
+    yield cap, which is what stops the farm wasting manure on melon: a
+    melon tile has seven watering days and a cap of six, so it reaches
+    the cap unaided and gains nothing.
+    """
+    if tile.get("fertilized_until_day", -1) >= day:
+        return 0
+    spec = CROPS.get(str(tile.get("crop", "")))
+    if spec is None or spec["ongoing"]:
+        return 0
+    age = day - int(tile.get("planted_day", day))
+    start = (int(spec["max_day"]) + 1) // 2
+    last = int(spec["max_day"])
+    if age > last:
+        return 0
+    remaining = last - max(age, start) + 1
+    if remaining <= 0:
+        return 0
+    held = int(tile.get("yield_units", 0) or 0)
+    room = int(spec["max_yield"]) - held - remaining
+    return max(0, min(room, min(3, remaining)))
+
+
 def job_value(
     observation: dict[str, Any],
     tile: Any,
@@ -387,14 +496,29 @@ def job_value(
         carrying = int(inventory.get("WHEAT", 0))
         if counts["unfed"] > 0 and carrying <= 0 and shed.get("WHEAT", 0) > 0:
             jobs.append((BAND_FEED * 0.9, ["PICKUP", "WHEAT", FEED_CARRY]))
-        bird = counts.get("bird", "GOOSE")
-        home = "empty_coops" if ANIMAL_HOME[bird] == "COOP"             else "empty_pastures"
-        if (int(shed.get(bird, 0)) > 0
-                and int(inventory.get(bird, 0)) <= 0
-                and counts[home] > 0):
-            carry = max(1, min(BIRDS_CARRIED, int(shed.get(bird, 0)),
-                               counts[home]))
-            jobs.append((BAND_PLACE * 0.95, ["PICKUP", bird, carry]))
+        # Collect *any* animal the shed is holding, not just the one the
+        # town happens to want today.
+        #
+        # This gate used to read the demand-preferred animal only. Demand
+        # moves, and the moment it moved off whatever was already in the
+        # shed that animal was orphaned: a daily census showed one sitting
+        # in the shed from day 0 to day 11 with five empty pens standing,
+        # a third of the season of lost laying, because the farm had since
+        # decided it preferred geese. Preference decides what to *buy*; it
+        # has no business deciding what to carry.
+        if not any(int(inventory.get(a, 0)) > 0 for a in ANIMAL_HOME):
+            preferred = counts.get("bird", "GOOSE")
+            for animal in sorted(
+                ANIMAL_HOME, key=lambda a: (a != preferred, a)
+            ):
+                waiting = int(shed.get(animal, 0))
+                home = ("empty_coops" if ANIMAL_HOME[animal] == "COOP"
+                        else "empty_pastures")
+                if waiting <= 0 or counts[home] <= 0:
+                    continue
+                carry = max(1, min(BIRDS_CARRIED, waiting, counts[home]))
+                jobs.append((BAND_PLACE * 0.95, ["PICKUP", animal, carry]))
+                break
 
     if tile is None:
         # Everything built here is worked from the shed for the rest of the
@@ -467,6 +591,16 @@ def job_value(
     elif kind == "PLANT":
         if not tile.get("watered_today"):
             jobs.append((BAND_WATER + egg * 0.5, ["WATER"]))
+        if BAND_FERTILIZE > 0 and int(inventory.get("FERTILIZER", 0)) > 0:
+            gain = fertilizer_gain(tile, day)
+            if gain > 0:
+                jobs.append((
+                    BAND_FERTILIZE + gain * price_at(
+                        str(tile.get("crop", "WHEAT")),
+                        inventory_of(observation, str(tile.get("crop", "WHEAT"))),
+                    ),
+                    ["FERTILIZE"],
+                ))
         # Only once it is actually ripe. `_new_plant` gives a non-ongoing
         # crop `yield_units = 1` the moment it goes in the ground, so a
         # bare "has yield" test made every worker harvest wheat on the
@@ -475,10 +609,30 @@ def job_value(
         crop = str(tile.get("crop", ""))
         spec = CROPS.get(crop)
         age = day - int(tile.get("planted_day", day))
-        ripe = spec is not None and age >= int(spec["first"])
-        if ripe and int(tile.get("yield_units", 0) or 0) > 0:
-            jobs.append((BAND_HARVEST + egg * 0.5 * int(tile["yield_units"]),
-                         ["HARVEST"]))
+        units = int(tile.get("yield_units", 0) or 0)
+        if spec is not None and units > 0 and age >= int(spec["first"]):
+            # Harvesting a non-ongoing crop *destroys the tile*, so taking
+            # it the day it ripens throws away everything it had left to
+            # give. Wheat starts at one unit, gains one for each watering
+            # from age two to age four, and caps at six. Pulled at age two
+            # it yields two; left to age four it yields four, or the full
+            # six if it was fertilized -- the same seed, the same ground
+            # and the same watering, for two to three times the grain.
+            #
+            # After max_day the tile only bleeds one unit every other step
+            # before going to weed, so waiting is safe rather than a race.
+            last = int(spec["max_day"])
+            done = units >= int(spec["max_yield"])
+            urgent = age >= last or done or closing
+            # Unless the flock is actually going hungry, in which case
+            # grain in two days is worth nothing to a bird that starves
+            # tomorrow.
+            starving = (crop == "WHEAT" and counts["unfed"] > 0
+                        and int(shed.get("WHEAT", 0)) <= 0)
+            if urgent or starving or spec["ongoing"] or not HARVEST_HOLD:
+                value = BAND_HARVEST + egg * 0.5 * units
+                jobs.append((value * (1.35 if age > last else 1.0),
+                             ["HARVEST"]))
     elif kind == "WEED":
         # The corpus digs 36 weeds a game. A weed occupies ground
         # that could hold a coop or a crop for the rest of the season.
@@ -778,18 +932,19 @@ def market_orders(
     ):
         want = SEED_BUFFER - int(seeds.get("WHEAT", 0))
         orders.append(["BUY_SEED", "WHEAT", want])
-    if hour == 2 and budget > 1500.0 and day <= LAST_DAY - 10:
+    if hour == 2 and budget > CROP_SEED_FLOOR and day <= LAST_DAY - 10:
         for crop, cap in CROP_TILES:
             if len(orders) >= MAX_ORDERS:
                 break
-            if counts.get("crop_" + crop, 0) < cap                     and int(seeds.get(crop, 0)) < 4:
-                orders.append(["BUY_SEED", crop, 4])
+            if (counts.get("crop_" + crop, 0) < cap
+                    and int(seeds.get(crop, 0)) < CROP_SEED_BATCH):
+                orders.append(["BUY_SEED", crop, CROP_SEED_BATCH])
 
     # 6. Emergency ration, so a late harvest never costs a bird.
     if (
         counts["unfed"] > 0
         and int(shed.get("WHEAT", 0)) <= 0
-        and budget > 400.0
+        and budget > RATION_FLOOR
         and len(orders) < MAX_ORDERS
     ):
         orders.append(["BUY_PRODUCT", "WHEAT", min(counts["unfed"], 6)])
