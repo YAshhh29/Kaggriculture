@@ -137,7 +137,19 @@ WHEAT_PER_BIRD = 0.8
 # Wheat area is a plan, not a function of the flock. Deriving it from the
 # animals standing gave a target of three tiles with no animals, which
 # fed no birds, so none were bought, so the target never grew.
-WHEAT_TILES = 20
+# Re-fitted after the ground moved to day one, which is the point: this
+# was 20, measured on a farm that bought its second quadrant on day four
+# and had nowhere to put more wheat.
+#
+#     20   55,157 mean   55,625 median   40,132 min
+#     28   57,044        53,373          36,839   (39/60)
+#     36   56,960        55,536          37,636   (34/60)
+#
+# 39 of 60 paired games is a real result rather than a coin flip, so it is
+# followed here even though the floor gives up 3,293 -- the same rule that
+# kept the herd at six, where the paired count was chance and the floor
+# was the only signal worth reading.
+WHEAT_TILES = 28
 COOPS_AFTER_WHEAT = 8
 EARLY_BIRDS = 6
 # Herd size and mix.
