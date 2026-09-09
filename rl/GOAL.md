@@ -4886,6 +4886,85 @@ Sixty paired games, three top-of-ladder routes, ten seeds, both seats:
 | + manure priced against the crop | 48,702 | 50,738 | 25,334 |
 | + arms emptied before the whistle | **48,755** | **50,790** | **25,334** |
 
+### 10.8ar A measurement is only true under the conditions it was taken in
+
+The single most productive thing done to Candidate G was not a new idea.
+It was re-running measurements the file already recorded as settled.
+
+Five were re-run once the opening was fixed. Three flipped, and they are
+the largest gains of the day:
+
+| measurement | recorded verdict | on the fixed farm |
+|---|---|---|
+| land timing | "costs 10,000" | **+6,051 mean, +8,750 floor** |
+| wheat acreage | fitted at 20 tiles | **+1,887, 39/60** |
+| farm compactness | "costs 5,000" | **+2,400 mean, +9,019 median** |
+| goose cash floor | 450 is best | 450 still best |
+| worker zoning | noise | still loses, 19/60 |
+
+Every one of the three had been measured on a farm with one quadrant, a
+herd frozen at six, and wheat pulled at a third of its yield. The land
+note in particular had been sitting in this file for weeks being quoted
+as a reason not to try, with its reasoning attached: *G's limit is worker
+throughput, not ground, so a quadrant only spends cash and spreads the
+crew thinner.* That was true of the farm it was measured on and false of
+the farm it was being applied to.
+
+The rule that follows: **a negative result carries its conditions with
+it.** Record what the farm looked like, not only the number, and re-run
+anything whose conditions have moved. Two of five held, so this is not a
+licence to assume old numbers are wrong -- it is a reason to check.
+
+### 10.8as What the day changed, and what it did not
+
+Nine changes, each on sixty paired games against three top-of-ladder
+routes, ten seeds, both seats:
+
+| | mean | median | floor |
+|---|---|---|---|
+| start | 40,072 | 42,132 | -- |
+| harvest held to last yield day | 44,364 | 46,025 | 22,206 |
+| ration the farm can afford | 47,395 | 47,137 | 17,940 |
+| housing and pickup correctness | 47,486 | 50,058 | 17,863 |
+| manure priced against the crop | 48,702 | 50,738 | 25,334 |
+| arms emptied before the whistle | 48,755 | 50,790 | 25,334 |
+| mixed herd, sized to our labour | 49,106 | 51,168 | 31,382 |
+| ground bought on day one | 55,157 | 55,625 | 40,132 |
+| wheat acreage 28 | 57,044 | 53,373 | 36,839 |
+| **near ground worked first** | **59,444** | **62,392** | **38,628** |
+
+Mean and median both up 48%, the worst game of sixty up 115%.
+
+**What did not change.** G still wins none of the sixty. The tapes bank
+about 125,000 against us and about 78,000 against a copy of themselves,
+so most of that margin is the market they get to themselves rather than
+production we cannot match -- the true gap is nearer 1.6x than 3x. But it
+is a production gap and not a selling one: `SELL_PATIENCE` is zero, so G
+already sells everything the turn it has it and holds nothing back. There
+is no contest-the-market lever left to pull. What remains is output per
+worker-turn, against a crew hard capped near twelve by a fibonacci wage.
+
+### 10.8at Five things that measured backwards today
+
+Each looked obviously right and lost:
+
+1. **The opening crew is saturated.** It idles 21.4% of its turns against
+   the corpus's 8.8%.
+2. **Manure is worthless, so spread it.** At our volume it fetches 62 and
+   the wheat it makes fetches 21. Then wrong the other way: the test had
+   excluded ongoing crops, and strawberry returns 470 for the same unit.
+3. **The starvation override wastes 210 units of wheat.** Rationing it
+   costs 5,140 -- an escaped animal forfeits 1,000 to 1,800, two units of
+   wheat are worth 42.
+4. **Copy the elite herd.** Seventeen animals scores 35,486 against six at
+   49,106; their cattle are a twelve-day capital engine, not a line.
+5. **The town starves for tomato at 257 a unit.** Planting it costs
+   18,971 -- the premium exists because eight days of daily watering come
+   before the first unit.
+
+The common error is valuing a thing on its own instead of against what it
+displaces, at the volume actually traded.
+
 ## 11. Candidate D: the original learned residual/Option selector plan
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
