@@ -1103,6 +1103,20 @@ def herd_plan(observation: dict[str, Any], counts: dict[str, int],
 
     332 elite tapes buy a median of 3 geese, 8 cows and 6 sheep: a
     permanently mixed herd of about seventeen, never a single species.
+
+    A known defect, left in place because the fix measured worse. Weighing
+    by `demand x price` favours milk and wool -- bases of 160 and 200
+    against egg's 50 -- and those are exactly the two books that collapse,
+    after 76 and 59 units. A trace shows `want_GOOSE` pinned at 1 for all
+    thirty days, the farm holding one goose and five cows, in an agent
+    whose thesis is the goose.
+
+    Pricing each line by `sale_revenue` instead, so the curve is walked
+    down as units are sold and a sixth cow is valued into the book its
+    five predecessors flooded, gives a more balanced herd -- 2 geese, 4
+    cows, 2 sheep -- and costs 11,087 (55,826 against 66,913). The
+    balanced herd is worth less than the lopsided one, so whatever is
+    wrong here, the animal mix is not it. Recorded rather than repeated.
     """
     demand = remaining_demand(observation)
     pull: dict[str, float] = {}
