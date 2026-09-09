@@ -247,6 +247,27 @@ COOP_LEAD = 2
 # base price. Melon pays 250 and floors after 158 units; strawberry 120
 # and floors after 62; carrot only 35 but absorbs 842, which is why the
 # top of the board plants it and the field does not (10.8z).
+# Which crop earns a scarce worker-turn, which is the only question that
+# matters on a farm capped at twelve hands.
+#
+#     crop         units   turns   units/turn
+#     WHEAT          4       5        0.80
+#     CARROT         3       4        0.75
+#     MELON          6       9        0.67
+#     TOMATO         4      13        0.31
+#     STRAWBERRY     4      18        0.22
+#
+# Turns are the waterings inside the yield window plus sowing and
+# harvesting. Ongoing crops are the expensive ones: they must be watered
+# every day from sowing or they go to weed, and tomato waits eight days
+# before it yields anything at all.
+#
+# This is why a high price is not an opportunity by itself. Against the
+# reference route the town drains 378 units of tomato and its price runs
+# to 257, four times base, while we plant none -- and planting it anyway
+# costs 18,971 (38,073 against 57,044, at any cap). The premium exists
+# *because* it is not worth the labour to collect.
+#
 # Measured against every alternative worth trying, and unchanged.
 #
 # 332 elite tapes plant a median of 31 carrots and 33 strawberries to our
