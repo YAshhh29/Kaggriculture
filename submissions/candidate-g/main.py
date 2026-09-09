@@ -463,7 +463,7 @@ BOARD = 10
 LAST_DAY = 29
 MAX_ORDERS = 10
 HAND_RAMP = ((0, 4), (6, 5), (8, 8), (11, 10), (14, 12))
-HIRE_UNTIL_DAY = 27
+HIRE_UNTIL_DAY = 29
 LAND_DAYS = (1, 5)
 LAND_RESERVE = 1200.0
 MAX_QUADRANTS = 3
@@ -719,7 +719,7 @@ def job_value(observation: dict[str, Any], tile: Any, x: int, y: int, inventory:
                 break
     if tile is None:
         near = 1.0 / (1.0 + COMPACT * min((abs(x - sx) + abs(y - sy) for sx, sy in shed_tiles())))
-        if counts['wheat'] < wheat_target and counts.get('seed_WHEAT', int(seeds.get('WHEAT', 0))) > 0 and (day <= LAST_DAY - 8):
+        if counts['wheat'] < wheat_target and counts.get('seed_WHEAT', int(seeds.get('WHEAT', 0))) > 0 and (day <= LAST_DAY - 5):
             jobs.append(((BAND_WHEAT + egg) * near, ['PLANT', 'WHEAT']))
         elif days_left > 5 and house_needed(counts, counts.get('bird', 'GOOSE')) is not None:
             house = house_needed(counts, counts.get('bird', 'GOOSE'))
@@ -734,7 +734,7 @@ def job_value(observation: dict[str, Any], tile: Any, x: int, y: int, inventory:
                     continue
                 if counts.get('seed_' + crop, int(seeds.get(crop, 0))) <= 0:
                     continue
-                if day > LAST_DAY - int(spec['first']) - 2:
+                if day > LAST_DAY - int(spec['first']) - 1:
                     continue
                 price = price_at(crop, inventory_of(observation, crop))
                 jobs.append(((BAND_CROP + price) * near, ['PLANT', crop]))
@@ -948,8 +948,6 @@ def market_orders(observation: dict[str, Any], day: int, counts: dict[str, int],
         now = price_at(item, inventory_of(observation, item))
         if now >= want or closing or total_shed >= 85:
             orders.append(['SELL', item, held])
-    if closing:
-        return orders[:MAX_ORDERS]
     hour = int(observation.get('step', 0)) % 24
     target = hands_target(day)
     if day <= HIRE_UNTIL_DAY and hands < target and (hour <= 2):
@@ -958,6 +956,8 @@ def market_orders(observation: dict[str, Any], day: int, counts: dict[str, int],
             if len(orders) >= MAX_ORDERS:
                 break
             orders.append(['HIRE'])
+    if closing:
+        return orders[:MAX_ORDERS]
     quadrants = len((observation.get('farms') or [{}])[int(observation.get('player', 0))].get('unlocked_quadrants') or [])
     if day in LAND_DAYS and quadrants < MAX_QUADRANTS and (budget > LAND_RESERVE) and (len(orders) < MAX_ORDERS):
         orders.append(['BUY_LAND'])
@@ -991,10 +991,10 @@ def market_orders(observation: dict[str, Any], day: int, counts: dict[str, int],
             orders.append(['BUY_PRODUCT', 'WHEAT', want])
             budget -= 30.0 * want
     hour = int(observation.get('step', 0)) % 24
-    if hour == 1 and int(seeds.get('WHEAT', 0)) < SEED_BUFFER and (budget > GOOSE_CASH_FLOOR) and (day <= LAST_DAY - 8) and (len(orders) < MAX_ORDERS):
+    if hour == 1 and int(seeds.get('WHEAT', 0)) < SEED_BUFFER and (budget > GOOSE_CASH_FLOOR) and (day <= LAST_DAY - 5) and (len(orders) < MAX_ORDERS):
         want = SEED_BUFFER - int(seeds.get('WHEAT', 0))
         orders.append(['BUY_SEED', 'WHEAT', want])
-    if hour == 2 and budget > CROP_SEED_FLOOR and (day <= LAST_DAY - 10):
+    if hour == 2 and budget > CROP_SEED_FLOOR and (day <= LAST_DAY - 3):
         for crop, cap in CROP_TILES:
             if len(orders) >= MAX_ORDERS:
                 break

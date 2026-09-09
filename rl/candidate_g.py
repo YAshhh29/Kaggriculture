@@ -80,7 +80,12 @@ MAX_ORDERS = 10
 # farm by day six before it had any income at all. The corpus hires 4 by
 # day 2, 8 by day 6 and 11 by day 10, and pays for each from the last.
 HAND_RAMP = ((0, 4), (6, 5), (8, 8), (11, 10), (14, 12))
-HIRE_UNTIL_DAY = 27          # the crew is wiped nightly; stopping early
+# Hire to the last day. This read 27 and was measured as a dead constant,
+# bit-identical however it was set -- because the `closing` short-circuit
+# above returned before the crew block and dismissed everyone on day 28
+# regardless. With that moved, this one is live again and the last two
+# days are worked rather than watched.
+HIRE_UNTIL_DAY = 29          # the crew is wiped nightly; stopping early
                             # starved a 22-bird flock down to five
 # Two fixed purchases behind a reserve. The corpus buys ground the instant
 # it is affordable -- median cash 644 at the moment of purchase -- and
@@ -809,7 +814,7 @@ def job_value(
         ))
         if (counts["wheat"] < wheat_target
                 and counts.get("seed_WHEAT", int(seeds.get("WHEAT", 0))) > 0
-                and day <= LAST_DAY - 8):
+                and day <= LAST_DAY - 5):
             jobs.append(((BAND_WHEAT + egg) * near, ["PLANT", "WHEAT"]))
         # Deliberately still an if/elif chain, which is a real limitation
         # and is recorded as one.
@@ -853,7 +858,7 @@ def job_value(
                     continue
                 if counts.get("seed_" + crop, int(seeds.get(crop, 0))) <= 0:
                     continue
-                if day > LAST_DAY - int(spec["first"]) - 2:
+                if day > LAST_DAY - int(spec["first"]) - 1:
                     continue
                 price = price_at(crop, inventory_of(observation, crop))
                 jobs.append(((BAND_CROP + price) * near,
@@ -1217,9 +1222,6 @@ def market_orders(
         if now >= want or closing or total_shed >= 85:
             orders.append(["SELL", item, held])
 
-    if closing:
-        return orders[:MAX_ORDERS]
-
     # 2. Crew. Hands are hired daily and wiped nightly, and the cost is
     #    fibonacci in the number hired today, so the early ones are almost
     #    free and the schedule is what limits the farm, not the wage.
@@ -1236,6 +1238,16 @@ def market_orders(
             if len(orders) >= MAX_ORDERS:
                 break
             orders.append(["HIRE"])
+
+    # Buying stops once the season is closing -- ground, animals and seed
+    # cannot pay for themselves in two days -- but the crew and the feed
+    # ration above must not, which is why this sits here and not before
+    # them. It used to sit above the hiring block, so on day 28 the farm
+    # dismissed all twelve hands and played the last two days with the
+    # farmer alone: 36 idle tiles, animals escaping for want of a feeder,
+    # and every job on the board going unclaimed.
+    if closing:
+        return orders[:MAX_ORDERS]
 
     # 3. Ground, as soon as it is affordable.
     quadrants = len(
@@ -1349,12 +1361,12 @@ def market_orders(
         hour == 1
         and int(seeds.get("WHEAT", 0)) < SEED_BUFFER
         and budget > GOOSE_CASH_FLOOR
-        and day <= LAST_DAY - 8
+        and day <= LAST_DAY - 5
         and len(orders) < MAX_ORDERS
     ):
         want = SEED_BUFFER - int(seeds.get("WHEAT", 0))
         orders.append(["BUY_SEED", "WHEAT", want])
-    if hour == 2 and budget > CROP_SEED_FLOOR and day <= LAST_DAY - 10:
+    if hour == 2 and budget > CROP_SEED_FLOOR and day <= LAST_DAY - 3:
         for crop, cap in CROP_TILES:
             if len(orders) >= MAX_ORDERS:
                 break
