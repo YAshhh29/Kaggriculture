@@ -402,6 +402,27 @@ BAND_FERTILIZE = 1600.0     # 0 disables the job entirely
 
 BAND_BUILD = 800.0
 BAND_CROP = 600.0
+# Crew held back for maintenance only. Measured, and OFF.
+#
+# The idea came from a competing design and the reasoning is good: the
+# bands rank HARVEST, PLANT and PLACE above WATER and CARE, so a busy
+# board could earn today at the cost of a plant that turns to weed
+# tomorrow and an animal that walks off the day after.
+#
+#     0.00   49,106 mean   51,168 median   31,382 min
+#     0.25   43,561        44,244          18,541    (13/60)
+#     0.45   27,531        30,480           9,599    ( 0/60)
+#
+# 0.45 was the recommended figure and it loses 44%, winning none of sixty
+# games. The premise is simply wrong for this scheduler: FEED already sits
+# at the top of the bands, well above harvest and planting, so tending is
+# not being starved. Reserving a quarter of the crew for tending-only work
+# means those workers stand idle whenever nothing needs tending -- and
+# this farm already passes on 14 to 21 per cent of its worker turns. The
+# reservation deepens the labour shortage it was meant to relieve.
+RESCUE_SHARE = 0.0
+TENDING = ("WATER", "FEED", "CARE", "PICKUP",
+           "NORTH", "SOUTH", "EAST", "WEST")
 
 
 def _farm(observation: dict[str, Any]) -> dict[str, Any]:
@@ -1323,7 +1344,14 @@ def decide(observation: dict[str, Any]) -> AgentAction:
     # same job and waste a turn between them.
     claimed: set[tuple[int, int]] = set()
     actions: list[list[Any]] = []
+    # A share of the crew that may only tend: water, feed, care. The
+    # bands put HARVEST, PLANT and PLACE above WATER and CARE, so on a
+    # busy board maintenance can be starved by work that pays sooner --
+    # and a plant unwatered two days becomes a weed, an animal unfed two
+    # days escapes. This reserves capacity against that.
+    reserved = int(len(positions) * RESCUE_SHARE)
     for worker, position in enumerate(positions):
+        tending_only = worker < reserved
         inventory = _inventory(observation, worker)
         best_score = 0.0
         best: list[Any] = list(PASS)
@@ -1348,6 +1376,8 @@ def decide(observation: dict[str, Any]) -> AgentAction:
                     observation, tiles[y][x], x, y, inventory, day,
                     shed, seeds, counts, closing,
                 ):
+                    if tending_only and act[0] not in TENDING:
+                        continue
                     score = value / (travel + 1.0) ** TRAVEL_EXPONENT
                     if not in_zone:
                         score *= ZONE_TAX
