@@ -150,19 +150,27 @@ def main() -> None:
 
     from tools.data.profile_tapes import INDEX, TAPES, load_tape
 
-    rows = []
+    # Newest episodes first. The index is append-ordered, so reading it
+    # forwards returns the oldest captures -- which is how a whole study
+    # once ran on stale tapes after a fresh fetch had just been made.
+    catalogue = []
     seen: set[int] = set()
     for line in INDEX.read_text(encoding="utf-8").splitlines():
         row = json.loads(line)
+        if row["episode_id"] in seen:
+            continue
         path = TAPES / ("live_" + str(row["episode_id"]) + ".json")
-        if not path.exists() or row["episode_id"] in seen:
+        if not path.exists():
             continue
         if (row.get("rating") or 0) < args.min_rating:
             continue
         seen.add(row["episode_id"])
-        rows.append(path)
-        if len(rows) >= args.games:
-            break
+        catalogue.append((int(row["episode_id"]), path))
+    catalogue.sort(reverse=True)
+    rows = [path for _, path in catalogue[:args.games]]
+    episodes = [episode for episode, _ in catalogue[:args.games]]
+    if episodes:
+        print(f"episodes {min(episodes)} to {max(episodes)}", flush=True)
 
     print(f"replaying {len(rows)} elite tapes ...", flush=True)
     elite = []

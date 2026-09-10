@@ -28,8 +28,18 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 
 
-def best_tape_per_opponent(limit: int, min_rating: float) -> list[tuple[str, str, float]]:
-    """(name, tape path, rating), one tape each, strongest opponents first."""
+def best_tape_per_opponent(limit: int, min_rating: float,
+                           contested: float = 0.0) -> list[tuple[str, str, float]]:
+    """(name, tape path, rating), one tape each, strongest opponents first.
+
+    `contested` keeps only tapes from games the winner won by less than
+    that margin against an opponent also above `min_rating`. It matters:
+    across 2,348 games between top-45 teams the winner banks a median
+    98,994 and the loser 93,765, a margin of 3,906. A tape chosen for its
+    owner's rating alone is usually a blowout against somebody weak, and
+    measuring against those flatters nobody -- it tells us how a strong
+    farm performs when unopposed, which is not the game we play.
+    """
     from tools.data.profile_tapes import INDEX, TAPES
 
     best: dict[str, tuple[str, float]] = {}
@@ -41,11 +51,19 @@ def best_tape_per_opponent(limit: int, min_rating: float) -> list[tuple[str, str
         rating = float(row.get("rating") or 0)
         if rating < min_rating:
             continue
+        if contested:
+            if float(row.get("beat_rating") or 0) < min_rating:
+                continue
+            if abs(float(row.get("margin") or 0)) > contested:
+                continue
         name = str(row.get("name") or "?")
-        if name not in best or rating > best[name][1]:
-            best[name] = (str(path), rating)
-    ranked = sorted(best.items(), key=lambda kv: -kv[1][1])
-    return [(n, p, r) for n, (p, r) in ranked[:limit]]
+        # Newest tape for each opponent at their best rating: an agent's
+        # play from weeks ago is not what it plays now.
+        key = (rating, int(row["episode_id"]))
+        if name not in best or key > best[name][1]:
+            best[name] = (str(path), key)
+    ranked = sorted(best.items(), key=lambda kv: (-kv[1][1][0], -kv[1][1][1]))
+    return [(n, p, r[0]) for n, (p, r) in ranked[:limit]]
 
 
 def one(job):
@@ -76,6 +94,9 @@ def main() -> None:
     parser.add_argument("--seeds", type=int, default=2)
     parser.add_argument("--min-rating", type=float, default=2700.0)
     parser.add_argument("--workers", type=int, default=6)
+    parser.add_argument("--contested", type=float, default=0.0,
+                        help="only tapes won by less than this margin "
+                             "against an opponent also above --min-rating")
     parser.add_argument("--set", action="append", default=[],
                         help="NAME=VALUE override, repeatable")
     args = parser.parse_args()
@@ -86,7 +107,8 @@ def main() -> None:
         overrides[name] = (float(raw) if ("." in raw or "-" in raw)
                            else int(raw))
 
-    field = best_tape_per_opponent(args.opponents, args.min_rating)
+    field = best_tape_per_opponent(args.opponents, args.min_rating,
+                                   args.contested)
     seeds = list(range(11, 11 + args.seeds))
     jobs = [(args.spec, overrides, tape, seed, seat)
             for _, tape, _ in field
