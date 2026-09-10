@@ -1,9 +1,9 @@
 {
-  "built_at": "2026-09-10T19:58:01.947459+00:00",
-  "bytes": 60814,
+  "built_at": "2026-09-10T21:21:51.481023+00:00",
+  "bytes": 61045,
   "candidate": "candidate-g",
   "entry": "main.py",
-  "sha256": "9e6684893224300c1a51147e51c27fa140d05a1a8a740504058a6d619482e24b",
+  "sha256": "9bc3f2ed25a0cd7f7668dcaad98bb540e23e2c7c1e34b1a73b862e4f6c1b5356",
   "sources": [
     {
       "path": "core/routing.py",
@@ -23,7 +23,7 @@
     },
     {
       "path": "rl/candidate_g.py",
-      "sha256": "bf22845abd8792c1c0ed50e7ea7bf3ca56ee86000507a1b14409f0ec8d500c23"
+      "sha256": "f7c27cff062c2d4846df3eb470e49f6fc432a353dcf833b6477c96f8223f02ec"
     }
   ]
 }

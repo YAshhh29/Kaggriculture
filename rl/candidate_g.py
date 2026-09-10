@@ -202,6 +202,8 @@ EARLY_BIRDS = 6
 #
 # Six, mixed, is ours. 8 wins the mean by 272 and the median by 37, both
 # noise at 33/60 paired, and gives up 4,161 of floor to get them.
+# Re-checked on contested opponents and unchanged: 67,697 at six against
+# 65,512 at eight and 63,447 at ten, ahead on 27 of 60 both ways.
 HERD_TARGET = 6
 # The share a line keeps once we own any of it. A pen and the animal in it
 # are capital already spent and a shift in the town's draw does not refund

@@ -466,6 +466,8 @@ HAND_RAMP = ((0, 4), (6, 5), (8, 8), (11, 10), (14, 12))
 HIRE_UNTIL_DAY = 29
 LAND_DAYS = (1, 5)
 LAND_RESERVE = 1200.0
+LAND_CASH = 0.0
+LAND_LAST_DAY = 12
 MAX_QUADRANTS = 3
 GOOSE_COST = 300
 GOOSE_CASH_FLOOR = 450.0
@@ -1030,7 +1032,11 @@ def market_orders(observation: dict[str, Any], day: int, counts: dict[str, int],
     if closing:
         return orders[:MAX_ORDERS]
     quadrants = len((observation.get('farms') or [{}])[int(observation.get('player', 0))].get('unlocked_quadrants') or [])
-    if day in LAND_DAYS and quadrants < MAX_QUADRANTS and (budget > LAND_RESERVE) and (len(orders) < MAX_ORDERS):
+    if LAND_CASH > 0:
+        buy_land = quadrants < MAX_QUADRANTS and budget > LAND_CASH and (day <= LAND_LAST_DAY) and (int(observation.get('hour', 0)) == 1)
+    else:
+        buy_land = day in LAND_DAYS and budget > LAND_RESERVE
+    if buy_land and quadrants < MAX_QUADRANTS and (len(orders) < MAX_ORDERS):
         orders.append(['BUY_LAND'])
         budget -= LAND_RESERVE
     bird = counts.get('bird', 'GOOSE')
