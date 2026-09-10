@@ -157,6 +157,9 @@ WHEAT_PER_BIRD = 0.8
 # followed here even though the floor gives up 3,293 -- the same rule that
 # kept the herd at six, where the paired count was chance and the floor
 # was the only signal worth reading.
+# Re-checked on contested opponents and unchanged: 67,697 at 28 against
+# 67,313 at both 36 and 44, ahead on 20 of 60. The two larger values are
+# identical to each other, so the cap stops binding somewhere below 36.
 WHEAT_TILES = 28
 COOPS_AFTER_WHEAT = 8
 EARLY_BIRDS = 6
@@ -468,6 +471,10 @@ SOW_UNTIL = 3
 # for nothing anyway -- so the only thing a mid-game trip buys is selling
 # a day earlier, and it costs a turn and a walk to get it.
 DROP_FROM_STEP = 713
+# Re-checked on contested opponents once COMPACT moved, on the theory
+# that the two distance terms interact -- and it does not: 67,697 at 2.0
+# against 63,147 at 1.5 and 64,281 at 2.5, ahead on both counts. This one
+# was already right.
 TRAVEL_EXPONENT = 2.0
 # Where a coop or a wheat tile goes matters as much as that it exists.
 # Feed comes out of the shed and every meal is a round trip, so a flock
