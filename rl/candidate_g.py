@@ -502,7 +502,27 @@ ZONE_TAX = 1.0
 # worst game all improve together and the reason is plain: with twelve
 # hands and half their turns already spent walking, ground near the shed
 # is worked and ground far from it is not.
-COMPACT = 0.15               # measured: clustering near the shed costs
+# Re-fitted on contested opponents, and the old value was a corpus
+# artifact. 0.15 was chosen against tapes from games their owners won by
+# eighty thousand -- farms nobody was competing with, which need to reach
+# far ground because they own the whole market. Against opponents who
+# were actually being fought:
+#
+#     0.15   63,703 mean   66,692 median   39,736 min
+#     0.25   67,920        69,259          43,094   (34/60)
+#     0.35   67,697        69,229          48,168   (42/60)
+#     0.50   61,912        62,001          41,982
+#
+# 42 of 60 is a real result and the worst game improves by 8,432, the
+# largest floor gain measured on this agent. There is a genuine optimum
+# here rather than a trend: 0.50 is worse than either.
+#
+# It also fits the one thesis that keeps paying. Global crew assignment
+# and this both make *reaching* work cheaper rather than adding work, and
+# movement is 49.1% of our turns against the corpus's 41.9%. Every turn
+# bought back from walking becomes a watering we are short of -- 822
+# against their 1,095.
+COMPACT = 0.35               # measured: clustering near the shed costs
                             # 5,000 coins, so it stays off
 
 # Priority bands. The chain is feed -> wheat -> housing -> birds, because
