@@ -426,6 +426,31 @@ FEED_STOCK_FLOOR = 150.0
 # on G -- 44,364 against 40,072 on sixty paired games against
 # top-of-ladder routes, ahead in 43 of the 60.
 HARVEST_HOLD = True
+# Days before the close that sowing and seed-buying stop.
+#
+# This was five for wheat and three for cash crops, and it is what empties
+# the farm. A census of the last ten days: to day 24 the board is full,
+# nought to five free tiles out of seventy and forty crops standing. On
+# day 25 the seed runs out. By day 28 there are forty free tiles, no crop
+# at all, a full crew and seventy thousand coins in the bank.
+#
+# Wheat first yields two days after sowing and carrot the same, so both
+# could go in on day 27 and still be harvested. Doing so is worth nothing:
+#
+#     5 (wheat 24, crops 26)   66,875
+#     3 (both to day 26)       67,325   (48/60 against 5)
+#     2 (both to day 27)       67,245   (46/60)
+#
+# against 67,308 for the original pair. So the empty board at the end is
+# not a gate holding the farm back -- a carrot sown on day 26 returns one
+# or two units before the whistle and does not repay the four worker-turns
+# it costs. Those idle turns are barren rather than blocked, which is what
+# the idle census called them, and the seed running out on day 25 is a
+# symptom of the farm correctly declining to sow rather than a cause.
+#
+# Kept at 3 because it measures the same as the pair it replaces and puts
+# one named number where two unexplained ones were.
+SOW_UNTIL = 3
 # The last errand of the season: tip carried goods into the shed so the
 # closing sell can reach them.
 #
@@ -842,7 +867,7 @@ def job_value(
         ))
         if (counts["wheat"] < wheat_target
                 and counts.get("seed_WHEAT", int(seeds.get("WHEAT", 0))) > 0
-                and day <= LAST_DAY - 5):
+                and day <= LAST_DAY - SOW_UNTIL):
             jobs.append(((BAND_WHEAT + egg) * near, ["PLANT", "WHEAT"]))
         # Deliberately still an if/elif chain, which is a real limitation
         # and is recorded as one.
@@ -1386,7 +1411,7 @@ def market_orders(
     if (
         budget > GOOSE_COST + GOOSE_CASH_FLOOR
         and (total_animals < EARLY_BIRDS or total_animals < feedable)
-        and day <= LAST_DAY - 5
+        and day <= LAST_DAY - SOW_UNTIL
         and len(orders) < MAX_ORDERS
     ):
         best_gap, pick = 0, None
@@ -1462,7 +1487,7 @@ def market_orders(
     ):
         want = SEED_BUFFER - int(seeds.get("WHEAT", 0))
         orders.append(["BUY_SEED", "WHEAT", want])
-    if hour == 2 and budget > CROP_SEED_FLOOR and day <= LAST_DAY - 3:
+    if hour == 2 and budget > CROP_SEED_FLOOR and day <= LAST_DAY - SOW_UNTIL:
         for crop, cap in CROP_TILES:
             if len(orders) >= MAX_ORDERS:
                 break

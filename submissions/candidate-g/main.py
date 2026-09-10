@@ -496,6 +496,7 @@ FEED_MIN_FLOCK = 4
 FEED_BUY_UNTIL = 6
 FEED_STOCK_FLOOR = 150.0
 HARVEST_HOLD = True
+SOW_UNTIL = 3
 DROP_FROM_STEP = 713
 TRAVEL_EXPONENT = 2.0
 ZONE_TAX = 1.0
@@ -721,7 +722,7 @@ def job_value(observation: dict[str, Any], tile: Any, x: int, y: int, inventory:
                 break
     if tile is None:
         near = 1.0 / (1.0 + COMPACT * min((abs(x - sx) + abs(y - sy) for sx, sy in shed_tiles())))
-        if counts['wheat'] < wheat_target and counts.get('seed_WHEAT', int(seeds.get('WHEAT', 0))) > 0 and (day <= LAST_DAY - 5):
+        if counts['wheat'] < wheat_target and counts.get('seed_WHEAT', int(seeds.get('WHEAT', 0))) > 0 and (day <= LAST_DAY - SOW_UNTIL):
             jobs.append(((BAND_WHEAT + egg) * near, ['PLANT', 'WHEAT']))
         elif days_left > 5 and house_needed(counts, counts.get('bird', 'GOOSE')) is not None:
             house = house_needed(counts, counts.get('bird', 'GOOSE'))
@@ -1022,7 +1023,7 @@ def market_orders(observation: dict[str, Any], day: int, counts: dict[str, int],
     bird = counts.get('bird', 'GOOSE')
     total_animals = counts['animals'] + sum((int(shed.get(a, 0)) for a in ANIMAL_HOME))
     feedable = counts['wheat'] * WHEAT_PER_BIRD + shed.get('WHEAT', 0) / 3.0
-    if budget > GOOSE_COST + GOOSE_CASH_FLOOR and (total_animals < EARLY_BIRDS or total_animals < feedable) and (day <= LAST_DAY - 5) and (len(orders) < MAX_ORDERS):
+    if budget > GOOSE_COST + GOOSE_CASH_FLOOR and (total_animals < EARLY_BIRDS or total_animals < feedable) and (day <= LAST_DAY - SOW_UNTIL) and (len(orders) < MAX_ORDERS):
         best_gap, pick = (0, None)
         for animal in ANIMAL_HOME:
             waiting = int(shed.get(animal, 0))
@@ -1051,7 +1052,7 @@ def market_orders(observation: dict[str, Any], day: int, counts: dict[str, int],
     if hour == 1 and int(seeds.get('WHEAT', 0)) < SEED_BUFFER and (budget > GOOSE_CASH_FLOOR) and (day <= LAST_DAY - 5) and (len(orders) < MAX_ORDERS):
         want = SEED_BUFFER - int(seeds.get('WHEAT', 0))
         orders.append(['BUY_SEED', 'WHEAT', want])
-    if hour == 2 and budget > CROP_SEED_FLOOR and (day <= LAST_DAY - 3):
+    if hour == 2 and budget > CROP_SEED_FLOOR and (day <= LAST_DAY - SOW_UNTIL):
         for crop, cap in CROP_TILES:
             if len(orders) >= MAX_ORDERS:
                 break
