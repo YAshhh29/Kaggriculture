@@ -120,6 +120,21 @@ HIRE_UNTIL_DAY = 29          # the crew is wiped nightly; stopping early
 # sturdier shape if it can be made to measure as well.
 LAND_DAYS = (1, 5)
 LAND_RESERVE = 1200.0
+# Cash a quadrant must leave behind before it is bought. Measured, and
+# OFF: the fixed schedule wins despite standing on a cliff.
+#
+#     fixed days 1,5   67,697 mean   69,229 median   48,168 min
+#     cash 1,800       63,604        63,850          28,396   (24/60)
+#     cash 3,000       62,990        64,627          37,294   (24/60)
+#
+# The reasoning for trying it was sound -- days 1,5 scores 67,697 and days
+# 1,4 scores 44,943, so a one-day slip costs 22,754 and a rule with no
+# cliff ought to be sturdier at the same height. But a cash gate buys
+# *late*, because the farm is poorest exactly when the ground is worth
+# most, and the day-one purchase earns across the whole season. The cliff
+# is a real fragility and this is not the cure for it.
+LAND_CASH = 0.0
+LAND_LAST_DAY = 12
 MAX_QUADRANTS = 3
 GOOSE_COST = 300
 # Working capital, and it was strangling the opening. Turn-by-turn against
@@ -1416,12 +1431,27 @@ def market_orders(
             int(observation.get("player", 0))
         ].get("unlocked_quadrants") or []
     )
-    if (
-        day in LAND_DAYS
-        and quadrants < MAX_QUADRANTS
-        and budget > LAND_RESERVE
-        and len(orders) < MAX_ORDERS
-    ):
+    # Bought on cash rather than on a named day, when LAND_CASH is set.
+    #
+    # The fixed schedule sits on a cliff. Days 1 and 5 give 67,697 and
+    # days 1 and 4 give 44,943 -- one day's difference on the second
+    # purchase costs 22,754, because it catches the farm with just enough
+    # to spend and nothing left to work the ground with. A schedule tuned
+    # one day from a hole that size is fragile even when it is standing on
+    # the right side of it, and the seed decides which side that is.
+    #
+    # A cash rule has no cliff: it fires when the farm can actually afford
+    # the ground *and* still stock it.
+    if LAND_CASH > 0:
+        buy_land = (
+            quadrants < MAX_QUADRANTS
+            and budget > LAND_CASH
+            and day <= LAND_LAST_DAY
+            and int(observation.get("hour", 0)) == 1
+        )
+    else:
+        buy_land = day in LAND_DAYS and budget > LAND_RESERVE
+    if buy_land and quadrants < MAX_QUADRANTS and len(orders) < MAX_ORDERS:
         orders.append(["BUY_LAND"])
         budget -= LAND_RESERVE
 
