@@ -4965,6 +4965,53 @@ Each looked obviously right and lost:
 The common error is valuing a thing on its own instead of against what it
 displaces, at the volume actually traded.
 
+### 10.8au Counting an opponent's actions counts their mistakes too (2026-09-10)
+
+Comparing Candidate G's worker actions against forty elite tapes produced
+a table that looked like a to-do list:
+
+| action | G | elite |
+|---|---|---|
+| PLACE | 8 | 100 |
+| DROP | 1 | 40 |
+| FERTILIZE | 27 | 132 |
+| CARE | 191 | 318 |
+| FEED | 192 | 325 |
+
+The largest entry is not a gap at all. Tracing twelve tapes for animals
+bought, placed, standing and escaped:
+
+```
+episode    bought  placed  peak  escapes
+106611851      17     108    17        0
+106612820      17     108    17        0
+106027517      17      80    17        6
+```
+
+**They buy seventeen animals and issue about a hundred PLACE actions.**
+Peak standing is seventeen and almost nothing escapes, so some eighty-five
+of those hundred are no-ops -- PLACE issued against a tile that already
+holds an animal, or with nothing in hand. G places eight animals with
+eight actions.
+
+So on that row G is the efficient one, and chasing the number would have
+been pure loss. It is the same error as reading a tape's `SELL WHEAT 145`
+on day one as a sale, when the shed was empty and the engine clamped it
+to nothing: **a tape records what an agent asked for, not what the
+simulator granted.** Any count taken straight from tape actions is an
+upper bound that includes every wasted request.
+
+DROP is the same shape in a different way: copying the corpus's forty
+costs 7,762, because our workers do not pass the shed the way theirs do
+and the nightly refresh banks everything for free anyway.
+
+What survives the correction is smaller and more honest. Feeding
+efficiency is already theirs -- about 0.8 feeds per animal-day on both
+sides. CARE and FEED are downstream of herd size rather than targets.
+The two real gaps are **peak animals, 8 against 17** and **crop tiles, 42
+against 58**, and both were last measured under a scheduler that spent 54
+per cent of its turns walking.
+
 ## 11. Candidate D: the original learned residual/Option selector plan
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
