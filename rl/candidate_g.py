@@ -361,6 +361,14 @@ HAND_CAP = 12
 # every setting and the wage saved on a crew that has nothing to do is
 # real money. It is not the answer to the idle turns, though -- see
 # hands_target.
+#
+# Nor is the other half of that diagnosis, tempting as it looked. If 62%
+# of idle turns are workers who could not act for want of the right thing
+# in their hands, then fetching grain *before* the flock is hungry ought
+# to pay: the animals want feeding at every refresh regardless, and a
+# worker about to stand still carries it for free. It costs 858 -- 66,450
+# against 67,308, worse on mean, median and floor alike. The observation
+# is true and does not convert into a gain, at least not this way.
 CREW_TO_WORK = 0.3
 CREW_FLOOR = 4
 HARVEST_AT = 2              # eggs held before a bird is worth the walk
