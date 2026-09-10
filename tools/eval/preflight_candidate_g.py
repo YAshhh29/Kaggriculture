@@ -27,7 +27,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 PACKAGE = ROOT / "submissions" / "candidate-g" / "main.py"
-ROUTE = "kaggle_cache/live_clones/live_106683123.json"
+# Chosen from the index at run time. Naming an episode meant this broke
+# silently the moment the blowout tapes were archived -- and worse, a grep
+# in the calling pipeline swallowed the non-zero exit, so a package was
+# committed on a preflight that had stopped after two checks.
 
 
 def load_isolated(path: Path):
@@ -99,7 +102,14 @@ def main() -> int:
     import rl.candidate_g as source
     from tools.eval.measure_panel import resolve
 
-    opponent = resolve("clone:" + ROUTE)
+    from tools.eval.wide_panel import best_tape_per_opponent
+
+    field = best_tape_per_opponent(1, 2800)
+    if not field:
+        report("a contested opponent tape is held", False,
+               "fetch some before preflighting")
+        return 1
+    opponent = resolve("clone:" + field[0][1])
 
     mismatches = 0
     malformed = 0
