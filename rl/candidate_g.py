@@ -1201,7 +1201,20 @@ def herd_plan(observation: dict[str, Any], counts: dict[str, int],
     five predecessors flooded, gives a more balanced herd -- 2 geese, 4
     cows, 2 sheep -- and costs 11,087 (55,826 against 66,913). The
     balanced herd is worth less than the lopsided one, so whatever is
-    wrong here, the animal mix is not it. Recorded rather than repeated.
+    wrong here, the animal mix is not it.
+
+    Tested again as an interaction, because a six-animal herd cannot flood
+    any book and the mix ought to matter only at scale -- and a diagnostic
+    had shown that a seventeen-animal herd reaches the corpus's own four
+    hundred animal-days, with nothing escaping, feed and care at one per
+    animal-day and idle turns down to 7.7%, and *still* loses. The obvious
+    reading was that its extra output was going into collapsed books.
+
+    It runs the other way. Pricing by revenue gets steadily worse as the
+    herd grows: 60,571 at six, 49,207 at twelve, 41,290 at seventeen,
+    against 67,325 for the sticker-priced six. Whatever a large herd costs
+    us, it is not the species mix, and the mix is worth less the more
+    animals there are to apply it to.
     """
     demand = remaining_demand(observation)
     pull: dict[str, float] = {}
