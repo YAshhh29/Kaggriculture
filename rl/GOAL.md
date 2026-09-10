@@ -5012,6 +5012,45 @@ The two real gaps are **peak animals, 8 against 17** and **crop tiles, 42
 against 58**, and both were last measured under a scheduler that spent 54
 per cent of its turns walking.
 
+### 10.8av Every elite count was tested. None of them transfers.
+
+The action table against forty elite tapes was worked through row by row,
+each on sixty paired games:
+
+| gap | elite | ours | copying it |
+|---|---|---|---|
+| PLACE | 100 | 8 | **artifact** -- 85 of theirs are no-ops |
+| DROP | 40 | 1 | **-7,762** at any threshold |
+| peak animals | 17 | 8 | **-18,721**, wins 6/60 |
+| crop tiles | 58 | 42 | noise to -654, wins 6-23/60 |
+| CARE / FEED | 318 / 325 | 191 / 192 | downstream of herd size |
+| FERTILIZE | 132 | 27 | scale-dependent, manure is 26 to them and 62 to us |
+
+Not one of them is worth adopting, and two are actively expensive.
+
+**The counts describe a different economy, not a better-played version of
+ours.** They run seventeen animals *and* fifty-eight crop tiles *and* four
+hundred animal-days on about nine hands -- roughly the crew we have. We
+cannot add either the herd or the ground alone without losing, so we
+cannot be one adjustment away from both.
+
+The honest position: Candidate G sits at a local optimum for its design,
+around 67,000 and 6.2 per cent of games won against forty opponents. The
+gap to a 135,000-coin farm is not a tuning gap and no parameter in this
+file closes it. What would is a scheduler that can carry a larger farm on
+the same labour, and that is a different agent rather than a better-tuned
+one.
+
+Two rules earned along the way, both from being wrong:
+
+* **A tape records requests, not grants.** PLACE 100 and `SELL WHEAT 145`
+  on an empty shed are the same error. Any count read straight from tape
+  actions is an upper bound that includes every wasted request.
+* **An opponent's number is only a target if their constraints are ours.**
+  Their manure is worth 26 a unit because their herd floods the book;
+  ours is worth 62. Copying the action without the constraint copies the
+  cost and none of the benefit.
+
 ## 11. Candidate D: the original learned residual/Option selector plan
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.

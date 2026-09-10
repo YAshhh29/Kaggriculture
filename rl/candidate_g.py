@@ -435,6 +435,13 @@ HARVEST_HOLD = True
 # the last handful of turns it is worth 48,755 -- a gain of 53, which is
 # noise, but it never loses a game and it is recovering goods that were
 # otherwise thrown away, so it stays.
+# Banking produce mid-game, as the corpus does some forty times a game
+# against our one, measures as a clear loss: 59,546 at a 120-coin
+# threshold and 64,838 at 400, against 67,308 with it kept to the closing
+# turns. Their crew passes the shed in the course of its work and ours
+# does not, and the nightly refresh tips every worker's arms into the shed
+# for nothing anyway -- so the only thing a mid-game trip buys is selling
+# a day earlier, and it costs a turn and a walk to get it.
 DROP_FROM_STEP = 713
 TRAVEL_EXPONENT = 2.0
 # Where a coop or a wheat tile goes matters as much as that it exists.
