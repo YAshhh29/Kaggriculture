@@ -133,9 +133,15 @@ def ours(seed: int):
     # sides captures two agents' actions into one list and doubles every
     # count, which made the first reading of this table wrong by 2x.
     from tools.eval.measure_panel import resolve
+    from tools.eval.wide_panel import best_tape_per_opponent
 
-    opponent = resolve(
-        "clone:kaggle_cache/live_clones/live_106683123.json")
+    # Whichever contested tape is strongest today. Naming a fixed episode
+    # broke the moment the blowout tapes were archived, which is the guard
+    # working rather than a fault.
+    field = best_tape_per_opponent(1, 2800)
+    if not field:
+        raise SystemExit("no contested tapes held; fetch some first")
+    opponent = resolve("clone:" + field[0][1])
     env = make("kaggriculture",
                configuration={"episodeSteps": 720, "seed": seed}, debug=False)
     env.run([watched, opponent])
