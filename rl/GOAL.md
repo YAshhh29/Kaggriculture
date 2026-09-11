@@ -5051,6 +5051,78 @@ Two rules earned along the way, both from being wrong:
   ours is worth 62. Copying the action without the constraint copies the
   cost and none of the benefit.
 
+### 10.8aw The corpus was blowouts, the objective was wrong, and the field is one agent (2026-09-11)
+
+Three findings, each of which invalidates a stretch of earlier work.
+
+**The corpus was 75% blowouts.** `fetch_by_episode` sorted by widest
+margin by design, so every "elite" figure this project compared itself
+against came from games won by eighty thousand against weak opposition --
+farms nobody was competing with. Their seventeen animals and fifty-eight
+crop tiles describe a market they owned outright, which is why not one of
+those numbers transferred. Rebuilt: 791 tapes, 45 opponents, median
+winning margin 652 coins, blowouts archived out of reach.
+
+**The objective was our own coin total, and it should have been the
+margin.** The game goes to whoever holds more money at step 720 and the
+rating comes from wins, so a change that costs us twelve thousand and
+costs the opponent twenty-five thousand is progress -- and mean, median
+and floor all score it as a regression. Every measurement before this
+point was taken with the wrong instrument.
+
+**Most of the ladder is one copied agent.** Seven differently-named
+opponents plant 163 wheat, 31 carrot and 33 strawberry, buy 17 animals
+and take land on day 6, with a standard deviation of zero across dozens
+of games whatever town they are drawn into. Himanshu Kumar and pensukesan
+share byte-identical openings. Only SpaTaro (number one, 3000), Otter
+Vibe and feel the agi vary at all, and SpaTaro opens differently every
+game. Adaptation is what sits above the crowd; the crowd sits at
+2900-2960.
+
+### 10.8ax Scheduling moves the margin; production does not
+
+Ten experiments on the contested panel, judged on margin:
+
+| change | margin |
+|---|---|
+| **global crew assignment** | **+18,674** |
+| **watering band 1,500 -> 3,500** | **+13,177** |
+| herd size, crop area, land timing | flat |
+| tomato (the crowd's abandoned book) | **-24,936** |
+| strawberry, melon-heavy, DROP, fertilize | flat or worse |
+
+Eight production experiments moved it not at all; the two scheduling
+changes moved it by thirty thousand between them. The lever on this farm
+is how a worker chooses its next job, not what the farm grows.
+
+Tomato is the instructive failure. The crowd starves it -- 282 units of
+unmet town demand, a price ending at 126 against a base of 60 -- so
+filling that book looked like free money. It raises our score and raises
+theirs by more. **A book is abandoned precisely because supplying it
+denies nobody**, and the margin only moves when we contest what the
+opponent is actually selling.
+
+### 10.8ay We are the marginal supplier, and it cuts both ways
+
+The harvest band shows the trade at its starkest:
+
+    band     our mean   their score   margin
+    6,000      51,068       106,101   -55,033
+    3,000      76,637       142,466   -65,829
+
+Harvesting less makes this farm fifty per cent richer and the opponent
+richer still, because the books stay shallow and both sides get better
+prices. At 6,000 we flood hard enough that our own revenue falls with
+theirs.
+
+The denial is sound while we are the *smaller* producer: they carry more
+volume, so a collapsed price costs them more. That logic holds against a
+live opponent -- a collapsed book is collapsed for whoever is selling
+into it. But it also bounds what denial can win. It narrows the gap and
+cannot close it, because we are destroying our own revenue alongside
+theirs. Closing it needs production we do not have, on a crew capped near
+twelve by a fibonacci wage.
+
 ## 11. Candidate D: the original learned residual/Option selector plan
 
 Do not train a primitive-action PPO policy. Public evidence shows full-action PPO/BC often stalls around 40k-80k terminal cash and fails to generalize.
