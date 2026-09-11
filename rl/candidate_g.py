@@ -551,6 +551,27 @@ COMPACT = 0.15               # measured: clustering near the shed costs
 # ranking put housing six times above the wheat that keeps its occupant
 # alive.
 BAND_FEED = 10000.0
+# Harvesting, and the clearest illustration in this file that our own
+# score and the margin pull in opposite directions.
+#
+# Against 24 contested opponents:
+#
+#     band     our mean   their score   margin
+#     6,000      51,068       106,101   -55,033
+#     3,000      76,637       142,466   -65,829
+#     9,000      50,443       118,671   -68,228
+#
+# Dropping the band raises our own score by 25,569 -- fifty per cent --
+# and raises theirs by 36,365, because we harvest less, sell less, the
+# books stay shallow and *both* farms get better prices. At 6,000 we are
+# flooding hard enough that our own revenue falls with theirs; we are the
+# marginal supplier and we set the price for the pair of us.
+#
+# 6,000 is kept because the game is won on who holds more at step 720,
+# not on how much we hold. But it is a deliberate choice to run this farm
+# 25,000 poorer than it could be, and worth re-examining if the denial
+# ever stops paying -- against a live opponent, or if the field stops
+# being a crowd of copies that cannot react.
 BAND_HARVEST = 6000.0
 BAND_WHEAT = 4000.0
 BAND_PLACE = 3000.0

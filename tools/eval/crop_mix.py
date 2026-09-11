@@ -17,17 +17,19 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 
 MIXES: dict[str, dict] = {
-    "now (no tomato)": {},
-    "tomato 12": {
-        "CROP_TILES": (("TOMATO", 12), ("MELON", 12), ("CARROT", 16),
-                       ("STRAWBERRY", 8)),
+    "now": {},
+    # The dominant plan's income sits in the books it floods -- melon,
+    # carrot, strawberry, and milk/wool/fertilizer from its seventeen
+    # animals. Crowding those is what moves the margin; filling the ones
+    # it abandons was measured to make the margin 24,936 worse.
+    "crowd melon+carrot": {
+        "CROP_TILES": (("MELON", 20), ("CARROT", 28), ("STRAWBERRY", 8)),
     },
-    "tomato 20, no straw": {
-        "CROP_TILES": (("TOMATO", 20), ("MELON", 12), ("CARROT", 16)),
+    "crowd all three": {
+        "CROP_TILES": (("MELON", 20), ("CARROT", 28), ("STRAWBERRY", 20)),
     },
-    "tomato first 20": {
-        "CROP_TILES": (("TOMATO", 20), ("MELON", 12), ("CARROT", 16),
-                       ("STRAWBERRY", 8)),
+    "melon heavy": {
+        "CROP_TILES": (("MELON", 28), ("CARROT", 16), ("STRAWBERRY", 8)),
     },
 }
 
