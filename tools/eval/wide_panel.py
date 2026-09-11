@@ -93,7 +93,7 @@ def main() -> None:
     parser.add_argument("--opponents", type=int, default=40)
     parser.add_argument("--seeds", type=int, default=2)
     parser.add_argument("--min-rating", type=float, default=2700.0)
-    parser.add_argument("--workers", type=int, default=6)
+    parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--contested", type=float, default=0.0,
                         help="only tapes won by less than this margin "
                              "against an opponent also above --min-rating")

@@ -38,7 +38,7 @@ def main() -> None:
     parser.add_argument("--seeds", type=int, default=1)
     parser.add_argument("--min-rating", type=float, default=2800.0)
     parser.add_argument("--contested", type=float, default=15000.0)
-    parser.add_argument("--workers", type=int, default=6)
+    parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--only", action="append", default=[])
     args = parser.parse_args()
 
