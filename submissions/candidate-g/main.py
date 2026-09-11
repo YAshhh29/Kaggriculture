@@ -508,10 +508,11 @@ BAND_HARVEST = 6000.0
 BAND_WHEAT = 4000.0
 BAND_PLACE = 3000.0
 BAND_SERVICE = 2000.0
-BAND_WATER = 1500.0
+BAND_WATER = 3500.0
 BAND_FERTILIZE = 1600.0
 BAND_BUILD = 800.0
 BAND_CROP = 600.0
+GLOBAL_ASSIGN = True
 RESCUE_SHARE = 0.0
 TENDING = ('WATER', 'FEED', 'CARE', 'PICKUP', 'NORTH', 'SOUTH', 'EAST', 'WEST')
 
@@ -1135,7 +1136,10 @@ def decide(observation: dict[str, Any]) -> AgentAction:
                         score *= ZONE_TAX
                     if score > 0.0:
                         candidates.append((score, worker, (x, y), list(act), travel))
-    candidates.sort(key=lambda c: -c[0])
+    if GLOBAL_ASSIGN:
+        candidates.sort(key=lambda c: -c[0])
+    else:
+        candidates.sort(key=lambda c: (c[1], -c[0]))
     chosen: dict[int, list[Any]] = {}
     for _score, worker, cell, act, travel in candidates:
         if worker in chosen or cell in claimed:

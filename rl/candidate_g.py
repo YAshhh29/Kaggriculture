@@ -555,7 +555,33 @@ BAND_HARVEST = 6000.0
 BAND_WHEAT = 4000.0
 BAND_PLACE = 3000.0
 BAND_SERVICE = 2000.0
-BAND_WATER = 1500.0
+# Watering, and the band that taught this project what it is optimising.
+#
+# Raising it makes the farm *poorer* and the opponent poorer still. Over
+# 120 games against thirty contested opponents:
+#
+#     band    our mean    margin
+#     1,500     64,395   -78,527
+#     3,500     52,294   -65,350
+#
+# and on a single seed the curve turns over rather than running away --
+# 2,500 gives -62,676, 3,500 -55,809, 6,000 -68,732, 9,000 -75,492 -- so
+# this is a real optimum and not an artifact of a recording that cannot
+# duck what we pour into the market.
+#
+# Twelve thousand of our own coins for thirteen thousand of theirs looks
+# like a regression on every measure this project has used. It is not:
+# the game is decided by who holds more money at step 720 and the rating
+# comes from wins, so the margin is the objective and our own total is
+# only a means to it. Mean, median and floor all score this change as a
+# loss, and all three are the wrong question.
+#
+# The mechanism travels. Volume into a book drops the price for both
+# players, and a live opponent can no more undo a collapsed market than a
+# tape can; the most it can do is sell earlier, which these tapes already
+# effectively do. What a live game would settle, and nothing here can, is
+# the size of the effect against something that adapts.
+BAND_WATER = 3500.0
 # Manure on a growing tile -- and *which* tile is the whole question.
 #
 # Spreading manure was measured as a clear loss and switched off: band
