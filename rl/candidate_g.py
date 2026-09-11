@@ -555,32 +555,36 @@ BAND_HARVEST = 6000.0
 BAND_WHEAT = 4000.0
 BAND_PLACE = 3000.0
 BAND_SERVICE = 2000.0
-# Watering, and the band that taught this project what it is optimising.
+# Watering, and the band that showed this project it was optimising the
+# wrong quantity -- by a route still not understood.
 #
-# Raising it makes the farm *poorer* and the opponent poorer still. Over
-# 120 games against thirty contested opponents:
+# Over 120 games against thirty contested opponents:
 #
 #     band    our mean    margin
 #     1,500     64,395   -78,527
 #     3,500     52,294   -65,350
 #
-# and on a single seed the curve turns over rather than running away --
-# 2,500 gives -62,676, 3,500 -55,809, 6,000 -68,732, 9,000 -75,492 -- so
-# this is a real optimum and not an artifact of a recording that cannot
-# duck what we pour into the market.
+# Twelve thousand of our own coins for thirteen thousand of theirs. Every
+# measure this project had used -- mean, median, floor -- calls that a
+# regression, and all three are the wrong question: the game goes to
+# whoever holds more money at step 720 and the rating comes from wins, so
+# the margin is the objective and our own total is only a means to it.
+# That much is solid, and it invalidates how a whole day of changes was
+# judged.
 #
-# Twelve thousand of our own coins for thirteen thousand of theirs looks
-# like a regression on every measure this project has used. It is not:
-# the game is decided by who holds more money at step 720 and the rating
-# comes from wins, so the margin is the objective and our own total is
-# only a means to it. Mean, median and floor all score this change as a
-# loss, and all three are the wrong question.
+# **The mechanism is not.** The obvious story is that more watering means
+# more produce, a flooded book and a collapsed price for both sides. A
+# single game traced end to end says otherwise: at 3,500 we earn *more*
+# (60,949 against 47,604), they earn *more* (110,545 against 91,956), the
+# margin is *worse*, and the books are less flooded rather than more --
+# wheat moves from -257 to +5, milk from +73 to -39. Idle turns nearly
+# double, 674 to 1,111.
 #
-# The mechanism travels. Volume into a book drops the price for both
-# players, and a live opponent can no more undo a collapsed market than a
-# tape can; the most it can do is sell earlier, which these tapes already
-# effectively do. What a live game would settle, and nothing here can, is
-# the size of the effect against something that adapts.
+# So the average is real and the explanation was invented. The variance
+# across opponents is wide enough that one game proves nothing either way,
+# but it does disprove the flooding account, and nothing has replaced it.
+# Treat the setting as measured and unexplained until it is traced across
+# the opponents where it actually wins.
 BAND_WATER = 3500.0
 # Manure on a growing tile -- and *which* tile is the whole question.
 #
