@@ -591,6 +591,9 @@ BAND_FERTILIZE = 1600.0     # 0 disables the job entirely
 
 BAND_BUILD = 800.0
 BAND_CROP = 600.0
+# Assign every worker-job pair best-first, rather than letting each worker
+# in turn take the best job left anywhere.
+GLOBAL_ASSIGN = True
 # Crew held back for maintenance only. Measured, and OFF.
 #
 # The idea came from a competing design and the reasoning is good: the
@@ -1681,7 +1684,14 @@ def decide(observation: dict[str, Any]) -> AgentAction:
                     if score > 0.0:
                         candidates.append((score, worker, (x, y), list(act),
                                            travel))
-    candidates.sort(key=lambda c: -c[0])
+    # GLOBAL_ASSIGN off reverts to the old worker-by-worker rule, where
+    # worker 0 took the best job anywhere on the board before worker 1
+    # chose at all. Kept switchable so the change can be re-measured on a
+    # panel wide enough to mean something.
+    if GLOBAL_ASSIGN:
+        candidates.sort(key=lambda c: -c[0])
+    else:
+        candidates.sort(key=lambda c: (c[1], -c[0]))
 
     chosen: dict[int, list[Any]] = {}
     for _score, worker, cell, act, travel in candidates:
