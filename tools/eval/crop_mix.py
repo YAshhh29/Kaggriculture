@@ -107,6 +107,11 @@ MIXES: dict[str, dict] = {
                              "HERD_TARGET": 12},
     "sell close + herd 17": {"SELL_CARRIED_AT_CLOSE": True,
                              "HERD_TARGET": 17},
+    # Against "sell close": 9 gave +10,161 margin (60/60 games better), 12
+    # gave +8,632 (54/60), 17 gave +352 (36/60). These bracket the peak.
+    "sell close + herd 8": {"SELL_CARRIED_AT_CLOSE": True, "HERD_TARGET": 8},
+    "sell close + herd 10": {"SELL_CARRIED_AT_CLOSE": True,
+                             "HERD_TARGET": 10},
     "plan shape": {
         "LAND_DAYS": (1, 5, 9),
         "HERD_MIX": {"GOOSE": 3, "COW": 8, "SHEEP": 6},
