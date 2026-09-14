@@ -1172,7 +1172,13 @@ def main() -> None:
     }
     verdict = judge(games)
     text = report(verdict, meta, previous, games)
-    stamp = time.strftime("%Y%m%d-%H%M%S")
+    # Label and microseconds in the name. Stamped to the second, four
+    # inspections finishing together at 17:45 wrote over each other and the
+    # baseline two of them were meant to be paired with was lost.
+    slug = "".join(c if c.isalnum() else "-" for c in args.label)[:40]
+    stamp = (time.strftime("%Y%m%d-%H%M%S")
+             + f"-{int(time.time() * 1e6) % 1_000_000:06d}"
+             + (f"-{slug}" if slug else ""))
     (OUT / f"inspect_{stamp}.json").write_text(
         json.dumps({"meta": meta, "verdict": verdict, "games": games},
                    default=str), encoding="utf-8")
