@@ -645,9 +645,14 @@ SELL_CARRIED_AT_CLOSE = True
 #
 # Paired on 30 contested opponents in a fixed town against G with both
 # kept switches and a herd of nine: 1,000 gives +916 a game (better in 39
-# of 60), 2,500 gives +121 (12/60). 2,500 is rejected. 1,000 waits for an
-# inspection, because the panel cannot see opponent replays falling apart.
-MIDDAY_DROP_HAUL: float | None = None
+# of 60), 2,500 gives +121 (12/60). 2,500 is rejected.
+#
+# 1,000 confirmed on the refreshed field, 12 current top teams with 8
+# replays each, paired with G without it: +1,074 a game on the 71 games
+# where the opponent replay stayed in step (median +834, better in 41,
+# worse in 30), +912 over all 96. Shed overflow falls from 4,763 to 3,855
+# coins a game and goods unsold at the close from 3,030 to 2,650.
+MIDDAY_DROP_HAUL: float | None = 1000.0
 # Stop buying a crop's seed once that crop can no longer be sown.
 #
 # Sowing a cash crop stops once it could not yield before the close
