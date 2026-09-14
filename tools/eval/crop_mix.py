@@ -96,6 +96,17 @@ MIXES: dict[str, dict] = {
     "land 1 6 11": {"LAND_DAYS": (1, 6, 11)},
     "land 1 7 11": {"LAND_DAYS": (1, 7, 11)},
     "land 1 6 10": {"LAND_DAYS": (1, 6, 10)},
+    # The herd. With the strawberry defaults G stands 215 animal-days a game
+    # to the top teams' 366, and sells 113 fertilizer to their 231, 124 milk
+    # to 186 and 58 wool to 135; a daily trace holds nine animals from day
+    # 13 while HERD_TARGET asks for six. Each carries SELL_CARRIED_AT_CLOSE,
+    # measured as a keep, so this runs against the agent G is about to be.
+    "sell close": {"SELL_CARRIED_AT_CLOSE": True},
+    "sell close + herd 9": {"SELL_CARRIED_AT_CLOSE": True, "HERD_TARGET": 9},
+    "sell close + herd 12": {"SELL_CARRIED_AT_CLOSE": True,
+                             "HERD_TARGET": 12},
+    "sell close + herd 17": {"SELL_CARRIED_AT_CLOSE": True,
+                             "HERD_TARGET": 17},
     "plan shape": {
         "LAND_DAYS": (1, 5, 9),
         "HERD_MIX": {"GOOSE": 3, "COW": 8, "SHEEP": 6},
