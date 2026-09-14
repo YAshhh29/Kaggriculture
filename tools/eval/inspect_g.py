@@ -857,6 +857,16 @@ def judge(games: list[dict]) -> dict[str, Any]:
 # --------------------------------------------------------------------------
 # Reporting.
 
+# An opponent replay refusing more than this share of its moves has fallen
+# out of step with its own farm, and the game says little about G.
+DESYNC = 0.02
+
+
+def _opp_noop(game: dict) -> float:
+    turns = game["stats"]["OPP"]["turns"]
+    return turns.get("noop", 0) / max(1, sum(turns.values()))
+
+
 def _fmt_share(d: dict, key: str) -> str:
     return f"{100 * d.get(key, 0):5.1f}%"
 
@@ -876,9 +886,20 @@ def report(verdict: dict, meta: dict, previous: dict | None,
                f"turns (below 99% means the verdicts cannot be trusted)")
     if meta.get("errors"):
         out.append(f"- {meta['errors']} games failed and are excluded")
+    broken = [g for g in games or [] if _opp_noop(g) > DESYNC]
     out += ["", "## Scoreboard", "",
             f"G {v['mean_g']:,.0f}, opponent {v['mean_opp']:,.0f}, margin "
-            f"{v['margin']:+,.0f}, wins {v['wins']}/{v['games']}", "",
+            f"{v['margin']:+,.0f}, wins {v['wins']}/{v['games']}", ""]
+    if games:
+        solid = [g for g in games if _opp_noop(g) <= DESYNC]
+        solid_wins = sum(1 for g in solid
+                         if g["reward"]["G"] > g["reward"]["OPP"])
+        out += [f"{len(broken)} games had an opponent replay refusing over "
+                f"{100 * DESYNC:.0f}% of its moves; on the other "
+                f"{len(solid)} G wins {solid_wins}"
+                + (f" with margin {statistics.mean(g['reward']['G'] - g['reward']['OPP'] for g in solid):+,.0f}"
+                   if solid else ""), ""]
+    out += [
             "| opponent | games | wins | margin | opponent replay no-op |",
             "|---|---:|---:|---:|---:|"]
     for row in sorted(v["opponents"], key=lambda r: r["margin"]):
@@ -979,6 +1000,26 @@ def report(verdict: dict, meta: dict, previous: dict | None,
         pairs = [(before[key], g["reward"]) for g in games or []
                  for key in [(g["tape"], g["seat"], g["seed"])]
                  if key in before]
+        # Only games where the opponent's replay stayed in step in *both*
+        # runs. A replay cannot adapt: when G's selling starves it of cash
+        # early, its purchases fail and everything after them no-ops. One
+        # SpaTaro replay refused 583 moves in a baseline game G "won" 88k
+        # to 63k, and 5 in the variant, where it banked 104k.
+        before_clean = {(g["tape"], g["seat"], g["seed"]): _opp_noop(g)
+                        for g in previous.get("games", [])}
+        clean = [(before[key], g["reward"]) for g in games or []
+                 for key in [(g["tape"], g["seat"], g["seed"])]
+                 if key in before and before_clean[key] <= DESYNC
+                 and _opp_noop(g) <= DESYNC]
+        if clean:
+            cd = [(a["G"] - a["OPP"]) - (b["G"] - b["OPP"]) for b, a in clean]
+            out.append(
+                f"- paired on {len(clean)} games where the opponent replay "
+                f"stayed in step in both runs: margin "
+                f"{statistics.mean(cd):+,.0f} per game (median "
+                f"{statistics.median(cd):+,.0f}), better in "
+                f"{sum(x > 0 for x in cd)}, worse in "
+                f"{sum(x < 0 for x in cd)}")
         if pairs:
             deltas = [(a["G"] - a["OPP"]) - (b["G"] - b["OPP"])
                       for b, a in pairs]
