@@ -25,18 +25,16 @@ from rl.economics import (
 )
 from rl.runtime import AgentAction
 
-# --------------------- Constants (tuned on held‑out seeds) ------------------
 TRAVEL_EXPONENT = 2.5
-RESCUE_SHARE = 0.45          # fraction of workers reserved for watering & animal care
-OPENING_LAND_DAY = 5         # buy second quadrant on day 5 (top teams' average)
-OPENING_HIRES = 4            # hire 4 hands on day 1
-HAND_CAP = 11                # max hands (Fibonacci wage makes more expensive)
-WHEAT_PER_BIRD = 0.8         # unfertilised wheat yield per tile per day
-EMERGENCY_FLOOR = 60.0       # coins kept for emergency feed
+OPENING_LAND_DAY = 5        
+OPENING_HIRES = 4           
+HAND_CAP = 11              
+WHEAT_PER_BIRD = 0.8      
+EMERGENCY_FLOOR = 130.0       
 MAX_QUADRANTS = 3
-SELL_PACE = 0.1              # sell at most 10% of remaining demand per turn
+SELL_PACE = 0.7              
 LAST_DAY = 29
-HARVEST_HOLD = True          # wait for max yield before harvesting
+HARVEST_HOLD = True          
 
 # Crop book depths (units until price floor)
 CROP_DEPTH = {
@@ -44,7 +42,7 @@ CROP_DEPTH = {
     "TOMATO": 529,
     "STRAWBERRY": 62,
     "MELON": 158,
-    "WHEAT": None,          # feed, not sold
+    "WHEAT": 10,
 }
 ANIMAL_PRODUCTS = {"GOOSE": "EGG", "COW": "MILK", "SHEEP": "WOOL"}
 ANIMAL_COSTS = {"GOOSE": 300, "COW": 400, "SHEEP": 500}
@@ -201,13 +199,13 @@ def _optimal_plant_day(crop, obs, day):
     rate = demand_rate(obs)
     rem = rate.get(crop, 0.0)
     book_depth = CROP_DEPTH.get(crop, 100)
-    # If demand is strong (>30% of book depth per step), plant early; else delay a bit
+    # If demand is strong (>70% of book depth per step), plant early; else delay a bit
     # We also consider the crop's first yield day: we want to start selling when
     # demand has already consumed some of the market to avoid early price depression.
-    if rem / book_depth > 0.3:
+    if rem / book_depth > 0.7:
         return min(day, 6)   # plant as soon as possible
     else:
-        return min(day, 9)   # delay to let demand build
+        return min(day, 12)   # delay to let demand build and also enssure that the crop matures in time
 
 
 def production_plan(obs, counts, day):
@@ -336,6 +334,7 @@ def job_value(obs, tile, x, y, inventory, day, shed, seeds, counts, plan, closin
     farm = obs["farms"][player]
     board_size = len(farm["tiles"])
     egg_price = max(1.0, price_at("EGG", inventory_of(obs, "EGG")))
+    initial_wheat_prices = [price_at("WHEAT", inventory_of(obs, "WHEAT"))]
     fert_price = max(1.0, price_at("FERTILIZER", inventory_of(obs, "FERTILIZER")))
 
     # ---- Shed ----
