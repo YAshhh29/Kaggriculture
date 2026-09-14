@@ -524,6 +524,11 @@ NIGHT_ROOM: int | None = None
 NIGHT_FROM_HOUR = 20
 CLOSE_RETURN_FROM_STEP: int | None = 705
 LAST_ACT_STEP = 718
+CLOSE_HARVEST_MUST_LAND = False
+CLOSE_ONLY_GOODS_FROM_STEP: int | None = 696
+GOODS_JOBS = ('HARVEST', 'COLLECT_FERTILIZER', 'DROP')
+DROP_SHARES_SHED = True
+PICKUP_SHARES_SHED = False
 ONGOING_FERT_ALIGN = False
 STRAWBERRY_FERT_STOCK = False
 SEED_TO_CAP = True
@@ -1263,6 +1268,12 @@ def decide(observation: dict[str, Any]) -> AgentAction:
                     if tending_only and act[0] not in TENDING:
                         continue
                     now_step = int(observation.get('step', 0))
+                    if CLOSE_ONLY_GOODS_FROM_STEP is not None and now_step >= CLOSE_ONLY_GOODS_FROM_STEP and (act[0] not in GOODS_JOBS):
+                        continue
+                    if CLOSE_HARVEST_MUST_LAND and CLOSE_RETURN_FROM_STEP is not None and (now_step >= CLOSE_RETURN_FROM_STEP) and (act[0] in ('HARVEST', 'COLLECT_FERTILIZER')):
+                        home = min((distance((x, y), s) for s in shed_tiles()))
+                        if now_step + travel + 1 + home > LAST_ACT_STEP:
+                            continue
                     night_trip = act[0] == 'DROP' and night_load_high(observation, counts) and (travel <= 23 - now_step % 24)
                     if night_trip or (CLOSE_RETURN_FROM_STEP is not None and act[0] == 'DROP' and (now_step >= CLOSE_RETURN_FROM_STEP) and (travel <= LAST_ACT_STEP - now_step)):
                         score = value
@@ -1284,7 +1295,8 @@ def decide(observation: dict[str, Any]) -> AgentAction:
             continue
         final = act if travel == 0 else step_toward(positions[worker], cell, act)
         chosen[worker] = final
-        claimed.add(cell)
+        if not (DROP_SHARES_SHED and act[0] == 'DROP' or (PICKUP_SHARES_SHED and act[0] == 'PICKUP')):
+            claimed.add(cell)
         claim(counts, final)
     actions = [chosen.get(worker, list(PASS)) for worker in range(len(positions))]
     return {'farmer': actions[0] if actions else list(PASS), 'hands': actions[1:], 'market': market_orders(observation, day, counts, shed, seeds, money, len(farm.get('hands') or []))}

@@ -212,6 +212,12 @@ WHEAT_PER_BIRD = 0.8
 # margin -3,044 a game on 68 clean games (better in 17, worse in 51). G
 # still buys about 20,800 coins of wheat a game, so the extra ground only
 # takes tiles from strawberry. Sixteen stays.
+#
+# Re-checked at 24 once feed pickups were sized to need and wheat bought
+# fell to about 3,600 coins a game, since the town's wheat book then sat open
+# 14 days a game: -2,271 a game on 69 clean games (better in 33, worse in
+# 36), -2,091 over all 96. G sells 248 wheat instead of 154, but at 37, and
+# the tiles still come out of strawberry. Sixteen stays.
 WHEAT_TILES = 16
 COOPS_AFTER_WHEAT = 8
 EARLY_BIRDS = 6
@@ -261,6 +267,11 @@ EARLY_BIRDS = 6
 # stayed in step: 8 gives -30 a game (better in 34, worse in 36), which
 # is noise; 10 gives -910 (better in 26, worse in 40), with shed overflow
 # up from 4,763 to 6,366 coins a game. Nine stays.
+#
+# Re-checked once feed pickups were sized to need, since cheaper feeding
+# might carry a larger herd: 11 gives -8,643 a game on 69 clean games
+# (better in 8, worse in 61), and the idle share of worker turns doubles
+# from 9.2% to 18.1%. Nine stays.
 HERD_TARGET = 9
 # A fixed herd, as {animal: head}, in place of the demand-weighted plan.
 #
@@ -558,6 +569,12 @@ FEED_PICKUP_SPARE = 4
 # An animal that missed yesterday's meal escapes if it misses tonight's.
 # Wheat already in some hand can be across the board, so for those animals
 # a hand at the shed fetches regardless of what is carried elsewhere.
+#
+# Neutral on the current top twelve, paired against spare 4 on 96 games:
+# +287 a game on 69 clean games (better 39, worse 30), -341 over all 96.
+# It all but ends escapes (494 -> 39 coins a game) but the extra wheat in
+# hands comes back to the shed at night and overflow rises from 410 to
+# 2,364. Off.
 FEED_PICKUP_FOR_HUNGRY = False
 # Cap on the crew ramp. Twelve hands cost about 376 a day in fibonacci
 # wages, some 10,500 across a season, against roughly 51,000 of gross
@@ -827,6 +844,66 @@ NIGHT_FROM_HOUR = 20
 # close fall from 2,691 to 1,578 coins a game.
 CLOSE_RETURN_FROM_STEP: int | None = 705
 LAST_ACT_STEP = 718
+# Harvest at the close only what can still reach the shed.
+#
+# On a reference game with the return trip on, nine hands still end the
+# season holding goods. From step 701 they keep harvesting a strawberry or
+# collecting a manure as each comes ripe beside them -- a harvest a tile
+# away outscores the long walk home -- and the last harvests happen on step
+# 718, after which nothing can be sold. The inspector charges 2,234 coins a
+# game for it, about 10 strawberries and 6 fertilizer.
+#
+# With this on, from CLOSE_RETURN_FROM_STEP a HARVEST or COLLECT_FERTILIZER
+# is only offered if the worker can reach the tile, act, walk to the shed
+# and DROP by LAST_ACT_STEP.
+#
+# Neutral, paired on 96 games against the v9 defaults: +23 a game on 69
+# clean games (better in 15, worse in 13, the rest identical). Stranded
+# goods fall from 2,234 to 1,750 coins a game, but a late harvest that
+# cannot land was only ever costing the turn. The goods stranded were
+# mostly harvested earlier by workers that never got a shed tile to walk
+# to -- see DROP_SHARES_SHED. Off.
+CLOSE_HARVEST_MUST_LAND = False
+# From this step only harvesting, collecting and carrying home are worth
+# anything: what is fed, watered, cared for or planted on the last day
+# produces after the final sale. None keeps every job on the board.
+#
+# From 696, the first turn of the last day, paired on 96 games against the
+# v9 defaults: +896 a game on 69 clean games (median +775, better in 65,
+# worse in 4), +901 over all 96 (better in 91). The crew stops feeding,
+# watering and caring for a farm that has no tomorrow and spends the day
+# bringing goods in; stranded goods fall from 2,234 to 1,609 coins a game.
+#
+# Kept at 696, together with DROP_SHARES_SHED. The two add up: both on
+# gives +1,324 a game on 69 clean games against neither (median +1,396,
+# better in 60, worse in 9), +429 against this alone (better in 53, worse
+# in 16) and +754 against shared drops alone (better in 66, worse in 3).
+CLOSE_ONLY_GOODS_FROM_STEP: int | None = 696
+GOODS_JOBS = ("HARVEST", "COLLECT_FERTILIZER", "DROP")
+# Let any number of workers head for the shed to DROP in the same turn.
+# Every assigned job claims its tile so two workers never walk to one job,
+# but the shed has only four access tiles and the engine lets units share a
+# tile, so at most four workers could be sent home on any turn while nine
+# were still carrying goods at the close.
+#
+# Traced at the close of a reference game: a worker one tile from the shed
+# walked away to feed an animal, another two tiles out went to dig, because
+# the four shed tiles had gone to four other carriers that turn and went to
+# four different ones the next. Paired on 96 games against the v9 defaults:
+# +571 a game on 69 clean games (median +742, better in 53, worse in 16),
+# +757 over all 96 (better in 74). Goods stranded in hands at the end of the
+# season fall from 2,234 to 142 coins a game. Kept, together with
+# CLOSE_ONLY_GOODS_FROM_STEP; the combined measurement is recorded there.
+DROP_SHARES_SHED = True
+# The same for PICKUP. claim() already takes each pickup off the shed's
+# count, so two workers are never sent for the same last unit; the tile
+# claim only capped feed runs at four workers a turn.
+#
+# Too small to call, paired on 96 games against the v9 defaults: +161 a game
+# on 69 clean games (median +1,179, better in 42, worse in 27), +60 over all
+# 96. Since pickups were sized to need, few turns send more than four
+# workers for feed, so the cap rarely binds. Off.
+PICKUP_SHARES_SHED = False
 # Fertilizer for strawberry.
 #
 # A strawberry produces four times, and a production made on a day the plant
@@ -2323,6 +2400,18 @@ def decide(observation: dict[str, Any]) -> AgentAction:
                     if tending_only and act[0] not in TENDING:
                         continue
                     now_step = int(observation.get("step", 0))
+                    if (CLOSE_ONLY_GOODS_FROM_STEP is not None
+                            and now_step >= CLOSE_ONLY_GOODS_FROM_STEP
+                            and act[0] not in GOODS_JOBS):
+                        continue
+                    if (CLOSE_HARVEST_MUST_LAND
+                            and CLOSE_RETURN_FROM_STEP is not None
+                            and now_step >= CLOSE_RETURN_FROM_STEP
+                            and act[0] in ("HARVEST", "COLLECT_FERTILIZER")):
+                        home = min(distance((x, y), s) for s in shed_tiles())
+                        # Walk there, act, walk home, drop.
+                        if now_step + travel + 1 + home > LAST_ACT_STEP:
+                            continue
                     night_trip = (act[0] == "DROP"
                                   and night_load_high(observation, counts)
                                   and travel <= 23 - now_step % 24)
@@ -2362,7 +2451,9 @@ def decide(observation: dict[str, Any]) -> AgentAction:
         final = (act if travel == 0
                  else step_toward(positions[worker], cell, act))
         chosen[worker] = final
-        claimed.add(cell)
+        if not ((DROP_SHARES_SHED and act[0] == "DROP")
+                or (PICKUP_SHARES_SHED and act[0] == "PICKUP")):
+            claimed.add(cell)
         claim(counts, final)
     actions = [chosen.get(worker, list(PASS))
                for worker in range(len(positions))]
