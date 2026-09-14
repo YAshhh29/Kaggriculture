@@ -500,6 +500,7 @@ FEED_MIN_FLOCK = 4
 FEED_BUY_UNTIL = 6
 FEED_STOCK_FLOOR = 150.0
 HARVEST_HOLD = True
+STARVING_MEANS_MISSED_MEAL = False
 SOW_UNTIL = 3
 DROP_FROM_STEP = 713
 TRAVEL_EXPONENT = 2.0
@@ -571,7 +572,7 @@ def _owned(tiles: list[list[Any]], x: int, y: int) -> bool:
 
 def census(tiles: list[list[Any]]) -> dict[str, int]:
     """Everything the scheduler needs to know about the board, in one pass."""
-    out = {'geese': 0, 'animals': 0, 'empty_coops': 0, 'empty_pastures': 0, 'wheat': 0, 'free': 0, 'unfed': 0, 'uncared': 0, 'manure': 0, 'ripe': 0, 'dry': 0, 'have_GOOSE': 0, 'have_COW': 0, 'have_SHEEP': 0}
+    out = {'geese': 0, 'animals': 0, 'empty_coops': 0, 'empty_pastures': 0, 'wheat': 0, 'free': 0, 'unfed': 0, 'uncared': 0, 'hungry': 0, 'manure': 0, 'ripe': 0, 'dry': 0, 'have_GOOSE': 0, 'have_COW': 0, 'have_SHEEP': 0}
     for row in tiles:
         for tile in row:
             if tile == 'LOCKED':
@@ -591,6 +592,8 @@ def census(tiles: list[list[Any]]) -> dict[str, int]:
                     out['geese'] += 1
                 if not tile.get('fed_today'):
                     out['unfed'] += 1
+                    if int(tile.get('consecutive_unfed', 0) or 0) >= 1:
+                        out['hungry'] += 1
                 if not tile.get('cared_today'):
                     out['uncared'] += 1
                 if tile.get('fertilizer_available'):
@@ -785,7 +788,8 @@ def job_value(observation: dict[str, Any], tile: Any, x: int, y: int, inventory:
             last = int(spec['max_day'])
             done = units >= int(spec['max_yield'])
             urgent = age >= last or done or closing
-            starving = crop == 'WHEAT' and counts['unfed'] > 0 and (int(shed.get('WHEAT', 0)) <= 0)
+            hungry = counts.get('hungry', 0) if STARVING_MEANS_MISSED_MEAL else counts['unfed']
+            starving = crop == 'WHEAT' and hungry > 0 and (int(shed.get('WHEAT', 0)) <= 0)
             if urgent or starving or spec['ongoing'] or (not HARVEST_HOLD):
                 value = BAND_HARVEST + egg * 0.5 * units
                 jobs.append((value * (1.35 if age > last else 1.0), ['HARVEST']))

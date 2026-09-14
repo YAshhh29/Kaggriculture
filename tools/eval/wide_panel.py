@@ -82,7 +82,12 @@ def one(job):
     spec, overrides, tape, seed, seat = job
     from kaggle_environments import make
 
+    from tools.eval.fair_town import install as fair_town
     from tools.eval.measure_panel import resolve
+
+    # The same seed must give the same town whatever G does, or two
+    # configs are measured in two different towns.
+    fair_town()
 
     module_name, attr = spec.split(":")
     import importlib

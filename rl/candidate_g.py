@@ -465,6 +465,18 @@ FEED_STOCK_FLOOR = 150.0
 # on G -- 44,364 against 40,072 on sixty paired games against
 # top-of-ladder routes, ahead in 43 of the 60.
 HARVEST_HOLD = True
+# What counts as a starving flock when deciding to pull wheat early.
+#
+# The hold is released for every ripe wheat tile on the board whenever an
+# animal is unfed and the shed holds no wheat. But `fed_today` resets every
+# night, so each morning the whole herd reads as unfed, and the moment the
+# feed round empties the shed the release fires. The inspector puts G's
+# forgone wheat at about 448 units a game, most of it cut at age two.
+#
+# True means only an animal that already missed yesterday's meal -- the one
+# that escapes if unfed again tonight -- releases the hold. False keeps the
+# old reading.
+STARVING_MEANS_MISSED_MEAL = False
 # Days before the close that sowing and seed-buying stop.
 #
 # This was five for wheat and three for cash crops, and it is what empties
@@ -752,7 +764,7 @@ def census(tiles: list[list[Any]]) -> dict[str, int]:
     """Everything the scheduler needs to know about the board, in one pass."""
     out = {
         "geese": 0, "animals": 0, "empty_coops": 0, "empty_pastures": 0,
-        "wheat": 0, "free": 0, "unfed": 0, "uncared": 0,
+        "wheat": 0, "free": 0, "unfed": 0, "uncared": 0, "hungry": 0,
         "manure": 0, "ripe": 0, "dry": 0,
         "have_GOOSE": 0, "have_COW": 0, "have_SHEEP": 0,
     }
@@ -775,6 +787,9 @@ def census(tiles: list[list[Any]]) -> dict[str, int]:
                     out["geese"] += 1
                 if not tile.get("fed_today"):
                     out["unfed"] += 1
+                    # Missed yesterday too: unfed again tonight, it escapes.
+                    if int(tile.get("consecutive_unfed", 0) or 0) >= 1:
+                        out["hungry"] += 1
                 if not tile.get("cared_today"):
                     out["uncared"] += 1
                 if tile.get("fertilizer_available"):
@@ -1122,7 +1137,9 @@ def job_value(
             # output, on the order of 1,000 to 1,800. On this farm keeping
             # animals alive dominates yield per tile, and it is worth
             # over-harvesting to be sure of it.
-            starving = (crop == "WHEAT" and counts["unfed"] > 0
+            hungry = (counts.get("hungry", 0) if STARVING_MEANS_MISSED_MEAL
+                      else counts["unfed"])
+            starving = (crop == "WHEAT" and hungry > 0
                         and int(shed.get("WHEAT", 0)) <= 0)
             if urgent or starving or spec["ongoing"] or not HARVEST_HOLD:
                 value = BAND_HARVEST + egg * 0.5 * units

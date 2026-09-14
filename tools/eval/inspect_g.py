@@ -137,9 +137,12 @@ def play(spec: str, overrides: dict, tape: str, seed: int, seat: int):
 
     from kaggle_environments import make
 
+    from tools.eval.fair_town import install as fair_town
     from tools.eval.measure_panel import resolve
 
     install_ledger()
+    # Same seed, same town, whatever G does -- see tools/eval/fair_town.py.
+    fair_town()
     module_name, attr = spec.split(":")
     module = importlib.import_module(module_name)
     for key, value in (overrides or {}).items():
