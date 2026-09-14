@@ -527,6 +527,16 @@ SEED_TO_CAP = True
 FLOOR_HOLD: float | None = None
 FLOOR_HOLD_GOODS = ('STRAWBERRY', 'MILK', 'WOOL', 'MELON')
 FLOOR_HOLD_ROOM = 80
+ONGOING_FULL_CYCLE = False
+
+def last_sow_day(crop: str) -> int:
+    """Last day an ongoing crop may be sown and still finish producing."""
+    spec = CROPS.get(crop)
+    if not ONGOING_FULL_CYCLE or spec is None or (not spec.get('ongoing')):
+        return LAST_DAY
+    interval = max(1, int(spec['interval']))
+    run = int(spec['first']) - 1 + (int(spec['max_yield']) - 1) * interval
+    return LAST_DAY - 1 - run
 
 def town_takes(observation: dict[str, Any], item: str) -> bool:
     """Whether some unlocked shop (or the town centre) consumes `item`."""
@@ -801,6 +811,8 @@ def job_value(observation: dict[str, Any], tile: Any, x: int, y: int, inventory:
                     break
                 spec = CROPS.get(crop)
                 if spec is None or counts.get('crop_' + crop, 0) >= cap:
+                    continue
+                if day > last_sow_day(crop):
                     continue
                 if counts.get('seed_' + crop, int(seeds.get(crop, 0))) <= 0:
                     continue
@@ -1155,6 +1167,8 @@ def market_orders(observation: dict[str, Any], day: int, counts: dict[str, int],
             if len(orders) >= MAX_ORDERS:
                 break
             if SEED_ONLY_WHEN_SOWABLE and crop in CROPS and (day > LAST_DAY - int(CROPS[crop]['first']) - 1):
+                continue
+            if day > last_sow_day(crop):
                 continue
             batch = min(OPENING_SEED_BATCH, max(0, cap - counts.get('crop_' + crop, 0))) if opening else CROP_SEED_BATCH
             standing = counts.get('crop_' + crop, 0)

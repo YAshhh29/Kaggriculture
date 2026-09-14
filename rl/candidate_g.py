@@ -412,6 +412,12 @@ COOP_LEAD = 2
 # What it costs, for the next change: crops dying unwatered rise from 636
 # to 1,963 coins a game (carrot and melon at age zero, on the days new
 # ground opens), and more strawberry is left unsold at the close.
+#
+# Melon capped at 8 instead of 12, since the town takes about 30 melons a
+# game and later batches sold at 155 and 126: neutral on the pruned
+# current corpus, margin -67 a game on 68 clean games (median 0, better
+# in 22, worse in 29). The price per melon rises from 177 to 187 but
+# fewer are sold. Twelve stays.
 CROP_TILES = (("STRAWBERRY", 32), ("MELON", 12), ("CARROT", 16))
 # The opening, crop by crop.
 #
@@ -801,6 +807,33 @@ SEED_TO_CAP = True
 FLOOR_HOLD: float | None = None
 FLOOR_HOLD_GOODS = ("STRAWBERRY", "MILK", "WOOL", "MELON")
 FLOOR_HOLD_ROOM = 80
+# Sow an ongoing crop only while its whole production run fits the season.
+#
+# A strawberry sown on day d produces at the end of days d+9, d+11, d+13 and
+# d+15, and a production at the end of day 29 is never sold, so all four fit
+# only up to day 13. Sowing runs to day 18 today. Following every plant
+# through a game found 13 strawberry plants still standing at the close and
+# 3 that yielded nothing, each a 100-coin seed on a tile a carrot could have
+# used. With this on, an ongoing crop is sown (and its seed bought) only
+# while its last production still lands on a day that can be sold.
+#
+# Not pursued. On the two reference games it moved the margin by -1,515 and
+# +618. In the first, the 12 strawberries it stopped sowing after day 13
+# had still sold 13 more units, about 2,300 coins against about 1,200 of
+# seed. A partial run still pays. Stays off.
+ONGOING_FULL_CYCLE = False
+
+
+def last_sow_day(crop: str) -> int:
+    """Last day an ongoing crop may be sown and still finish producing."""
+    spec = CROPS.get(crop)
+    if not ONGOING_FULL_CYCLE or spec is None or not spec.get("ongoing"):
+        return LAST_DAY
+    interval = max(1, int(spec["interval"]))
+    # Productions land at the end of day d + first - 1 + k * interval;
+    # the last one must be no later than the day before the final day.
+    run = int(spec["first"]) - 1 + (int(spec["max_yield"]) - 1) * interval
+    return LAST_DAY - 1 - run
 
 
 def town_takes(observation: dict[str, Any], item: str) -> bool:
@@ -1401,6 +1434,8 @@ def job_value(
                     break
                 spec = CROPS.get(crop)
                 if spec is None or counts.get("crop_" + crop, 0) >= cap:
+                    continue
+                if day > last_sow_day(crop):
                     continue
                 if counts.get("seed_" + crop, int(seeds.get(crop, 0))) <= 0:
                     continue
@@ -2036,6 +2071,8 @@ def market_orders(
                 break
             if (SEED_ONLY_WHEN_SOWABLE and crop in CROPS
                     and day > LAST_DAY - int(CROPS[crop]["first"]) - 1):
+                continue
+            if day > last_sow_day(crop):
                 continue
             # In the opening, seed is bought towards the cap in batches of up
             # to OPENING_SEED_BATCH. Buying a whole cap at once spent 3,200
