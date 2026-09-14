@@ -614,8 +614,56 @@ SEED_BUFFER = 10
 # offers it no job at all. The farm runs out of work, not out of hands.
 # Land and pens did not fix that because they cost capital G has not got
 # in the opening; seed is the cheap way to turn an idle turn into a tile.
+# Lowered to 300 on the current top twelve, paired against 1,500 on 96
+# games: -477 a game on 67 clean games (median +691, better in 35, worse in
+# 32), -2,517 over all 96 with G's own score lower in 63. Seed then competes
+# with the herd for every coin -- escapes rise from 501 to 1,225 coins a game
+# and missed care from 1,653 to 2,264 -- and day-11 cash falls from 8,777 to
+# 6,373. At 800: +704 a game on 69 clean games (median +681, better in 38,
+# worse in 29), +363 over all 96 with G's own score better in only 47 -- too
+# close to chance to switch. 1,500 stays.
 CROP_SEED_FLOOR = 1500.0
 CROP_SEED_BATCH = 4
+# Buy crop seed with each day's cash, ahead of the herd, while the season is
+# young.
+#
+# CROP_SEED_FLOOR shuts crop seed out of the whole opening. On a reference
+# game G's cash on days 1 to 10 sits between 225 and 1,098, so after the four
+# melon and four strawberry of day 0 it sows no melon or strawberry at all
+# until day 11 -- by day 10 it has four strawberries and sixteen wheat
+# standing on 75 owned tiles. The opponent earns about the same each day
+# from manure and spends it on seed the same day (320, 360, 400, 200, 100 on
+# days 1 to 5): 23 strawberries and 12 melons by day 8, and 13,000 coins of
+# melon on days 10 and 11 while G sells 1,472.
+#
+# The floor step also never counted what its seed cost. From
+# SEED_FIRST_FROM_DAY until SEED_FIRST_UNTIL_DAY, seed is bought at hour 2
+# out of the cash the herd leaves, capped by each crop's tile cap, the free
+# ground, the cash above SEED_FIRST_FLOOR and SEED_FIRST_DAILY_SPEND, in
+# SEED_FIRST_ORDER when that is set. None keeps the floor rule throughout.
+#
+# A first version, from day 0 and ahead of the animals with no daily limit,
+# took a reference game from 99,807 to 63,776. Day 0 spent 1,300 on
+# strawberry instead of the first cow and the melons, the herd stood at two
+# or three animals until day 7, and the milk and wool that carry days 7 to 9
+# never came (376 and 368 of income against 1,727 and 1,949). The animals
+# are the opening's income, so seed comes out of what they leave.
+#
+# Reworked that way, days 1 to 10 at 400 a day, paired on 96 games against
+# the v10 defaults, it still loses:
+#     crop plan order   -1,594 a game on 69 clean games (median -717, better
+#                       in 32, worse in 37), -2,683 over all 96
+#     melon first       -3,980 a game on 69 clean games (better in 17, worse
+#                       in 52), -4,439 over all 96
+# The earlier strawberries sell 176 units instead of 157 but at 156 instead
+# of 168, and the earlier melons flood a book the town takes only 30 of a
+# game: G sells 106 at 144 while the opponent still gets 215. Seed bought
+# in the opening also delays the day-9 and day-10 animals. Off.
+SEED_FIRST_UNTIL_DAY: int | None = None
+SEED_FIRST_FROM_DAY = 1
+SEED_FIRST_FLOOR = 150.0
+SEED_FIRST_DAILY_SPEND = 400.0
+SEED_FIRST_ORDER: tuple[str, ...] | None = None
 # Cash kept back to buy feed in an emergency.
 #
 # This was 400, which is above the cash G actually operates on: a daily
@@ -2013,6 +2061,42 @@ def crop_priority(observation: dict[str, Any]) -> list[tuple[str, int]]:
     return [(crop, cap) for pull, crop, cap in ranked if pull > 0]
 
 
+def early_seed_orders(
+    day: int,
+    counts: dict[str, int],
+    seeds: dict[str, int],
+    budget: float,
+    orders: list[list[Any]],
+) -> float:
+    """Crop seed the day's cash can pay for; returns the budget left."""
+    free = counts.get("free", 0) - sum(int(v) for v in seeds.values())
+    allowance = SEED_FIRST_DAILY_SPEND
+    plan = list(crop_plan(day))
+    if SEED_FIRST_ORDER is not None:
+        rank = {crop: i for i, crop in enumerate(SEED_FIRST_ORDER)}
+        plan.sort(key=lambda pair: rank.get(pair[0], len(rank)))
+    for crop, cap in plan:
+        if len(orders) >= MAX_ORDERS or free <= 0:
+            break
+        spec = CROPS.get(crop)
+        if spec is None or day > LAST_DAY - int(spec["first"]) - 1:
+            continue
+        if day > last_sow_day(crop):
+            continue
+        cost = float(spec["seed"])
+        quantity = min(
+            cap - counts.get("crop_" + crop, 0) - int(seeds.get(crop, 0)),
+            free,
+            int(min(budget - SEED_FIRST_FLOOR, allowance) // cost),
+        )
+        if quantity > 0:
+            orders.append(["BUY_SEED", crop, quantity])
+            budget -= cost * quantity
+            allowance -= cost * quantity
+            free -= quantity
+    return budget
+
+
 def market_orders(
     observation: dict[str, Any],
     day: int,
@@ -2125,6 +2209,11 @@ def market_orders(
         orders.append(["BUY_LAND"])
         budget -= LAND_RESERVE
 
+    # 3b. On the opening days crop seed is bought out of what the herd
+    #     leaves, below -- see SEED_FIRST_UNTIL_DAY.
+    early_seed = (SEED_FIRST_UNTIL_DAY is not None
+                  and SEED_FIRST_FROM_DAY <= day <= SEED_FIRST_UNTIL_DAY)
+
     # 4a. Which bird. Geese unless the town's own draw says otherwise by a
     #     clear margin -- a coop and a pasture are both free to build, so
     #     the only cost of following the town is noticing in time.
@@ -2234,7 +2323,10 @@ def market_orders(
     ):
         want = SEED_BUFFER - int(seeds.get("WHEAT", 0))
         orders.append(["BUY_SEED", "WHEAT", want])
-    if hour == 2 and budget > CROP_SEED_FLOOR and day <= LAST_DAY - SOW_UNTIL:
+    if early_seed and hour == 2:
+        budget = early_seed_orders(day, counts, seeds, budget, orders)
+    if (hour == 2 and budget > CROP_SEED_FLOOR and not early_seed
+            and day <= LAST_DAY - SOW_UNTIL):
         opening = (OPENING_CROP_TILES is not None
                    and day <= OPENING_UNTIL_DAY)
         for crop, cap in crop_plan(day):

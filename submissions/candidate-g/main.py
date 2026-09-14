@@ -507,6 +507,11 @@ HARVEST_AT = 2
 SEED_BUFFER = 10
 CROP_SEED_FLOOR = 1500.0
 CROP_SEED_BATCH = 4
+SEED_FIRST_UNTIL_DAY: int | None = None
+SEED_FIRST_FROM_DAY = 1
+SEED_FIRST_FLOOR = 150.0
+SEED_FIRST_DAILY_SPEND = 400.0
+SEED_FIRST_ORDER: tuple[str, ...] | None = None
 RATION_FLOOR = 60.0
 FEED_STOCK_DAYS = 0
 FEED_MIN_FLOCK = 4
@@ -1101,6 +1106,31 @@ def crop_priority(observation: dict[str, Any]) -> list[tuple[str, int]]:
     ranked.sort(reverse=True)
     return [(crop, cap) for pull, crop, cap in ranked if pull > 0]
 
+def early_seed_orders(day: int, counts: dict[str, int], seeds: dict[str, int], budget: float, orders: list[list[Any]]) -> float:
+    """Crop seed the day's cash can pay for; returns the budget left."""
+    free = counts.get('free', 0) - sum((int(v) for v in seeds.values()))
+    allowance = SEED_FIRST_DAILY_SPEND
+    plan = list(crop_plan(day))
+    if SEED_FIRST_ORDER is not None:
+        rank = {crop: i for i, crop in enumerate(SEED_FIRST_ORDER)}
+        plan.sort(key=lambda pair: rank.get(pair[0], len(rank)))
+    for crop, cap in plan:
+        if len(orders) >= MAX_ORDERS or free <= 0:
+            break
+        spec = CROPS.get(crop)
+        if spec is None or day > LAST_DAY - int(spec['first']) - 1:
+            continue
+        if day > last_sow_day(crop):
+            continue
+        cost = float(spec['seed'])
+        quantity = min(cap - counts.get('crop_' + crop, 0) - int(seeds.get(crop, 0)), free, int(min(budget - SEED_FIRST_FLOOR, allowance) // cost))
+        if quantity > 0:
+            orders.append(['BUY_SEED', crop, quantity])
+            budget -= cost * quantity
+            allowance -= cost * quantity
+            free -= quantity
+    return budget
+
 def market_orders(observation: dict[str, Any], day: int, counts: dict[str, int], shed: dict[str, int], seeds: dict[str, int], money: float, hands: int) -> list[list[Any]]:
     """Sell the deep books, then buy the flock that fills them."""
     orders: list[list[Any]] = []
@@ -1146,6 +1176,7 @@ def market_orders(observation: dict[str, Any], day: int, counts: dict[str, int],
     if buy_land and quadrants < MAX_QUADRANTS and (len(orders) < MAX_ORDERS):
         orders.append(['BUY_LAND'])
         budget -= LAND_RESERVE
+    early_seed = SEED_FIRST_UNTIL_DAY is not None and SEED_FIRST_FROM_DAY <= day <= SEED_FIRST_UNTIL_DAY
     bird = counts.get('bird', 'GOOSE')
     total_animals = counts['animals'] + sum((int(shed.get(a, 0)) for a in ANIMAL_HOME))
     feedable = counts['wheat'] * WHEAT_PER_BIRD + shed.get('WHEAT', 0) / 3.0
@@ -1179,7 +1210,9 @@ def market_orders(observation: dict[str, Any], day: int, counts: dict[str, int],
     if hour == 1 and int(seeds.get('WHEAT', 0)) < SEED_BUFFER and (budget > GOOSE_CASH_FLOOR) and (day <= LAST_DAY - 5) and (len(orders) < MAX_ORDERS):
         want = SEED_BUFFER - int(seeds.get('WHEAT', 0))
         orders.append(['BUY_SEED', 'WHEAT', want])
-    if hour == 2 and budget > CROP_SEED_FLOOR and (day <= LAST_DAY - SOW_UNTIL):
+    if early_seed and hour == 2:
+        budget = early_seed_orders(day, counts, seeds, budget, orders)
+    if hour == 2 and budget > CROP_SEED_FLOOR and (not early_seed) and (day <= LAST_DAY - SOW_UNTIL):
         opening = OPENING_CROP_TILES is not None and day <= OPENING_UNTIL_DAY
         for crop, cap in crop_plan(day):
             if len(orders) >= MAX_ORDERS:
