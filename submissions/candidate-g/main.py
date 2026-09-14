@@ -501,6 +501,7 @@ FEED_BUY_UNTIL = 6
 FEED_STOCK_FLOOR = 150.0
 HARVEST_HOLD = True
 STARVING_MEANS_MISSED_MEAL = False
+FEED_DEFICIT_RULE = False
 SOW_UNTIL = 3
 DROP_FROM_STEP = 713
 TRAVEL_EXPONENT = 2.0
@@ -614,6 +615,10 @@ def census(tiles: list[list[Any]]) -> dict[str, int]:
                     key = 'crop_' + crop
                     out[key] = out.get(key, 0) + 1
     return out
+
+def feed_deficit(counts: dict[str, int], shed: dict[str, int]) -> int:
+    """Animals still to feed today beyond the wheat already held."""
+    return max(0, counts['unfed'] - int(shed.get('WHEAT', 0)) - counts.get('wheat_carried', 0))
 
 def fertilizer_gain(tile: dict[str, Any], day: int) -> int:
     """Extra units this tile would yield if manure went on it today.
@@ -788,8 +793,11 @@ def job_value(observation: dict[str, Any], tile: Any, x: int, y: int, inventory:
             last = int(spec['max_day'])
             done = units >= int(spec['max_yield'])
             urgent = age >= last or done or closing
-            hungry = counts.get('hungry', 0) if STARVING_MEANS_MISSED_MEAL else counts['unfed']
-            starving = crop == 'WHEAT' and hungry > 0 and (int(shed.get('WHEAT', 0)) <= 0)
+            if FEED_DEFICIT_RULE:
+                starving = crop == 'WHEAT' and feed_deficit(counts, shed) > 0
+            else:
+                hungry = counts.get('hungry', 0) if STARVING_MEANS_MISSED_MEAL else counts['unfed']
+                starving = crop == 'WHEAT' and hungry > 0 and (int(shed.get('WHEAT', 0)) <= 0)
             if urgent or starving or spec['ongoing'] or (not HARVEST_HOLD):
                 value = BAND_HARVEST + egg * 0.5 * units
                 jobs.append((value * (1.35 if age > last else 1.0), ['HARVEST']))
@@ -1085,7 +1093,11 @@ def market_orders(observation: dict[str, Any], day: int, counts: dict[str, int],
                 break
             if counts.get('crop_' + crop, 0) < cap and int(seeds.get(crop, 0)) < CROP_SEED_BATCH:
                 orders.append(['BUY_SEED', crop, CROP_SEED_BATCH])
-    if counts['unfed'] > 0 and int(shed.get('WHEAT', 0)) <= 0 and (budget > RATION_FLOOR) and (len(orders) < MAX_ORDERS):
+    if FEED_DEFICIT_RULE:
+        short = feed_deficit(counts, shed)
+        if short > 0 and budget > RATION_FLOOR and (len(orders) < MAX_ORDERS):
+            orders.append(['BUY_PRODUCT', 'WHEAT', min(short, 6)])
+    elif counts['unfed'] > 0 and int(shed.get('WHEAT', 0)) <= 0 and (budget > RATION_FLOOR) and (len(orders) < MAX_ORDERS):
         orders.append(['BUY_PRODUCT', 'WHEAT', min(counts['unfed'], 6)])
     return orders[:MAX_ORDERS]
 
@@ -1106,6 +1118,7 @@ def decide(observation: dict[str, Any]) -> AgentAction:
         for crop, have in seeds.items():
             counts['seed_' + crop] = int(have)
     counts['shed_WHEAT'] = int(shed.get('WHEAT', 0))
+    counts['wheat_carried'] = sum((int(_inventory(observation, worker).get('WHEAT', 0)) for worker in range(len(positions))))
     herd = dict(HERD_MIX) if HERD_MIX is not None else herd_plan(observation, counts, HERD_TARGET)
     for animal in ANIMAL_HOME:
         counts['want_' + animal] = int(herd.get(animal, 0))

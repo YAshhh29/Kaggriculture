@@ -477,6 +477,19 @@ HARVEST_HOLD = True
 # that escapes if unfed again tonight -- releases the hold. False keeps the
 # old reading.
 STARVING_MEANS_MISSED_MEAL = False
+# Judge hunger by the feed actually short, not by an empty shed.
+#
+# Both the early wheat harvest and the emergency ration fire when any
+# animal is unfed and the shed holds no wheat. Every animal is unfed at
+# dawn, and the morning feed round is carried *out* of the shed, so both
+# fire daily with the grain already in the workers' hands. Traced on one
+# game: G sold all 742 of its wheat at hour 0, bought 511 back between
+# hours 1 and 11 at the same price on 24 of 30 days, and on 95 of 103
+# buying turns no animal had missed a meal and wheat was already carried.
+#
+# True releases the hold and buys ration only for the deficit: animals
+# still to feed today, less the wheat in the shed and in hand.
+FEED_DEFICIT_RULE = False
 # Days before the close that sowing and seed-buying stop.
 #
 # This was five for wheat and three for cash crops, and it is what empties
@@ -812,6 +825,12 @@ def census(tiles: list[list[Any]]) -> dict[str, int]:
     return out
 
 
+def feed_deficit(counts: dict[str, int], shed: dict[str, int]) -> int:
+    """Animals still to feed today beyond the wheat already held."""
+    return max(0, counts["unfed"] - int(shed.get("WHEAT", 0))
+               - counts.get("wheat_carried", 0))
+
+
 def fertilizer_gain(tile: dict[str, Any], day: int) -> int:
     """Extra units this tile would yield if manure went on it today.
 
@@ -1137,10 +1156,14 @@ def job_value(
             # output, on the order of 1,000 to 1,800. On this farm keeping
             # animals alive dominates yield per tile, and it is worth
             # over-harvesting to be sure of it.
-            hungry = (counts.get("hungry", 0) if STARVING_MEANS_MISSED_MEAL
-                      else counts["unfed"])
-            starving = (crop == "WHEAT" and hungry > 0
-                        and int(shed.get("WHEAT", 0)) <= 0)
+            if FEED_DEFICIT_RULE:
+                starving = (crop == "WHEAT"
+                            and feed_deficit(counts, shed) > 0)
+            else:
+                hungry = (counts.get("hungry", 0)
+                          if STARVING_MEANS_MISSED_MEAL else counts["unfed"])
+                starving = (crop == "WHEAT" and hungry > 0
+                            and int(shed.get("WHEAT", 0)) <= 0)
             if urgent or starving or spec["ongoing"] or not HARVEST_HOLD:
                 value = BAND_HARVEST + egg * 0.5 * units
                 jobs.append((value * (1.35 if age > last else 1.0),
@@ -1662,7 +1685,11 @@ def market_orders(
                 orders.append(["BUY_SEED", crop, CROP_SEED_BATCH])
 
     # 6. Emergency ration, so a late harvest never costs a bird.
-    if (
+    if FEED_DEFICIT_RULE:
+        short = feed_deficit(counts, shed)
+        if short > 0 and budget > RATION_FLOOR and len(orders) < MAX_ORDERS:
+            orders.append(["BUY_PRODUCT", "WHEAT", min(short, 6)])
+    elif (
         counts["unfed"] > 0
         and int(shed.get("WHEAT", 0)) <= 0
         and budget > RATION_FLOOR
@@ -1705,6 +1732,9 @@ def decide(observation: dict[str, Any]) -> AgentAction:
     # thirteen workers all read the same full shed and the same empty
     # pens, and most of the resulting trips are silent no-ops.
     counts["shed_WHEAT"] = int(shed.get("WHEAT", 0))
+    counts["wheat_carried"] = sum(
+        int(_inventory(observation, worker).get("WHEAT", 0))
+        for worker in range(len(positions)))
     # The herd we are aiming at, recomputed each turn so the mix follows
     # the town without ever abandoning a line already paid for.
     herd = (dict(HERD_MIX) if HERD_MIX is not None

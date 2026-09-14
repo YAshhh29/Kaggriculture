@@ -842,7 +842,8 @@ def _fmt_share(d: dict, key: str) -> str:
     return f"{100 * d.get(key, 0):5.1f}%"
 
 
-def report(verdict: dict, meta: dict, previous: dict | None) -> str:
+def report(verdict: dict, meta: dict, previous: dict | None,
+           games: list[dict] | None = None) -> str:
     v = verdict
     out = [f"# Inspection of Candidate G -- {meta['when']}", ""]
     out.append(f"- G source `{meta['g_sha']}` at commit `{meta['git']}`"
@@ -950,6 +951,24 @@ def report(verdict: dict, meta: dict, previous: dict | None) -> str:
         out.append(f"- margin {p['margin']:+,.0f} -> {v['margin']:+,.0f}, "
                    f"wins {p['wins']}/{p['games']} -> {v['wins']}/{v['games']}"
                    f", G {p['mean_g']:,.0f} -> {v['mean_g']:,.0f}")
+        if not previous["meta"].get("fair_town"):
+            out.append("- **the earlier run used the coupled town, so none "
+                       "of these deltas are comparable**")
+        # Game by game, on the games both runs actually share.
+        before = {(g["tape"], g["seat"], g["seed"]): g["reward"]
+                  for g in previous.get("games", [])}
+        pairs = [(before[key], g["reward"]) for g in games or []
+                 for key in [(g["tape"], g["seat"], g["seed"])]
+                 if key in before]
+        if pairs:
+            deltas = [(a["G"] - a["OPP"]) - (b["G"] - b["OPP"])
+                      for b, a in pairs]
+            out.append(
+                f"- paired on {len(pairs)} identical games: margin "
+                f"{statistics.mean(deltas):+,.0f} per game, better in "
+                f"{sum(d > 0 for d in deltas)}, worse in "
+                f"{sum(d < 0 for d in deltas)}; G's own score better in "
+                f"{sum(a['G'] > b['G'] for b, a in pairs)}")
         for key in LOSSES:
             a = p["losses"].get(key, {}).get("g_coins", 0)
             b = v["losses"][key]["g_coins"]
@@ -1028,6 +1047,9 @@ def main() -> None:
     parser.add_argument("--set", action="append", default=[],
                         help="NAME=VALUE override (JSON value), repeatable")
     parser.add_argument("--label", default="")
+    parser.add_argument("--against", default="",
+                        help="compare with the latest run carrying this "
+                             "label, instead of the latest run")
     parser.add_argument("--drill", type=int, default=0,
                         help="episode id of a held tape to step through")
     parser.add_argument("--seat", type=int, default=0)
@@ -1069,9 +1091,12 @@ def main() -> None:
         raise SystemExit("every game failed")
 
     OUT.mkdir(parents=True, exist_ok=True)
-    history = sorted(OUT.glob("inspect_*.json"))
-    previous = (json.loads(history[-1].read_text(encoding="utf-8"))
-                if history else None)
+    previous = None
+    for path in sorted(OUT.glob("inspect_*.json"), reverse=True):
+        candidate = json.loads(path.read_text(encoding="utf-8"))
+        if not args.against or candidate["meta"].get("label") == args.against:
+            previous = candidate
+            break
     newest, age = _snapshot_meta()
     source = (ROOT / args.spec.split(":")[0].replace(".", "/")).with_suffix(
         ".py")
@@ -1080,13 +1105,13 @@ def main() -> None:
         "git": _git_sha(),
         "g_sha": hashlib.sha1(source.read_bytes()).hexdigest()[:12]
         if source.exists() else "?",
-        "overrides": overrides, "label": args.label,
+        "overrides": overrides, "label": args.label, "fair_town": True,
         "snapshot_newest": newest, "snapshot_age_h": age,
         "errors": len(errors),
         "field": [[n, [Path(p).stem for p in ps]] for n, _, ps in field],
     }
     verdict = judge(games)
-    text = report(verdict, meta, previous)
+    text = report(verdict, meta, previous, games)
     stamp = time.strftime("%Y%m%d-%H%M%S")
     (OUT / f"inspect_{stamp}.json").write_text(
         json.dumps({"meta": meta, "verdict": verdict, "games": games},
