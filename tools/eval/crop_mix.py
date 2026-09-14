@@ -87,6 +87,15 @@ MIXES: dict[str, dict] = {
         "WHEAT_TILES": 16,
         "LAND_DAYS": (1, 5, 9),
     },
+    # Under the strawberry defaults each new quadrant sits half empty for
+    # days: bought on day 5 with the purse left at 9 coins, NE still has 7
+    # bare tiles on day 9, and SW bought on day 9 still has 5 on day 16.
+    # The top teams buy on days 6 and 11. These move the purchases later,
+    # so there is cash to seed the ground once it is open. Compare against
+    # a fresh "now", since the defaults changed.
+    "land 1 6 11": {"LAND_DAYS": (1, 6, 11)},
+    "land 1 7 11": {"LAND_DAYS": (1, 7, 11)},
+    "land 1 6 10": {"LAND_DAYS": (1, 6, 10)},
     "plan shape": {
         "LAND_DAYS": (1, 5, 9),
         "HERD_MIX": {"GOOSE": 3, "COW": 8, "SHEEP": 6},

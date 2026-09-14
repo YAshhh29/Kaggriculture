@@ -588,6 +588,14 @@ DROP_FROM_STEP = 713
 # opponent. The engine fills a SELL only from what the shed holds, so over-
 # asking costs nothing.
 SELL_CARRIED_AT_CLOSE = False
+# Stop buying a crop's seed once that crop can no longer be sown.
+#
+# Sowing a cash crop stops once it could not yield before the close
+# (strawberry after day 18), but its seed is bought until three days from
+# the end. A daily trace of the strawberry defaults ends the season holding
+# seven strawberry and four melon seeds, about 1,000 coins that could never
+# have been planted.
+SEED_ONLY_WHEN_SOWABLE = False
 # Re-checked on contested opponents once COMPACT moved, on the theory
 # that the two distance terms interact -- and it does not: 67,697 at 2.0
 # against 63,147 at 1.5 and 64,281 at 2.5, ahead on both counts. This one
@@ -1746,6 +1754,9 @@ def market_orders(
         for crop, cap in CROP_TILES:
             if len(orders) >= MAX_ORDERS:
                 break
+            if (SEED_ONLY_WHEN_SOWABLE and crop in CROPS
+                    and day > LAST_DAY - int(CROPS[crop]["first"]) - 1):
+                continue
             if (counts.get("crop_" + crop, 0) < cap
                     and int(seeds.get(crop, 0)) < CROP_SEED_BATCH):
                 orders.append(["BUY_SEED", crop, CROP_SEED_BATCH])

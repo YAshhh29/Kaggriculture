@@ -506,6 +506,7 @@ SOW_UNTIL = 3
 PLANT_CUTOFF_HOUR: int | None = None
 DROP_FROM_STEP = 713
 SELL_CARRIED_AT_CLOSE = False
+SEED_ONLY_WHEN_SOWABLE = False
 TRAVEL_EXPONENT = 2.0
 ZONE_TAX = 1.0
 COMPACT = 0.15
@@ -1098,6 +1099,8 @@ def market_orders(observation: dict[str, Any], day: int, counts: dict[str, int],
         for crop, cap in CROP_TILES:
             if len(orders) >= MAX_ORDERS:
                 break
+            if SEED_ONLY_WHEN_SOWABLE and crop in CROPS and (day > LAST_DAY - int(CROPS[crop]['first']) - 1):
+                continue
             if counts.get('crop_' + crop, 0) < cap and int(seeds.get(crop, 0)) < CROP_SEED_BATCH:
                 orders.append(['BUY_SEED', crop, CROP_SEED_BATCH])
     if FEED_DEFICIT_RULE:
