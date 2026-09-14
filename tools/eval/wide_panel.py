@@ -93,14 +93,22 @@ def one(job):
     import importlib
 
     module = importlib.import_module(module_name)
-    for key, value in (overrides or {}).items():
-        setattr(module, key, value)
-    mine = getattr(module, attr)
-    opponent = resolve("clone:" + tape)
-    agents = [mine, opponent] if seat == 0 else [opponent, mine]
-    env = make("kaggriculture",
-               configuration={"episodeSteps": 720, "seed": seed}, debug=False)
-    env.run(agents)
+    # Put overrides back afterwards: a worker process plays many jobs, and
+    # a constant left set would silently carry into the next config.
+    saved = {key: getattr(module, key) for key in (overrides or {})}
+    try:
+        for key, value in (overrides or {}).items():
+            setattr(module, key, value)
+        mine = getattr(module, attr)
+        opponent = resolve("clone:" + tape)
+        agents = [mine, opponent] if seat == 0 else [opponent, mine]
+        env = make("kaggriculture",
+                   configuration={"episodeSteps": 720, "seed": seed},
+                   debug=False)
+        env.run(agents)
+    finally:
+        for key, value in saved.items():
+            setattr(module, key, value)
     return (env.state[seat].reward or 0, env.state[1 - seat].reward or 0)
 
 

@@ -154,15 +154,24 @@ def play(spec: str, overrides: dict, tape: str, seed: int, seat: int):
     fair_town()
     module_name, attr = spec.split(":")
     module = importlib.import_module(module_name)
-    for key, value in (overrides or {}).items():
-        setattr(module, key, value)
-    mine = getattr(module, attr)
-    opponent = resolve("clone:" + tape)
-    agents = [mine, opponent] if seat == 0 else [opponent, mine]
-    env = make("kaggriculture",
-               configuration={"episodeSteps": 720, "seed": seed}, debug=False)
-    LEDGER.clear()
-    env.run(agents)
+    # Overrides are put back after the game. They used to stay set on the
+    # imported module, so in any process that played more than one config
+    # the "baseline" games after the first override were not baselines.
+    saved = {key: getattr(module, key) for key in (overrides or {})}
+    try:
+        for key, value in (overrides or {}).items():
+            setattr(module, key, value)
+        mine = getattr(module, attr)
+        opponent = resolve("clone:" + tape)
+        agents = [mine, opponent] if seat == 0 else [opponent, mine]
+        env = make("kaggriculture",
+                   configuration={"episodeSteps": 720, "seed": seed},
+                   debug=False)
+        LEDGER.clear()
+        env.run(agents)
+    finally:
+        for key, value in saved.items():
+            setattr(module, key, value)
     return env, list(LEDGER)
 
 

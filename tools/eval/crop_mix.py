@@ -41,6 +41,38 @@ MIXES: dict[str, dict] = {
         "LAND_DAYS": (1, 5, 9),
         "HERD_MIX": {"GOOSE": 3, "COW": 8, "SHEEP": 6},
     },
+    # Strawberry is the book the town eats most of in the inspected games
+    # (about 417 a game) and G sells 17 of. Cash-crop seed is bought only
+    # above 1,500 coins and four a day, and G holds under 400 until about
+    # day 9 -- exactly when the top farms plant theirs.
+    "seed floor 400": {"CROP_SEED_FLOOR": 400.0},
+    "seed batch 12": {"CROP_SEED_BATCH": 12},
+    "strawberry first 32": {
+        "CROP_TILES": (("STRAWBERRY", 32), ("MELON", 12), ("CARROT", 16)),
+    },
+    "strawberry push": {
+        "CROP_SEED_FLOOR": 400.0,
+        "CROP_SEED_BATCH": 12,
+        "CROP_TILES": (("STRAWBERRY", 32), ("MELON", 12), ("CARROT", 16)),
+    },
+    # Thirty-two strawberry tiles need ground G does not have: the fair-town
+    # baseline shows it spending 1,000 on land against the field's 2,917.
+    # The third quadrant was only ever measured with the town coupled to
+    # G's empty tiles, so that verdict does not stand.
+    "strawberry push + land": {
+        "CROP_SEED_FLOOR": 400.0,
+        "CROP_SEED_BATCH": 12,
+        "CROP_TILES": (("STRAWBERRY", 32), ("MELON", 12), ("CARROT", 16)),
+        "LAND_DAYS": (1, 5, 9),
+    },
+    # The town takes 228 tomatoes a game and G sells none.
+    "strawberry push + land + tomato": {
+        "CROP_SEED_FLOOR": 400.0,
+        "CROP_SEED_BATCH": 12,
+        "CROP_TILES": (("STRAWBERRY", 32), ("TOMATO", 12), ("MELON", 12),
+                       ("CARROT", 16)),
+        "LAND_DAYS": (1, 5, 9),
+    },
     "plan shape": {
         "LAND_DAYS": (1, 5, 9),
         "HERD_MIX": {"GOOSE": 3, "COW": 8, "SHEEP": 6},
