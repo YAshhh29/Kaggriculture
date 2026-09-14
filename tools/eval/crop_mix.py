@@ -73,6 +73,20 @@ MIXES: dict[str, dict] = {
                        ("CARROT", 16)),
         "LAND_DAYS": (1, 5, 9),
     },
+    # Seed was never the limit: a daily trace shows the board full from day
+    # 9, wheat holding 24-28 of G's 50 tiles to feed nine animals (about
+    # eleven tiles' worth), and strawberry frozen at the four tiles it got
+    # when the second quadrant opened on day 5. These free ground instead
+    # of spending the opening purse on seed.
+    "strawberry first 32 + wheat 16": {
+        "CROP_TILES": (("STRAWBERRY", 32), ("MELON", 12), ("CARROT", 16)),
+        "WHEAT_TILES": 16,
+    },
+    "strawberry first 32 + wheat 16 + land": {
+        "CROP_TILES": (("STRAWBERRY", 32), ("MELON", 12), ("CARROT", 16)),
+        "WHEAT_TILES": 16,
+        "LAND_DAYS": (1, 5, 9),
+    },
     "plan shape": {
         "LAND_DAYS": (1, 5, 9),
         "HERD_MIX": {"GOOSE": 3, "COW": 8, "SHEEP": 6},
