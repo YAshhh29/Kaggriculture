@@ -75,6 +75,11 @@ CURVES = {
 #
 # Holding stock for a small expected gain lets the other farm sell into the
 # book first. Only a clear gain is worth waiting for.
+#
+# Wrapped around Candidate G instead, at tolerance 0.25 and played against
+# plain G the same way, it is neutral: 10 wins, 10 losses and 4 ties in 24
+# games, margin +24 a game. G's own selling leaves it little to re-time, so
+# it is not used in G.
 DEFAULTS = {
     "enabled": True,
     "horizon": 24,           # turns ahead the drain is counted over
