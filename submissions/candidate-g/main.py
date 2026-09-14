@@ -507,6 +507,9 @@ PLANT_CUTOFF_HOUR: int | None = None
 DROP_FROM_STEP = 713
 SELL_CARRIED_AT_CLOSE = True
 MIDDAY_DROP_HAUL: float | None = 1000.0
+DROP_WHEAT_SURPLUS = False
+CLOSE_RETURN_FROM_STEP: int | None = None
+LAST_ACT_STEP = 718
 SEED_ONLY_WHEN_SOWABLE = True
 TRAVEL_EXPONENT = 2.0
 ZONE_TAX = 1.0
@@ -722,7 +725,10 @@ def job_value(observation: dict[str, Any], tile: Any, x: int, y: int, inventory:
                 haul += worth
                 if item != 'WHEAT':
                     produce += worth
-        late = int(observation.get('step', 0)) >= DROP_FROM_STEP
+                elif DROP_WHEAT_SURPLUS:
+                    produce += max(0, int(qty) - FEED_CARRY) * worth / max(1, int(qty))
+        late_from = DROP_FROM_STEP if CLOSE_RETURN_FROM_STEP is None else min(DROP_FROM_STEP, CLOSE_RETURN_FROM_STEP)
+        late = int(observation.get('step', 0)) >= late_from
         midday = MIDDAY_DROP_HAUL is not None and produce >= MIDDAY_DROP_HAUL
         if haul > 0 and (late or midday):
             jobs.append((BAND_HARVEST + haul, ['DROP']))
@@ -1170,7 +1176,11 @@ def decide(observation: dict[str, Any]) -> AgentAction:
                 for value, act in job_value(observation, tiles[y][x], x, y, inventory, day, shed, seeds, counts, closing):
                     if tending_only and act[0] not in TENDING:
                         continue
-                    score = value / (travel + 1.0) ** TRAVEL_EXPONENT
+                    now_step = int(observation.get('step', 0))
+                    if CLOSE_RETURN_FROM_STEP is not None and act[0] == 'DROP' and (now_step >= CLOSE_RETURN_FROM_STEP) and (travel <= LAST_ACT_STEP - now_step):
+                        score = value
+                    else:
+                        score = value / (travel + 1.0) ** TRAVEL_EXPONENT
                     if not in_zone:
                         score *= ZONE_TAX
                     if score > 0.0:

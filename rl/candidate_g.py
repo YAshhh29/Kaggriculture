@@ -653,6 +653,28 @@ SELL_CARRIED_AT_CLOSE = True
 # worse in 30), +912 over all 96. Shed overflow falls from 4,763 to 3,855
 # coins a game and goods unsold at the close from 3,030 to 2,650.
 MIDDAY_DROP_HAUL: float | None = 1000.0
+# Count wheat beyond one feed round (FEED_CARRY) towards the mid-day drop.
+#
+# With the drop on, a nightly trace still finds the shed holding 0 to 6
+# units at hour 23 while the crew carries 59 to 106, and 41 to 59 of those
+# are wheat harvested that day. On nights the carried load passes 100,
+# melon and strawberry are what get thrown away. Leaving the surplus wheat
+# out of the trigger was meant to keep the feed in hand; this keeps a feed
+# round and lets the rest go to the shed, where the every-turn sell can
+# clear it before night.
+DROP_WHEAT_SURPLUS = False
+# Bring the crew's last loads home before the season ends.
+#
+# A trace of the closing turns finds the shed empty from step 700 while ten
+# workers carry goods three to seven tiles from it; at step 719, sixteen
+# units are still in hand and never sold (the inspector puts goods unsold at
+# the close at 2,623 coins a game). The DROP job is only scored on the
+# shed-side tiles and, like every job, divided by (travel + 1) squared, so a
+# worker six tiles out always prefers the field. From this step on, a
+# carrying worker's DROP is scored without that discount while it can still
+# reach the shed by the last acting step. None keeps the old behaviour.
+CLOSE_RETURN_FROM_STEP: int | None = None
+LAST_ACT_STEP = 718
 # Stop buying a crop's seed once that crop can no longer be sown.
 #
 # Sowing a cash crop stops once it could not yield before the close
@@ -1107,10 +1129,17 @@ def job_value(
                 worth = int(qty) * price_at(
                     item, inventory_of(observation, item))
                 haul += worth
-                # Wheat in hand is feed on its way to an animal, not stock.
+                # Wheat in hand is feed on its way to an animal, not stock --
+                # up to one feed round. Beyond that it is the day's harvest
+                # being carried into the night, where it fills the shed.
                 if item != "WHEAT":
                     produce += worth
-        late = int(observation.get("step", 0)) >= DROP_FROM_STEP
+                elif DROP_WHEAT_SURPLUS:
+                    produce += (max(0, int(qty) - FEED_CARRY)
+                                * worth / max(1, int(qty)))
+        late_from = (DROP_FROM_STEP if CLOSE_RETURN_FROM_STEP is None
+                     else min(DROP_FROM_STEP, CLOSE_RETURN_FROM_STEP))
+        late = int(observation.get("step", 0)) >= late_from
         midday = (MIDDAY_DROP_HAUL is not None
                   and produce >= MIDDAY_DROP_HAUL)
         if haul > 0 and (late or midday):
@@ -1960,7 +1989,16 @@ def decide(observation: dict[str, Any]) -> AgentAction:
                 ):
                     if tending_only and act[0] not in TENDING:
                         continue
-                    score = value / (travel + 1.0) ** TRAVEL_EXPONENT
+                    now_step = int(observation.get("step", 0))
+                    if (CLOSE_RETURN_FROM_STEP is not None
+                            and act[0] == "DROP"
+                            and now_step >= CLOSE_RETURN_FROM_STEP
+                            and travel <= LAST_ACT_STEP - now_step):
+                        # The season's last trip to the shed is not
+                        # discounted for distance while it can still land.
+                        score = value
+                    else:
+                        score = value / (travel + 1.0) ** TRAVEL_EXPONENT
                     if not in_zone:
                         score *= ZONE_TAX
                     if score > 0.0:
