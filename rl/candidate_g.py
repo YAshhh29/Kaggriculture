@@ -526,6 +526,10 @@ HAND_CAP = 12
 # against 67,308, worse on mean, median and floor alike. The observation
 # is true and does not convert into a gain, at least not this way.
 CREW_TO_WORK = 0.3
+# Five, to match the five hands the top twelve hire on day 0, changes
+# nothing: all 96 games of an inspection came out identical, day by day.
+# The floor only lifts the work-based cap; the income ramp in hands_target
+# is what holds the opening crew at four.
 CREW_FLOOR = 4
 HARVEST_AT = 2              # eggs held before a bird is worth the walk
 SEED_BUFFER = 10
@@ -568,6 +572,12 @@ RATION_FLOOR = 60.0
 # the mean, because on our purse the feed order competes with the animal
 # it is meant to feed. The corpus can open this way because it has income
 # we do not.
+#
+# Re-measured at 2 on the pruned current corpus against the v7 defaults:
+# margin -2,553 a game on 67 clean games (better in 22, worse in 45). Day-11
+# cash rises from 5,864 to 8,422, but wheat bought goes from about 20,800 to
+# 25,800 coins a game and shed overflow grows, and the season gives the early
+# cash back. Zero stays.
 FEED_STOCK_DAYS = 0
 FEED_MIN_FLOCK = 4
 FEED_BUY_UNTIL = 6
