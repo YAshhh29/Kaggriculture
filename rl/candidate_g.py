@@ -560,6 +560,14 @@ SOW_UNTIL = 3
 # coins a game for crops dying unwatered after the strawberry change, and on
 # the game drilled every one of them -- 17 of 17 -- was sown at hour 23.
 # None keeps sowing at any hour; 22 leaves a turn to water.
+#
+# Measured at 22 in a fixed town against 12 current top teams, 8 replays
+# each, paired with the strawberry defaults: crops dying unwatered fall from
+# 1,963 to 593 coins a game, exactly as intended, but the margin does not
+# move -- +224 a game on the 72 games where the opponent replay stayed in
+# step (better in 38, worse in 34), +111 over all 96 (better in 46, worse
+# in 50). A tile lost overnight is dug and resown the next morning, so the
+# seed was the whole cost. Neutral, so it stays off.
 PLANT_CUTOFF_HOUR: int | None = None
 # The last errand of the season: tip carried goods into the shed so the
 # closing sell can reach them.
@@ -587,6 +595,13 @@ DROP_FROM_STEP = 713
 # unsold units a game, mostly strawberry, against half a unit for the
 # opponent. The engine fills a SELL only from what the shed holds, so over-
 # asking costs nothing.
+#
+# Measured in a fixed town against 12 current top teams, 8 replays each,
+# paired with the strawberry defaults: margin +215 a game on the 72 games
+# where the opponent replay stayed in step, better in 43 and worse in 10;
+# +243 over all 96, better in 62 and worse in 14. Small and consistent.
+# Unsold goods only fall from 2,864 to 2,615 coins a game, so most of what
+# is left is harvested after the last market tick rather than dropped late.
 SELL_CARRIED_AT_CLOSE = False
 # Stop buying a crop's seed once that crop can no longer be sown.
 #
