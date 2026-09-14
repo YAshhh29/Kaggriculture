@@ -62,11 +62,24 @@ CURVES = {
     "FERTILIZER": (100, 200, "linear", 0.40, "linear", 0.40),
 }
 
+# Tuned head to head against the same farming base without this layer, in a
+# fixed town, both seats (which come out identical, so each pair is one game):
+#
+#     tolerance 0.04 (first guess)   H wins  4 of 12, margin -1,076 a game
+#     rival_share 0.8                H wins  8 of 12, margin   -153
+#     horizon 8                      H wins  7 of 12, margin   +105
+#     tolerance 0.15                 H wins  9 of 12, margin   +174
+#     tolerance 0.15, horizon 8      H wins 15 of 24, margin   +234
+#     tolerance 0.25, horizon 8      H wins 18 of 24, margin   +170
+#     tolerance 0.25                 H wins 19 of 24, margin   +223
+#
+# Holding stock for a small expected gain lets the other farm sell into the
+# book first. Only a clear gain is worth waiting for.
 DEFAULTS = {
     "enabled": True,
     "horizon": 24,           # turns ahead the drain is counted over
     "rival_share": 0.5,      # share of that drain the other farm refills
-    "tolerance": 0.04,       # hold only for a gain above this fraction
+    "tolerance": 0.25,       # hold only for a gain above this fraction
     "room_high": 90,         # shed load at which everything offered goes
     "close_steps": 12,       # stand aside for the last turns of the game
 }
