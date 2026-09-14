@@ -523,6 +523,32 @@ DEMAND_MARGIN = 0.8
 # 18 gives 18,150 and 24 gives 19,267. A two-seed comparison had 24 ahead
 # by 1,200 and it was noise -- the spread across seeds is 13,000.
 FEED_CARRY = 12
+# Fetch only the feed the flock still lacks. Every hand holding no wheat
+# used to fetch twelve whenever any animal was unfed, so on day 12 of a
+# reference game 46 to 61 wheat sat in hands all day. The shed read empty,
+# the emergency ration bought six at 42 every other turn, and at night the
+# hoard was tipped back into the shed and sold at 41 -- some thirty units
+# bought and sold back every day, 21,861 coins of wheat bought a game
+# against the opponent's 11,040. With this on, a pickup is sized to the
+# unfed animals less the wheat already carried or fetched this turn.
+#
+# Inspected on the current top twelve, 8 replays each, paired game by game
+# against the ramp defaults:
+#     exact need, no spare   -70 a game on 67 clean games (better 32,
+#                            worse 35), +3,068 over all 96
+#     spare 4              +4,948 a game on 68 clean games (median +4,346,
+#                            better 57, worse 11), +5,979 over all 96
+#     spare 12             +1,756 a game on 69 clean games (better 41,
+#                            worse 28), +2,366 over all 96
+# With spare 4, wheat bought falls from 21,861 to 3,581 coins a game and
+# shed overflow from 3,849 to 410, since the nightly return of the hoard no
+# longer fills the shed. Exact need left animals unfed two days running
+# while the one hand holding their meal was busy elsewhere: escapes rose
+# from 35 to 1,022 coins a game, 494 with the spare.
+FEED_PICKUP_TO_NEED = True
+# Wheat fetched beyond the exact need, so an animal is not left unfed while
+# the one hand holding its meal is busy elsewhere.
+FEED_PICKUP_SPARE = 4
 # Cap on the crew ramp. Twelve hands cost about 376 a day in fibonacci
 # wages, some 10,500 across a season, against roughly 51,000 of gross
 # production. Labour is the largest cost in this design, not the birds.
@@ -1370,8 +1396,16 @@ def job_value(
         if haul > 0 and (late or midday or night):
             jobs.append((BAND_HARVEST + haul, ["DROP"]))
         carrying = int(inventory.get("WHEAT", 0))
-        if (counts["unfed"] > 0 and carrying <= 0
-                and counts.get("shed_WHEAT", int(shed.get("WHEAT", 0))) > 0):
+        in_shed = counts.get("shed_WHEAT", int(shed.get("WHEAT", 0)))
+        if FEED_PICKUP_TO_NEED:
+            need = (counts["unfed"] + FEED_PICKUP_SPARE
+                    - counts.get("wheat_carried", 0))
+            if (counts["unfed"] > 0 and need > 0 and carrying <= 0
+                    and in_shed > 0):
+                jobs.append((BAND_FEED * 0.9,
+                             ["PICKUP", "WHEAT",
+                              max(1, min(FEED_CARRY, need, in_shed))]))
+        elif counts["unfed"] > 0 and carrying <= 0 and in_shed > 0:
             jobs.append((BAND_FEED * 0.9, ["PICKUP", "WHEAT", FEED_CARRY]))
         if (STRAWBERRY_FERT_STOCK
                 and int(inventory.get("FERTILIZER", 0) or 0) <= 0
@@ -1670,6 +1704,8 @@ def claim(counts: dict[str, int], action: list[Any]) -> None:
         qty = int(action[2]) if len(action) > 2 else 1
         key = "shed_" + item
         counts[key] = max(0, counts.get(key, 0) - qty)
+        if item == "WHEAT" and FEED_PICKUP_TO_NEED:
+            counts["wheat_carried"] = counts.get("wheat_carried", 0) + qty
         if item in ANIMAL_HOME:
             house = ANIMAL_HOME[item]
             counts["shed_" + house] = max(

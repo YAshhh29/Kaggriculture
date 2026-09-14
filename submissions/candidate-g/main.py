@@ -497,6 +497,8 @@ def crop_plan(day: int) -> tuple[tuple[str, int], ...]:
     return CROP_TILES
 DEMAND_MARGIN = 0.8
 FEED_CARRY = 12
+FEED_PICKUP_TO_NEED = True
+FEED_PICKUP_SPARE = 4
 HAND_CAP = 12
 CREW_TO_WORK = 0.3
 CREW_FLOOR = 4
@@ -776,7 +778,12 @@ def job_value(observation: dict[str, Any], tile: Any, x: int, y: int, inventory:
         if haul > 0 and (late or midday or night):
             jobs.append((BAND_HARVEST + haul, ['DROP']))
         carrying = int(inventory.get('WHEAT', 0))
-        if counts['unfed'] > 0 and carrying <= 0 and (counts.get('shed_WHEAT', int(shed.get('WHEAT', 0))) > 0):
+        in_shed = counts.get('shed_WHEAT', int(shed.get('WHEAT', 0)))
+        if FEED_PICKUP_TO_NEED:
+            need = counts['unfed'] + FEED_PICKUP_SPARE - counts.get('wheat_carried', 0)
+            if counts['unfed'] > 0 and need > 0 and (carrying <= 0) and (in_shed > 0):
+                jobs.append((BAND_FEED * 0.9, ['PICKUP', 'WHEAT', max(1, min(FEED_CARRY, need, in_shed))]))
+        elif counts['unfed'] > 0 and carrying <= 0 and (in_shed > 0):
             jobs.append((BAND_FEED * 0.9, ['PICKUP', 'WHEAT', FEED_CARRY]))
         if STRAWBERRY_FERT_STOCK and int(inventory.get('FERTILIZER', 0) or 0) <= 0 and (counts.get('fert_need', 0) > counts.get('fert_carried', 0)) and (int(shed.get('FERTILIZER', 0) or 0) > 0):
             wanted = counts['fert_need'] - counts.get('fert_carried', 0)
@@ -940,6 +947,8 @@ def claim(counts: dict[str, int], action: list[Any]) -> None:
         qty = int(action[2]) if len(action) > 2 else 1
         key = 'shed_' + item
         counts[key] = max(0, counts.get(key, 0) - qty)
+        if item == 'WHEAT' and FEED_PICKUP_TO_NEED:
+            counts['wheat_carried'] = counts.get('wheat_carried', 0) + qty
         if item in ANIMAL_HOME:
             house = ANIMAL_HOME[item]
             counts['shed_' + house] = max(0, counts.get('shed_' + house, 0) - qty)
