@@ -653,16 +653,25 @@ SELL_CARRIED_AT_CLOSE = True
 # worse in 30), +912 over all 96. Shed overflow falls from 4,763 to 3,855
 # coins a game and goods unsold at the close from 3,030 to 2,650.
 MIDDAY_DROP_HAUL: float | None = 1000.0
-# Count wheat beyond one feed round (FEED_CARRY) towards the mid-day drop.
+# Bring loads to the shed before night when the nightly drop would overflow.
 #
-# With the drop on, a nightly trace still finds the shed holding 0 to 6
-# units at hour 23 while the crew carries 59 to 106, and 41 to 59 of those
-# are wheat harvested that day. On nights the carried load passes 100,
-# melon and strawberry are what get thrown away. Leaving the surplus wheat
-# out of the trigger was meant to keep the feed in hand; this keeps a feed
-# round and lets the rest go to the shed, where the every-turn sell can
-# clear it before night.
-DROP_WHEAT_SURPLUS = False
+# With the mid-day drop on, a nightly trace still finds the shed holding 0 to
+# 6 units at hour 23 while the crew carries 59 to 106, and on nights the load
+# passes 100, melon and strawberry are what get thrown away. Nothing in the
+# shed can be sold to make room, because there is nothing in it: the only
+# fix is to bring the goods in while the market can still take them.
+#
+# From NIGHT_FROM_HOUR, when shed plus everything carried exceeds NIGHT_ROOM,
+# a carrying worker's DROP is offered and scored without the distance
+# discount while it can still reach the shed that day; the every-turn sell
+# then clears it. None keeps the old behaviour.
+#
+# Tried first and removed: dropping once a worker carried a wheat surplus
+# (as coins inside the 1,000-coin trigger, then as 8 or 16 units). The night's
+# 41 to 59 wheat are a few units in each of a dozen hands, no worker ever
+# reached the threshold, and both reference games came out identical.
+NIGHT_ROOM: int | None = None
+NIGHT_FROM_HOUR = 20
 # Bring the crew's last loads home before the season ends.
 #
 # A trace of the closing turns finds the shed empty from step 700 while ten
@@ -983,6 +992,17 @@ def census(tiles: list[list[Any]]) -> dict[str, int]:
     return out
 
 
+def night_load_high(observation: dict[str, Any],
+                    counts: dict[str, int]) -> bool:
+    """Late in the day, and the nightly drop would overflow the shed."""
+    if NIGHT_ROOM is None:
+        return False
+    if int(observation.get("step", 0)) % 24 < NIGHT_FROM_HOUR:
+        return False
+    return (counts.get("shed_total", 0)
+            + counts.get("carried_total", 0)) > NIGHT_ROOM
+
+
 def feed_deficit(counts: dict[str, int], shed: dict[str, int]) -> int:
     """Animals still to feed today beyond the wheat already held."""
     return max(0, counts["unfed"] - int(shed.get("WHEAT", 0))
@@ -1129,20 +1149,16 @@ def job_value(
                 worth = int(qty) * price_at(
                     item, inventory_of(observation, item))
                 haul += worth
-                # Wheat in hand is feed on its way to an animal, not stock --
-                # up to one feed round. Beyond that it is the day's harvest
-                # being carried into the night, where it fills the shed.
+                # Wheat in hand is feed on its way to an animal, not stock.
                 if item != "WHEAT":
                     produce += worth
-                elif DROP_WHEAT_SURPLUS:
-                    produce += (max(0, int(qty) - FEED_CARRY)
-                                * worth / max(1, int(qty)))
         late_from = (DROP_FROM_STEP if CLOSE_RETURN_FROM_STEP is None
                      else min(DROP_FROM_STEP, CLOSE_RETURN_FROM_STEP))
         late = int(observation.get("step", 0)) >= late_from
         midday = (MIDDAY_DROP_HAUL is not None
                   and produce >= MIDDAY_DROP_HAUL)
-        if haul > 0 and (late or midday):
+        night = night_load_high(observation, counts)
+        if haul > 0 and (late or midday or night):
             jobs.append((BAND_HARVEST + haul, ["DROP"]))
         carrying = int(inventory.get("WHEAT", 0))
         if (counts["unfed"] > 0 and carrying <= 0
@@ -1919,6 +1935,11 @@ def decide(observation: dict[str, Any]) -> AgentAction:
     counts["wheat_carried"] = sum(
         int(_inventory(observation, worker).get("WHEAT", 0))
         for worker in range(len(positions)))
+    counts["carried_total"] = sum(
+        sum(int(v) for v in _inventory(observation, worker).values()
+            if int(v) > 0)
+        for worker in range(len(positions)))
+    counts["shed_total"] = sum(int(v) for v in shed.values())
     # The herd we are aiming at, recomputed each turn so the mix follows
     # the town without ever abandoning a line already paid for.
     herd = (dict(HERD_MIX) if HERD_MIX is not None
@@ -1990,7 +2011,11 @@ def decide(observation: dict[str, Any]) -> AgentAction:
                     if tending_only and act[0] not in TENDING:
                         continue
                     now_step = int(observation.get("step", 0))
-                    if (CLOSE_RETURN_FROM_STEP is not None
+                    night_trip = (act[0] == "DROP"
+                                  and night_load_high(observation, counts)
+                                  and travel <= 23 - now_step % 24)
+                    if night_trip or (
+                            CLOSE_RETURN_FROM_STEP is not None
                             and act[0] == "DROP"
                             and now_step >= CLOSE_RETURN_FROM_STEP
                             and travel <= LAST_ACT_STEP - now_step):

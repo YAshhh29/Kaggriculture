@@ -507,7 +507,8 @@ PLANT_CUTOFF_HOUR: int | None = None
 DROP_FROM_STEP = 713
 SELL_CARRIED_AT_CLOSE = True
 MIDDAY_DROP_HAUL: float | None = 1000.0
-DROP_WHEAT_SURPLUS = False
+NIGHT_ROOM: int | None = None
+NIGHT_FROM_HOUR = 20
 CLOSE_RETURN_FROM_STEP: int | None = None
 LAST_ACT_STEP = 718
 SEED_ONLY_WHEN_SOWABLE = True
@@ -623,6 +624,14 @@ def census(tiles: list[list[Any]]) -> dict[str, int]:
                     out[key] = out.get(key, 0) + 1
     return out
 
+def night_load_high(observation: dict[str, Any], counts: dict[str, int]) -> bool:
+    """Late in the day, and the nightly drop would overflow the shed."""
+    if NIGHT_ROOM is None:
+        return False
+    if int(observation.get('step', 0)) % 24 < NIGHT_FROM_HOUR:
+        return False
+    return counts.get('shed_total', 0) + counts.get('carried_total', 0) > NIGHT_ROOM
+
 def feed_deficit(counts: dict[str, int], shed: dict[str, int]) -> int:
     """Animals still to feed today beyond the wheat already held."""
     return max(0, counts['unfed'] - int(shed.get('WHEAT', 0)) - counts.get('wheat_carried', 0))
@@ -725,12 +734,11 @@ def job_value(observation: dict[str, Any], tile: Any, x: int, y: int, inventory:
                 haul += worth
                 if item != 'WHEAT':
                     produce += worth
-                elif DROP_WHEAT_SURPLUS:
-                    produce += max(0, int(qty) - FEED_CARRY) * worth / max(1, int(qty))
         late_from = DROP_FROM_STEP if CLOSE_RETURN_FROM_STEP is None else min(DROP_FROM_STEP, CLOSE_RETURN_FROM_STEP)
         late = int(observation.get('step', 0)) >= late_from
         midday = MIDDAY_DROP_HAUL is not None and produce >= MIDDAY_DROP_HAUL
-        if haul > 0 and (late or midday):
+        night = night_load_high(observation, counts)
+        if haul > 0 and (late or midday or night):
             jobs.append((BAND_HARVEST + haul, ['DROP']))
         carrying = int(inventory.get('WHEAT', 0))
         if counts['unfed'] > 0 and carrying <= 0 and (counts.get('shed_WHEAT', int(shed.get('WHEAT', 0))) > 0):
@@ -1140,6 +1148,8 @@ def decide(observation: dict[str, Any]) -> AgentAction:
             counts['seed_' + crop] = int(have)
     counts['shed_WHEAT'] = int(shed.get('WHEAT', 0))
     counts['wheat_carried'] = sum((int(_inventory(observation, worker).get('WHEAT', 0)) for worker in range(len(positions))))
+    counts['carried_total'] = sum((sum((int(v) for v in _inventory(observation, worker).values() if int(v) > 0)) for worker in range(len(positions))))
+    counts['shed_total'] = sum((int(v) for v in shed.values()))
     herd = dict(HERD_MIX) if HERD_MIX is not None else herd_plan(observation, counts, HERD_TARGET)
     for animal in ANIMAL_HOME:
         counts['want_' + animal] = int(herd.get(animal, 0))
@@ -1177,7 +1187,8 @@ def decide(observation: dict[str, Any]) -> AgentAction:
                     if tending_only and act[0] not in TENDING:
                         continue
                     now_step = int(observation.get('step', 0))
-                    if CLOSE_RETURN_FROM_STEP is not None and act[0] == 'DROP' and (now_step >= CLOSE_RETURN_FROM_STEP) and (travel <= LAST_ACT_STEP - now_step):
+                    night_trip = act[0] == 'DROP' and night_load_high(observation, counts) and (travel <= 23 - now_step % 24)
+                    if night_trip or (CLOSE_RETURN_FROM_STEP is not None and act[0] == 'DROP' and (now_step >= CLOSE_RETURN_FROM_STEP) and (travel <= LAST_ACT_STEP - now_step)):
                         score = value
                     else:
                         score = value / (travel + 1.0) ** TRAVEL_EXPONENT
