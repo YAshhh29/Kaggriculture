@@ -552,6 +552,15 @@ FEED_DEFICIT_RULE = False
 # Kept at 3 because it measures the same as the pair it replaces and puts
 # one named number where two unexplained ones were.
 SOW_UNTIL = 3
+# Last turn of the day on which anything may be sown.
+#
+# A seed counts its planting day as a day unwatered, so one sown on the last
+# turn cannot be watered before nightfall and is a weed by morning: the seed
+# is lost and the tile has to be dug. The inspector charged G about 1,963
+# coins a game for crops dying unwatered after the strawberry change, and on
+# the game drilled every one of them -- 17 of 17 -- was sown at hour 23.
+# None keeps sowing at any hour; 22 leaves a turn to water.
+PLANT_CUTOFF_HOUR: int | None = None
 # The last errand of the season: tip carried goods into the shed so the
 # closing sell can reach them.
 #
@@ -569,6 +578,16 @@ SOW_UNTIL = 3
 # for nothing anyway -- so the only thing a mid-game trip buys is selling
 # a day earlier, and it costs a turn and a walk to get it.
 DROP_FROM_STEP = 713
+# Ask to sell more than the shed shows on the closing turns.
+#
+# Workers act before the market does, so goods DROPped on a closing turn are
+# in the shed by the time orders fill -- but the sell quantity is read from
+# the shed as the turn began, and a good the shed did not hold yet is
+# skipped outright. The inspector finds G ending the season holding about 25
+# unsold units a game, mostly strawberry, against half a unit for the
+# opponent. The engine fills a SELL only from what the shed holds, so over-
+# asking costs nothing.
+SELL_CARRIED_AT_CLOSE = False
 # Re-checked on contested opponents once COMPACT moved, on the theory
 # that the two distance terms interact -- and it does not: 67,697 at 2.0
 # against 63,147 at 1.5 and 64,281 at 2.5, ahead on both counts. This one
@@ -1050,7 +1069,11 @@ def job_value(
         near = 1.0 / (1.0 + COMPACT * min(
             abs(x - sx) + abs(y - sy) for sx, sy in shed_tiles()
         ))
+        sowable = (PLANT_CUTOFF_HOUR is None
+                   or int(observation.get("step", 0)) % 24
+                   <= PLANT_CUTOFF_HOUR)
         if (counts["wheat"] < wheat_target
+                and sowable
                 and counts.get("seed_WHEAT", int(seeds.get("WHEAT", 0))) > 0
                 and day <= LAST_DAY - SOW_UNTIL):
             jobs.append(((BAND_WHEAT + egg) * near, ["PLANT", "WHEAT"]))
@@ -1100,6 +1123,8 @@ def job_value(
             # Spare ground goes to cash crops, best price per tile first,
             # each capped at what its book will actually absorb.
             for crop, cap in CROP_TILES:
+                if not sowable:
+                    break
                 spec = CROPS.get(crop)
                 if spec is None or counts.get("crop_" + crop, 0) >= cap:
                     continue
@@ -1536,6 +1561,10 @@ def market_orders(
         held = int(shed.get(item, 0))
         if item == "WHEAT":
             held = max(0, held - reserve)
+        if (SELL_CARRIED_AT_CLOSE
+                and int(observation.get("step", 0)) >= DROP_FROM_STEP):
+            # Covers whatever is DROPped this turn; fills stop at the shed.
+            held += 99
         if held <= 0 or len(orders) >= MAX_ORDERS:
             continue
         base = float(MARKET_PARAMS.get(item, {}).get("base", 1))
