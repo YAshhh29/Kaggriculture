@@ -610,6 +610,13 @@ SELL_CARRIED_AT_CLOSE = False
 # the end. A daily trace of the strawberry defaults ends the season holding
 # seven strawberry and four melon seeds, about 1,000 coins that could never
 # have been planted.
+#
+# Measured in a fixed town against 12 current top teams, 8 replays each,
+# paired with the strawberry defaults: margin +487 a game on the 72 games
+# where the opponent replay stayed in step (median +720), better in 59 and
+# worse in none; +483 over all 96, better in 80 and worse in none. Pure
+# saving. It is switched on together with SELL_CARRIED_AT_CLOSE once the
+# panels running against the current file have finished.
 SEED_ONLY_WHEN_SOWABLE = False
 # Re-checked on contested opponents once COMPACT moved, on the theory
 # that the two distance terms interact -- and it does not: 67,697 at 2.0
