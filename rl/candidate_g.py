@@ -118,7 +118,9 @@ HIRE_UNTIL_DAY = 29          # the crew is wiped nightly; stopping early
 # work it with. That cliff sits one day from the chosen value, so this is
 # a fixed schedule standing next to a hole; a cash-gated rule would be the
 # sturdier shape if it can be made to measure as well.
-LAND_DAYS = (1, 5)
+# The third purchase on day 9 is part of the strawberry change measured at
+# CROP_TILES: the ground it opens is where the strawberries go.
+LAND_DAYS = (1, 5, 9)
 LAND_RESERVE = 1200.0
 # Cash a quadrant must leave behind before it is bought. Measured, and
 # OFF: the fixed schedule wins despite standing on a cliff.
@@ -175,7 +177,10 @@ WHEAT_PER_BIRD = 0.8
 # Re-checked on contested opponents and unchanged: 67,697 at 28 against
 # 67,313 at both 36 and 44, ahead on 20 of 60. The two larger values are
 # identical to each other, so the cap stops binding somewhere below 36.
-WHEAT_TILES = 28
+# 28 held half of a two-quadrant farm in wheat to feed about nine animals,
+# roughly eleven tiles' worth, and sold the rest at 36. Cut to 16 as part of
+# the strawberry change measured at CROP_TILES.
+WHEAT_TILES = 16
 COOPS_AFTER_WHEAT = 8
 EARLY_BIRDS = 6
 # Herd size and mix.
@@ -359,7 +364,29 @@ COOP_LEAD = 2
 # deep enough to absorb *their* volume. Ours is limited by tiles and
 # labour long before any book runs out, and the two farms are correctly
 # solving different problems.
-CROP_TILES = (("MELON", 12), ("CARROT", 16), ("STRAWBERRY", 8))
+# Strawberry first, on ground freed from wheat and a third quadrant.
+#
+# The town eats about 408 strawberries a game and the top teams sell 222;
+# G sold 24. Seed was never the limit. A daily trace showed the board full
+# from day 9, with wheat on 24-28 of 50 tiles and strawberry frozen at the
+# four tiles it got when the second quadrant opened. Buying more seed
+# earlier only spent the opening purse, starving land and the herd (margin
+# 22,652 to 38,180 worse, no paired game better).
+#
+# Freeing ground instead -- this list, WHEAT_TILES 16, LAND_DAYS (1, 5, 9)
+# -- measured in a fixed town against 12 current top teams with 8 replays
+# each: margin +10,235 a game over 96 paired games, better in 80; on the
+# 71 games where the opponent replay stayed in step in both runs, +10,924
+# (median +12,459), better in 59 and worse in 12. G's mean rises from
+# 67,324 to 75,718, strawberry sold from 24 to 150, idle crew from 16.7%
+# of turns to 5.6%. On the separate 30-opponent contested panel the mean
+# margin moved +130 but 46 of 60 games improved; the two losses there were
+# a SpaTaro replay that had collapsed in the baseline run.
+#
+# What it costs, for the next change: crops dying unwatered rise from 636
+# to 1,963 coins a game (carrot and melon at age zero, on the days new
+# ground opens), and more strawberry is left unsold at the close.
+CROP_TILES = (("STRAWBERRY", 32), ("MELON", 12), ("CARROT", 16))
 # Let the town choose, instead of assuming one animal always wins.
 #
 # `observation["town"]["unlocked_shops"]` is public and exact, and
