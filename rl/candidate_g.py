@@ -213,6 +213,17 @@ HERD_TARGET = 6
 # gap. G's herd follows `demand x price`, which keeps landing on geese.
 # None keeps the demand-weighted plan.
 HERD_MIX: dict[str, int] | None = None
+# Count animals in transit when deciding what to buy.
+#
+# Correct bookkeeping, and it raises our own score -- 62,158 against
+# 56,178 on thirty current-agent opponents, higher in 44 of 60 games,
+# wins 2 against 0. It also hands the opponent about 29,000: the
+# accidental over-buying was flooding the milk, wool and egg books the
+# other farm sells into, and the margin falls from -52,472 to -75,442,
+# better in only 4 of 60. Margin decides, so it stays off. Measured
+# against replayed tapes, which cannot react to a flooded book, so the
+# denial it removes may be worth less in live play than this says.
+COUNT_CARRIED = False
 # The share a line keeps once we own any of it. A pen and the animal in it
 # are capital already spent and a shift in the town's draw does not refund
 # them, so demand decides which line *grows*, never which line survives.
@@ -1552,8 +1563,15 @@ def market_orders(
                           else "empty_pastures"]
             if pens <= waiting:
                 continue
+            # An animal in a worker's arms, on its way to a pen, is bought
+            # already. Leaving it out re-bought every one in transit: a
+            # herd aimed at seventeen ended the season at twenty-six, with
+            # twelve sheep for a target of six and the cash gone by day 9.
+            # Off by default -- see COUNT_CARRIED.
+            carried = (counts.get("carried_" + animal, 0)
+                       if COUNT_CARRIED else 0)
             gap = (counts.get("want_" + animal, 0)
-                   - counts.get("have_" + animal, 0) - waiting)
+                   - counts.get("have_" + animal, 0) - waiting - carried)
             if gap > best_gap:
                 best_gap, pick = gap, animal
         if pick is not None:
@@ -1683,10 +1701,11 @@ def decide(observation: dict[str, Any]) -> AgentAction:
         waiting = int(shed.get(animal, 0))
         counts["shed_" + animal] = waiting
         counts["shed_" + house] += waiting
+        counts["carried_" + animal] = 0
         for worker in range(len(positions)):
-            counts["unplaced_" + house] += int(
-                _inventory(observation, worker).get(animal, 0)
-            )
+            held = int(_inventory(observation, worker).get(animal, 0))
+            counts["unplaced_" + house] += held
+            counts["carried_" + animal] += held
     # crop_priority is deliberately not used to reorder planting. Ranking
     # crops by remaining demand times price measured 24,257 against 32,693
     # for the fixed order, because that product is the coins available in a

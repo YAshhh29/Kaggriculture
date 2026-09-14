@@ -476,6 +476,8 @@ WHEAT_TILES = 28
 COOPS_AFTER_WHEAT = 8
 EARLY_BIRDS = 6
 HERD_TARGET = 6
+HERD_MIX: dict[str, int] | None = None
+COUNT_CARRIED = False
 HERD_FLOOR = 0.15
 EARLY_COOPS = 6
 BIRDS_PER_TURN = 1
@@ -1050,7 +1052,8 @@ def market_orders(observation: dict[str, Any], day: int, counts: dict[str, int],
             pens = counts['empty_coops' if ANIMAL_HOME[animal] == 'COOP' else 'empty_pastures']
             if pens <= waiting:
                 continue
-            gap = counts.get('want_' + animal, 0) - counts.get('have_' + animal, 0) - waiting
+            carried = counts.get('carried_' + animal, 0) if COUNT_CARRIED else 0
+            gap = counts.get('want_' + animal, 0) - counts.get('have_' + animal, 0) - waiting - carried
             if gap > best_gap:
                 best_gap, pick = (gap, animal)
         if pick is not None:
@@ -1099,8 +1102,9 @@ def decide(observation: dict[str, Any]) -> AgentAction:
         for crop, have in seeds.items():
             counts['seed_' + crop] = int(have)
     counts['shed_WHEAT'] = int(shed.get('WHEAT', 0))
-    for animal, wanted in herd_plan(observation, counts, HERD_TARGET).items():
-        counts['want_' + animal] = wanted
+    herd = dict(HERD_MIX) if HERD_MIX is not None else herd_plan(observation, counts, HERD_TARGET)
+    for animal in ANIMAL_HOME:
+        counts['want_' + animal] = int(herd.get(animal, 0))
     for house in ('COOP', 'PASTURE'):
         counts['shed_' + house] = 0
         counts['unplaced_' + house] = 0
@@ -1108,8 +1112,11 @@ def decide(observation: dict[str, Any]) -> AgentAction:
         waiting = int(shed.get(animal, 0))
         counts['shed_' + animal] = waiting
         counts['shed_' + house] += waiting
+        counts['carried_' + animal] = 0
         for worker in range(len(positions)):
-            counts['unplaced_' + house] += int(_inventory(observation, worker).get(animal, 0))
+            held = int(_inventory(observation, worker).get(animal, 0))
+            counts['unplaced_' + house] += held
+            counts['carried_' + animal] += held
     claimed: set[tuple[int, int]] = set()
     actions: list[list[Any]] = []
     reserved = int(len(positions) * RESCUE_SHARE)
