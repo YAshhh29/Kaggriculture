@@ -228,8 +228,13 @@ EARLY_BIRDS = 6
 # game) and more skipped care. At 12 and 17 the crew falls behind: unfed
 # days and missed care climb steeply, and G banks less despite selling
 # more milk. Bracketed on the same panel: 8 gives +13,951 and 10 gives
-# +13,412, both better in 60 of 60, so the peak is flat from 8 to 10. Set
-# to the value confirmed on clean games; 8 and 10 are to be inspected.
+# +13,412, both better in 60 of 60, so the peak looked flat from 8 to 10.
+#
+# Inspected against the refreshed field, 12 current top teams with 8
+# replays each, paired with 9 on the 71 games where the opponent replay
+# stayed in step: 8 gives -30 a game (better in 34, worse in 36), which
+# is noise; 10 gives -910 (better in 26, worse in 40), with shed overflow
+# up from 4,763 to 6,366 coins a game. Nine stays.
 HERD_TARGET = 9
 # A fixed herd, as {animal: head}, in place of the demand-weighted plan.
 #
