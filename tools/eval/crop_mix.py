@@ -131,7 +131,9 @@ MIXES: dict[str, dict] = {
     # sells none. The one earlier tomato measurement came with the seed
     # floor cut to 400, which alone starves land and herd, so it said
     # nothing about tomato. This adds it after strawberry and changes
-    # nothing else.
+    # nothing else. Rejected: on 30 contested opponents in a fixed town,
+    # against the current defaults, margin -6,924 a game (-44,814 to
+    # -51,738), worse in all 60 paired games.
     "tomato 8": {
         "CROP_TILES": (("STRAWBERRY", 32), ("TOMATO", 8), ("MELON", 12),
                        ("CARROT", 16)),
