@@ -120,6 +120,12 @@ HIRE_UNTIL_DAY = 29          # the crew is wiped nightly; stopping early
 # sturdier shape if it can be made to measure as well.
 # The third purchase on day 9 is part of the strawberry change measured at
 # CROP_TILES: the ground it opens is where the strawberries go.
+#
+# Each new quadrant sits half empty for days because the purchase leaves
+# too little cash to seed it, so later schedules were tried, paired on 30
+# contested opponents in a fixed town: (1, 6, 11) margin -2,543 a game
+# (better in 8 of 60), (1, 7, 11) -413 (27/60), (1, 6, 10) -616 (23/60).
+# All worse. The top teams' days 6 and 11 do not suit G.
 LAND_DAYS = (1, 5, 9)
 LAND_RESERVE = 1200.0
 # Cash a quadrant must leave behind before it is bought. Measured, and
@@ -221,8 +227,10 @@ EARLY_BIRDS = 6
 # 25), +3,620 over all 96. It costs shed overflow (1,218 to 4,723 coins a
 # game) and more skipped care. At 12 and 17 the crew falls behind: unfed
 # days and missed care climb steeply, and G banks less despite selling
-# more milk.
-HERD_TARGET = 6
+# more milk. Bracketed on the same panel: 8 gives +13,951 and 10 gives
+# +13,412, both better in 60 of 60, so the peak is flat from 8 to 10. Set
+# to the value confirmed on clean games; 8 and 10 are to be inspected.
+HERD_TARGET = 9
 # A fixed herd, as {animal: head}, in place of the demand-weighted plan.
 #
 # The engine's own ledger, G against the plan most of the ladder copies,
@@ -615,7 +623,7 @@ DROP_FROM_STEP = 713
 # +243 over all 96, better in 62 and worse in 14. Small and consistent.
 # Unsold goods only fall from 2,864 to 2,615 coins a game, so most of what
 # is left is harvested after the last market tick rather than dropped late.
-SELL_CARRIED_AT_CLOSE = False
+SELL_CARRIED_AT_CLOSE = True
 # Let a worker already beside the shed drop a valuable load mid-day.
 #
 # DROP is otherwise offered only from DROP_FROM_STEP, so everything the crew
@@ -629,6 +637,11 @@ SELL_CARRIED_AT_CLOSE = False
 # offered. Wheat is excluded because a worker carries it to feed animals.
 # None keeps the old behaviour. Mid-day banking was measured as a loss at
 # 120 and 400 coins, but in the coupled town on the old crop plan.
+#
+# Paired on 30 contested opponents in a fixed town against G with both
+# kept switches and a herd of nine: 1,000 gives +916 a game (better in 39
+# of 60), 2,500 gives +121 (12/60). 2,500 is rejected. 1,000 waits for an
+# inspection, because the panel cannot see opponent replays falling apart.
 MIDDAY_DROP_HAUL: float | None = None
 # Stop buying a crop's seed once that crop can no longer be sown.
 #
@@ -642,9 +655,9 @@ MIDDAY_DROP_HAUL: float | None = None
 # paired with the strawberry defaults: margin +487 a game on the 72 games
 # where the opponent replay stayed in step (median +720), better in 59 and
 # worse in none; +483 over all 96, better in 80 and worse in none. Pure
-# saving. It is switched on together with SELL_CARRIED_AT_CLOSE once the
-# panels running against the current file have finished.
-SEED_ONLY_WHEN_SOWABLE = False
+# saving. Together with SELL_CARRIED_AT_CLOSE: +702 a game on 72 clean
+# games, better in 67 and worse in none.
+SEED_ONLY_WHEN_SOWABLE = True
 # Re-checked on contested opponents once COMPACT moved, on the theory
 # that the two distance terms interact -- and it does not: 67,697 at 2.0
 # against 63,147 at 1.5 and 64,281 at 2.5, ahead on both counts. This one
