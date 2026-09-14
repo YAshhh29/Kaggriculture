@@ -90,6 +90,16 @@ MAX_ORDERS = 10
 # So the gain is the steeper build from day 6 to day 10, not the day-0 hire.
 # Day-11 cash gap to the opponent narrows from 9,126 to 6,697, and crops
 # dying unwatered fall from 1,805 to 1,062 coins a game.
+#
+# Pushing further both lose against this ramp, on the same 96 games:
+#     6 hands on day 0        -885 a game on 70 clean games (better 30,
+#                             worse 40), -728 over all 96
+#     each step a day or two sooner, 12 by day 12
+#                             -837 a game on 70 clean games (better 26,
+#                             worse 44), -551 over all 96
+# Both leave more crops dying unwatered (1,062 -> 1,593 and 1,617) and more
+# overflow (3,849 -> 4,757 and 5,615): the wages come due before the ground
+# they would work is sown, so the farm starves its own watering later on.
 HAND_RAMP = ((0, 5), (6, 7), (8, 9), (10, 11), (14, 12))
 # Hire to the last day. This read 27 and was measured as a dead constant,
 # bit-identical however it was set -- because the `closing` short-circuit
