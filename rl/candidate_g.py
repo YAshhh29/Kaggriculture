@@ -413,6 +413,35 @@ COOP_LEAD = 2
 # to 1,963 coins a game (carrot and melon at age zero, on the days new
 # ground opens), and more strawberry is left unsold at the close.
 CROP_TILES = (("STRAWBERRY", 32), ("MELON", 12), ("CARROT", 16))
+# The opening, crop by crop.
+#
+# The money gap opens early: by day 11 the median opponent has earned about
+# 5,100 more, mostly from melon, wool and fertilizer. Across 235 replays of
+# the current top twelve, day 0 sows about eight melon and no strawberry or
+# carrot, which wait for days four and five. G's day 0 buys four each of
+# melon, strawberry and carrot, so it ripens half the early melon and has
+# spent its cash on crops that pay later.
+#
+# While the day is at most OPENING_UNTIL_DAY, this list replaces CROP_TILES
+# for both sowing and seed buying, and each crop's seed is bought up to its
+# cap rather than CROP_SEED_BATCH. None keeps CROP_TILES throughout.
+OPENING_CROP_TILES: tuple[tuple[str, int], ...] | None = None
+OPENING_UNTIL_DAY = 3
+# Herd targets raised during the opening, as {animal: head}.
+#
+# The same replays buy two cows and two sheep on day 0, so wool and milk
+# arrive while those books still pay near base; G buys two cows, a sheep and
+# a goose. Up to EARLY_HERD_UNTIL_DAY, each line's target is at least this.
+# None keeps the herd plan alone.
+EARLY_HERD: dict[str, int] | None = None
+EARLY_HERD_UNTIL_DAY = 1
+
+
+def crop_plan(day: int) -> tuple[tuple[str, int], ...]:
+    """The crop list in force today: the opening one, then CROP_TILES."""
+    if OPENING_CROP_TILES is not None and day <= OPENING_UNTIL_DAY:
+        return tuple(tuple(pair) for pair in OPENING_CROP_TILES)
+    return CROP_TILES
 # Let the town choose, instead of assuming one animal always wins.
 #
 # `observation["town"]["unlocked_shops"]` is public and exact, and
@@ -1253,7 +1282,7 @@ def job_value(
         else:
             # Spare ground goes to cash crops, best price per tile first,
             # each capped at what its book will actually absorb.
-            for crop, cap in CROP_TILES:
+            for crop, cap in crop_plan(day):
                 if not sowable:
                     break
                 spec = CROPS.get(crop)
@@ -1874,15 +1903,22 @@ def market_orders(
         want = SEED_BUFFER - int(seeds.get("WHEAT", 0))
         orders.append(["BUY_SEED", "WHEAT", want])
     if hour == 2 and budget > CROP_SEED_FLOOR and day <= LAST_DAY - SOW_UNTIL:
-        for crop, cap in CROP_TILES:
+        opening = (OPENING_CROP_TILES is not None
+                   and day <= OPENING_UNTIL_DAY)
+        for crop, cap in crop_plan(day):
             if len(orders) >= MAX_ORDERS:
                 break
             if (SEED_ONLY_WHEN_SOWABLE and crop in CROPS
                     and day > LAST_DAY - int(CROPS[crop]["first"]) - 1):
                 continue
+            # In the opening, seed is bought for the whole cap at once.
+            batch = (max(0, cap - counts.get("crop_" + crop, 0))
+                     if opening else CROP_SEED_BATCH)
             if (counts.get("crop_" + crop, 0) < cap
-                    and int(seeds.get(crop, 0)) < CROP_SEED_BATCH):
-                orders.append(["BUY_SEED", crop, CROP_SEED_BATCH])
+                    and int(seeds.get(crop, 0)) < batch):
+                orders.append(["BUY_SEED", crop,
+                               batch - int(seeds.get(crop, 0))
+                               if opening else CROP_SEED_BATCH])
 
     # 6. Emergency ration, so a late harvest never costs a bird.
     if FEED_DEFICIT_RULE:
@@ -1944,6 +1980,9 @@ def decide(observation: dict[str, Any]) -> AgentAction:
     # the town without ever abandoning a line already paid for.
     herd = (dict(HERD_MIX) if HERD_MIX is not None
             else herd_plan(observation, counts, HERD_TARGET))
+    if EARLY_HERD is not None and day <= EARLY_HERD_UNTIL_DAY:
+        for animal, head in EARLY_HERD.items():
+            herd[animal] = max(int(herd.get(animal, 0)), int(head))
     for animal in ANIMAL_HOME:
         counts["want_" + animal] = int(herd.get(animal, 0))
     for house in ("COOP", "PASTURE"):

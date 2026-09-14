@@ -485,6 +485,16 @@ BIRDS_CARRIED = 3
 PLACE_PRIORITY_DAY = -1
 COOP_LEAD = 2
 CROP_TILES = (('STRAWBERRY', 32), ('MELON', 12), ('CARROT', 16))
+OPENING_CROP_TILES: tuple[tuple[str, int], ...] | None = None
+OPENING_UNTIL_DAY = 3
+EARLY_HERD: dict[str, int] | None = None
+EARLY_HERD_UNTIL_DAY = 1
+
+def crop_plan(day: int) -> tuple[tuple[str, int], ...]:
+    """The crop list in force today: the opening one, then CROP_TILES."""
+    if OPENING_CROP_TILES is not None and day <= OPENING_UNTIL_DAY:
+        return tuple((tuple(pair) for pair in OPENING_CROP_TILES))
+    return CROP_TILES
 DEMAND_MARGIN = 0.8
 FEED_CARRY = 12
 HAND_CAP = 12
@@ -767,7 +777,7 @@ def job_value(observation: dict[str, Any], tile: Any, x: int, y: int, inventory:
             band = BAND_WHEAT + 1.0 if urgent or early else BAND_BUILD
             jobs.append(((band + egg) * near, ['BUILD_COOP' if house == 'COOP' else 'BUILD_PASTURE']))
         else:
-            for crop, cap in CROP_TILES:
+            for crop, cap in crop_plan(day):
                 if not sowable:
                     break
                 spec = CROPS.get(crop)
@@ -1115,13 +1125,15 @@ def market_orders(observation: dict[str, Any], day: int, counts: dict[str, int],
         want = SEED_BUFFER - int(seeds.get('WHEAT', 0))
         orders.append(['BUY_SEED', 'WHEAT', want])
     if hour == 2 and budget > CROP_SEED_FLOOR and (day <= LAST_DAY - SOW_UNTIL):
-        for crop, cap in CROP_TILES:
+        opening = OPENING_CROP_TILES is not None and day <= OPENING_UNTIL_DAY
+        for crop, cap in crop_plan(day):
             if len(orders) >= MAX_ORDERS:
                 break
             if SEED_ONLY_WHEN_SOWABLE and crop in CROPS and (day > LAST_DAY - int(CROPS[crop]['first']) - 1):
                 continue
-            if counts.get('crop_' + crop, 0) < cap and int(seeds.get(crop, 0)) < CROP_SEED_BATCH:
-                orders.append(['BUY_SEED', crop, CROP_SEED_BATCH])
+            batch = max(0, cap - counts.get('crop_' + crop, 0)) if opening else CROP_SEED_BATCH
+            if counts.get('crop_' + crop, 0) < cap and int(seeds.get(crop, 0)) < batch:
+                orders.append(['BUY_SEED', crop, batch - int(seeds.get(crop, 0)) if opening else CROP_SEED_BATCH])
     if FEED_DEFICIT_RULE:
         short = feed_deficit(counts, shed)
         if short > 0 and budget > RATION_FLOOR and (len(orders) < MAX_ORDERS):
@@ -1151,6 +1163,9 @@ def decide(observation: dict[str, Any]) -> AgentAction:
     counts['carried_total'] = sum((sum((int(v) for v in _inventory(observation, worker).values() if int(v) > 0)) for worker in range(len(positions))))
     counts['shed_total'] = sum((int(v) for v in shed.values()))
     herd = dict(HERD_MIX) if HERD_MIX is not None else herd_plan(observation, counts, HERD_TARGET)
+    if EARLY_HERD is not None and day <= EARLY_HERD_UNTIL_DAY:
+        for animal, head in EARLY_HERD.items():
+            herd[animal] = max(int(herd.get(animal, 0)), int(head))
     for animal in ANIMAL_HOME:
         counts['want_' + animal] = int(herd.get(animal, 0))
     for house in ('COOP', 'PASTURE'):
