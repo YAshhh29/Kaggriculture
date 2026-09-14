@@ -776,7 +776,13 @@ STRAWBERRY_FERT_STOCK = False
 # 40 strawberry seeds and 36 plants, 16 and 12. About 1,000 coins a game of
 # seed that never goes in the ground. With this on, plants plus seed in hand
 # may not pass the cap.
-SEED_TO_CAP = False
+#
+# Kept. Inspected on the pruned current corpus (12 top teams, 8 replays
+# each) against the same agent without it: margin +301 a game on the 68
+# games where the opponent replay stayed in step (median +160, better in
+# 42, worse in 7; the rest identical, where the cap never bound), +194 over
+# all 96 (better in 58, worse in 12).
+SEED_TO_CAP = True
 # Stop buying a crop's seed once that crop can no longer be sown.
 #
 # Sowing a cash crop stops once it could not yield before the close
