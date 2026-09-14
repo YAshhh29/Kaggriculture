@@ -783,6 +783,31 @@ STRAWBERRY_FERT_STOCK = False
 # 42, worse in 7; the rest identical, where the cap never bound), +194 over
 # all 96 (better in 58, worse in 12).
 SEED_TO_CAP = True
+# Do not sell premium goods into a book that has been flooded to the floor.
+#
+# Strawberry, milk, wool and melon fall to 1 on a modest glut. In one traced
+# game G sold strawberries at 1 to 5 coins on days 21 to 23, after the other
+# farm had flooded the book, while the town was still consuming them every
+# few turns. The demand layer that helps Candidate H was neutral on G
+# overall; this is a narrower rule. When a premium good's price is below
+# FLOOR_HOLD times its base, the town still takes it, the shed is below
+# FLOOR_HOLD_ROOM, and the season is not closing, G holds that good this
+# turn. None keeps selling on sight.
+#
+# Not pursued. On the two reference games 0.3 and 0.5 moved the margin by
+# +584 and -154/-438, and G still sold 22 to 24 units of wool or milk at 20
+# coins or less. The town drains a flooded book too slowly for holding to
+# find a better price; it only delays the same sale. Stays off.
+FLOOR_HOLD: float | None = None
+FLOOR_HOLD_GOODS = ("STRAWBERRY", "MILK", "WOOL", "MELON")
+FLOOR_HOLD_ROOM = 80
+
+
+def town_takes(observation: dict[str, Any], item: str) -> bool:
+    """Whether some unlocked shop (or the town centre) consumes `item`."""
+    if item != "FERTILIZER":
+        return True  # the town centre takes one of every product daily
+    return False
 # Stop buying a crop's seed once that crop can no longer be sown.
 #
 # Sowing a cash crop stops once it could not yield before the close
@@ -1814,6 +1839,14 @@ def market_orders(
               and not closing):
             # Keep what today's strawberry productions can use.
             held = max(0, held - counts.get("fert_need", 0))
+        if (FLOOR_HOLD is not None and item in FLOOR_HOLD_GOODS
+                and not closing and total_shed < FLOOR_HOLD_ROOM
+                and town_takes(observation, item)):
+            base_price = float(MARKET_PARAMS.get(item, {}).get("base", 1))
+            if price_at(item, inventory_of(observation, item)) \
+                    < FLOOR_HOLD * base_price:
+                # The book is flooded and the town is still eating it.
+                continue
         if (SELL_CARRIED_AT_CLOSE
                 and int(observation.get("step", 0)) >= DROP_FROM_STEP):
             # Covers whatever is DROPped this turn; fills stop at the shed.

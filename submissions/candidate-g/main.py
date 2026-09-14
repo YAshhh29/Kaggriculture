@@ -524,6 +524,15 @@ LAST_ACT_STEP = 718
 ONGOING_FERT_ALIGN = False
 STRAWBERRY_FERT_STOCK = False
 SEED_TO_CAP = True
+FLOOR_HOLD: float | None = None
+FLOOR_HOLD_GOODS = ('STRAWBERRY', 'MILK', 'WOOL', 'MELON')
+FLOOR_HOLD_ROOM = 80
+
+def town_takes(observation: dict[str, Any], item: str) -> bool:
+    """Whether some unlocked shop (or the town centre) consumes `item`."""
+    if item != 'FERTILIZER':
+        return True
+    return False
 SEED_ONLY_WHEN_SOWABLE = True
 TRAVEL_EXPONENT = 2.0
 ZONE_TAX = 1.0
@@ -1076,6 +1085,10 @@ def market_orders(observation: dict[str, Any], day: int, counts: dict[str, int],
             held = max(0, held - reserve)
         elif item == 'FERTILIZER' and STRAWBERRY_FERT_STOCK and (not closing):
             held = max(0, held - counts.get('fert_need', 0))
+        if FLOOR_HOLD is not None and item in FLOOR_HOLD_GOODS and (not closing) and (total_shed < FLOOR_HOLD_ROOM) and town_takes(observation, item):
+            base_price = float(MARKET_PARAMS.get(item, {}).get('base', 1))
+            if price_at(item, inventory_of(observation, item)) < FLOOR_HOLD * base_price:
+                continue
         if SELL_CARRIED_AT_CLOSE and int(observation.get('step', 0)) >= DROP_FROM_STEP:
             held += 99
         if held <= 0 or len(orders) >= MAX_ORDERS:
