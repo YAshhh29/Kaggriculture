@@ -523,6 +523,7 @@ CLOSE_RETURN_FROM_STEP: int | None = 705
 LAST_ACT_STEP = 718
 ONGOING_FERT_ALIGN = False
 STRAWBERRY_FERT_STOCK = False
+SEED_TO_CAP = False
 SEED_ONLY_WHEN_SOWABLE = True
 TRAVEL_EXPONENT = 2.0
 ZONE_TAX = 1.0
@@ -1143,8 +1144,13 @@ def market_orders(observation: dict[str, Any], day: int, counts: dict[str, int],
             if SEED_ONLY_WHEN_SOWABLE and crop in CROPS and (day > LAST_DAY - int(CROPS[crop]['first']) - 1):
                 continue
             batch = min(OPENING_SEED_BATCH, max(0, cap - counts.get('crop_' + crop, 0))) if opening else CROP_SEED_BATCH
-            if counts.get('crop_' + crop, 0) < cap and int(seeds.get(crop, 0)) < batch:
-                orders.append(['BUY_SEED', crop, batch - int(seeds.get(crop, 0)) if opening else CROP_SEED_BATCH])
+            standing = counts.get('crop_' + crop, 0)
+            in_hand = int(seeds.get(crop, 0))
+            quantity = batch - in_hand if opening else CROP_SEED_BATCH
+            if SEED_TO_CAP:
+                quantity = min(quantity, cap - standing - in_hand)
+            if standing < cap and in_hand < batch and (quantity > 0):
+                orders.append(['BUY_SEED', crop, quantity])
     if FEED_DEFICIT_RULE:
         short = feed_deficit(counts, shed)
         if short > 0 and budget > RATION_FLOOR and (len(orders) < MAX_ORDERS):

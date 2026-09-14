@@ -767,6 +767,16 @@ LAST_ACT_STEP = 718
 # off.
 ONGOING_FERT_ALIGN = False
 STRAWBERRY_FERT_STOCK = False
+# Buy cash-crop seed only for ground the cap still has room for.
+#
+# The seed order checks that standing plants are below the cap and seed in
+# hand is below a batch, but not the two together, so seed already held
+# for the last free tiles is bought again. Following every plant through
+# two games: 20 melon seeds bought and 13 planted, 12 bought and 8 planted;
+# 40 strawberry seeds and 36 plants, 16 and 12. About 1,000 coins a game of
+# seed that never goes in the ground. With this on, plants plus seed in hand
+# may not pass the cap.
+SEED_TO_CAP = False
 # Stop buying a crop's seed once that crop can no longer be sown.
 #
 # Sowing a cash crop stops once it could not yield before the close
@@ -1995,11 +2005,14 @@ def market_orders(
             batch = (min(OPENING_SEED_BATCH,
                          max(0, cap - counts.get("crop_" + crop, 0)))
                      if opening else CROP_SEED_BATCH)
-            if (counts.get("crop_" + crop, 0) < cap
-                    and int(seeds.get(crop, 0)) < batch):
-                orders.append(["BUY_SEED", crop,
-                               batch - int(seeds.get(crop, 0))
-                               if opening else CROP_SEED_BATCH])
+            standing = counts.get("crop_" + crop, 0)
+            in_hand = int(seeds.get(crop, 0))
+            quantity = batch - in_hand if opening else CROP_SEED_BATCH
+            if SEED_TO_CAP:
+                # Seed in hand is ground already spoken for.
+                quantity = min(quantity, cap - standing - in_hand)
+            if (standing < cap and in_hand < batch and quantity > 0):
+                orders.append(["BUY_SEED", crop, quantity])
 
     # 6. Emergency ration, so a late harvest never costs a bird.
     if FEED_DEFICIT_RULE:
