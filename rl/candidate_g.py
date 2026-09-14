@@ -209,6 +209,19 @@ EARLY_BIRDS = 6
 # noise at 33/60 paired, and gives up 4,161 of floor to get them.
 # Re-checked on contested opponents and unchanged: 67,697 at six against
 # 65,512 at eight and 63,447 at ten, ahead on 27 of 60 both ways.
+#
+# **All of the above was measured with the town tied to G's empty tiles
+# and on the old crop plan, so none of it stands.** Re-measured in a fixed
+# town on the strawberry defaults with SELL_CARRIED_AT_CLOSE on, paired
+# game by game on 30 contested opponents: 9 gives margin +10,161 a game
+# (better in 60 of 60), 12 gives +8,632 (54/60), 17 gives +352 (36/60).
+# Confirmed at 9 on 12 current top teams with 8 replays each, against G
+# with both kept switches on: +3,452 a game on the 72 games where the
+# opponent replay stayed in step (median +2,176, better in 47, worse in
+# 25), +3,620 over all 96. It costs shed overflow (1,218 to 4,723 coins a
+# game) and more skipped care. At 12 and 17 the crew falls behind: unfed
+# days and missed care climb steeply, and G banks less despite selling
+# more milk.
 HERD_TARGET = 6
 # A fixed herd, as {animal: head}, in place of the demand-weighted plan.
 #
