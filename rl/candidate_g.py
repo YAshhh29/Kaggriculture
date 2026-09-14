@@ -79,7 +79,18 @@ MAX_ORDERS = 10
 # 3,000 of starting capital -- hiring twelve immediately bankrupted the
 # farm by day six before it had any income at all. The corpus hires 4 by
 # day 2, 8 by day 6 and 11 by day 10, and pays for each from the last.
-HAND_RAMP = ((0, 4), (6, 5), (8, 8), (11, 10), (14, 12))
+#
+# Was ((0, 4), (6, 5), (8, 8), (11, 10), (14, 12)). The current top twelve
+# hire about 5 on day 0, 7-9 by days 6-9 and 11 by day 10. Inspected on the
+# pruned current corpus against the old ramp, 12 top teams with 8 replays
+# each, paired game by game:
+#     like the top twelve   +1,083 a game on 68 clean games (median +1,355,
+#                           better in 42, worse in 26), +1,484 over all 96
+#     5 from day 0 only       -57 a game (median +836, better 39, worse 29)
+# So the gain is the steeper build from day 6 to day 10, not the day-0 hire.
+# Day-11 cash gap to the opponent narrows from 9,126 to 6,697, and crops
+# dying unwatered fall from 1,805 to 1,062 coins a game.
+HAND_RAMP = ((0, 5), (6, 7), (8, 9), (10, 11), (14, 12))
 # Hire to the last day. This read 27 and was measured as a dead constant,
 # bit-identical however it was set -- because the `closing` short-circuit
 # above returned before the crew block and dismissed everyone on day 28
