@@ -204,9 +204,18 @@ def wrap(base_agent, settings: dict | None = None):
     """An agent that plays `base_agent` and re-decides its sales."""
     cfg = dict(DEFAULTS)
     cfg.update(settings or {})
+    import inspect
+    try:
+        takes_config = len(inspect.signature(base_agent).parameters) >= 2
+    except (TypeError, ValueError):
+        takes_config = True
 
     def agent(observation, configuration=None):
-        action = base_agent(observation, configuration)
+        # Call the base with the arguments it accepts. Passing a
+        # configuration to a one-argument agent raised on every turn and
+        # that side scored nearly nothing.
+        action = (base_agent(observation, configuration) if takes_config
+                  else base_agent(observation))
         try:
             return plan_sales(observation, action, cfg)
         except Exception:
