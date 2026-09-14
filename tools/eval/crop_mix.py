@@ -10,6 +10,7 @@ the same panel and the same margin metric as everything else.
 from __future__ import annotations
 
 import argparse
+import json
 import statistics
 from multiprocessing import Pool
 from pathlib import Path
@@ -31,6 +32,20 @@ MIXES: dict[str, dict] = {
     "melon heavy": {
         "CROP_TILES": (("MELON", 28), ("CARROT", 16), ("STRAWBERRY", 8)),
     },
+    # The three differences the engine ledger found between G and the plan
+    # the ladder copies: G never buys its third quadrant, keeps one sheep
+    # to the plan's six, and has four strawberry tiles to its thirty-two.
+    "third quadrant": {"LAND_DAYS": (1, 5, 9)},
+    "plan herd": {"HERD_MIX": {"GOOSE": 3, "COW": 8, "SHEEP": 6}},
+    "plan herd+land": {
+        "LAND_DAYS": (1, 5, 9),
+        "HERD_MIX": {"GOOSE": 3, "COW": 8, "SHEEP": 6},
+    },
+    "plan shape": {
+        "LAND_DAYS": (1, 5, 9),
+        "HERD_MIX": {"GOOSE": 3, "COW": 8, "SHEEP": 6},
+        "CROP_TILES": (("STRAWBERRY", 32), ("MELON", 12), ("CARROT", 16)),
+    },
 }
 
 
@@ -42,6 +57,8 @@ def main() -> None:
     parser.add_argument("--contested", type=float, default=15000.0)
     parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--only", action="append", default=[])
+    parser.add_argument("--dump", default="",
+                        help="directory to write each config's games to")
     args = parser.parse_args()
 
     import sys
@@ -66,6 +83,13 @@ def main() -> None:
         with Pool(args.workers) as pool:
             rows = pool.map(one, jobs)
         out[name] = rows
+        if args.dump:
+            # One config per process is the only way the pool survives on
+            # Windows, so pairing has to happen across files afterwards.
+            Path(args.dump).mkdir(parents=True, exist_ok=True)
+            (Path(args.dump) / (name.replace(" ", "_").replace("+", "_")
+                                + ".json")).write_text(
+                json.dumps({"field": [t for _, t, _ in field], "rows": rows}))
         mine = [a for a, _ in rows]
         wins = sum(1 for a, b in rows if a > b)
         margin = statistics.mean(a - b for a, b in rows)

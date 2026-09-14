@@ -205,6 +205,14 @@ EARLY_BIRDS = 6
 # Re-checked on contested opponents and unchanged: 67,697 at six against
 # 65,512 at eight and 63,447 at ten, ahead on 27 of 60 both ways.
 HERD_TARGET = 6
+# A fixed herd, as {animal: head}, in place of the demand-weighted plan.
+#
+# The engine's own ledger, G against the plan most of the ladder copies,
+# both facing the same opponent: the plan's six sheep sell 16,452 of wool
+# against G's one sheep and 2,604, the single largest line in a 29,000
+# gap. G's herd follows `demand x price`, which keeps landing on geese.
+# None keeps the demand-weighted plan.
+HERD_MIX: dict[str, int] | None = None
 # The share a line keeps once we own any of it. A pen and the animal in it
 # are capital already spent and a shift in the town's draw does not refund
 # them, so demand decides which line *grows*, never which line survives.
@@ -1664,8 +1672,10 @@ def decide(observation: dict[str, Any]) -> AgentAction:
     counts["shed_WHEAT"] = int(shed.get("WHEAT", 0))
     # The herd we are aiming at, recomputed each turn so the mix follows
     # the town without ever abandoning a line already paid for.
-    for animal, wanted in herd_plan(observation, counts, HERD_TARGET).items():
-        counts["want_" + animal] = wanted
+    herd = (dict(HERD_MIX) if HERD_MIX is not None
+            else herd_plan(observation, counts, HERD_TARGET))
+    for animal in ANIMAL_HOME:
+        counts["want_" + animal] = int(herd.get(animal, 0))
     for house in ("COOP", "PASTURE"):
         counts["shed_" + house] = 0
         counts["unplaced_" + house] = 0

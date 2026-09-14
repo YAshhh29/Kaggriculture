@@ -42,9 +42,21 @@ def best_tape_per_opponent(limit: int, min_rating: float,
     """
     from tools.data.profile_tapes import INDEX, TAPES
 
+    # Only games played by a submission that is on the board *now*. The
+    # match snapshot is rebuilt from each top team's current submission, so
+    # an episode missing from it belongs to an agent that has since been
+    # replaced or has fallen away. Four days after one refresh, 24 of 30
+    # panel tapes were in that state and the panel was measuring G against
+    # opponents nobody plays any more.
+    matches = ROOT / "rl" / "data" / "top_matches.jsonl"
+    current = {int(json.loads(line)["episode_id"])
+               for line in matches.read_text(encoding="utf-8").splitlines()}
+
     best: dict[str, tuple[str, float]] = {}
     for line in INDEX.read_text(encoding="utf-8").splitlines():
         row = json.loads(line)
+        if int(row["episode_id"]) not in current:
+            continue
         path = TAPES / ("live_" + str(row["episode_id"]) + ".json")
         if not path.exists():
             continue
