@@ -488,8 +488,7 @@ CROP_TILES = (('STRAWBERRY', 32), ('MELON', 12), ('CARROT', 16))
 OPENING_CROP_TILES: tuple[tuple[str, int], ...] | None = None
 OPENING_UNTIL_DAY = 3
 OPENING_SEED_BATCH = 8
-EARLY_HERD: dict[str, int] | None = None
-EARLY_HERD_UNTIL_DAY = 1
+PEN_ORDER = ('COOP', 'PASTURE')
 
 def crop_plan(day: int) -> tuple[tuple[str, int], ...]:
     """The crop list in force today: the opening one, then CROP_TILES."""
@@ -699,7 +698,7 @@ def house_needed(counts: dict[str, int], preferred: str) -> str | None:
     speculative lead is rationed, and only by whether the wheat is there
     to feed what it would hold.
     """
-    for house in ('COOP', 'PASTURE'):
+    for house in PEN_ORDER:
         empty = counts['empty_coops' if house == 'COOP' else 'empty_pastures']
         waiting = counts.get('shed_' + house, 0)
         carried = counts.get('unplaced_' + house, 0)
@@ -1164,9 +1163,6 @@ def decide(observation: dict[str, Any]) -> AgentAction:
     counts['carried_total'] = sum((sum((int(v) for v in _inventory(observation, worker).values() if int(v) > 0)) for worker in range(len(positions))))
     counts['shed_total'] = sum((int(v) for v in shed.values()))
     herd = dict(HERD_MIX) if HERD_MIX is not None else herd_plan(observation, counts, HERD_TARGET)
-    if EARLY_HERD is not None and day <= EARLY_HERD_UNTIL_DAY:
-        for animal, head in EARLY_HERD.items():
-            herd[animal] = max(int(herd.get(animal, 0)), int(head))
     for animal in ANIMAL_HOME:
         counts['want_' + animal] = int(herd.get(animal, 0))
     for house in ('COOP', 'PASTURE'):

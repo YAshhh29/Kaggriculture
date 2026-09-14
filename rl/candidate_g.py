@@ -428,14 +428,16 @@ CROP_TILES = (("STRAWBERRY", 32), ("MELON", 12), ("CARROT", 16))
 OPENING_CROP_TILES: tuple[tuple[str, int], ...] | None = None
 OPENING_UNTIL_DAY = 3
 OPENING_SEED_BATCH = 8
-# Herd targets raised during the opening, as {animal: head}.
+# Which pen gets built first when both are wanted.
 #
-# The same replays buy two cows and two sheep on day 0, so wool and milk
-# arrive while those books still pay near base; G buys two cows, a sheep and
-# a goose. Up to EARLY_HERD_UNTIL_DAY, each line's target is at least this.
-# None keeps the herd plan alone.
-EARLY_HERD: dict[str, int] | None = None
-EARLY_HERD_UNTIL_DAY = 1
+# The same replays buy two cows and two sheep on day 0, so wool (from day 6)
+# and milk (from day 8) arrive while those books still pay near base. G's
+# first animal is a goose. Raising its early herd targets did nothing -- the
+# herd plan already wants four cows and four sheep on day 0 -- because the
+# limit is housing: G builds its coop first, buys one animal per turn only
+# into a standing pen, and its first pastures appear at steps 11 and 17.
+# ("PASTURE", "COOP") builds pasture first. The default keeps coop first.
+PEN_ORDER = ("COOP", "PASTURE")
 
 
 def crop_plan(day: int) -> tuple[tuple[str, int], ...]:
@@ -1102,7 +1104,7 @@ def house_needed(counts: dict[str, int], preferred: str) -> str | None:
     speculative lead is rationed, and only by whether the wheat is there
     to feed what it would hold.
     """
-    for house in ("COOP", "PASTURE"):
+    for house in PEN_ORDER:
         empty = counts["empty_coops" if house == "COOP" else "empty_pastures"]
         waiting = counts.get("shed_" + house, 0)
         carried = counts.get("unplaced_" + house, 0)
@@ -1985,9 +1987,6 @@ def decide(observation: dict[str, Any]) -> AgentAction:
     # the town without ever abandoning a line already paid for.
     herd = (dict(HERD_MIX) if HERD_MIX is not None
             else herd_plan(observation, counts, HERD_TARGET))
-    if EARLY_HERD is not None and day <= EARLY_HERD_UNTIL_DAY:
-        for animal, head in EARLY_HERD.items():
-            herd[animal] = max(int(herd.get(animal, 0)), int(head))
     for animal in ANIMAL_HOME:
         counts["want_" + animal] = int(herd.get(animal, 0))
     for house in ("COOP", "PASTURE"):
