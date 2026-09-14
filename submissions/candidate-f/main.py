@@ -1,4 +1,3 @@
-"""Behavior clone of a public elite action calendar."""
 import base64
 import json
 import zlib
