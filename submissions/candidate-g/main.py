@@ -487,6 +487,7 @@ COOP_LEAD = 2
 CROP_TILES = (('STRAWBERRY', 32), ('MELON', 12), ('CARROT', 16))
 OPENING_CROP_TILES: tuple[tuple[str, int], ...] | None = None
 OPENING_UNTIL_DAY = 3
+OPENING_SEED_BATCH = 8
 EARLY_HERD: dict[str, int] | None = None
 EARLY_HERD_UNTIL_DAY = 1
 
@@ -1131,7 +1132,7 @@ def market_orders(observation: dict[str, Any], day: int, counts: dict[str, int],
                 break
             if SEED_ONLY_WHEN_SOWABLE and crop in CROPS and (day > LAST_DAY - int(CROPS[crop]['first']) - 1):
                 continue
-            batch = max(0, cap - counts.get('crop_' + crop, 0)) if opening else CROP_SEED_BATCH
+            batch = min(OPENING_SEED_BATCH, max(0, cap - counts.get('crop_' + crop, 0))) if opening else CROP_SEED_BATCH
             if counts.get('crop_' + crop, 0) < cap and int(seeds.get(crop, 0)) < batch:
                 orders.append(['BUY_SEED', crop, batch - int(seeds.get(crop, 0)) if opening else CROP_SEED_BATCH])
     if FEED_DEFICIT_RULE:

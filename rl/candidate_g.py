@@ -427,6 +427,7 @@ CROP_TILES = (("STRAWBERRY", 32), ("MELON", 12), ("CARROT", 16))
 # cap rather than CROP_SEED_BATCH. None keeps CROP_TILES throughout.
 OPENING_CROP_TILES: tuple[tuple[str, int], ...] | None = None
 OPENING_UNTIL_DAY = 3
+OPENING_SEED_BATCH = 8
 # Herd targets raised during the opening, as {animal: head}.
 #
 # The same replays buy two cows and two sheep on day 0, so wool and milk
@@ -1911,8 +1912,12 @@ def market_orders(
             if (SEED_ONLY_WHEN_SOWABLE and crop in CROPS
                     and day > LAST_DAY - int(CROPS[crop]["first"]) - 1):
                 continue
-            # In the opening, seed is bought for the whole cap at once.
-            batch = (max(0, cap - counts.get("crop_" + crop, 0))
+            # In the opening, seed is bought towards the cap in batches of up
+            # to OPENING_SEED_BATCH. Buying a whole cap at once spent 3,200
+            # coins on strawberry seed on day 0 and starved land, herd and
+            # feed: one reference game fell from 62,461 to 30,654.
+            batch = (min(OPENING_SEED_BATCH,
+                         max(0, cap - counts.get("crop_" + crop, 0)))
                      if opening else CROP_SEED_BATCH)
             if (counts.get("crop_" + crop, 0) < cap
                     and int(seeds.get(crop, 0)) < batch):
