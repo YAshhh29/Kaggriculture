@@ -506,6 +506,7 @@ SOW_UNTIL = 3
 PLANT_CUTOFF_HOUR: int | None = None
 DROP_FROM_STEP = 713
 SELL_CARRIED_AT_CLOSE = False
+MIDDAY_DROP_HAUL: float | None = None
 SEED_ONLY_WHEN_SOWABLE = False
 TRAVEL_EXPONENT = 2.0
 ZONE_TAX = 1.0
@@ -714,13 +715,17 @@ def job_value(observation: dict[str, Any], tile: Any, x: int, y: int, inventory:
     days_left = max(0, LAST_DAY - day)
     wheat_target = WHEAT_TILES
     if _shed_adjacent(x, y):
-        if int(observation.get('step', 0)) >= DROP_FROM_STEP:
-            haul = 0.0
-            for item, qty in inventory.items():
-                if int(qty) > 0 and item in MARKET_PARAMS:
-                    haul += int(qty) * price_at(item, inventory_of(observation, item))
-            if haul > 0:
-                jobs.append((BAND_HARVEST + haul, ['DROP']))
+        haul = produce = 0.0
+        for item, qty in inventory.items():
+            if int(qty) > 0 and item in MARKET_PARAMS:
+                worth = int(qty) * price_at(item, inventory_of(observation, item))
+                haul += worth
+                if item != 'WHEAT':
+                    produce += worth
+        late = int(observation.get('step', 0)) >= DROP_FROM_STEP
+        midday = MIDDAY_DROP_HAUL is not None and produce >= MIDDAY_DROP_HAUL
+        if haul > 0 and (late or midday):
+            jobs.append((BAND_HARVEST + haul, ['DROP']))
         carrying = int(inventory.get('WHEAT', 0))
         if counts['unfed'] > 0 and carrying <= 0 and (counts.get('shed_WHEAT', int(shed.get('WHEAT', 0))) > 0):
             jobs.append((BAND_FEED * 0.9, ['PICKUP', 'WHEAT', FEED_CARRY]))

@@ -616,6 +616,20 @@ DROP_FROM_STEP = 713
 # Unsold goods only fall from 2,864 to 2,615 coins a game, so most of what
 # is left is harvested after the last market tick rather than dropped late.
 SELL_CARRIED_AT_CLOSE = False
+# Let a worker already beside the shed drop a valuable load mid-day.
+#
+# DROP is otherwise offered only from DROP_FROM_STEP, so everything the crew
+# harvests stays in hand until the nightly refresh tips it into the shed
+# after the day's last sale. With a herd of nine the inspector charges 4,723
+# coins a game for shed overflow. A nightly trace finds the shed nearly empty
+# at hour 23 and the crew carrying 60 to 106 units, 41 to 52 of them wheat,
+# so on nights with melon or strawberry in hand the drop passes 100.
+#
+# The value is the non-wheat produce in hand, in coins, at which the drop is
+# offered. Wheat is excluded because a worker carries it to feed animals.
+# None keeps the old behaviour. Mid-day banking was measured as a loss at
+# 120 and 400 coins, but in the coupled town on the old crop plan.
+MIDDAY_DROP_HAUL: float | None = None
 # Stop buying a crop's seed once that crop can no longer be sown.
 #
 # Sowing a cash crop stops once it could not yield before the close
@@ -1064,14 +1078,20 @@ def job_value(
         # sell empties the shed the same turn, so the last errand of the
         # season is worth making. It is priced by what is actually being
         # carried, so a worker holding nothing valuable stays in the field.
-        if int(observation.get("step", 0)) >= DROP_FROM_STEP:
-            haul = 0.0
-            for item, qty in inventory.items():
-                if int(qty) > 0 and item in MARKET_PARAMS:
-                    haul += int(qty) * price_at(
-                        item, inventory_of(observation, item))
-            if haul > 0:
-                jobs.append((BAND_HARVEST + haul, ["DROP"]))
+        haul = produce = 0.0
+        for item, qty in inventory.items():
+            if int(qty) > 0 and item in MARKET_PARAMS:
+                worth = int(qty) * price_at(
+                    item, inventory_of(observation, item))
+                haul += worth
+                # Wheat in hand is feed on its way to an animal, not stock.
+                if item != "WHEAT":
+                    produce += worth
+        late = int(observation.get("step", 0)) >= DROP_FROM_STEP
+        midday = (MIDDAY_DROP_HAUL is not None
+                  and produce >= MIDDAY_DROP_HAUL)
+        if haul > 0 and (late or midday):
+            jobs.append((BAND_HARVEST + haul, ["DROP"]))
         carrying = int(inventory.get("WHEAT", 0))
         if (counts["unfed"] > 0 and carrying <= 0
                 and counts.get("shed_WHEAT", int(shed.get("WHEAT", 0))) > 0):

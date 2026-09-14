@@ -112,6 +112,21 @@ MIXES: dict[str, dict] = {
     "sell close + herd 8": {"SELL_CARRIED_AT_CLOSE": True, "HERD_TARGET": 8},
     "sell close + herd 10": {"SELL_CARRIED_AT_CLOSE": True,
                              "HERD_TARGET": 10},
+    # Shed overflow. With a herd of nine it costs 4,723 coins a game. A
+    # nightly trace finds the shed nearly empty at hour 23 and the crew
+    # carrying 60-106 units, mostly wheat, all tipped in after the last
+    # sale -- DROP is only ever offered from step 713. These let a worker
+    # already beside the shed drop a valuable load mid-day. It was measured
+    # as a loss at 120 and 400 coins, but in the coupled town on the old
+    # plan. "v3" is G as it is about to be.
+    "v3": {"SELL_CARRIED_AT_CLOSE": True, "SEED_ONLY_WHEN_SOWABLE": True,
+           "HERD_TARGET": 9},
+    "v3 + midday drop 1000": {
+        "SELL_CARRIED_AT_CLOSE": True, "SEED_ONLY_WHEN_SOWABLE": True,
+        "HERD_TARGET": 9, "MIDDAY_DROP_HAUL": 1000.0},
+    "v3 + midday drop 2500": {
+        "SELL_CARRIED_AT_CLOSE": True, "SEED_ONLY_WHEN_SOWABLE": True,
+        "HERD_TARGET": 9, "MIDDAY_DROP_HAUL": 2500.0},
     "plan shape": {
         "LAND_DAYS": (1, 5, 9),
         "HERD_MIX": {"GOOSE": 3, "COW": 8, "SHEEP": 6},
