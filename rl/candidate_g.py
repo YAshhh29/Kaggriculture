@@ -741,6 +741,32 @@ NIGHT_FROM_HOUR = 20
 # close fall from 2,691 to 1,578 coins a game.
 CLOSE_RETURN_FROM_STEP: int | None = 705
 LAST_ACT_STEP = 718
+# Fertilizer for strawberry.
+#
+# A strawberry produces four times, and a production made on a day the plant
+# is fertilized and watered pays two units instead of one. Across 96 v5
+# baseline games G sells 3.74 strawberries per seed bought and the top teams
+# 7.03, while G sells 168 fertilizer a game at about 59 and buys none -- the
+# top teams buy about 1,714 coins of it. A trace of one game finds 62 of 111
+# strawberry productions doubled and 49 not.
+#
+# Two causes. ONGOING_FERT_ALIGN: fertilizer_gain counted production days a
+# day early against the engine's rule. STRAWBERRY_FERT_STOCK: fertilizer only
+# reaches a worker's hands from an animal; none is ever picked up from the
+# shed, and the shed's stock is sold every turn. With it on, fertilizer
+# enough for the plants that would gain from it today is kept back from
+# sale, and a worker at the shed with none in hand may pick some up.
+#
+# Not pursued. On the two reference games every variant but one lost margin:
+# align -608 and -12,598, stock -1,778 and -15,637, both -7,346 and -3,554.
+# Keeping stock did raise doubled strawberry productions from 62 to 80 in
+# the first game, but the pickup trips cost more field work than the
+# berries earned. In the second game G already doubled 38 of 40
+# productions. The yield-per-seed gap is more likely in when strawberry
+# is sown and how much of it is harvested than in fertilizer. Both stay
+# off.
+ONGOING_FERT_ALIGN = False
+STRAWBERRY_FERT_STOCK = False
 # Stop buying a crop's seed once that crop can no longer be sown.
 #
 # Sowing a cash crop stops once it could not yield before the close
@@ -1095,10 +1121,18 @@ def fertilizer_gain(tile: dict[str, Any], day: int) -> int:
         # unit of manure worth 62 to 84 -- where wheat returns 42 for the
         # same input and loses.
         interval = max(1, int(spec["interval"]))
+        # The engine produces at the end of day d when (d + 1 - planted -
+        # first) is a multiple of the interval, pays the bonus if manure
+        # covers d itself, and stops after max_yield productions.
+        # ONGOING_FERT_ALIGN counts those days; the old count is a day early.
+        shift = 1 if ONGOING_FERT_ALIGN else 0
         gain = 0
         for ahead in (0, 1, 2):
-            since = (day + ahead) - planted - int(spec["first"])
+            since = (day + ahead + shift) - planted - int(spec["first"])
             if since >= 0 and since % interval == 0:
+                if (ONGOING_FERT_ALIGN
+                        and since // interval + 1 > int(spec["max_yield"])):
+                    continue
                 gain += 1
         return max(0, min(gain, int(spec["max_yield"]) - held))
     age = day - planted
@@ -1221,6 +1255,17 @@ def job_value(
         if (counts["unfed"] > 0 and carrying <= 0
                 and counts.get("shed_WHEAT", int(shed.get("WHEAT", 0))) > 0):
             jobs.append((BAND_FEED * 0.9, ["PICKUP", "WHEAT", FEED_CARRY]))
+        if (STRAWBERRY_FERT_STOCK
+                and int(inventory.get("FERTILIZER", 0) or 0) <= 0
+                and counts.get("fert_need", 0) > counts.get("fert_carried", 0)
+                and int(shed.get("FERTILIZER", 0) or 0) > 0):
+            wanted = counts["fert_need"] - counts.get("fert_carried", 0)
+            berry = price_at("STRAWBERRY",
+                             inventory_of(observation, "STRAWBERRY"))
+            jobs.append((BAND_FERTILIZE + berry,
+                         ["PICKUP", "FERTILIZER",
+                          max(1, min(4, wanted,
+                                     int(shed.get("FERTILIZER", 0))))]))
         # Collect *any* animal the shed is holding, not just the one the
         # town happens to want today.
         #
@@ -1749,6 +1794,10 @@ def market_orders(
         held = int(shed.get(item, 0))
         if item == "WHEAT":
             held = max(0, held - reserve)
+        elif (item == "FERTILIZER" and STRAWBERRY_FERT_STOCK
+              and not closing):
+            # Keep what today's strawberry productions can use.
+            held = max(0, held - counts.get("fert_need", 0))
         if (SELL_CARRIED_AT_CLOSE
                 and int(observation.get("step", 0)) >= DROP_FROM_STEP):
             # Covers whatever is DROPped this turn; fills stop at the shed.
@@ -2007,6 +2056,18 @@ def decide(observation: dict[str, Any]) -> AgentAction:
         sum(int(v) for v in _inventory(observation, worker).values()
             if int(v) > 0)
         for worker in range(len(positions)))
+    counts["fert_carried"] = sum(
+        int(_inventory(observation, worker).get("FERTILIZER", 0) or 0)
+        for worker in range(len(positions)))
+    counts["fert_need"] = 0
+    if STRAWBERRY_FERT_STOCK:
+        for row in tiles:
+            for tile in row:
+                if (isinstance(tile, dict) and tile.get("kind") == "PLANT"
+                        and CROPS.get(str(tile.get("crop", "")), {}).get(
+                            "ongoing")
+                        and fertilizer_gain(tile, day) > 0):
+                    counts["fert_need"] += 1
     counts["shed_total"] = sum(int(v) for v in shed.values())
     # The herd we are aiming at, recomputed each turn so the mix follows
     # the town without ever abandoning a line already paid for.

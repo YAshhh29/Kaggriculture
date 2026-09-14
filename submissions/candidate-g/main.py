@@ -521,6 +521,8 @@ NIGHT_ROOM: int | None = None
 NIGHT_FROM_HOUR = 20
 CLOSE_RETURN_FROM_STEP: int | None = 705
 LAST_ACT_STEP = 718
+ONGOING_FERT_ALIGN = False
+STRAWBERRY_FERT_STOCK = False
 SEED_ONLY_WHEN_SOWABLE = True
 TRAVEL_EXPONENT = 2.0
 ZONE_TAX = 1.0
@@ -665,10 +667,13 @@ def fertilizer_gain(tile: dict[str, Any], day: int) -> int:
     planted = int(tile.get('planted_day', day))
     if spec['ongoing']:
         interval = max(1, int(spec['interval']))
+        shift = 1 if ONGOING_FERT_ALIGN else 0
         gain = 0
         for ahead in (0, 1, 2):
-            since = day + ahead - planted - int(spec['first'])
+            since = day + ahead + shift - planted - int(spec['first'])
             if since >= 0 and since % interval == 0:
+                if ONGOING_FERT_ALIGN and since // interval + 1 > int(spec['max_yield']):
+                    continue
                 gain += 1
         return max(0, min(gain, int(spec['max_yield']) - held))
     age = day - planted
@@ -753,6 +758,10 @@ def job_value(observation: dict[str, Any], tile: Any, x: int, y: int, inventory:
         carrying = int(inventory.get('WHEAT', 0))
         if counts['unfed'] > 0 and carrying <= 0 and (counts.get('shed_WHEAT', int(shed.get('WHEAT', 0))) > 0):
             jobs.append((BAND_FEED * 0.9, ['PICKUP', 'WHEAT', FEED_CARRY]))
+        if STRAWBERRY_FERT_STOCK and int(inventory.get('FERTILIZER', 0) or 0) <= 0 and (counts.get('fert_need', 0) > counts.get('fert_carried', 0)) and (int(shed.get('FERTILIZER', 0) or 0) > 0):
+            wanted = counts['fert_need'] - counts.get('fert_carried', 0)
+            berry = price_at('STRAWBERRY', inventory_of(observation, 'STRAWBERRY'))
+            jobs.append((BAND_FERTILIZE + berry, ['PICKUP', 'FERTILIZER', max(1, min(4, wanted, int(shed.get('FERTILIZER', 0))))]))
         if not any((int(inventory.get(a, 0)) > 0 for a in ANIMAL_HOME)):
             preferred = counts.get('bird', 'GOOSE')
             for animal in sorted(ANIMAL_HOME, key=lambda a: (a != preferred, a)):
@@ -1064,6 +1073,8 @@ def market_orders(observation: dict[str, Any], day: int, counts: dict[str, int],
         held = int(shed.get(item, 0))
         if item == 'WHEAT':
             held = max(0, held - reserve)
+        elif item == 'FERTILIZER' and STRAWBERRY_FERT_STOCK and (not closing):
+            held = max(0, held - counts.get('fert_need', 0))
         if SELL_CARRIED_AT_CLOSE and int(observation.get('step', 0)) >= DROP_FROM_STEP:
             held += 99
         if held <= 0 or len(orders) >= MAX_ORDERS:
@@ -1161,6 +1172,13 @@ def decide(observation: dict[str, Any]) -> AgentAction:
     counts['shed_WHEAT'] = int(shed.get('WHEAT', 0))
     counts['wheat_carried'] = sum((int(_inventory(observation, worker).get('WHEAT', 0)) for worker in range(len(positions))))
     counts['carried_total'] = sum((sum((int(v) for v in _inventory(observation, worker).values() if int(v) > 0)) for worker in range(len(positions))))
+    counts['fert_carried'] = sum((int(_inventory(observation, worker).get('FERTILIZER', 0) or 0) for worker in range(len(positions))))
+    counts['fert_need'] = 0
+    if STRAWBERRY_FERT_STOCK:
+        for row in tiles:
+            for tile in row:
+                if isinstance(tile, dict) and tile.get('kind') == 'PLANT' and CROPS.get(str(tile.get('crop', '')), {}).get('ongoing') and (fertilizer_gain(tile, day) > 0):
+                    counts['fert_need'] += 1
     counts['shed_total'] = sum((int(v) for v in shed.values()))
     herd = dict(HERD_MIX) if HERD_MIX is not None else herd_plan(observation, counts, HERD_TARGET)
     for animal in ANIMAL_HOME:
