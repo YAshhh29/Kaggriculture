@@ -186,6 +186,11 @@ WHEAT_PER_BIRD = 0.8
 # 28 held half of a two-quadrant farm in wheat to feed about nine animals,
 # roughly eleven tiles' worth, and sold the rest at 36. Cut to 16 as part of
 # the strawberry change measured at CROP_TILES.
+#
+# Twenty, measured alone on the pruned current corpus against sixteen:
+# margin -3,044 a game on 68 clean games (better in 17, worse in 51). G
+# still buys about 20,800 coins of wheat a game, so the extra ground only
+# takes tiles from strawberry. Sixteen stays.
 WHEAT_TILES = 16
 COOPS_AFTER_WHEAT = 8
 EARLY_BIRDS = 6
@@ -243,6 +248,14 @@ HERD_TARGET = 9
 # against G's one sheep and 2,604, the single largest line in a 29,000
 # gap. G's herd follows `demand x price`, which keeps landing on geese.
 # None keeps the demand-weighted plan.
+#
+# Re-measured at nine head on the pruned current corpus, against the
+# demand-weighted plan at HERD_TARGET 9, on 68 clean games:
+#     1 goose, 4 cows, 4 sheep    margin -6,391 a game (better 25, worse 43)
+#     2 geese, 3 cows, 4 sheep    margin -9,667 a game (better 19, worse 49)
+# More sheep sold more wool (114 against 66) but put about 40 units a game
+# on the floor price, into a book the town drains slowly, and fewer cows
+# cut milk from 176 units to 100-121. The demand-weighted plan stays.
 HERD_MIX: dict[str, int] | None = None
 # Count animals in transit when deciding what to buy.
 #
