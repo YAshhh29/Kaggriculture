@@ -499,6 +499,7 @@ DEMAND_MARGIN = 0.8
 FEED_CARRY = 12
 FEED_PICKUP_TO_NEED = True
 FEED_PICKUP_SPARE = 4
+FEED_PICKUP_FOR_HUNGRY = False
 HAND_CAP = 12
 CREW_TO_WORK = 0.3
 CREW_FLOOR = 4
@@ -781,6 +782,8 @@ def job_value(observation: dict[str, Any], tile: Any, x: int, y: int, inventory:
         in_shed = counts.get('shed_WHEAT', int(shed.get('WHEAT', 0)))
         if FEED_PICKUP_TO_NEED:
             need = counts['unfed'] + FEED_PICKUP_SPARE - counts.get('wheat_carried', 0)
+            if FEED_PICKUP_FOR_HUNGRY and counts.get('hungry', 0) > 0:
+                need = max(need, counts['hungry'] + FEED_PICKUP_SPARE - counts.get('hungry_fetched', 0))
             if counts['unfed'] > 0 and need > 0 and (carrying <= 0) and (in_shed > 0):
                 jobs.append((BAND_FEED * 0.9, ['PICKUP', 'WHEAT', max(1, min(FEED_CARRY, need, in_shed))]))
         elif counts['unfed'] > 0 and carrying <= 0 and (in_shed > 0):
@@ -949,6 +952,7 @@ def claim(counts: dict[str, int], action: list[Any]) -> None:
         counts[key] = max(0, counts.get(key, 0) - qty)
         if item == 'WHEAT' and FEED_PICKUP_TO_NEED:
             counts['wheat_carried'] = counts.get('wheat_carried', 0) + qty
+            counts['hungry_fetched'] = counts.get('hungry_fetched', 0) + qty
         if item in ANIMAL_HOME:
             house = ANIMAL_HOME[item]
             counts['shed_' + house] = max(0, counts.get('shed_' + house, 0) - qty)
