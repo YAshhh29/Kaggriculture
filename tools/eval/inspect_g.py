@@ -164,8 +164,12 @@ def play(spec: str, overrides: dict, tape: str, seed: int, seat: int):
         mine = getattr(module, attr)
         opponent = resolve("clone:" + tape)
         agents = [mine, opponent] if seat == 0 else [opponent, mine]
+        # runTimeout: the framework's 1,200-second episode limit is wall
+        # clock, and with a dozen games sharing the cores it killed five
+        # games of one inspection and the whole baseline of a panel.
         env = make("kaggriculture",
-                   configuration={"episodeSteps": 720, "seed": seed},
+                   configuration={"episodeSteps": 720, "seed": seed,
+                                  "runTimeout": 36000},
                    debug=False)
         LEDGER.clear()
         env.run(agents)

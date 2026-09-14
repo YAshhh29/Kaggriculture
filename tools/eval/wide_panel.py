@@ -102,8 +102,11 @@ def one(job):
         mine = getattr(module, attr)
         opponent = resolve("clone:" + tape)
         agents = [mine, opponent] if seat == 0 else [opponent, mine]
+        # The framework's 1,200-second episode limit is wall clock; under a
+        # full load of parallel runs it crashed a panel's whole baseline.
         env = make("kaggriculture",
-                   configuration={"episodeSteps": 720, "seed": seed},
+                   configuration={"episodeSteps": 720, "seed": seed,
+                                  "runTimeout": 36000},
                    debug=False)
         env.run(agents)
     finally:
