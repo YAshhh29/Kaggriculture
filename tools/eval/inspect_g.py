@@ -73,6 +73,15 @@ WHERE = {
     "open_books": "crop and herd choice: CROP_TILES, herd_plan()",
 }
 
+
+# Losses priced from what was *available*, not from what a different move
+# would certainly have banked. Early harvest is the proof: a fix that cut
+# it from 17,236 to 6,890 coins a game lost 1,643 a game of margin across
+# 96 paired games, because the grain it saved was not grain G could sell
+# or needed. These are ranked, but labelled, and never read as coins in
+# the bank.
+ESTIMATED = {"early_harvest", "care_missed"}
+
 LOSSES = ("died_unwatered", "rotted", "early_harvest", "escaped",
           "care_missed", "fertilizer_uncollected", "capped_yield",
           "overflow", "stranded")
@@ -807,7 +816,8 @@ def judge(games: list[dict]) -> dict[str, Any]:
     for key, row in losses.items():
         if row["g_coins"] > 0:
             findings.append({
-                "kind": "loss", "what": key, "coins_per_game": row["g_coins"],
+                "kind": "loss (estimate)" if key in ESTIMATED else "loss",
+                "what": key, "coins_per_game": row["g_coins"],
                 "opp_coins_per_game": row["opp_coins"],
                 "games_hit": f"{row['games_hit']}/{n}",
                 "example": (row["examples"] or [None])[0],

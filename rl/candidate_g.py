@@ -489,6 +489,16 @@ STARVING_MEANS_MISSED_MEAL = False
 #
 # True releases the hold and buys ration only for the deficit: animals
 # still to feed today, less the wheat in the shed and in hand.
+#
+# Measured and rejected, in a fixed town, against 12 current top teams
+# with 8 replays each: margin 1,643 a game worse, better in 35 of 96
+# paired games and worse in 61, though our own score rose in 52. It does
+# what it says -- wheat bought falls from 18,353 a game to 539 and wheat
+# pulled early from 471 units to 198 -- but the round trip was at the same
+# price and cost almost nothing, while the crew sits idle more (23.0% of
+# turns against 16.7%), the herd shrinks (225 animal-days against 254) and
+# more goods are left unsold at the close. The churn looked like waste
+# and was mostly working capital.
 FEED_DEFICIT_RULE = False
 # Days before the close that sowing and seed-buying stop.
 #
