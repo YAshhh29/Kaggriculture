@@ -425,6 +425,13 @@ CROP_TILES = (("STRAWBERRY", 32), ("MELON", 12), ("CARROT", 16))
 # While the day is at most OPENING_UNTIL_DAY, this list replaces CROP_TILES
 # for both sowing and seed buying, and each crop's seed is bought up to its
 # cap rather than CROP_SEED_BATCH. None keeps CROP_TILES throughout.
+#
+# Rejected: melon (8) then strawberry in the opening, inspected on the pruned
+# current corpus against the same agent without it: margin -6,745 a game on
+# the 66 games where the opponent replay stayed in step (better in 9, worse
+# in 57), -5,409 over all 96. Day-11 cash rises, but the crew stands idle
+# 14.0% of turns against 6.7% -- the opening sows fewer tiles -- and the
+# season never recovers it. Stays off.
 OPENING_CROP_TILES: tuple[tuple[str, int], ...] | None = None
 OPENING_UNTIL_DAY = 3
 OPENING_SEED_BATCH = 8
@@ -437,6 +444,12 @@ OPENING_SEED_BATCH = 8
 # limit is housing: G builds its coop first, buys one animal per turn only
 # into a standing pen, and its first pastures appear at steps 11 and 17.
 # ("PASTURE", "COOP") builds pasture first. The default keeps coop first.
+#
+# Rejected: pasture first, inspected on the pruned current corpus against
+# the same agent without it: margin -6,083 a game on the 67 games where the
+# opponent replay stayed in step (better in 13, worse in 54), -4,692 over all
+# 96. Idle turns rise from 6.7% to 9.7%, and overflow and unsold goods both
+# grow. Coop first stays.
 PEN_ORDER = ("COOP", "PASTURE")
 
 
@@ -702,6 +715,12 @@ MIDDAY_DROP_HAUL: float | None = 1000.0
 # (as coins inside the 1,000-coin trigger, then as 8 or 16 units). The night's
 # 41 to 59 wheat are a few units in each of a dozen hands, no worker ever
 # reached the threshold, and both reference games came out identical.
+#
+# Rejected at 95, inspected on the pruned current corpus (12 top teams, 8
+# replays each) against the same agent without it: margin -314 a game on
+# the 68 games where the opponent replay stayed in step (better in 30,
+# worse in 38), -396 over all 96. The trips it pulls in cost more field
+# work than the overflow they save, and care missed rises. Stays off.
 NIGHT_ROOM: int | None = None
 NIGHT_FROM_HOUR = 20
 # Bring the crew's last loads home before the season ends.
@@ -714,7 +733,13 @@ NIGHT_FROM_HOUR = 20
 # worker six tiles out always prefers the field. From this step on, a
 # carrying worker's DROP is scored without that discount while it can still
 # reach the shed by the last acting step. None keeps the old behaviour.
-CLOSE_RETURN_FROM_STEP: int | None = None
+#
+# Kept at 705. Inspected on the pruned current corpus (12 top teams, 8
+# replays each) against the same agent without it: margin +1,127 a game on
+# the 68 games where the opponent replay stayed in step (median +970, better
+# in 67, worse in 1), +1,145 over all 96 (better in 95). Goods unsold at the
+# close fall from 2,691 to 1,578 coins a game.
+CLOSE_RETURN_FROM_STEP: int | None = 705
 LAST_ACT_STEP = 718
 # Stop buying a crop's seed once that crop can no longer be sown.
 #
