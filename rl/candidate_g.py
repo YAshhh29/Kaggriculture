@@ -334,6 +334,14 @@ HERD_MIX: dict[str, int] | None = None
 # better in only 4 of 60. Margin decides, so it stays off. Measured
 # against replayed tapes, which cannot react to a flooded book, so the
 # denial it removes may be worth less in live play than this says.
+#
+# Re-checked once PEN_BEFORE_WHEAT and SHED_ALL_ACCESS were on, because the
+# inspector's drill caught a goose re-bought while the first was still in a
+# worker's hands on day 0. On the v14 field (83 games): -11,509 a game on 57
+# clean games (median -10,543, better in 6, worse in 51), -10,886 over all
+# 83. Sheep buying falls from about 3,100 to 1,482 a game, a land purchase
+# goes missing and the idle share doubles, 8.1% to 16.6%. The "re-buy" is how
+# G's herd actually grows. Off.
 COUNT_CARRIED = False
 # The share a line keeps once we own any of it. A pen and the animal in it
 # are capital already spent and a shift in the town's draw does not refund
@@ -836,6 +844,18 @@ SOW_UNTIL = 3
 # step (better in 38, worse in 34), +111 over all 96 (better in 46, worse
 # in 50). A tile lost overnight is dug and resown the next morning, so the
 # seed was the whole cost. Neutral, so it stays off.
+#
+# Re-checked once PEN_BEFORE_WHEAT pushed day-0 sowing later: on v14 every
+# game loses the strawberry sown at tile (1,1) on the last turn of day 0.
+# On the v14 field (83 games):
+#     22   +316 a game on 60 clean games (median +358, better in 32, worse
+#          in 28), +377 over all 83
+#     21   +94 a game on 60 clean games (better in 31, worse in 29), -207
+#          over all 83
+# Unwatered deaths fall from 1,414 to about 430 coins a game, as intended,
+# but overflow rises from 983 to about 1,760 and escapes from 246 to about
+# 430: the late turns no longer spent planting go into carrying, and the
+# extra load tips into a full shed at night. Still off.
 PLANT_CUTOFF_HOUR: int | None = None
 # The last errand of the season: tip carried goods into the shed so the
 # closing sell can reach them.
