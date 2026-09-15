@@ -96,6 +96,9 @@ DEFAULTS = {
     # base itself:
     #     0     replays +94 a game against the base (better in 7 of 12),
     #           head to head H wins 19 of 24, +223
+    #     30    replays -189 a game (better in 5 of 12), head to head H
+    #           wins 11 of 24, +12 -- even the last few day-0 wheat seeds
+    #           cost the edge the layer has over its base
     #     150   replays -2,339 a game (worse in all 12), head to head H
     #           wins 1 of 24, -1,612
     #     300   replays -5,241 a game (worse in all 12), head to head H
