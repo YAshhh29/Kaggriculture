@@ -524,9 +524,10 @@ SOW_UNTIL = 3
 PLANT_CUTOFF_HOUR: int | None = None
 DROP_FROM_STEP = 713
 SELL_CARRIED_AT_CLOSE = True
-MIDDAY_DROP_HAUL: float | None = 1000.0
+MIDDAY_DROP_HAUL: float | None = 500.0
 NIGHT_ROOM: int | None = None
 NIGHT_FROM_HOUR = 20
+NIGHT_TIP_GUARD: int | None = None
 CLOSE_RETURN_FROM_STEP: int | None = 709
 LAST_ACT_STEP = 718
 CLOSE_HARVEST_MUST_LAND = False
@@ -680,6 +681,15 @@ def night_load_high(observation: dict[str, Any], counts: dict[str, int]) -> bool
         return False
     return counts.get('shed_total', 0) + counts.get('carried_total', 0) > NIGHT_ROOM
 
+def tip_guard_high(observation: dict[str, Any], counts: dict[str, int]) -> bool:
+    """Hours 20 to 22, and the loads not yet sent home would overflow."""
+    if NIGHT_TIP_GUARD is None:
+        return False
+    if not NIGHT_FROM_HOUR <= int(observation.get('step', 0)) % 24 <= 22:
+        return False
+    carried = counts.get('tip_carried', counts.get('carried_total', 0))
+    return counts.get('shed_total', 0) + carried > NIGHT_TIP_GUARD
+
 def feed_deficit(counts: dict[str, int], shed: dict[str, int]) -> int:
     """Animals still to feed today beyond the wheat already held."""
     return max(0, counts['unfed'] - int(shed.get('WHEAT', 0)) - counts.get('wheat_carried', 0))
@@ -792,7 +802,7 @@ def job_value(observation: dict[str, Any], tile: Any, x: int, y: int, inventory:
         late_from = DROP_FROM_STEP if CLOSE_RETURN_FROM_STEP is None else min(DROP_FROM_STEP, CLOSE_RETURN_FROM_STEP)
         late = int(observation.get('step', 0)) >= late_from
         midday = MIDDAY_DROP_HAUL is not None and produce >= MIDDAY_DROP_HAUL
-        night = night_load_high(observation, counts)
+        night = night_load_high(observation, counts) or tip_guard_high(observation, counts)
         if haul > 0 and (late or midday or night):
             jobs.append((BAND_HARVEST + haul, ['DROP']))
         carrying = int(inventory.get('WHEAT', 0))
@@ -1168,7 +1178,8 @@ def market_orders(observation: dict[str, Any], day: int, counts: dict[str, int],
         base = float(MARKET_PARAMS.get(item, {}).get('base', 1))
         want = base * SELL_TARGET.get(item, 0.8) * SELL_PATIENCE * slack
         now = price_at(item, inventory_of(observation, item))
-        if now >= want or closing or total_shed >= 85:
+        night_tip = NIGHT_TIP_GUARD is not None and int(observation.get('step', 0)) % 24 >= 22 and (total_shed + counts.get('carried_total', 0) > NIGHT_TIP_GUARD)
+        if now >= want or closing or total_shed >= 85 or night_tip:
             orders.append(['SELL', item, held])
     hour = int(observation.get('step', 0)) % 24
     target = hands_target(day, counts)
@@ -1319,7 +1330,7 @@ def decide(observation: dict[str, Any]) -> AgentAction:
                         home = min((distance((x, y), s) for s in shed_tiles()))
                         if now_step + travel + 1 + home > LAST_ACT_STEP:
                             continue
-                    night_trip = act[0] == 'DROP' and night_load_high(observation, counts) and (travel <= 23 - now_step % 24)
+                    night_trip = act[0] == 'DROP' and night_load_high(observation, counts) and (travel <= 23 - now_step % 24) or (act[0] == 'DROP' and tip_guard_high(observation, counts) and (travel <= 22 - now_step % 24))
                     if night_trip or (CLOSE_RETURN_FROM_STEP is not None and act[0] == 'DROP' and (now_step >= CLOSE_RETURN_FROM_STEP) and (travel <= LAST_ACT_STEP - now_step)):
                         score = value
                     else:
@@ -1339,8 +1350,13 @@ def decide(observation: dict[str, Any]) -> AgentAction:
         building = BUILD_CLAIM and act[0] in ('BUILD_COOP', 'BUILD_PASTURE')
         if (travel == 0 or building) and (not still_possible(counts, act)):
             continue
+        if NIGHT_TIP_GUARD is not None and act[0] == 'DROP' and (travel > 0) and (NIGHT_FROM_HOUR <= int(observation.get('step', 0)) % 24 <= 22) and (CLOSE_RETURN_FROM_STEP is None or int(observation.get('step', 0)) < CLOSE_RETURN_FROM_STEP) and (not tip_guard_high(observation, counts)):
+            continue
         final = act if travel == 0 else step_toward(positions[worker], cell, act)
         chosen[worker] = final
+        if NIGHT_TIP_GUARD is not None and act[0] == 'DROP':
+            load = sum((int(v) for v in _inventory(observation, worker).values() if int(v) > 0))
+            counts['tip_carried'] = counts.get('tip_carried', counts.get('carried_total', 0)) - load
         if not (DROP_SHARES_SHED and act[0] == 'DROP' or (PICKUP_SHARES_SHED and act[0] == 'PICKUP')):
             claimed.add(cell)
         claim(counts, act if building else final)

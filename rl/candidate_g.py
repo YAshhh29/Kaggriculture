@@ -914,7 +914,14 @@ SELL_CARRIED_AT_CLOSE = True
 # where the opponent replay stayed in step (median +834, better in 41,
 # worse in 30), +912 over all 96. Shed overflow falls from 4,763 to 3,855
 # coins a game and goods unsold at the close from 3,030 to 2,650.
-MIDDAY_DROP_HAUL: float | None = 1000.0
+#
+# Lowered to 500 once PEN_BEFORE_WHEAT and SHED_ALL_ACCESS were on and the
+# nightly overflow had doubled: the inspector found goods spread thinly across
+# a dozen hands at night, 113 to 125 units with less than half of it wheat.
+# On the v14 field (83 games), against 1,000: +960 a game on 60 clean games
+# (median +930, better in 43, worse in 17), +475 over all 83. Overflow falls
+# 983 -> 776 coins a game and rot 112 -> 50; escapes rise 246 -> 329.
+MIDDAY_DROP_HAUL: float | None = 500.0
 # Bring loads to the shed before night when the nightly drop would overflow.
 #
 # With the mid-day drop on, a nightly trace still finds the shed holding 0 to
@@ -940,6 +947,24 @@ MIDDAY_DROP_HAUL: float | None = 1000.0
 # work than the overflow they save, and care missed rises. Stays off.
 NIGHT_ROOM: int | None = None
 NIGHT_FROM_HOUR = 20
+# Send home only as many carriers as the shed needs, early enough to sell.
+#
+# The inspector traced the nightly overflow on v14 (Otter Vibe replay, seat
+# 0, seed 13): 113 and 125 units in hands at hour 23 on days 20 and 24, only
+# 47 of them wheat, and 19 and 31 units discarded when inventories are tipped
+# into a shed holding 6. A carrier 5 to 8 tiles out holding 2,800 coins of
+# goods keeps watering, because its drop is divided by distance squared; and
+# a drop on hour 23 sells nothing, because SELL quantities are read from the
+# shed as the turn begins. NIGHT_ROOM, the earlier fix, pulled every carrier
+# home and let them arrive on hour 23.
+#
+# With this set to a unit count, from NIGHT_FROM_HOUR to hour 22, while the
+# shed plus everything carried exceeds it, carriers are offered an
+# undiscounted DROP that can land by hour 22; each assigned drop takes its
+# load off the projection, so once the night's tip fits nobody else is sent;
+# and from hour 22 the shed sells whenever the night's total would overflow.
+# None is off.
+NIGHT_TIP_GUARD: int | None = None
 # Bring the crew's last loads home before the season ends.
 #
 # A trace of the closing turns finds the shed empty from step 700 while ten
@@ -1541,6 +1566,17 @@ def night_load_high(observation: dict[str, Any],
             + counts.get("carried_total", 0)) > NIGHT_ROOM
 
 
+def tip_guard_high(observation: dict[str, Any],
+                   counts: dict[str, int]) -> bool:
+    """Hours 20 to 22, and the loads not yet sent home would overflow."""
+    if NIGHT_TIP_GUARD is None:
+        return False
+    if not NIGHT_FROM_HOUR <= int(observation.get("step", 0)) % 24 <= 22:
+        return False
+    carried = counts.get("tip_carried", counts.get("carried_total", 0))
+    return counts.get("shed_total", 0) + carried > NIGHT_TIP_GUARD
+
+
 def feed_deficit(counts: dict[str, int], shed: dict[str, int]) -> int:
     """Animals still to feed today beyond the wheat already held."""
     return max(0, counts["unfed"] - int(shed.get("WHEAT", 0))
@@ -1708,7 +1744,8 @@ def job_value(
         late = int(observation.get("step", 0)) >= late_from
         midday = (MIDDAY_DROP_HAUL is not None
                   and produce >= MIDDAY_DROP_HAUL)
-        night = night_load_high(observation, counts)
+        night = (night_load_high(observation, counts)
+                 or tip_guard_high(observation, counts))
         if haul > 0 and (late or midday or night):
             jobs.append((BAND_HARVEST + haul, ["DROP"]))
         carrying = int(inventory.get("WHEAT", 0))
@@ -2344,7 +2381,11 @@ def market_orders(
         # Sell when the price is worth taking, when the season is closing,
         # or when the shed is near its hundred-unit cap and the overflow
         # would be discarded at the day boundary anyway.
-        if now >= want or closing or total_shed >= 85:
+        night_tip = (NIGHT_TIP_GUARD is not None
+                     and int(observation.get("step", 0)) % 24 >= 22
+                     and total_shed + counts.get("carried_total", 0)
+                     > NIGHT_TIP_GUARD)
+        if now >= want or closing or total_shed >= 85 or night_tip:
             orders.append(["SELL", item, held])
 
     # 2. Crew. Hands are hired daily and wiped nightly, and the cost is
@@ -2702,7 +2743,10 @@ def decide(observation: dict[str, Any]) -> AgentAction:
                             continue
                     night_trip = (act[0] == "DROP"
                                   and night_load_high(observation, counts)
-                                  and travel <= 23 - now_step % 24)
+                                  and travel <= 23 - now_step % 24) or (
+                        act[0] == "DROP"
+                        and tip_guard_high(observation, counts)
+                        and travel <= 22 - now_step % 24)
                     if night_trip or (
                             CLOSE_RETURN_FROM_STEP is not None
                             and act[0] == "DROP"
@@ -2739,9 +2783,24 @@ def decide(observation: dict[str, Any]) -> AgentAction:
         building = BUILD_CLAIM and act[0] in ("BUILD_COOP", "BUILD_PASTURE")
         if (travel == 0 or building) and not still_possible(counts, act):
             continue
+        # Once the night's tip fits, stop sending carriers home early -- see
+        # NIGHT_TIP_GUARD. The closing return is left alone.
+        if (NIGHT_TIP_GUARD is not None and act[0] == "DROP" and travel > 0
+                and NIGHT_FROM_HOUR
+                <= int(observation.get("step", 0)) % 24 <= 22
+                and (CLOSE_RETURN_FROM_STEP is None
+                     or int(observation.get("step", 0))
+                     < CLOSE_RETURN_FROM_STEP)
+                and not tip_guard_high(observation, counts)):
+            continue
         final = (act if travel == 0
                  else step_toward(positions[worker], cell, act))
         chosen[worker] = final
+        if NIGHT_TIP_GUARD is not None and act[0] == "DROP":
+            load = sum(int(v) for v in
+                       _inventory(observation, worker).values() if int(v) > 0)
+            counts["tip_carried"] = counts.get(
+                "tip_carried", counts.get("carried_total", 0)) - load
         if not ((DROP_SHARES_SHED and act[0] == "DROP")
                 or (PICKUP_SHARES_SHED and act[0] == "PICKUP")):
             claimed.add(cell)
