@@ -90,6 +90,20 @@ DEFAULTS = {
     "room_high": 90,         # shed load at which everything offered goes
     "close_steps": 12,       # stand aside for the last turns of the game
     # Cash kept back from seed on the opening days -- see guard_cash. 0 is off.
+    #
+    # Measured against the V40 base with the demand layer at tolerance 0.25,
+    # 12 current top-team replays plus 24 head-to-head games against the
+    # base itself:
+    #     0     replays +94 a game against the base (better in 7 of 12),
+    #           head to head H wins 19 of 24, +223
+    #     150   replays -2,339 a game (worse in all 12), head to head H
+    #           wins 1 of 24, -1,612
+    #     300   replays -5,241 a game (worse in all 12), head to head H
+    #           wins 1 of 24, -4,895
+    # In simulation the base never runs dry, so the guard only cuts opening
+    # seed -- mostly the day-0 melons that pay for day 10 -- and wins
+    # nothing back. The live collapse depends on a real opponent's opening
+    # squeezing H's cash, which replays cannot reproduce. Off.
     "feed_reserve": 0.0,
     "reserve_until_day": 2,
 }
