@@ -54,7 +54,8 @@ def _parse(raw: str) -> Any:
         return raw
 
 
-def build_agent(kind: str, settings: dict[str, Any]):
+def build_agent(kind: str, settings: dict[str, Any],
+                package: str | None = None):
     """The agent to play in our seat, built inside the worker process."""
     sys.path.insert(0, str(ROOT))
     if kind == "g":
@@ -63,7 +64,8 @@ def build_agent(kind: str, settings: dict[str, Any]):
             setattr(G, key, value)
         return G.agent
     import importlib.util
-    spec = importlib.util.spec_from_file_location("h_package", H_PACKAGE)
+    spec = importlib.util.spec_from_file_location(
+        "h_package", Path(package) if package else H_PACKAGE)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     if kind == "h-package":
@@ -80,8 +82,9 @@ def build_agent(kind: str, settings: dict[str, Any]):
     return wrap(base, merged)
 
 
-def play_one(job: tuple[str, dict[str, Any], str]) -> dict[str, Any]:
-    kind, settings, path = job
+def play_one(job: tuple) -> dict[str, Any]:
+    kind, settings, path = job[:3]
+    package = job[3] if len(job) > 3 else None
     sys.path.insert(0, str(ROOT))
     from kaggle_environments import make
 
@@ -92,7 +95,7 @@ def play_one(job: tuple[str, dict[str, Any], str]) -> dict[str, Any]:
     side = int(record["our_side"])
     opponent = build_replay_agent(tuple(unpack(record["opp_actions_zlib_b64"])))
     try:
-        agent = build_agent(kind, settings)
+        agent = build_agent(kind, settings, package)
         env = make("kaggriculture",
                    configuration={"episodeSteps": 720,
                                   "seed": record["seed"],
@@ -141,7 +144,8 @@ def run(args) -> None:
         paths = paths[: args.limit]
     started = time.time()
     with Pool(args.workers) as pool:
-        games = pool.map(play_one, [(args.agent, settings, p) for p in paths])
+        games = pool.map(play_one, [(args.agent, settings, p, args.package)
+                                    for p in paths])
     try:
         sha = subprocess.run(["git", "rev-parse", "--short", "HEAD"],
                              cwd=ROOT, capture_output=True, text=True).stdout.strip()
@@ -249,6 +253,9 @@ def main() -> None:
     p_run.add_argument("--set", action="append", default=[])
     p_run.add_argument("--label", required=True)
     p_run.add_argument("--workers", type=int, default=6)
+    p_run.add_argument("--package", default=None,
+                       help="H main.py to load instead of the submitted "
+                            "submissions/candidate-h/main.py")
     p_run.add_argument("--limit", type=int, default=0)
     p_cmp = sub.add_parser("compare")
     p_cmp.add_argument("before")

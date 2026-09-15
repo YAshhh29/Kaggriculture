@@ -109,9 +109,32 @@ DEFAULTS = {
     # squeezing H's cash, which replays cannot reproduce. Off.
     "feed_reserve": 0.0,
     "reserve_until_day": 2,
-    # Coins seed orders may never take the purse below, on any day, so the
-    # next morning's hires can be paid -- see guard_cash. 0 is off.
+    # Coins seed orders may never take the purse below, so the next morning's
+    # hires can be paid -- see guard_cash. 0 is off.
     "hire_reserve": 0.0,
+    # Last day the hire reserve applies; None applies it every day.
+    #
+    # Every day at 15, on the v14 top-team field (83 games, paired against H
+    # as submitted): H's wins rise from 71 to 78 and the clean-game margin by
+    # +3,762 a game, but the median game is -49, better in only 9 of 54 and
+    # worse in 45, and H's own score is lower in 74 of 83. H runs its purse
+    # near zero every day, so a reserve on every day trims a seed most days;
+    # the gain is a few rescued day-1 collapses. The collapses start on day 0.
+    #
+    # Days 0-1 is the one to ship (submissions/candidate-h2). Replayed on H's
+    # 84 real ladder games (tools.eval.live_replay, same seeds, seats and
+    # opponent moves; H as submitted reproduces all 84 to the coin):
+    #     every day   wins 48 -> 72; the 21 early-collapse games 0 -> 19, but
+    #                 in the other 63 own score is lower in 40; 3 wins lost
+    #     days 0-3    wins 48 -> 73; other 63 worse in 35; 2 wins lost
+    #     days 0-1    wins 48 -> 68; collapse games 0 -> 20 (own score
+    #                 +15,025 a game); the other 63 are identical in 61 and
+    #                 better in 2; no win lost
+    # On the v14 top-team field (83 games) days 0-1 takes wins from 71 to 78,
+    # better in 8 and worse in 0 (every day and days 0-3: worse in 45 of 54
+    # clean games). Head to head against its own base it wins 19 of 24,
+    # exactly as H does without it.
+    "hire_reserve_until_day": None,
 }
 
 
@@ -259,6 +282,9 @@ def guard_cash(observation, action, cfg: dict):
     # five hands, so this reserve is tiny and applies every day.
     step = int(_get(observation, "step", 0) or 0)
     reserve = float(cfg.get("hire_reserve", 0) or 0)
+    until = cfg.get("hire_reserve_until_day")
+    if until is not None and step // TURNS > int(until):
+        reserve = 0.0
     if step // TURNS <= int(cfg.get("reserve_until_day", 2)):
         reserve = max(reserve, float(cfg.get("feed_reserve", 0) or 0))
     if reserve <= 0 or not isinstance(action, dict):

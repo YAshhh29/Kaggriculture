@@ -78,17 +78,17 @@ def unpack(archive: Path) -> list[str]:
     return sorted(names)
 
 
-def check() -> dict:
+def check(out: Path = OUT) -> dict:
     """Import from the package directory alone and play both seats vs G."""
     from kaggle_environments import make
 
     results = {}
     saved_path = list(sys.path)
     try:
-        sys.path = [str(OUT)] + [p for p in saved_path
+        sys.path = [str(out)] + [p for p in saved_path
                                  if Path(p).resolve() != ROOT.resolve()]
         spec = importlib.util.spec_from_file_location("candidate_h_main",
-                                                      OUT / "main.py")
+                                                      out / "main.py")
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
     finally:

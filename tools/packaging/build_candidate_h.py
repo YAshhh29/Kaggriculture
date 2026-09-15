@@ -83,7 +83,11 @@ def main() -> None:
     parser.add_argument("--base", required=True)
     parser.add_argument("--source", required=True)
     parser.add_argument("--set", action="append", default=[])
+    parser.add_argument("--out", default=str(OUT),
+                        help="package directory; defaults to the submitted "
+                             "candidate-h, so pass a new one to keep it")
     args = parser.parse_args()
+    out = Path(args.out).resolve()
 
     settings = {}
     for item in args.set:
@@ -95,31 +99,31 @@ def main() -> None:
                      LAYER.read_text(encoding="utf-8"), settings)
     compile(source, "main.py", "exec")
 
-    if OUT.exists():
-        shutil.rmtree(OUT)
-    OUT.mkdir(parents=True)
-    (OUT / "main.py").write_text(source, encoding="utf-8")
+    if out.exists():
+        shutil.rmtree(out)
+    out.mkdir(parents=True)
+    (out / "main.py").write_text(source, encoding="utf-8")
     shutil.copyfile(ROOT / "tools" / "packaging" / "APACHE-2.0.txt",
-                    OUT / "LICENSE")
-    (OUT / "NOTICE").write_text(NOTICE.format(source=args.source),
+                    out / "LICENSE")
+    (out / "NOTICE").write_text(NOTICE.format(source=args.source),
                                 encoding="utf-8")
 
-    results = check()
-    shutil.rmtree(OUT / "__pycache__", ignore_errors=True)
+    results = check(out)
+    shutil.rmtree(out / "__pycache__", ignore_errors=True)
     manifest = {
         "candidate": "H",
         "base_source_notebook": args.source,
         "base_sha256": sha256(base),
         "demand_layer_sha256": sha256(LAYER),
         "demand_settings": settings,
-        "main_sha256": sha256(OUT / "main.py"),
+        "main_sha256": sha256(out / "main.py"),
         "license": "Apache-2.0 base with notices retained; demand layer appended",
         "checks": results,
         "built": time.strftime("%Y-%m-%d %H:%M"),
     }
-    (OUT / "manifest.json").write_text(json.dumps(manifest, indent=2),
+    (out / "manifest.json").write_text(json.dumps(manifest, indent=2),
                                        encoding="utf-8")
-    print(f"built {OUT.relative_to(ROOT)} (main.py sha "
+    print(f"built {out.relative_to(ROOT)} (main.py sha "
           f"{manifest['main_sha256'][:12]})")
 
 
