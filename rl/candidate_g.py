@@ -1224,6 +1224,19 @@ BAND_WATER = 3500.0
 # improves by 7,471, which is the largest gain in the worst case measured
 # on this agent, and because the mechanism behind it is verified rather
 # than inferred.
+#
+# Raised on the refreshed ladder (v11 defaults, 92 games), after a trace of a
+# reference game found 34 of G's 36 undoubled strawberry productions were
+# watered but unfertilized, all on days 20 to 29, while G sold 72 manure over
+# the same days:
+#     3000   +779 a game on 66 clean games but median -648, better in 26,
+#            worse in 40; +1,907 over all 92, better in only 37
+#     5000   -1,769 a game on 66 clean games (median -2,848, better in 19,
+#            worse in 47), -1,119 over all 92
+# Both sell more strawberries (152 to 161 and 167) and cut crops dying
+# unwatered from 1,404 to about 800 coins a game, but care goes missing
+# (1,646 to 2,036 and 2,155) and the extra berries sell lower. Priority just
+# moves the shortage to another job. 1,600 stays.
 BAND_FERTILIZE = 1600.0     # 0 disables the job entirely
 
 BAND_BUILD = 800.0
