@@ -18,9 +18,11 @@ For each good the policy wants to sell, units go now while today's marginal
 price is at least what the same unit would fetch after the expected drain,
 less a tolerance for the other farm selling into the same book. The rest
 wait a turn and are reconsidered, since the base keeps offering them. The
-layer never raises a quantity, never touches buys, hires or land, stands
+layer never raises a quantity and never touches hires or land, stands
 aside on the closing turns so final liquidation is untouched, and sells
-everything the policy offers whenever the shed is near its capacity.
+everything the policy offers whenever the shed is near its capacity. The
+only buys it can touch are opening seed orders, and only when guard_cash is
+switched on with a feed_reserve.
 
 Pure standard library, and self-contained so it can be appended to a
 submission file.
@@ -87,6 +89,9 @@ DEFAULTS = {
     "tolerance": 0.25,       # hold only for a gain above this fraction
     "room_high": 90,         # shed load at which everything offered goes
     "close_steps": 12,       # stand aside for the last turns of the game
+    # Cash kept back from seed on the opening days -- see guard_cash. 0 is off.
+    "feed_reserve": 0.0,
+    "reserve_until_day": 2,
 }
 
 
@@ -205,6 +210,65 @@ def plan_sales(observation, action, cfg: dict):
     return revised
 
 
+SEED_COST = {"WHEAT": 10, "CARROT": 20, "TOMATO": 50, "STRAWBERRY": 100,
+             "MELON": 80}
+ANIMAL_COST = {"GOOSE": 300, "COW": 400, "SHEEP": 500}
+
+
+def guard_cash(observation, action, cfg: dict):
+    """Trim opening seed orders that would leave no cash to feed the herd.
+
+    In H's first 40 live games, 16 were lost the same way and none of those
+    was won. The base spends the opening purse on seed down to a coin or two
+    by the end of day 0 (a median of 1 against the opponent's 56), cannot
+    buy the few wheat its animals need on day 1, and two animals escape that
+    night. The herd then sits at 3 while the opponent's grows to 6, and the
+    game goes by a median of 25,388. In the other 24 games H held the same
+    cash as its opponent and won 13.
+
+    On the opening days, seed orders are cut so the money left after them
+    stays at `feed_reserve`. Animals, hires and feed are never touched.
+    """
+    reserve = float(cfg.get("feed_reserve", 0) or 0)
+    if reserve <= 0 or not isinstance(action, dict):
+        return action
+    step = int(_get(observation, "step", 0) or 0)
+    if step // TURNS > int(cfg.get("reserve_until_day", 2)):
+        return action
+    farms = _get(observation, "farms", []) or []
+    player = int(_get(observation, "player", 0) or 0)
+    if player >= len(farms):
+        return action
+    running = float(_get(farms[player], "money", 0) or 0)
+    books = _get(_get(observation, "market", {}) or {}, "inventory", {}) or {}
+    revised = copy.deepcopy(action)
+    kept = []
+    for order in revised.get("market") or []:
+        if not (isinstance(order, list) and len(order) >= 3):
+            kept.append(order)
+            continue
+        op, item = order[0], order[1]
+        try:
+            quantity = int(order[2])
+        except (TypeError, ValueError):
+            kept.append(order)
+            continue
+        if op == "BUY_SEED" and item in SEED_COST:
+            cost = SEED_COST[item]
+            quantity = min(quantity, max(0, int((running - reserve) // cost)))
+            if quantity > 0:
+                running -= cost * quantity
+                kept.append([op, item, quantity])
+            continue
+        if op == "BUY_ANIMAL" and item in ANIMAL_COST:
+            running -= ANIMAL_COST[item] * quantity
+        elif op == "BUY_PRODUCT" and item in CURVES and item in books:
+            running -= price(item, float(books[item])) * quantity
+        kept.append(order)
+    revised["market"] = kept
+    return revised
+
+
 def wrap(base_agent, settings: dict | None = None):
     """An agent that plays `base_agent` and re-decides its sales."""
     cfg = dict(DEFAULTS)
@@ -222,7 +286,8 @@ def wrap(base_agent, settings: dict | None = None):
         action = (base_agent(observation, configuration) if takes_config
                   else base_agent(observation))
         try:
-            return plan_sales(observation, action, cfg)
+            return guard_cash(observation,
+                              plan_sales(observation, action, cfg), cfg)
         except Exception:
             return action
 
