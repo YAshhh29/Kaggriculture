@@ -901,7 +901,20 @@ NIGHT_FROM_HOUR = 20
 # the 68 games where the opponent replay stayed in step (median +970, better
 # in 67, worse in 1), +1,145 over all 96 (better in 95). Goods unsold at the
 # close fall from 2,691 to 1,578 coins a game.
-CLOSE_RETURN_FROM_STEP: int | None = 705
+#
+# Moved to 709. Once drops stopped claiming shed tiles and the last day turned
+# to harvesting only, 705 started sending the crew home too early: a drill
+# found far strawberries still unpicked at 705, the crew home and unloaded by
+# 713, then walking back out to pick them on 714-718 when nothing could be
+# sold, with three hands idle at the shed. Swept on the pruned v12 field
+# (92 games), each against 705:
+#     709   +897 a game on 66 clean games (median +732, better in 64, worse
+#           in 2), +939 over all 92; stranded goods 694 -> 17 coins a game
+#     711   +552 on clean games (better in 56, worse in 10), and -344 against
+#           709 (better in 16, worse in 50); stranded 338
+#     713   -633 on clean games (better in 15, worse in 51), and -1,530
+#           against 709 (better in 1, worse in 65); stranded 1,503
+CLOSE_RETURN_FROM_STEP: int | None = 709
 LAST_ACT_STEP = 718
 # Harvest at the close only what can still reach the shed.
 #
