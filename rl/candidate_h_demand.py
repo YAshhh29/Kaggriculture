@@ -109,6 +109,9 @@ DEFAULTS = {
     # squeezing H's cash, which replays cannot reproduce. Off.
     "feed_reserve": 0.0,
     "reserve_until_day": 2,
+    # Coins seed orders may never take the purse below, on any day, so the
+    # next morning's hires can be paid -- see guard_cash. 0 is off.
+    "hire_reserve": 0.0,
 }
 
 
@@ -246,11 +249,19 @@ def guard_cash(observation, action, cfg: dict):
     On the opening days, seed orders are cut so the money left after them
     stays at `feed_reserve`. Animals, hires and feed are never touched.
     """
-    reserve = float(cfg.get("feed_reserve", 0) or 0)
-    if reserve <= 0 or not isinstance(action, dict):
-        return action
+    # The hire reserve is the part that matters. Replaying live episode
+    # 109250573 turn by turn showed the collapse is not feed money at all:
+    # both farms end day 0 with the same two animals unfed, but H's last seed
+    # orders take its purse to exactly 0 by hour 21 while the opponent keeps
+    # 50. At hour 0 of day 1 both order three hands, which cost 1, 1 and 2
+    # coins; H cannot pay even that, plays day 1 with the farmer alone, feeds
+    # one animal, and two escape that night. A dozen coins kept back pays for
+    # five hands, so this reserve is tiny and applies every day.
     step = int(_get(observation, "step", 0) or 0)
-    if step // TURNS > int(cfg.get("reserve_until_day", 2)):
+    reserve = float(cfg.get("hire_reserve", 0) or 0)
+    if step // TURNS <= int(cfg.get("reserve_until_day", 2)):
+        reserve = max(reserve, float(cfg.get("feed_reserve", 0) or 0))
+    if reserve <= 0 or not isinstance(action, dict):
         return action
     farms = _get(observation, "farms", []) or []
     player = int(_get(observation, "player", 0) or 0)
