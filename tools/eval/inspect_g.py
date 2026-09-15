@@ -167,9 +167,15 @@ def play(spec: str, overrides: dict, tape: str, seed: int, seat: int):
         # runTimeout: the framework's 1,200-second episode limit is wall
         # clock, and with a dozen games sharing the cores it killed five
         # games of one inspection and the whole baseline of a panel.
+        # actTimeout: the per-turn limit is wall clock too. Once a loaded
+        # machine pushes one agent past a second a turn and through its spare
+        # time, the framework marks it TIMEOUT, never asks it for a move
+        # again, and still pays out the money it holds -- so the game looks
+        # finished. Five v11 baseline games froze G this way from day 16 to
+        # 24 while the same games in v10 played out normally.
         env = make("kaggriculture",
                    configuration={"episodeSteps": 720, "seed": seed,
-                                  "runTimeout": 36000},
+                                  "runTimeout": 36000, "actTimeout": 60},
                    debug=False)
         LEDGER.clear()
         env.run(agents)
@@ -692,7 +698,10 @@ def inspect_one(job):
         env, ledger = play(spec, overrides, tape, seed, seat)
         result, _ = analyse(env.steps, ledger, seat)
         result.update({"opponent": name, "tape": Path(tape).stem,
-                       "seed": seed, "seat": seat})
+                       "seed": seed, "seat": seat,
+                       # A TIMEOUT here means G stopped acting mid-game.
+                       "status": {"G": env.state[seat].status,
+                                  "OPP": env.state[1 - seat].status}})
         return result
     except Exception as error:  # a broken tape must not sink the run
         return {"opponent": name, "tape": Path(tape).stem,

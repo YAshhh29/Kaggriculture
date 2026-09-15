@@ -61,7 +61,8 @@ def one(job):
     agents = [agent, opponent] if seat == 0 else [opponent, agent]
     env = make("kaggriculture",
                configuration={"episodeSteps": 720, "seed": seed,
-                              "runTimeout": 36000}, debug=False)
+                              "runTimeout": 36000, "actTimeout": 60},
+               debug=False)
     env.run(agents)
     return (env.state[seat].reward or 0.0, env.state[1 - seat].reward or 0.0)
 
