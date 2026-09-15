@@ -856,6 +856,13 @@ SOW_UNTIL = 3
 # but overflow rises from 983 to about 1,760 and escapes from 246 to about
 # 430: the late turns no longer spent planting go into carrying, and the
 # extra load tips into a full shed at night. Still off.
+#
+# A day-by-day trace then showed every seedling death on days 0 and 10-15 was
+# a seed sown on hour 23, with every earlier sowing watered the same day, so
+# 22 is exactly "no sowing on the last turn". Re-tested once MIDDAY_DROP_HAUL
+# 500 had cut the overflow (v14 field, 83 games): -213 a game on 60 clean
+# games (median +728, better in 31, worse in 29), +341 over all 83. Deaths
+# fall 1,419 -> 486 coins a game, but escapes rise 329 -> 594. Still off.
 PLANT_CUTOFF_HOUR: int | None = None
 # The last errand of the season: tip carried goods into the shed so the
 # closing sell can reach them.
