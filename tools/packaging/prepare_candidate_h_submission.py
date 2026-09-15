@@ -105,7 +105,8 @@ def check() -> dict:
         agents = [agent, G.agent] if seat == 0 else [G.agent, agent]
         env = make("kaggriculture",
                    configuration={"episodeSteps": 720, "seed": 31 + seat,
-                                  "runTimeout": 36000}, debug=False)
+                                  "runTimeout": 36000, "actTimeout": 60},
+                   debug=False)
         env.run(agents)
         statuses = [s.status for s in env.state]
         h, g = env.state[seat].reward, env.state[1 - seat].reward

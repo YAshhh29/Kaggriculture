@@ -104,9 +104,12 @@ def one(job):
         agents = [mine, opponent] if seat == 0 else [opponent, mine]
         # The framework's 1,200-second episode limit is wall clock; under a
         # full load of parallel runs it crashed a panel's whole baseline.
+        # The per-turn limit is wall clock too, and running out of it
+        # freezes an agent for the rest of the game while the result still
+        # looks complete -- see tools/eval/inspect_g.py.
         env = make("kaggriculture",
                    configuration={"episodeSteps": 720, "seed": seed,
-                                  "runTimeout": 36000},
+                                  "runTimeout": 36000, "actTimeout": 60},
                    debug=False)
         env.run(agents)
     finally:
