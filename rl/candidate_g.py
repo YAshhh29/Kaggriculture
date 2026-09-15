@@ -179,6 +179,22 @@ GOOSE_COST = 300
 # Re-checked after the ground moved to day one, and unchanged: 450 gives
 # 57,044, against 53,572 at 200 (23/60) and 49,198 at 900 (17/60). Not
 # every measurement taken on the old farm went stale -- this one held.
+#
+# A trace of three clean v13 games found this floor binding on 17 to 24 of
+# 24 turns a day from day 1 to 9: G buys one animal as each day's sales
+# land, while the top teams spend down to about 300 and buy in bursts. On
+# the v13 field (83 games), against 450:
+#     150 alone                       +923 a game on 61 clean games (better
+#                                     in 36, worse in 25), -858 over all 83
+#     150 + pasture first + 3 a turn  -3,358 on 59 clean games (better in
+#       + pens 4 ahead                16, worse in 43): escapes 453 -> 1,318
+#                                     coins a game, day-11 cash 8,797 -> 4,932
+#     the same + a herd of 12         -5,373 on 60 clean games (better in 26,
+#                                     worse in 34), with animal tile-days
+#                                     level with the opponent's (362 vs 352)
+#                                     but crop tile-days down to 955
+# Spent down, the cash that buys the animal is the cash that feeds it, and
+# the crops pay for the herd until day 11. 450 stays.
 GOOSE_CASH_FLOOR = 450.0
 # A wheat tile yields about four units over five days unfertilized, which
 # is 0.8 a day. The 1.2 here assumed the fertilized figure (1 + 3x2 = 6),
@@ -1015,6 +1031,57 @@ PICKUP_SHARES_SHED = False
 # Reserving pens for walking placers (the inspector's PLACE_COMMIT, tested in
 # its own copy) loses the same way, -2,029. Off.
 BUILD_CLAIM = False
+# Work the shed from all four access tiles, locked or not.
+#
+# The engine lets a unit walk onto a LOCKED tile and resolves DROP, PICKUP
+# and shed placement before its LOCKED guard, so the shed is reachable from
+# every access tile from day 0 (kaggriculture.py, _apply_unit_action). G
+# skipped every tile outside the quadrants it owns, and three of the four
+# access tiles sit in quadrants bought on day 5 and day 9, or never. With
+# one worker per tile per turn, the shed was a single lane on days 0 to 4:
+# the inspector traced a sheep bought at hour 11 of day 0 waiting in the
+# shed until nightfall while the pickups queued, which is why G's first wool
+# lands a day after the opponent's. With this on, a locked access tile is
+# offered for its shed jobs only.
+#
+# Alone, on the v13 field (83 games): -1,392 a game on 58 clean games
+# (median -530, better in 28, worse in 30), +103 over all 83. Care missed
+# falls 1,636 -> 907 coins a game and escapes 453 -> 254, but day-0 animals
+# standing fall from 2 to 1 in the previews: with pens still going up after
+# the wheat, the extra lanes only let workers fetch wheat and animals sooner
+# and carry them. See PEN_BEFORE_WHEAT for the two together.
+SHED_ALL_ACCESS = True
+# Put pens up before wheat while animals wait to be placed.
+#
+# job_value's empty-tile chain offers PLANT WHEAT first and never reaches the
+# pen branch while wheat is under its quota and seed is in hand. On day 0
+# the wheat seed lands at hour 1, so a worker drill (the inspector's, Cow Boy
+# replay, seed 15) found 27 worker-turns spent planting and watering wheat
+# from hour 2 to 8 while bought animals sat in the shed, and pastures only
+# going up at hours 11-13. With this on, while any animal is in the shed or
+# in a worker's hands and house_needed still wants a pen, an empty tile
+# skips the wheat branch and offers the pen. First written and drilled in
+# the inspector's copy of G.
+#
+# Alone, on the v13 field (83 games): +1,239 a game on 61 clean games
+# (median +926, better in 34, worse in 27), +1,168 over all 83. Escapes fall
+# 453 -> 283 coins a game, but crops dying unwatered rise 862 -> 1,186 and
+# overflow 517 -> 1,008. With pens up first, day-0 animals still queue at
+# the single usable shed tile: a sheep bought at hour 3 waited until hour
+# 20 in the drill.
+#
+# Kept on, together with SHED_ALL_ACCESS: each fixes one link of the same
+# day-0 chain. Pens go up first, and the extra shed lanes then carry the
+# animals onto them the same morning -- in the drill the sheep was placed at
+# hour 8 of day 0 instead of hour 17 of day 1 and the cow at hour 10 instead
+# of 21, and first wool moved from day 7 to day 6. Both on, on the v13 field
+# (83 games): +2,945 a game on 59 clean games against neither (median
+# +2,900, better in 40, worse in 19), +2,700 over all 83; +1,666 against this
+# alone (better in 38, worse in 21) and +4,271 against shed access alone
+# (better in 46, worse in 11). Escapes fall 453 -> 246 coins a game and care
+# missed 1,636 -> 1,021; crops dying unwatered rise 862 -> 1,414 and overflow
+# 517 -> 983, which is where to look next.
+PEN_BEFORE_WHEAT = True
 # Fertilizer for strawberry.
 #
 # A strawberry produces four times, and a production made on a day the plant
@@ -1680,6 +1747,11 @@ def job_value(
                 jobs.append((BAND_PLACE * 0.95, ["PICKUP", animal, carry]))
                 break
 
+    if tile == "LOCKED":
+        # Only a shed-access tile outside our land reaches here (see
+        # SHED_ALL_ACCESS), and only its shed jobs can be done from it.
+        return [(v, a) for v, a in jobs if v > 0]
+
     if tile is None:
         # Everything built here is worked from the shed for the rest of the
         # season, so near ground is worth more than far ground.
@@ -1689,7 +1761,14 @@ def job_value(
         sowable = (PLANT_CUTOFF_HOUR is None
                    or int(observation.get("step", 0)) % 24
                    <= PLANT_CUTOFF_HOUR)
-        if (counts["wheat"] < wheat_target
+        pen_first = (
+            PEN_BEFORE_WHEAT and days_left > 5
+            and sum(counts.get(key + house, 0)
+                    for key in ("shed_", "unplaced_")
+                    for house in ("COOP", "PASTURE")) > 0
+            and house_needed(counts, counts.get("bird", "GOOSE")) is not None)
+        if (not pen_first
+                and counts["wheat"] < wheat_target
                 and sowable
                 and counts.get("seed_WHEAT", int(seeds.get("WHEAT", 0))) > 0
                 and day <= LAST_DAY - SOW_UNTIL):
@@ -2572,7 +2651,8 @@ def decide(observation: dict[str, Any]) -> AgentAction:
         inventory = _inventory(observation, worker)
         for y in range(len(tiles)):
             for x in range(len(tiles[y])):
-                if not _owned(tiles, x, y):
+                if not _owned(tiles, x, y) and not (
+                        SHED_ALL_ACCESS and _shed_adjacent(x, y)):
                     continue
                 travel = distance(position, (x, y))
                 if ZONE_TAX < 1.0 and len(positions) > 1:

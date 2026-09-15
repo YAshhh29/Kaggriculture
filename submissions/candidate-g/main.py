@@ -535,6 +535,8 @@ GOODS_JOBS = ('HARVEST', 'COLLECT_FERTILIZER', 'DROP')
 DROP_SHARES_SHED = True
 PICKUP_SHARES_SHED = False
 BUILD_CLAIM = False
+SHED_ALL_ACCESS = True
+PEN_BEFORE_WHEAT = True
 ONGOING_FERT_ALIGN = False
 STRAWBERRY_FERT_STOCK = False
 SEED_TO_CAP = True
@@ -819,10 +821,13 @@ def job_value(observation: dict[str, Any], tile: Any, x: int, y: int, inventory:
                 carry = max(1, min(BIRDS_CARRIED, waiting, free_pens))
                 jobs.append((BAND_PLACE * 0.95, ['PICKUP', animal, carry]))
                 break
+    if tile == 'LOCKED':
+        return [(v, a) for v, a in jobs if v > 0]
     if tile is None:
         near = 1.0 / (1.0 + COMPACT * min((abs(x - sx) + abs(y - sy) for sx, sy in shed_tiles())))
         sowable = PLANT_CUTOFF_HOUR is None or int(observation.get('step', 0)) % 24 <= PLANT_CUTOFF_HOUR
-        if counts['wheat'] < wheat_target and sowable and (counts.get('seed_WHEAT', int(seeds.get('WHEAT', 0))) > 0) and (day <= LAST_DAY - SOW_UNTIL):
+        pen_first = PEN_BEFORE_WHEAT and days_left > 5 and (sum((counts.get(key + house, 0) for key in ('shed_', 'unplaced_') for house in ('COOP', 'PASTURE'))) > 0) and (house_needed(counts, counts.get('bird', 'GOOSE')) is not None)
+        if not pen_first and counts['wheat'] < wheat_target and sowable and (counts.get('seed_WHEAT', int(seeds.get('WHEAT', 0))) > 0) and (day <= LAST_DAY - SOW_UNTIL):
             jobs.append(((BAND_WHEAT + egg) * near, ['PLANT', 'WHEAT']))
         elif days_left > 5 and house_needed(counts, counts.get('bird', 'GOOSE')) is not None:
             house = house_needed(counts, counts.get('bird', 'GOOSE'))
@@ -1295,7 +1300,7 @@ def decide(observation: dict[str, Any]) -> AgentAction:
         inventory = _inventory(observation, worker)
         for y in range(len(tiles)):
             for x in range(len(tiles[y])):
-                if not _owned(tiles, x, y):
+                if not _owned(tiles, x, y) and (not (SHED_ALL_ACCESS and _shed_adjacent(x, y))):
                     continue
                 travel = distance(position, (x, y))
                 if ZONE_TAX < 1.0 and len(positions) > 1:
