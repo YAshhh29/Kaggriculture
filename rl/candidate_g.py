@@ -272,6 +272,14 @@ EARLY_BIRDS = 6
 # might carry a larger herd: 11 gives -8,643 a game on 69 clean games
 # (better in 8, worse in 61), and the idle share of worker turns doubles
 # from 9.2% to 18.1%. Nine stays.
+#
+# The inspector found animals carried all day and tipped back into the shed
+# beside empty pens, because PLACE is discounted by distance like any job.
+# Committing a worker to a reachable PLACE (its PLACE_COMMIT, tested in its
+# own copy of G) loses on its own, -2,029 a game on 66 clean games, by
+# shrinking the herd, so it was retried with room to grow: PLACE_COMMIT with
+# a herd of 10 on the v12 field is -968 a game on 66 clean games (median
+# -80, better in 32, worse in 34), -1,241 over all 92. Nine stays.
 HERD_TARGET = 9
 # A fixed herd, as {animal: head}, in place of the demand-weighted plan.
 #
