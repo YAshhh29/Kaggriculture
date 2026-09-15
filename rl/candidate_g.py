@@ -964,6 +964,12 @@ NIGHT_FROM_HOUR = 20
 # load off the projection, so once the night's tip fits nobody else is sent;
 # and from hour 22 the shed sells whenever the night's total would overflow.
 # None is off.
+#
+# At 100, on top of MIDDAY_DROP_HAUL 500 (v14 field, 83 games): +166 a game on
+# 60 clean games (median +80, better in 38, worse in 22), +232 over all 83.
+# Overflow falls 776 -> 678 coins a game, care missed rises 1,003 -> 1,070.
+# The lower mid-day drop already took most of the nightly spill; what is left
+# is not worth the evening trips. Off.
 NIGHT_TIP_GUARD: int | None = None
 # Bring the crew's last loads home before the season ends.
 #
