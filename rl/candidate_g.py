@@ -218,6 +218,17 @@ WHEAT_PER_BIRD = 0.8
 # 14 days a game: -2,271 a game on 69 clean games (better in 33, worse in
 # 36), -2,091 over all 96. G sells 248 wheat instead of 154, but at 37, and
 # the tiles still come out of strawberry. Sixteen stays.
+#
+# Wheat only on ground no crop seed can fill -- the inspector's WHEAT_FILL,
+# tested in its own copy of G -- does not take tiles from strawberry, and
+# still loses. Uncapped, on the v12 field: -594 a game on 66 clean games
+# (better in 33, worse in 33); it sows the new quadrants faster than the
+# day-5 to day-9 crew can water and the seedlings die. Capped to what the
+# crew can water, on the v13 field: -931 a game on 61 clean games (better in
+# 31, worse in 30). The deaths are fixed and day-14 cash rises 2,237, but it
+# is all given back by day 23: cow buying falls 308 a game, animal-days 16
+# and milk 14 units, most likely because day-8 cash, the day the cows are
+# bought, drops 236.
 WHEAT_TILES = 16
 COOPS_AFTER_WHEAT = 8
 EARLY_BIRDS = 6
