@@ -579,6 +579,17 @@ FEED_PICKUP_FOR_HUNGRY = False
 # Cap on the crew ramp. Twelve hands cost about 376 a day in fibonacci
 # wages, some 10,500 across a season, against roughly 51,000 of gross
 # production. Labour is the largest cost in this design, not the birds.
+#
+# Checked on the pruned v12 field (92 games) once a crew trace showed G's
+# twelve hands idle only 2 to 6 per cent of their turns from day 12 on:
+#     11 from day 14   +269 a game on 66 clean games (median +758, better in
+#                      40, worse in 26), +69 over all 92 -- wages fall about
+#                      1,800 a game but care missed rises 1,684 to 2,061
+#     13 from day 14   identical to the baseline in all 92 games. It cannot
+#                      happen: hands leave every night and market_orders
+#                      rehires at most 4 a turn on hours 0 to 2, so 12 is
+#                      the most a day can hire whatever the cap says.
+# Twelve stays.
 HAND_CAP = 12
 # Hands per standing job, and the smallest crew worth keeping. Set
 # CREW_TO_WORK to 0.0 to size the crew by the ramp alone.
