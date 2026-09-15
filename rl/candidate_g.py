@@ -952,6 +952,26 @@ DROP_SHARES_SHED = True
 # 96. Since pickups were sized to need, few turns send more than four
 # workers for feed, so the cap rarely binds. Off.
 PICKUP_SHARES_SHED = False
+# Re-check every build against the pens still short as workers are
+# assigned, and book a walking builder's pen at once.
+#
+# The inspector drilled a v11 game at step 244: three workers issued
+# BUILD_COOP on the same turn at (3,4), (4,6) and (6,4) while house_needed
+# asked for two empty coops and a goose was already being placed, and those
+# coops stood empty from day 10 to day 28. Every build is scored from one
+# snapshot, still_possible() passed every build, and claim() booked only a
+# walking builder's first step. G's pens stand empty 97 tile-days a game
+# against the opponent's 20.
+#
+# Measured on the refreshed ladder (v11 defaults, 92 games) and it loses:
+# -2,112 a game on 66 clean games (median -2,545, better in 21, worse in
+# 45), -2,035 over all 92. Empty pen tile-days fall only from 97 to 82, and
+# deaths and escapes shrink, but cow spending falls from about 3,100 to
+# 2,787 a game: animals are only bought into a pen already standing empty,
+# so the "extra" coops and pastures were the lead the herd grows into.
+# Reserving pens for walking placers (the inspector's PLACE_COMMIT, tested in
+# its own copy) loses the same way, -2,029. Off.
+BUILD_CLAIM = False
 # Fertilizer for strawberry.
 #
 # A strawberry produces four times, and a production made on a day the plant
@@ -1469,26 +1489,31 @@ def house_needed(counts: dict[str, int], preferred: str) -> str | None:
     to feed what it would hold.
     """
     for house in PEN_ORDER:
-        empty = counts["empty_coops" if house == "COOP" else "empty_pastures"]
-        waiting = counts.get("shed_" + house, 0)
-        carried = counts.get("unplaced_" + house, 0)
-        # Room to grow the lines that live in this house, capped by the
-        # herd plan so the farm does not build pens for animals it can
-        # neither feed nor tend.
-        wanted = 0
-        for animal, home in ANIMAL_HOME.items():
-            if home != house:
-                continue
-            wanted += max(0, counts.get("want_" + animal, 0)
-                          - counts.get("have_" + animal, 0))
-        lead = 0
-        if (wanted > 0
-                and (counts["animals"] < EARLY_BIRDS
-                     or counts["wheat"] >= COOPS_AFTER_WHEAT)):
-            lead = min(COOP_LEAD, wanted)
-        if empty < waiting + carried + lead:
+        if pen_short(counts, house):
             return house
     return None
+
+
+def pen_short(counts: dict[str, int], house: str) -> bool:
+    """Whether `house` has fewer empty pens than the animals owed one."""
+    empty = counts["empty_coops" if house == "COOP" else "empty_pastures"]
+    waiting = counts.get("shed_" + house, 0)
+    carried = counts.get("unplaced_" + house, 0)
+    # Room to grow the lines that live in this house, capped by the
+    # herd plan so the farm does not build pens for animals it can
+    # neither feed nor tend.
+    wanted = 0
+    for animal, home in ANIMAL_HOME.items():
+        if home != house:
+            continue
+        wanted += max(0, counts.get("want_" + animal, 0)
+                      - counts.get("have_" + animal, 0))
+    lead = 0
+    if (wanted > 0
+            and (counts["animals"] < EARLY_BIRDS
+                 or counts["wheat"] >= COOPS_AFTER_WHEAT)):
+        lead = min(COOP_LEAD, wanted)
+    return empty < waiting + carried + lead
 
 
 def job_value(
@@ -1811,6 +1836,8 @@ def still_possible(counts: dict[str, int], action: list[Any]) -> bool:
         key = ("empty_coops" if ANIMAL_HOME.get(animal) == "COOP"
                else "empty_pastures")
         return counts.get(key, 0) > 0
+    if BUILD_CLAIM and op in ("BUILD_COOP", "BUILD_PASTURE"):
+        return pen_short(counts, "COOP" if op == "BUILD_COOP" else "PASTURE")
     return True
 
 
@@ -2564,7 +2591,10 @@ def decide(observation: dict[str, Any]) -> AgentAction:
         # Scores were computed before any of this turn's jobs were handed
         # out, so a job that needed the last seed or the last empty pen
         # may no longer be possible by the time it is reached.
-        if travel == 0 and not still_possible(counts, act):
+        # A walking builder is booked for the pen it is walking to, and every
+        # build is re-checked against the pens still short -- see BUILD_CLAIM.
+        building = BUILD_CLAIM and act[0] in ("BUILD_COOP", "BUILD_PASTURE")
+        if (travel == 0 or building) and not still_possible(counts, act):
             continue
         final = (act if travel == 0
                  else step_toward(positions[worker], cell, act))
@@ -2572,7 +2602,7 @@ def decide(observation: dict[str, Any]) -> AgentAction:
         if not ((DROP_SHARES_SHED and act[0] == "DROP")
                 or (PICKUP_SHARES_SHED and act[0] == "PICKUP")):
             claimed.add(cell)
-        claim(counts, final)
+        claim(counts, act if building else final)
     actions = [chosen.get(worker, list(PASS))
                for worker in range(len(positions))]
 

@@ -534,6 +534,7 @@ CLOSE_ONLY_GOODS_FROM_STEP: int | None = 696
 GOODS_JOBS = ('HARVEST', 'COLLECT_FERTILIZER', 'DROP')
 DROP_SHARES_SHED = True
 PICKUP_SHARES_SHED = False
+BUILD_CLAIM = False
 ONGOING_FERT_ALIGN = False
 STRAWBERRY_FERT_STOCK = False
 SEED_TO_CAP = True
@@ -737,20 +738,24 @@ def house_needed(counts: dict[str, int], preferred: str) -> str | None:
     to feed what it would hold.
     """
     for house in PEN_ORDER:
-        empty = counts['empty_coops' if house == 'COOP' else 'empty_pastures']
-        waiting = counts.get('shed_' + house, 0)
-        carried = counts.get('unplaced_' + house, 0)
-        wanted = 0
-        for animal, home in ANIMAL_HOME.items():
-            if home != house:
-                continue
-            wanted += max(0, counts.get('want_' + animal, 0) - counts.get('have_' + animal, 0))
-        lead = 0
-        if wanted > 0 and (counts['animals'] < EARLY_BIRDS or counts['wheat'] >= COOPS_AFTER_WHEAT):
-            lead = min(COOP_LEAD, wanted)
-        if empty < waiting + carried + lead:
+        if pen_short(counts, house):
             return house
     return None
+
+def pen_short(counts: dict[str, int], house: str) -> bool:
+    """Whether `house` has fewer empty pens than the animals owed one."""
+    empty = counts['empty_coops' if house == 'COOP' else 'empty_pastures']
+    waiting = counts.get('shed_' + house, 0)
+    carried = counts.get('unplaced_' + house, 0)
+    wanted = 0
+    for animal, home in ANIMAL_HOME.items():
+        if home != house:
+            continue
+        wanted += max(0, counts.get('want_' + animal, 0) - counts.get('have_' + animal, 0))
+    lead = 0
+    if wanted > 0 and (counts['animals'] < EARLY_BIRDS or counts['wheat'] >= COOPS_AFTER_WHEAT):
+        lead = min(COOP_LEAD, wanted)
+    return empty < waiting + carried + lead
 
 def job_value(observation: dict[str, Any], tile: Any, x: int, y: int, inventory: dict[str, int], day: int, shed: dict[str, int], seeds: dict[str, int], counts: dict[str, int], closing: bool) -> list[tuple[float, list[Any]]]:
     """Every job available on this tile, in priority bands.
@@ -909,6 +914,8 @@ def still_possible(counts: dict[str, int], action: list[Any]) -> bool:
         animal = str(action[1]) if len(action) > 1 else 'GOOSE'
         key = 'empty_coops' if ANIMAL_HOME.get(animal) == 'COOP' else 'empty_pastures'
         return counts.get(key, 0) > 0
+    if BUILD_CLAIM and op in ('BUILD_COOP', 'BUILD_PASTURE'):
+        return pen_short(counts, 'COOP' if op == 'BUILD_COOP' else 'PASTURE')
     return True
 
 def claim(counts: dict[str, int], action: list[Any]) -> None:
@@ -1324,13 +1331,14 @@ def decide(observation: dict[str, Any]) -> AgentAction:
     for _score, worker, cell, act, travel in candidates:
         if worker in chosen or cell in claimed:
             continue
-        if travel == 0 and (not still_possible(counts, act)):
+        building = BUILD_CLAIM and act[0] in ('BUILD_COOP', 'BUILD_PASTURE')
+        if (travel == 0 or building) and (not still_possible(counts, act)):
             continue
         final = act if travel == 0 else step_toward(positions[worker], cell, act)
         chosen[worker] = final
         if not (DROP_SHARES_SHED and act[0] == 'DROP' or (PICKUP_SHARES_SHED and act[0] == 'PICKUP')):
             claimed.add(cell)
-        claim(counts, final)
+        claim(counts, act if building else final)
     actions = [chosen.get(worker, list(PASS)) for worker in range(len(positions))]
     return {'farmer': actions[0] if actions else list(PASS), 'hands': actions[1:], 'market': market_orders(observation, day, counts, shed, seeds, money, len(farm.get('hands') or []))}
 
