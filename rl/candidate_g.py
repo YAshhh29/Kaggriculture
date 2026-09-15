@@ -976,6 +976,19 @@ PICKUP_SHARES_SHED = False
 # productions. The yield-per-seed gap is more likely in when strawberry
 # is sown and how much of it is harvested than in fertilizer. Both stay
 # off.
+#
+# Re-measured properly on 96 games against the v10 defaults, since two games
+# settle nothing and the pickup trips may have been starved by the old
+# four-worker shed claim:
+#     align          +435 a game on 69 clean games (better in 41, worse in
+#                    28), -20 over all 96 -- too close to call
+#     stock        -4,416 a game on 69 clean games (better in 14, worse in
+#                    55), -4,922 over all 96
+#     both         -3,086 a game on 68 clean games (better in 14, worse in
+#                    54), -3,615 over all 96
+# Holding manure back for the strawberries fills the shed: overflow rises
+# from 550 to 1,577 and 2,130 coins a game, and G still sells 143 to 153
+# strawberries against the opponent's 210. Both stay off.
 ONGOING_FERT_ALIGN = False
 STRAWBERRY_FERT_STOCK = False
 # Buy cash-crop seed only for ground the cap still has room for.
