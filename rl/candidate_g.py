@@ -147,6 +147,12 @@ HIRE_UNTIL_DAY = 29          # the crew is wiped nightly; stopping early
 # contested opponents in a fixed town: (1, 6, 11) margin -2,543 a game
 # (better in 8 of 60), (1, 7, 11) -413 (27/60), (1, 6, 10) -616 (23/60).
 # All worse. The top teams' days 6 and 11 do not suit G.
+# Third quadrant on day 12 instead of 9, re-checked on 2026-09-16 because G
+# owns all 75 tiles by day 11 while H's live opponents own 50 and G has
+# planted only 36: on the v14 field (83 games, against midday drop 500)
+# +155 a game on 60 clean games (median -405, better in 29, worse in 31),
+# +272 over all 83. Day-11 cash rises 2,680 -> 5,943 and overflow halves,
+# but it is all given back by day 17. (1, 5, 9) stays.
 LAND_DAYS = (1, 5, 9)
 LAND_RESERVE = 1200.0
 # Cash a quadrant must leave behind before it is bought. Measured, and
@@ -547,10 +553,35 @@ OPENING_SEED_BATCH = 8
 PEN_ORDER = ("COOP", "PASTURE")
 
 
+# Fill the late season's spare ground with a short crop.
+#
+# Replayed on H's 84 real ladder games, G's planted tiles fall from 55 on day
+# 20 to 47 on day 26 while the opponents keep 58, with G holding 25,000+ cash
+# and fewer free turns lost to cash than to its crop caps: strawberry and
+# melon can no longer finish, wheat is held to WHEAT_TILES, and carrot to its
+# CROP_TILES cap of 16, though the town still takes about 248 carrots a game
+# and G sells 70 to the opponent's 117. From LATE_FILL_FROM_DAY the cap of
+# LATE_FILL_CROP rises by LATE_FILL_TILES; carrot is ripe in three days. The
+# cap drives both sowing and seed buying through crop_plan. None is off.
+#
+# Inert, and left off. From day 18 with 12 more carrot tiles, a preview on
+# both reference games changed nothing. A day-by-day trace of the first game
+# shows why: through day 25 only 2-6 tiles stand empty, and carrot seed is
+# bought about four a day and sown, so the carrot cap never binds. Ground
+# only empties on days 26-27, when wheat drops from 16 tiles to 10 and is not
+# resown, and the crew mostly passes.
+LATE_FILL_FROM_DAY: int | None = None
+LATE_FILL_CROP = "CARROT"
+LATE_FILL_TILES = 12
+
+
 def crop_plan(day: int) -> tuple[tuple[str, int], ...]:
     """The crop list in force today: the opening one, then CROP_TILES."""
     if OPENING_CROP_TILES is not None and day <= OPENING_UNTIL_DAY:
         return tuple(tuple(pair) for pair in OPENING_CROP_TILES)
+    if LATE_FILL_FROM_DAY is not None and day >= LATE_FILL_FROM_DAY:
+        return tuple((crop, cap + LATE_FILL_TILES if crop == LATE_FILL_CROP
+                      else cap) for crop, cap in CROP_TILES)
     return CROP_TILES
 # Let the town choose, instead of assuming one animal always wins.
 #
