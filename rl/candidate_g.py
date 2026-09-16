@@ -858,6 +858,15 @@ HARVEST_HOLD = True
 # True means only an animal that already missed yesterday's meal -- the one
 # that escapes if unfed again tonight -- releases the hold. False keeps the
 # old reading.
+#
+# Measured on the 38 games G played on the ladder, against the same agent
+# with the walking fix: wins 23 -> 20, own score -2,468 a game (median
+# -5,520), 4 games flipped to losses and 1 to a win. On the 23 games where
+# the opponent stayed close the own score falls 4,646. So the greedy release
+# is right, and for the reason the old panel gave: two extra units of wheat
+# are worth about 42 coins, while an animal that escapes forfeits its whole
+# remaining output. Being wrong about which animal is in danger is cheap;
+# being slow is not.
 STARVING_MEANS_MISSED_MEAL = False
 # Judge hunger by the feed actually short, not by an empty shed.
 #
