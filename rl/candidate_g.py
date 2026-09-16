@@ -320,6 +320,13 @@ EARLY_BIRDS = 6
 # shrinking the herd, so it was retried with room to grow: PLACE_COMMIT with
 # a herd of 10 on the v12 field is -968 a game on 66 clean games (median
 # -80, better in 32, worse in 34), -1,241 over all 92. Nine stays.
+# Re-checked on 2026-09-16, on the theory that the old sweep was measured on
+# a farm that could not use the ground: 65 paired games on the v14 field,
+# margin -460 a game over all of them and -1,797 on the 46 clean games, G's
+# own score -2,851. The reason is grain. With twelve head G's wheat sold
+# falls from 303 units a game to 160, because a bigger flock eats the crop
+# the farm would otherwise sell, and hungry animals release the early
+# harvest. Nine stays.
 HERD_TARGET = 9
 # A fixed herd, as {animal: head}, in place of the demand-weighted plan.
 #
@@ -813,6 +820,13 @@ RATION_FLOOR = 60.0
 # cash rises from 5,864 to 8,422, but wheat bought goes from about 20,800 to
 # 25,800 coins a game and shed overflow grows, and the season gives the early
 # cash back. Zero stays.
+# Re-tested on 2026-09-16 across the whole season (2 days of stock, bought to
+# day 29, floor 150), because H's live opponents buy about 263 units of feed
+# a game and sell 17,776 of wheat against G's 7,577. It does fix the grain --
+# wheat leaves the top five revenue gaps altogether -- and it loses anyway:
+# 65 paired games on the v14 field, margin -7,376 (44 clean games -8,637),
+# better in 3 and worse in 41, wins 12 -> 8. The cost moves to the shed,
+# which holds 100: overflow rises to 6,732 coins a game from 1,736.
 FEED_STOCK_DAYS = 0
 FEED_MIN_FLOCK = 4
 FEED_BUY_UNTIL = 6
