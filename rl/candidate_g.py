@@ -833,6 +833,15 @@ RATION_FLOOR = 60.0
 # 4,795 -- and still loses 5,985 a game on 45 clean games, better in 7 and
 # worse in 38, because the spill stays at 6,101. What limits G here is how
 # fast the shed empties, not what goes into it.
+#
+# Tried again on G's own ladder games together with a smaller wheat patch,
+# because the agents that actually beat G buy 356 units of feed to G's 173
+# and sow 66 wheat tiles to G's 104. Copying that shape is much worse:
+# feed + WHEAT_TILES 8 gives wins 23 -> 17 and own score -7,657 a game, and
+# feed + WHEAT_TILES 6 + strawberry 40 gives 23 -> 18 and -14,822. The
+# ladder study explains it: the top nine teams sow 100-210 wheat tiles a
+# game, the same heavy wheat farming G does. Buying feed is what a weak
+# opponent can afford, not what a strong one does.
 FEED_STOCK_DAYS = 0
 FEED_MIN_FLOCK = 4
 FEED_BUY_UNTIL = 6
@@ -1357,6 +1366,14 @@ SEED_ONLY_WHEN_SOWABLE = True
 # that the two distance terms interact -- and it does not: 67,697 at 2.0
 # against 63,147 at 1.5 and 64,281 at 2.5, ahead on both counts. This one
 # was already right.
+# Measured on G's own 38 ladder games with the walking fix in place, because
+# the ladder study puts G at 49.9% of worker turns walking against the top
+# teams' 40-48%. Discounting distant work harder does not fix it: 3.0 gives
+# wins 23 -> 19 and own score -3,443 a game. Nor does clustering the farm
+# (COMPACT 0.45: wins 23 -> 18, -6,157), nor carrying twice the feed per trip
+# (FEED_CARRY 24: wins 23 -> 17, -11,062, worse in 31 of 38). G walks too
+# much because of what the schedule asks for, not because near work is
+# undervalued.
 TRAVEL_EXPONENT = 2.0
 # Where a coop or a wheat tile goes matters as much as that it exists.
 # Feed comes out of the shed and every meal is a round trip, so a flock
@@ -1552,6 +1569,10 @@ BAND_CROP = 600.0
 # committed worker is worth more when the opponent is weak enough that
 # finishing jobs matters more than reacting. If G climbs past about 1500 this
 # should be re-measured on the games it is playing then.
+# Both ends of the range are worse than 3.0 on the same 38 games: hard
+# commitment (never divert) gives wins 23 -> 16 and own score -6,448, and 5.0
+# gives +1,182 against 3.0's +5,142. A worker has to finish what it starts
+# and still be able to answer a fire.
 STICKY_TARGET: float | None = 3.0
 # Where each worker was walking last turn: (player, worker) -> (cell, job).
 # Cleared at the start of every episode, because one process replays many
