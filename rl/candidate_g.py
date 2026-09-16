@@ -251,6 +251,13 @@ WHEAT_PER_BIRD = 0.8
 # is all given back by day 23: cow buying falls 308 a game, animal-days 16
 # and milk 14 units, most likely because day-8 cash, the day the cows are
 # bought, drops 236.
+# Re-checked on 2026-09-16 against the live ladder, where the biggest single
+# revenue gap is grain: over H's 84 real games the opponents earn 17,776 a
+# season from wheat against G's 7,577, most of it in the last week. Widening
+# the wheat area to 24 does not close it: on the v14 field, 65 paired games
+# against "v14 midday drop 500", margin -1,985 a game (46 clean games -2,003,
+# median -260), G's own score -1,552, better in 24 and worse in 41, wins
+# 12 -> 10. The grain gap is not the size of the patch.
 WHEAT_TILES = 16
 COOPS_AFTER_WHEAT = 8
 EARLY_BIRDS = 6
@@ -532,6 +539,15 @@ CROP_TILES = (("STRAWBERRY", 32), ("MELON", 12), ("CARROT", 16))
 # in 57), -5,409 over all 96. Day-11 cash rises, but the crew stands idle
 # 14.0% of turns against 6.7% -- the opening sows fewer tiles -- and the
 # season never recovers it. Stays off.
+#
+# Re-tested on 2026-09-16 as melon alone on day 0 (12 tiles, OPENING_UNTIL_DAY
+# 0), because every one of H's 84 live opponents sows about twelve melons in
+# the first turns of day 0 and banks 14,267 from them by day 11, where G has
+# nothing until day 14. It still loses: 65 paired games on the v14 field,
+# margin -4,072 a game (44 clean games -4,785), better in 10 and worse in 34,
+# G's own score -372. The reason is the book, not the timing -- G ends up
+# selling 103 melons at 149 where the opponent sells 73 at 218, and the town
+# only takes about 30 a game. Sowing earlier floods a market G already fills.
 OPENING_CROP_TILES: tuple[tuple[str, int], ...] | None = None
 OPENING_UNTIL_DAY = 3
 OPENING_SEED_BATCH = 8
