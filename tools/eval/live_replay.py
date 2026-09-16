@@ -140,6 +140,12 @@ def run(args) -> None:
         key, _, raw = item.partition("=")
         settings[key] = _parse(raw)
     paths = sorted(str(p) for p in TAPES.glob("ep*.json"))
+    if args.submission:
+        # The tape folder holds every agent's games; judge a change on the
+        # games the agent under test actually played.
+        paths = [p for p in paths
+                 if json.loads(Path(p).read_text(encoding="utf-8")).get(
+                     "submission") == args.submission]
     if args.limit:
         paths = paths[: args.limit]
     started = time.time()
@@ -257,6 +263,8 @@ def main() -> None:
                        help="H main.py to load instead of the submitted "
                             "submissions/candidate-h/main.py")
     p_run.add_argument("--limit", type=int, default=0)
+    p_run.add_argument("--submission", type=int, default=0,
+                       help="only replay the games of this submission")
     p_cmp = sub.add_parser("compare")
     p_cmp.add_argument("before")
     p_cmp.add_argument("after")

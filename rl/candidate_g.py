@@ -1513,6 +1513,41 @@ BAND_BUILD = 800.0
 BAND_CROP = 600.0
 # Assign every worker-job pair best-first, rather than letting each worker
 # in turn take the best job left anywhere.
+# How much a job a worker is already walking to is worth over any other job
+# it could switch to, as a multiplier on the score. None keeps the old rule,
+# where every job on the board is re-auctioned every turn with no memory.
+#
+# Measured on a reference game before this existed: half of all worker turns
+# (49.9%, 3,612 of 7,241) are movement, and on 17.1% of travelling turns the
+# destination changes mid-walk -- 618 abandoned journeys in one game. The
+# individual steps are fine: only 4.9% of moves fail to close on the target.
+# So the waste is re-targeting, not pathfinding.
+# Measured on the 38 games G actually played on the ladder (submission
+# 56272104, rating 635, opponents rated about 690), replayed exactly -- all
+# 38 reproduce the live result to the coin, so this is the population G has
+# to beat to climb, not a panel of elite replays:
+#
+#     strength   wins (of 38)   own score mean / median
+#     off              17        --
+#     1.5              22        -931 / -538
+#     2.0              23        -886 / -3,793
+#     3.0              23        +5,142 / +7,972   (higher in 22 of 38)
+#     5.0              23        +1,182 / -300
+#
+# At 3.0, 7 games flip to wins and 1 to a loss, and on the 29 games where the
+# opponent tape stayed close the own score still rises 3,539 a game. Abandoned
+# journeys fall from 17.1% of travelling turns to 11.9%.
+#
+# Honest about where it does NOT hold: against the 2300-rated replay field
+# this loses -- 1,139 a game on 45 clean games at 2.0 and 3,789 at 4.0. A
+# committed worker is worth more when the opponent is weak enough that
+# finishing jobs matters more than reacting. If G climbs past about 1500 this
+# should be re-measured on the games it is playing then.
+STICKY_TARGET: float | None = 3.0
+# Where each worker was walking last turn: (player, worker) -> (cell, job).
+# Cleared at the start of every episode, because one process replays many
+# games in a row.
+_EN_ROUTE: dict[tuple[int, int], tuple[tuple[int, int], str]] = {}
 GLOBAL_ASSIGN = True
 # Crew held back for maintenance only. Measured, and OFF.
 #
@@ -2703,6 +2738,11 @@ def market_orders(
 def decide(observation: dict[str, Any]) -> AgentAction:
     farm = _farm(observation)
     tiles = farm.get("tiles") or []
+    player_id = int(observation.get("player", 0))
+    # One process replays many games in a row, so the walking memory has to
+    # start empty at every episode.
+    if int(observation.get("step", 0)) == 0:
+        _EN_ROUTE.clear()
     if not tiles:
         return {"farmer": PASS, "hands": [], "market": []}
 
@@ -2854,6 +2894,11 @@ def decide(observation: dict[str, Any]) -> AgentAction:
                         score = value / (travel + 1.0) ** TRAVEL_EXPONENT
                     if not in_zone:
                         score *= ZONE_TAX
+                    if STICKY_TARGET is not None:
+                        booked = _EN_ROUTE.get((player_id, worker))
+                        if (booked is not None and booked[0] == (x, y)
+                                and booked[1] == act[0]):
+                            score *= STICKY_TARGET
                     if score > 0.0:
                         candidates.append((score, worker, (x, y), list(act),
                                            travel))
@@ -2867,6 +2912,7 @@ def decide(observation: dict[str, Any]) -> AgentAction:
         candidates.sort(key=lambda c: (c[1], -c[0]))
 
     chosen: dict[int, list[Any]] = {}
+    booked_this_turn: list[tuple[int, tuple[int, int], list[Any], int]] = []
     for _score, worker, cell, act, travel in candidates:
         if worker in chosen or cell in claimed:
             continue
@@ -2891,6 +2937,7 @@ def decide(observation: dict[str, Any]) -> AgentAction:
         final = (act if travel == 0
                  else step_toward(positions[worker], cell, act))
         chosen[worker] = final
+        booked_this_turn.append((worker, cell, list(act), travel))
         if NIGHT_TIP_GUARD is not None and act[0] == "DROP":
             load = sum(int(v) for v in
                        _inventory(observation, worker).values() if int(v) > 0)
@@ -2902,6 +2949,15 @@ def decide(observation: dict[str, Any]) -> AgentAction:
         claim(counts, act if building else final)
     actions = [chosen.get(worker, list(PASS))
                for worker in range(len(positions))]
+    if STICKY_TARGET is not None:
+        for worker, cell, act, travel in booked_this_turn:
+            if travel > 0:
+                _EN_ROUTE[(player_id, worker)] = (cell, act[0])
+            else:
+                _EN_ROUTE.pop((player_id, worker), None)
+        for worker in range(len(positions)):
+            if worker not in chosen:
+                _EN_ROUTE.pop((player_id, worker), None)
 
     return {
         "farmer": actions[0] if actions else list(PASS),
