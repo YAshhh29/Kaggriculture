@@ -827,6 +827,12 @@ RATION_FLOOR = 60.0
 # 65 paired games on the v14 field, margin -7,376 (44 clean games -8,637),
 # better in 3 and worse in 41, wins 12 -> 8. The cost moves to the shed,
 # which holds 100: overflow rises to 6,732 coins a game from 1,736.
+#
+# A smaller ration does not rescue it. One day of stock behind a 400 floor
+# sells 409 units of wheat against 303 -- the grain gap narrows from 7,976 to
+# 4,795 -- and still loses 5,985 a game on 45 clean games, better in 7 and
+# worse in 38, because the spill stays at 6,101. What limits G here is how
+# fast the shed empties, not what goes into it.
 FEED_STOCK_DAYS = 0
 FEED_MIN_FLOCK = 4
 FEED_BUY_UNTIL = 6
