@@ -519,6 +519,18 @@ COOP_LEAD = 2
 # current corpus, margin -67 a game on 68 clean games (median 0, better
 # in 22, worse in 29). The price per melon rises from 177 to 187 but
 # fewer are sold. Twelve stays.
+# Re-checked on 2026-09-16, because the inspector ranks strawberry as G's
+# largest revenue gap (G sells 136 units a game against the opponent's 215,
+# and the town takes 467). A cap of 44 does not buy it: 65 paired games on
+# the v14 field, margin -166 a game (46 clean games -231), better in 4,
+# worse in 35 and bit-identical in 26. The extra tiles sell 167 units at 182
+# instead of 136 at 194, and wheat sold falls from 303 to 203 as the ground
+# goes over -- the farm is already full, so a larger cap only moves tiles
+# between books.
+#
+# Tomato, 8 tiles beside the rest, on the same field: -8,100 a game (44
+# clean games -8,488), better in 6, worse in 56, wins 12 -> 7. Eight days of
+# daily watering before the first unit is still more than this crew has.
 CROP_TILES = (("STRAWBERRY", 32), ("MELON", 12), ("CARROT", 16))
 # The opening, crop by crop.
 #
