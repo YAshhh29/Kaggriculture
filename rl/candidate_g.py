@@ -1007,6 +1007,9 @@ SELL_CARRIED_AT_CLOSE = True
 # On the v14 field (83 games), against 1,000: +960 a game on 60 clean games
 # (median +930, better in 43, worse in 17), +475 over all 83. Overflow falls
 # 983 -> 776 coins a game and rot 112 -> 50; escapes rise 246 -> 329.
+# Tipping sooner does not pay either. A threshold of 250 on the v14 field is
+# -240 a game over 46 clean games (median +144), better in 24 and worse in
+# 22, own score -504. The nightly spill is not sensitive to this number.
 MIDDAY_DROP_HAUL: float | None = 500.0
 # Bring loads to the shed before night when the nightly drop would overflow.
 #
