@@ -726,6 +726,10 @@ CREW_TO_WORK = 0.3
 # is what holds the opening crew at four.
 CREW_FLOOR = 4
 HARVEST_AT = 2              # eggs held before a bird is worth the walk
+# 20 is not clearly better and is not taken: on G's own 38 ladder games it
+# raises the own score 2,024 a game overall (higher in 23 of 38) but costs a
+# win, and on the 20 games where the opponent stayed close it is -3,385. A
+# coin flip dressed as a gain.
 SEED_BUFFER = 10
 # Cash held before cash-crop seed is bought, and how much is bought.
 #
