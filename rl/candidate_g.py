@@ -734,6 +734,25 @@ CREW_TO_WORK = 0.3
 # The floor only lifts the work-based cap; the income ramp in hands_target
 # is what holds the opening crew at four.
 CREW_FLOOR = 4
+# Skip the meal on a day that produces nothing.
+#
+# From `_daily_refresh_animals`: an animal escapes only on its SECOND
+# consecutive missed day, and the base unit of production lands whenever
+# `(day + 1 - placed_day - first_yield_day) % interval == 0`, fed or not --
+# only the care bonus needs a fed animal on that day. A goose produces daily,
+# but a cow produces one day in two and a sheep one day in three, and G feeds
+# all of them every day: a worker turn and a unit of wheat each time.
+#
+# This is the rare mechanism that GIVES the crew turns back instead of asking
+# for more, which is why it is worth trying on a farm whose binding
+# constraint is labour. It only ever skips an animal that ate yesterday.
+# Measured, and rejected in this crude form: wins 23 -> 16 and own score
+# -6,441 a game on G's own 38 ladder games. The care bonus is why. It accrues
+# only when an animal is BOTH cared for and fed, and is spent only on a fed
+# production day, so skipping the quiet days quietly cancels the bonus that
+# carries G's milk and wool. The published agents gate this skip on the bonus
+# being worth less than the wheat it saves; that finer rule is untested here.
+FEED_SKIP_IDLE = False
 HARVEST_AT = 2              # eggs held before a bird is worth the walk
 # 20 is not clearly better and is not taken: on G's own 38 ladder games it
 # raises the own score 2,024 a game overall (higher in 23 of 38) but costs a
@@ -2098,7 +2117,16 @@ def job_value(
     kind = tile.get("kind")
     if "animal" in tile:
         held = int(tile.get("yield_units", 0) or 0)
-        if not tile.get("fed_today") and int(inventory.get("WHEAT", 0)) > 0:
+        idle_day = False
+        if FEED_SKIP_IDLE and int(tile.get("consecutive_unfed", 0) or 0) == 0:
+            spec = ANIMALS.get(str(tile.get("animal", "")))
+            if spec is not None:
+                since = (day + 1 - int(tile.get("placed_day", day))
+                         - int(spec["first"]))
+                idle_day = not (since >= 0
+                                and since % max(1, int(spec["interval"])) == 0)
+        if (not tile.get("fed_today") and not idle_day
+                and int(inventory.get("WHEAT", 0)) > 0):
             jobs.append((BAND_FEED + egg * days_left * 0.1, ["FEED"]))
         if held > 0 and (held >= HARVEST_AT or closing):
             jobs.append((BAND_HARVEST + egg * held, ["HARVEST"]))
@@ -2441,6 +2469,41 @@ SELL_TARGET = {
 # because anyone waited. Meanwhile a coin banked on day 6 buys a bird that
 # lays for the rest of the season, so patience costs compounding and buys
 # a price the market was going to offer anyway.
+# How many units of a fragile good may be sold in one turn. None is no cap.
+#
+# The glut side of `market_price` differs per product, and the difference is
+# enormous. Units that can be sold from equilibrium before the price reaches
+# the floor: WOOL 59, STRAWBERRY 62, MILK 76, MELON 158 -- against WHEAT and
+# EGG, whose curves are logarithmic and absorb thousands. The town refills
+# that scarcity at only some 10-20 units a day. So a burst sale of wool takes
+# it from 200 coins to 1 and leaves it there, while the same burst of wheat
+# costs nothing.
+#
+# G sells its whole shed every turn, which is right for wheat and egg and
+# wrong for the four fragile books. This meters those four; the closing
+# liquidation and the shed-pressure release both ignore it, because a good
+# unsold at the whistle is worth zero.
+# Measured on G's own 38 ladder games, sweeping the cap:
+#     1   own score -2,682 a game, wins 23 -> 19
+#     2             +98,            wins 23 -> 21
+#     3            +933,            wins 23 -> 23   (higher in 32 of 38)
+#     8             +70,            wins 23 -> 23
+# Three is the peak: tight enough that G stops collapsing the books it sells
+# into, loose enough that nothing is stranded.
+PREMIUM_SELL_CAP: int | None = 3
+# Sell the fragile goods only on the step after the town has eaten.
+#
+# `interpreter` runs unit actions, then `_process_market`, then
+# `_town_consume`, and the town eats every 4 steps. So the quote at step t
+# includes every tick up to t-1 but not the one at t: the price is flat
+# across each block and steps up at `t % 4 == 1`. Selling at `t % 4 == 0`
+# gives away a whole tick of scarcity for nothing.
+# Measured and NOT taken, because it buys coins with games: on top of the cap
+# it gives own score +904 a game (median +660) and costs two wins, and on the
+# 23 games where the opponent stayed close the median own score is -507. The
+# ladder pays for wins.
+PREMIUM_SELL_PHASE = False
+PREMIUM_GOODS = ("WOOL", "STRAWBERRY", "MILK", "MELON")
 SELL_PATIENCE = 0.0
 # A price below which a good is not worth handing over, borrowed from the
 # reactive layer stack that makes our other agent robust (its `clamp_sells`
@@ -2465,6 +2528,24 @@ MIN_SELL_PRICE: float | None = None
 # job of about equal value, so correcting it just changes which turn is
 # spent. Kept because the model is right and the action counts now match
 # the corpus, not because it pays.
+# Emit the market list in the order the engine rewards.
+#
+# `_process_market` walks both players' orders by INDEX, quoting each side's
+# current unit at the same pre-commit inventory before committing either.
+# SELL and BUY_PRODUCT are priced off that inventory; BUY_SEED, BUY_ANIMAL,
+# HIRE and BUY_LAND are fixed-price and do not care where they sit. A unit
+# that fails -- on cash, or on a full shed -- aborts its whole order, and
+# anything past the tenth order is silently dropped.
+#
+# So sales belong first: they bring in the cash and free the shed room that
+# everything after them needs. Purchases priced off inventory come next, and
+# the fixed-price orders last, where their position costs nothing.
+# Measured on G's own 38 ladder games: own score +734 a game, higher in 18
+# and lower in 4, bit-identical in 16 -- it only bites on turns where orders
+# actually compete for cash, shed room or one of the ten slots. Stacked with
+# the sale cap the two are worth +1,750 a game together (median +245, higher
+# in 32 of 38), which is close to the sum of their parts.
+ORDER_MICROSTRUCTURE = True
 SEED_CLAIM = True
 
 # A mixed herd, because the two products pay at opposite ends of the game.
@@ -2597,6 +2678,13 @@ def market_orders(
                      and int(observation.get("step", 0)) % 24 >= 22
                      and total_shed + counts.get("carried_total", 0)
                      > NIGHT_TIP_GUARD)
+        if (PREMIUM_SELL_PHASE and item in PREMIUM_GOODS and not closing
+                and total_shed < 85
+                and int(observation.get("step", 0)) % 4 != 1):
+            continue
+        if (PREMIUM_SELL_CAP is not None and item in PREMIUM_GOODS
+                and not closing and total_shed < 85):
+            held = min(held, PREMIUM_SELL_CAP)
         if (item == "FERTILIZER" and not SELL_FERTILIZER and not closing
                 and total_shed < 85):
             continue
@@ -2820,6 +2908,9 @@ def market_orders(
     ):
         orders.append(["BUY_PRODUCT", "WHEAT", min(counts["unfed"], 6)])
 
+    if ORDER_MICROSTRUCTURE:
+        rank = {"SELL": 0, "BUY_PRODUCT": 1}
+        orders.sort(key=lambda o: rank.get(str(o[0]), 2))
     return orders[:MAX_ORDERS]
 
 

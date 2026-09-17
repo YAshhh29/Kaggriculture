@@ -43,8 +43,12 @@ def play(job) -> dict[str, Any]:
     mine = resolve(spec)
     theirs = resolve(reference)
     players = [mine, theirs] if seat == 0 else [theirs, mine]
+    # actTimeout is wall clock: under load the default marks an agent
+    # TIMEOUT mid-game and it passes for the rest, with no error anywhere.
     env = make("kaggriculture",
-               configuration={"episodeSteps": 720, "seed": seed}, debug=False)
+               configuration={"episodeSteps": 720, "seed": seed,
+                              "runTimeout": 36000, "actTimeout": 60},
+               debug=False)
     env.run(players)
     final = env.steps[-1]
     ours = float(final[seat].get("reward") or 0.0)
