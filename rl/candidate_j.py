@@ -20,39 +20,61 @@ trick as the answer.
 So the scarce resource is a worker-turn, and the agent that spends each one
 on the most valuable thing available wins. That is the whole design.
 
-WHAT IS DIFFERENT FROM OUR EARLIER AGENT
-----------------------------------------
-G ranked jobs by fixed priority bands: feed 10000, harvest 6000, wheat 4000,
-and so on. Bands cannot compare a job to the job it displaces, so G would
-walk eight tiles to water a plant while a ripe tile stood beside a worker.
+THE THREE LAYERS
+----------------
+* **Plan** (once a step, cheap). Prices every crop and every species at the
+  *margin* -- what the next unit fetches once everything already growing has
+  been sold and the town has eaten what it is going to eat -- and converts
+  that into coins per worker-turn. Sets the crew, the herd, the crop mix and
+  the land purchases. No fixed calendar decides what to grow.
+* **Schedule** (the expensive part). Every job on the board is quoted in
+  coins and in the turns it costs *including the walk*, and the best
+  (worker, job) pairs are taken globally. A worker keeps the job it is
+  walking to unless something clearly better appears.
+* **Market** (free money, costs no worker turns). Meters the fragile books,
+  ranks sales by the revenue a rival batch would take from them, keeps the
+  order list inside the ten slots the engine reads, and liquidates at 718.
 
-J values every job in coins, divides by the turns it costs including the
-walk, and takes the best. Three things stay hard constraints rather than
-prices, because the engine makes them cliffs rather than slopes:
+ENGINE RULES THIS AGENT IS BUILT ON
+-----------------------------------
+Each was read in `kaggriculture.py`, not assumed.
 
-  * an animal that has already missed a meal escapes tonight if unfed
-    (`consecutive_unfed >= 2` in _daily_refresh_animals), forfeiting its
-    whole remaining output;
-  * an ongoing crop that goes unwatered turns to weed and the tile is lost;
-  * goods still in hand at the close are worth zero, so the last trips home
-    and the final sale outrank everything.
-
-MEASURED FACTS THIS AGENT IS BUILT ON
--------------------------------------
+* `_new_plant` sets `consecutive_unwatered = 1`, and `_daily_refresh_plants`
+  turns a plant to WEED at 2. **A tile sown and not watered the same day is
+  dead by morning.** Planting therefore books its own watering turn.
+* The same threshold means an *established* plant survives one dry day, so
+  ongoing crops are watered every other day, not every day. That is half the
+  watering labour on tomato and strawberry.
+* For non-ongoing crops the yield bonus only lands for
+  `age in [(max_yield_day+1)//2 .. max_yield_day]`, and FERTILIZE doubles it
+  for three days. Wheat goes 4 units -> 6, carrot 3 -> 4.
+* `_daily_refresh_animals` consumes `pending_care_bonus` only on a fed
+  production day and accrues one per cared-and-fed day, so a tended animal
+  yields `1 + interval` units per production event: 2 a day from a goose,
+  3 every two days from a cow, 4 every three from a sheep.
+* An animal escapes at `consecutive_unfed >= 2`, so it may be fed every
+  other day, but it must be fed then.
 * Glut curves differ per good. Units from equilibrium to the price floor:
   WOOL 59, STRAWBERRY 62, MILK 76, MELON 158, and WHEAT and EGG effectively
   never, because their curves are logarithmic. Fragile books are metered.
+* `_town_consume` drains each unlocked shop's basket every four steps and
+  the town centre takes one of every non-fertilizer good a day, so the price
+  steps up at `step % 4 == 1` and is flat across the block. Selling at
+  `step % 4 == 0` throws a tick of scarcity away.
 * `_process_market` walks both players' orders by index at the same
   pre-commit inventory, a failed unit aborts its whole order, and orders past
-  the tenth are dropped. Sales go first, inventory-priced buys next.
+  the tenth are dropped. Sales go first, inventory-priced buys next, and
+  fixed-price orders (HIRE, BUY_LAND, BUY_SEED, BUY_ANIMAL) last -- but they
+  must still *fit*, so the plan claims its slots before the sales do.
 * Hiring is a daily rental on a fibonacci curve that resets each night: ten
-  hands cost 143 coins for the day. A hand is only worth hiring while it can
-  still work, so hiring stops after hour 2.
+  hands cost 143 coins for the day. Hands spawn at the shed, so the roster is
+  built at hour 0 and left alone.
 * FERTILIZER is in no shop basket and is excluded from the town centre's
-  daily consumption, so nothing in the game consumes it: its price only
-  decays. It is still worth collecting, because a unit spread on a watered
-  wheat tile inside its window is worth two extra wheat.
-* The town eats every four steps, so the price steps up at `step % 4 == 1`.
+  daily consumption, so nothing in the game consumes it and its price only
+  decays, 100 -> 24. Spread on a watered wheat tile inside its window it is
+  worth two extra wheat instead.
+* Step 718 is the last action the interpreter processes and reward is
+  `farm["money"]`, so anything unsold is worth zero.
 """
 
 from __future__ import annotations
@@ -73,23 +95,92 @@ LAST_ACT_STEP = 718
 MAX_ORDERS = 10
 SHED_CAP = 100
 
-# Goods whose price collapses if sold in bulk, with the number of units from
-# equilibrium to the floor. Sales of these are metered.
-FRAGILE = {"WOOL": 59, "STRAWBERRY": 62, "MILK": 76, "MELON": 158}
-FRAGILE_PER_TURN = 3
+PRODUCTS = ("WHEAT", "CARROT", "TOMATO", "STRAWBERRY", "MELON",
+            "EGG", "MILK", "WOOL", "FERTILIZER")
 ANIMAL_HOME = {"GOOSE": "COOP", "COW": "PASTURE", "SHEEP": "PASTURE"}
 ANIMAL_PRODUCT = {"GOOSE": "EGG", "COW": "MILK", "SHEEP": "WOOL"}
+STRUCTURE_ACTION = {"COOP": "BUILD_COOP", "PASTURE": "BUILD_PASTURE"}
 
-# A worker-turn is the unit of account. This is what one is worth when the
-# farm has nothing better to do; jobs below it are not worth the walk.
-IDLE_TURN_VALUE = 8.0
-# Walking is charged at the same rate, so a job four tiles away must be worth
-# four turns more than one underfoot.
+# --- the plan ----------------------------------------------------------
+
+# Share of the town's remaining appetite this farm counts on capturing when
+# it prices a unit it has not grown yet. The town refills the scarcity side
+# of every book it eats from, so a good with two shops behind it can absorb
+# far more than its static glut depth -- which is the whole reason the herd
+# mix has to be read from `town.unlocked_shops` rather than fixed.
+TOWN_SHARE = 0.5
+# Fraction of the care bonus the crew actually manages to collect. An animal
+# cared and fed every day yields `1 + interval` per event; one that misses
+# care yields 1. The crew misses some.
+CARE_RATE = 0.7
+# Worker-turns one animal costs a day: feed on alternate days, care, collect
+# the manure, and a harvest every second or third day.
+ANIMAL_TURNS = 3.0
+# The opening, as a plan rather than an emergent property. Sized from the
+# top-200 corpus: cows and sheep inside the first three days in every strong
+# team's game, four head by day 3.
+OPENING_DAYS = 3
+OPENING_HERD = (2, 3, 4, 4)
+OPENING_MIX = {"COW": 2, "SHEEP": 2, "GOOSE": 1}
+# Share of a crew's turns that is work rather than walking. H2, the best
+# agent we have measured, runs 51.1%; G runs 41.6%.
+WORK_SHARE = 0.5
+# Crew size by day. Ten hands cost 143 coins for the day and are wiped every
+# night, so this is a rental, not an investment; the limit is daylight.
+HAND_RAMP = ((0, 5), (2, 7), (4, 9), (6, 11))
+# Days on which the next quadrant is bought, and the cash each must leave
+# behind. Two quadrants is 75 tiles, which is what a crew of twelve can work.
+LAND_DAYS = (5, 9, 24)
+LAND_PRICES = (1000.0, 2000.0, 4000.0)
+LAND_RESERVE = 400.0
+# The opening basket, in the shape the top-ten family runs: the field's own
+# median day-0 spend is 7 wheat seed, 8 melon, 2 cow, 2 sheep and 9 wheat of
+# feed, and the seven teams at ranks 1-10 differ from the 52-team fork only
+# by holding back cash on day 0.
+OPEN_FEED = 9
+OPEN_MELON = 8
+OPEN_WHEAT = 9
+OPEN_COW = 2
+OPEN_SHEEP = 2
+OPEN_HIRES = 5
+
+# --- the scheduler -----------------------------------------------------
+
+# What a worker-turn is worth when the farm has nothing better to do. A job
+# whose coins per turn fall below this is not worth the walk.
+IDLE_TURN_VALUE = 4.0
 WALK_COST = 1.0
 # How much a worker prefers the job it is already walking to. Measured on our
 # other agent: without it, 17.1% of travelling turns ended in a change of
 # destination, and committing was worth +5,142 coins a game.
-COMMIT_BONUS = 3.0
+COMMIT_BONUS = 2.5
+# A plant dies the night it is sown unless it is watered, and an established
+# one dies after two dry days. Rescue watering is priced at this share of the
+# tile's whole remaining crop. Pricing it at the full value once collapsed an
+# earlier agent to zero -- the crew watered all game and banked nothing -- so
+# it stays a discount rather than a cliff.
+WATER_RESCUE = 0.7
+# Hours before dusk at which the crew stops starting new work and walks its
+# harvest home. Goods in hand at the close are worth nothing.
+CLOSING_STEPS = 10
+
+# --- the market --------------------------------------------------------
+
+# Books that collapse if sold in bulk, and the price, as a share of base,
+# below which this agent will not push them on a normal turn.
+FRAGILE = ("WOOL", "STRAWBERRY", "MILK", "MELON")
+FRAGILE_FLOOR = 0.55
+FRAGILE_PER_TURN = 6
+MIN_SELL_PRICE = 2.0
+# Slots. The engine reads ten orders; the plan claims first, because a farm
+# that cannot hire or buy land is finished whatever it is selling.
+PLAN_SLOTS = 6
+# Feed bought from the market, capped per turn and confined to two hours a
+# day. The skeleton bought eight units every turn it had the cash, which at
+# thirty head is 5,700 coins a day and was the whole reason it never banked
+# anything.
+FEED_BUY_HOURS = (1, 13)
+FEED_BUY_MAX = 10
 
 _EN_ROUTE: dict[tuple[int, int], tuple[tuple[int, int], str]] = {}
 
@@ -101,6 +192,14 @@ def _farm(observation: dict[str, Any]) -> dict[str, Any]:
     farms = observation.get("farms") or []
     return farms[player] if player < len(farms) and isinstance(
         farms[player], dict) else {}
+
+
+def _rival(observation: dict[str, Any]) -> dict[str, Any]:
+    player = int(observation.get("player", 0))
+    farms = observation.get("farms") or []
+    other = 1 - player
+    return farms[other] if other < len(farms) and isinstance(
+        farms[other], dict) else {}
 
 
 def _positions(farm: dict[str, Any]) -> list[tuple[int, int]]:
@@ -137,8 +236,11 @@ def shed_tiles() -> list[tuple[int, int]]:
             (half - 1, half), (half, half)]
 
 
+_SHED_SET = set(shed_tiles())
+
+
 def _on_shed(x: int, y: int) -> bool:
-    return (x, y) in set(shed_tiles())
+    return (x, y) in _SHED_SET
 
 
 def _owned(tiles: list[list[Any]], x: int, y: int) -> bool:
@@ -146,16 +248,141 @@ def _owned(tiles: list[list[Any]], x: int, y: int) -> bool:
             and tiles[y][x] != "LOCKED")
 
 
-def census(tiles: list[list[Any]], day: int) -> dict[str, Any]:
-    """One pass over the board: what exists, and what is in danger."""
+# --- how much a tile or a beast is still going to produce ---------------
+
+def crop_units(crop: str, plant_day: int) -> int:
+    """Units a tile sown on `plant_day` still yields before the close.
+
+    Non-ongoing crops start at one unit and gain one for every watering
+    inside `[(max_day+1)//2 .. max_day]`, capped at `max_yield`; ongoing
+    crops accrue one per interval from their first yield day.
+    """
+    spec = CROPS.get(crop)
+    if spec is None:
+        return 0
+    first = int(spec["first"])
+    if plant_day + first > LAST_DAY:
+        return 0
+    if spec["ongoing"]:
+        interval = max(1, int(spec["interval"]))
+        n = 0
+        for k in range(int(spec["max_yield"])):
+            if plant_day + first + k * interval <= LAST_DAY:
+                n += 1
+        return n
+    start = (int(spec["max_day"]) + 1) // 2
+    waters = sum(1 for age in range(start, int(spec["max_day"]) + 1)
+                 if plant_day + age <= LAST_DAY)
+    return min(int(spec["max_yield"]), 1 + waters)
+
+
+def crop_span(crop: str, plant_day: int) -> int:
+    """Days the tile is occupied, which is what its ground costs."""
+    spec = CROPS[crop]
+    if spec["ongoing"]:
+        last = (plant_day + int(spec["first"])
+                + (int(spec["max_yield"]) - 1) * max(1, int(spec["interval"])))
+    else:
+        last = plant_day + int(spec["max_day"])
+    return max(1, min(LAST_DAY, last) - plant_day + 1)
+
+
+def crop_turns(crop: str, plant_day: int) -> float:
+    """Worker-turns the tile demands over its life, walking excluded.
+
+    Sowing, the mandatory same-day watering, a rescue watering every other
+    day outside the yield window, one watering a day inside it, and a
+    harvest per pick-up.
+    """
+    spec = CROPS[crop]
+    span = crop_span(crop, plant_day)
+    units = crop_units(crop, plant_day)
+    if spec["ongoing"]:
+        waters = 1.0 + (span - 1) / 2.0
+        return 1.0 + waters + units
+    start = (int(spec["max_day"]) + 1) // 2
+    window = sum(1 for age in range(start, int(spec["max_day"]) + 1)
+                 if plant_day + age <= LAST_DAY)
+    dry = max(0, start - 1)
+    return 1.0 + 1.0 + dry / 2.0 + window + 1.0
+
+
+def animal_units(animal: str, place_day: int) -> float:
+    """Product units a beast placed on `place_day` still yields.
+
+    `_daily_refresh_animals` accrues one care bonus per cared-and-fed day
+    and consumes the lot on the next fed production day, so a tended animal
+    returns `1 + interval` per event rather than one.
+    """
+    spec = ANIMALS.get(animal)
+    if spec is None:
+        return 0.0
+    first, interval = int(spec["first"]), max(1, int(spec["interval"]))
+    per_event = 1.0 + interval * CARE_RATE
+    n = 0.0
+    day = place_day + first
+    while day <= LAST_DAY:
+        n += per_event
+        day += interval
+    return n
+
+
+# --- what a unit of a good is worth ------------------------------------
+
+def _context(observation: dict[str, Any], day: int, step: int) -> dict[str, Any]:
+    """Prices, town appetite and the supply this farm has already committed.
+
+    `spot` is the engine's own quote for a unit sold right now. `forward`
+    prices a unit that does not exist yet: it is quoted at the inventory the
+    market will hold once everything already growing has been sold and the
+    town has eaten its share, which is the only honest way to decide whether
+    another cow is worth its pasture.
+    """
+    inv = {item: inventory_of(observation, item) for item in PRODUCTS}
+    demand = remaining_demand(observation)
+    credit = {item: float(demand.get(item, 0.0)) * TOWN_SHARE
+              for item in PRODUCTS}
+    return {"inv": inv, "credit": credit,
+            "spot": {item: max(1.0, price_at(item, inv[item]))
+                     for item in PRODUCTS},
+            "pipeline": {item: 0.0 for item in PRODUCTS}}
+
+
+def forward(ctx: dict[str, Any], item: str, already: float) -> float:
+    inv = ctx["inv"][item] + already - ctx["credit"][item]
+    return max(1.0, price_at(item, inv))
+
+
+def forward_batch(ctx: dict[str, Any], item: str, already: float,
+                  units: float) -> float:
+    """Coins a batch of `units` fetches, walking the curve down as it goes."""
+    n = int(units)
+    total = sum(forward(ctx, item, already + k) for k in range(n))
+    frac = units - n
+    if frac > 0:
+        total += frac * forward(ctx, item, already + n)
+    return total
+
+
+# --- one pass over the board -------------------------------------------
+
+def census(ctx: dict[str, Any], tiles: list[list[Any]], day: int,
+           shed: dict[str, int]) -> dict[str, Any]:
+    """What exists, what is in danger, and what is still going to be sold."""
     out: dict[str, Any] = {
         "free": 0, "owned": 0, "animals": 0, "at_risk": 0, "unfed": 0,
-        "empty_coops": 0, "empty_pastures": 0, "wheat": 0, "ripe_units": 0,
+        "empty_coops": 0, "empty_pastures": 0, "wheat": 0, "weeds": 0,
+        "plants": 0,
     }
     for animal in ANIMAL_HOME:
         out["have_" + animal] = 0
     for crop in CROPS:
         out["crop_" + crop] = 0
+    pipeline = ctx["pipeline"]
+    for item, qty in shed.items():
+        if item in pipeline:
+            pipeline[item] += float(qty)
+    labour = 0.0
     for row in tiles:
         for tile in row:
             if tile == "LOCKED":
@@ -166,102 +393,150 @@ def census(tiles: list[list[Any]], day: int) -> dict[str, Any]:
             elif not isinstance(tile, dict):
                 continue
             elif "animal" in tile:
+                animal = str(tile.get("animal", ""))
                 out["animals"] += 1
-                out["have_" + str(tile.get("animal", ""))] = out.get(
-                    "have_" + str(tile.get("animal", "")), 0) + 1
+                out["have_" + animal] = out.get("have_" + animal, 0) + 1
+                labour += ANIMAL_TURNS
                 if not tile.get("fed_today"):
                     out["unfed"] += 1
                     if int(tile.get("consecutive_unfed", 0) or 0) >= 1:
                         out["at_risk"] += 1
-                out["ripe_units"] += int(tile.get("yield_units", 0) or 0)
+                product = ANIMAL_PRODUCT.get(animal)
+                if product:
+                    pipeline[product] += (
+                        float(tile.get("yield_units", 0) or 0)
+                        + animal_units(animal, int(tile.get("placed_day", day)))
+                        * max(0.0, (LAST_DAY - day)) / max(1.0, LAST_DAY))
             elif tile.get("kind") == "COOP":
                 out["empty_coops"] += 1
             elif tile.get("kind") == "PASTURE":
                 out["empty_pastures"] += 1
+            elif tile.get("kind") == "WEED":
+                out["weeds"] += 1
             elif tile.get("kind") == "PLANT":
                 crop = str(tile.get("crop", ""))
+                out["plants"] += 1
                 out["crop_" + crop] = out.get("crop_" + crop, 0) + 1
                 if crop == "WHEAT":
                     out["wheat"] += 1
-                out["ripe_units"] += int(tile.get("yield_units", 0) or 0)
+                planted = int(tile.get("planted_day", day))
+                span = max(1, crop_span(crop, planted))
+                labour += crop_turns(crop, planted) / span
+                if crop in pipeline:
+                    pipeline[crop] += max(
+                        float(tile.get("yield_units", 0) or 0),
+                        float(crop_units(crop, planted)))
+    out["labour_used"] = labour
     return out
 
 
-# --- what things are worth ---------------------------------------------
+# --- the plan ----------------------------------------------------------
 
-def unit_price(observation: dict[str, Any], item: str) -> float:
-    return max(1.0, float(price_at(item, inventory_of(observation, item))))
+def hands_wanted(day: int) -> int:
+    target = HAND_RAMP[0][1]
+    for when, n in HAND_RAMP:
+        if day >= when:
+            target = n
+    return target
 
 
-def crop_tile_value(observation: dict[str, Any], crop: str, day: int) -> float:
-    """Coins a fresh tile of this crop still returns, if it is worked.
+def make_plan(ctx: dict[str, Any], observation: dict[str, Any], day: int,
+              step: int, counts: dict[str, Any], shed: dict[str, int],
+              money: float) -> dict[str, Any]:
+    """Crew, herd, crop mix and ground, all priced in coins per worker-turn.
 
-    Non-ongoing crops yield `max_yield` once and destroy the tile; ongoing
-    crops yield one unit per interval until the season ends. Both are capped
-    by what the season has left.
+    Nothing here is a calendar. The crop order and the species order come out
+    of the marginal price of what they produce, which is a function of the
+    shops this particular town drew, so a game with two yarn stores grows a
+    flock and a game without one does not.
     """
-    spec = CROPS.get(crop)
-    if spec is None:
-        return 0.0
-    price = unit_price(observation, crop)
-    left = LAST_DAY - day
-    first = int(spec["first"])
-    if left <= first:
-        return 0.0
-    if spec["ongoing"]:
-        interval = max(1, int(spec["interval"]))
-        cycles = min(int(spec["max_yield"]), (left - first) // interval + 1)
-        return price * max(0, cycles)
-    return price * float(spec["max_yield"])
+    hands_target = hands_wanted(day)
+    budget = (hands_target + 1) * TURNS * WORK_SHARE
+    left = budget - counts["labour_used"]
 
-
-def animal_value(observation: dict[str, Any], animal: str, day: int) -> float:
-    """Coins an animal still returns from today to the close."""
-    spec = ANIMALS.get(animal)
-    if spec is None:
-        return 0.0
-    interval = max(1, int(spec["interval"]))
-    left = max(0, LAST_DAY - day - int(spec["first"]))
-    cycles = left // interval + (1 if left >= 0 else 0)
-    return unit_price(observation, ANIMAL_PRODUCT[animal]) * cycles
-
-
-def crop_targets(observation: dict[str, Any], day: int,
-                 counts_for_feed: dict[str, Any] | None = None) -> list[tuple[str, float]]:
-    """Crops worth sowing today, best value per tile first.
-
-    The town is the only consumer, so a crop is worth what the town will
-    still absorb at the price it will still pay. `remaining_demand` turns
-    the unlocked shops into units the town will eat before the season ends.
-    """
-    demand = remaining_demand(observation)
-    out = []
-    # Feed before profit. A wheat tile yields about four units over its
-    # window, an animal eats one a day, and two missed meals lose the animal
-    # outright -- so while the flock is short, wheat outranks every cash crop
-    # no matter what the books say.
-    need = counts_for_feed.get("animals", 0) if counts_for_feed else 0
-    standing = counts_for_feed.get("wheat", 0) if counts_for_feed else 0
-    stored = counts_for_feed.get("shed_wheat", 0) if counts_for_feed else 0
-    if need > 0 and standing * 4 + stored < need * 3 and day <= LAST_DAY - 3:
-        return [("WHEAT", 10_000.0)]
+    # Crops, best coins per worker-turn first. A crop that cannot reach its
+    # first yield before the close is worth nothing, and `crop_units` already
+    # returns zero for it.
+    crops: list[tuple[float, str, float, float]] = []
     for crop in CROPS:
-        value = crop_tile_value(observation, crop, day)
-        if value <= 0:
+        units = crop_units(crop, day)
+        if units <= 0:
             continue
-        # A crop nobody eats floods its own book: melon is in no shop basket
-        # at all, so only the town centre's one unit a day supports it.
-        appetite = float(demand.get(crop, 0.0))
-        standing = 0.0
-        out.append((crop, value * (1.0 + min(1.0, appetite / 60.0)) - standing))
-    out.sort(key=lambda kv: -kv[1])
-    return out
+        revenue = forward_batch(ctx, crop, ctx["pipeline"][crop], units)
+        revenue -= float(CROPS[crop]["seed"])
+        turns = crop_turns(crop, day)
+        span = max(1, crop_span(crop, day))
+        if revenue <= 0:
+            continue
+        crops.append((revenue / turns, crop, revenue, turns / span))
+    crops.sort(reverse=True)
+
+    # Species, the same way. A beast is its product plus a unit of manure a
+    # day, less the wheat it eats and the coins it costs.
+    beasts: list[tuple[float, str, float]] = []
+    tended = max(0, LAST_DAY - day)
+    for animal in ANIMAL_HOME:
+        product = ANIMAL_PRODUCT[animal]
+        units = animal_units(animal, day)
+        if units <= 0:
+            continue
+        revenue = forward_batch(ctx, product, ctx["pipeline"][product], units)
+        revenue += tended * forward(ctx, "FERTILIZER",
+                                    ctx["pipeline"]["FERTILIZER"]) * 0.5
+        revenue -= tended * 0.5 * ctx["spot"]["WHEAT"]
+        revenue -= float(ANIMALS[animal]["cost"])
+        if revenue <= 0:
+            continue
+        beasts.append((revenue / max(1.0, ANIMAL_TURNS * tended), animal,
+                       revenue))
+    beasts.sort(reverse=True)
+
+    # Ground. Two quadrants is seventy-five tiles, which is what a crew of
+    # twelve can actually work; the third is only worth 4,000 coins when the
+    # farm is already rich and the season still has room to use it.
+    owned_quadrants = max(1, (counts["owned"] + 24) // 25)
+    want_land = False
+    idx = owned_quadrants - 1
+    if idx < len(LAND_DAYS) and day >= LAND_DAYS[idx]:
+        if money >= LAND_PRICES[idx] + LAND_RESERVE and counts["free"] <= 12:
+            want_land = True
+
+    # A hard ceiling on the flock, because `labour_left` is a per-turn view
+    # and the purchase runs every turn: against a live opponent this bought
+    # 104 animals in one game and stood at 34 head on day 20 with 18 plants,
+    # while the agent it was losing to kept about 17 head and 57 plants. Two
+    # things bound the herd -- the turns to tend it (feed, care, collect,
+    # about three a day each) and the grain to feed it (one wheat a day,
+    # against four units from a wheat tile over its window).
+    tend_cap = int(budget // ANIMAL_TURNS)
+    # Feed can be bought as well as grown, and in the opening it must be:
+    # a wheat tile takes days to yield while an animal starts paying at once.
+    # Counting only standing grain left the farm on one animal at day 10
+    # against an opponent's ten, a hole it never climbed out of.
+    purchasable = money / 90.0 if day <= 12 else money / 240.0
+    grain_cap = (counts.get("wheat", 0) * 4 + int(counts.get("shed_wheat", 0))
+                 + int(purchasable))
+    herd_cap = max(4, min(tend_cap, grain_cap, 20))
+
+    return {
+        "hands_target": hands_target,
+        "labour_budget": budget,
+        "herd_cap": herd_cap,
+        "labour_left": left,
+        "crops": crops,
+        "beasts": beasts,
+        "best_beast": beasts[0][1] if beasts else None,
+        "want_land": want_land,
+        "tile_value": {crop: rev for _rate, crop, rev, _daily in crops},
+        "crop_daily": {crop: daily for _rate, crop, _rev, daily in crops},
+        "beast_value": {animal: rev for _rate, animal, rev in beasts},
+    }
 
 
 # --- jobs, priced in coins and turns -----------------------------------
 
-def job_offers(observation: dict[str, Any], tile: Any, x: int, y: int,
-               inventory: dict[str, int], day: int, step: int,
+def job_offers(ctx: dict[str, Any], plan: dict[str, Any], tile: Any,
+               x: int, y: int, inventory: dict[str, int], day: int, step: int,
                shed: dict[str, int], seeds: dict[str, int],
                counts: dict[str, Any]) -> list[tuple[float, float, list[Any]]]:
     """Every job this tile offers, as (coins, turns, action).
@@ -270,89 +545,88 @@ def job_offers(observation: dict[str, Any], tile: Any, x: int, y: int,
     are what it costs to do, excluding the walk, which the caller adds.
     """
     jobs: list[tuple[float, float, list[Any]]] = []
-    closing = step >= LAST_ACT_STEP - 6
-    # Goods being carried as inputs are not cargo: wheat while the flock is
-    # unfed, manure while there is a tile worth spreading it on. Counting
-    # them sent workers into a loop -- 130 pickups and 49 drops in one day,
-    # the same grain travelling back and forth.
-    holding_back = set()
-    if counts["unfed"] > 0 or counts["at_risk"] > 0:
-        holding_back.add("WHEAT")
-    carried_value = sum(
-        int(qty) * unit_price(observation, item)
-        for item, qty in inventory.items()
-        if int(qty) > 0 and item in MARKET_PARAMS
-        and item not in holding_back)
+    spot = ctx["spot"]
+    closing = step >= LAST_ACT_STEP - CLOSING_STEPS
+    hour = step % TURNS
 
     if _on_shed(x, y):
-        # Anything still in hand at the close is thrown away.
-        # A harvest in a worker's hands cannot be sold: only the shed feeds
-        # the market, and the nightly tip discards whatever overflows. So a
-        # full pair of hands is worth exactly what it is carrying, and the
-        # walk back is priced like any other journey.
-        if carried_value > 0:
-            jobs.append((carried_value, 1.0, ["DROP"]))
+        # Goods being carried as inputs are not cargo: wheat while the flock
+        # is unfed, manure while there is a tile worth spreading it on.
+        # Counting them sent workers into a loop -- 130 pickups and 49 drops
+        # in one day, the same grain travelling back and forth.
+        holding_back = set()
+        if counts["unfed"] > 0 or counts["at_risk"] > 0:
+            holding_back.add("WHEAT")
+        if counts.get("fertilizable", 0) > 0:
+            holding_back.add("FERTILIZER")
+        carried = sum(int(qty) * spot.get(item, 0.0)
+                      for item, qty in inventory.items()
+                      if int(qty) > 0 and item in MARKET_PARAMS
+                      and item not in holding_back)
+        if carried > 0:
+            # Only the shed feeds the market, and the nightly tip discards
+            # whatever a worker is still holding over the cap.
+            jobs.append((carried * (3.0 if closing else 1.0), 1.0, ["DROP"]))
+
         need_feed = counts["unfed"] + counts["at_risk"]
+        carrying_beast = any(int(inventory.get(a, 0)) > 0 for a in ANIMAL_HOME)
         if (need_feed > 0 and int(inventory.get("WHEAT", 0)) <= 0
                 and int(shed.get("WHEAT", 0)) > 0 and not closing
-                and not any(int(inventory.get(a, 0)) > 0 for a in ANIMAL_HOME)):
-            carry = min(12, int(shed.get("WHEAT", 0)), max(2, need_feed))
-            # Picking wheat up is only worth what the meals it enables save.
-            worth = sum(animal_value(observation, a, day) * 0.12
-                        for a in ANIMAL_HOME
-                        for _ in range(counts.get("have_" + a, 0)))
-            jobs.append((max(40.0, worth * 0.25), 1.0,
+                and not carrying_beast):
+            carry = min(10, int(shed.get("WHEAT", 0)), max(2, need_feed))
+            # A pickup is worth the meals it enables, and a meal is worth the
+            # stream it keeps alive when the animal has already missed one.
+            worth = 0.0
+            for animal in ANIMAL_HOME:
+                head = counts.get("have_" + animal, 0)
+                if head:
+                    worth += (plan["beast_value"].get(animal, 0.0)
+                              / max(1.0, LAST_DAY - day)) * min(head, carry)
+            jobs.append((max(60.0, worth * 0.4), 1.0,
                          ["PICKUP", "WHEAT", carry]))
-        for animal in ANIMAL_HOME:
-            waiting = int(shed.get(animal, 0))
-            house = "empty_coops" if ANIMAL_HOME[animal] == "COOP" else "empty_pastures"
-            if waiting > 0 and counts[house] > 0 and not closing:
-                jobs.append((animal_value(observation, animal, day), 1.0,
-                             ["PICKUP", animal, min(3, waiting)]))
-                break
+        if not closing and not carrying_beast:
+            for animal, house in ANIMAL_HOME.items():
+                waiting = int(shed.get(animal, 0))
+                room = (counts["empty_coops"] if house == "COOP"
+                        else counts["empty_pastures"])
+                if waiting > 0 and room > 0:
+                    jobs.append((plan["beast_value"].get(animal, 400.0), 1.0,
+                                 ["PICKUP", animal, min(3, waiting, room)]))
+                    break
 
     if tile is None:
-        if closing:
+        if closing or hour >= TURNS - 2:
+            # A tile sown without a watering turn behind it is a weed by
+            # morning, so the last hours of the day are not for sowing.
             return jobs
-        if (counts.get("labour_used", 0) + 1.25
-                > counts.get("work_turns", 0)):
-            return jobs
-        for crop, value in crop_targets(observation, day, counts):
-            if int(seeds.get(crop, 0)) <= 0:
-                continue
-            spec = CROPS[crop]
-            # A tile is sown once and watered on the days that pay; charge
-            # the sowing turn plus the waterings it will demand.
-            waters = (min(int(spec["max_yield"]),
-                          max(1, LAST_DAY - day - int(spec["first"])))
-                      if spec["ongoing"] else
-                      max(1, int(spec["max_day"]) - (int(spec["max_day"]) + 1) // 2 + 1))
-            jobs.append((value, 1.0 + waters * 0.5, ["PLANT", crop]))
-            break
-        # Housing. A pen costs nothing but the turn, and an animal cannot be
-        # bought without one standing empty -- the purchase rule needs the
-        # room first. Build for an animal already waiting in the shed, or for
-        # one the purse can afford, but never more than a couple ahead of the
-        # flock: an empty pen is a tile that grows nothing.
-        purse = float(counts.get("money", 0.0))
-        for animal, house in ANIMAL_HOME.items():
-            waiting = int(shed.get(animal, 0))
+        for animal in ANIMAL_HOME:
+            if int(inventory.get(animal, 0)) > 0:
+                # A beast in hand with nowhere to stand: build for it here.
+                jobs.append((plan["beast_value"].get(animal, 400.0), 1.0,
+                             [STRUCTURE_ACTION[ANIMAL_HOME[animal]]]))
+                return jobs
+        best = plan.get("best_beast")
+        if best is not None and plan["labour_left"] >= ANIMAL_TURNS:
+            house = ANIMAL_HOME[best]
+            waiting = int(shed.get(best, 0))
             room = (counts["empty_coops"] if house == "COOP"
                     else counts["empty_pastures"])
-            affordable = purse >= float(ANIMALS[animal]["cost"]) + 60
-            spare = counts["empty_coops"] + counts["empty_pastures"]
-            if spare >= max(1, waiting + 1):
+            # A pen is free but for the turn, and an animal cannot be bought
+            # without one standing empty. Keep one ahead of the queue and no
+            # more: an empty pen is a tile that grows nothing.
+            if room <= waiting:
+                jobs.append((plan["beast_value"][best] * 0.7, 1.0,
+                             [STRUCTURE_ACTION[house]]))
+        for _rate, crop, revenue, daily in plan["crops"]:
+            if int(seeds.get(crop, 0)) <= 0:
                 continue
-            if (counts.get("labour_used", 0) + 3.0
-                    > counts.get("work_turns", 0)) and not waiting:
+            if plan["labour_left"] < daily:
                 continue
-            if waiting > 0 or (affordable and room < 2):
-                value = animal_value(observation, animal, day)
-                if value > float(ANIMALS[animal]["cost"]) * 0.5:
-                    jobs.append((value * 0.8, 1.0,
-                                 ["BUILD_COOP" if house == "COOP"
-                                  else "BUILD_PASTURE"]))
-                    break
+            # Sowing books its own watering turn: the tile dies tonight
+            # without it.
+            jobs.append((revenue, 2.0 + crop_turns(crop, day) * 0.25,
+                         ["PLANT", crop]))
+            break
         return jobs
 
     if not isinstance(tile, dict):
@@ -363,26 +637,32 @@ def job_offers(observation: dict[str, Any], tile: Any, x: int, y: int,
         animal = str(tile.get("animal", ""))
         product = ANIMAL_PRODUCT.get(animal, "EGG")
         held = int(tile.get("yield_units", 0) or 0)
-        price = unit_price(observation, product)
+        price = spot.get(product, 1.0)
+        interval = max(1, int(ANIMALS[animal]["interval"]))
+        stream = plan["beast_value"].get(animal, 0.0)
         if not tile.get("fed_today") and int(inventory.get("WHEAT", 0)) > 0:
             if int(tile.get("consecutive_unfed", 0) or 0) >= 1:
                 # It escapes tonight if this is missed: the whole stream.
-                jobs.append((animal_value(observation, animal, day), 1.0,
-                             ["FEED"]))
-            else:
-                jobs.append((price * 0.6, 1.0, ["FEED"]))
+                jobs.append((max(stream, price * 4.0), 1.0, ["FEED"]))
+            elif not closing:
+                # Otherwise a meal buys the care bonus and tomorrow's safety.
+                jobs.append((price * (1.0 + interval * CARE_RATE) * 0.5
+                             - spot.get("WHEAT", 25.0), 1.0, ["FEED"]))
         if held > 0:
             jobs.append((price * held, 1.0, ["HARVEST"]))
-        if tile.get("fertilizer_available"):
-            jobs.append((unit_price(observation, "FERTILIZER"), 1.0,
+        if tile.get("fertilizer_available") and not closing:
+            jobs.append((max(spot.get("FERTILIZER", 1.0),
+                             counts.get("fert_worth", 0.0)), 1.0,
                          ["COLLECT_FERTILIZER"]))
-        if not tile.get("cared_today") and tile.get("fed_today") and not closing:
-            # The care bonus lands as an extra unit on a fed production day.
-            jobs.append((price * 0.5, 1.0, ["CARE"]))
+        if (not tile.get("cared_today") and tile.get("fed_today")
+                and not closing):
+            # A cared, fed day accrues one extra unit on the next production
+            # day, which is worth a unit of the product.
+            jobs.append((price * 0.9, 1.0, ["CARE"]))
     elif kind in ("COOP", "PASTURE"):
         for animal, house in ANIMAL_HOME.items():
             if house == kind and int(inventory.get(animal, 0)) > 0:
-                jobs.append((animal_value(observation, animal, day), 1.0,
+                jobs.append((plan["beast_value"].get(animal, 400.0), 1.0,
                              ["PLACE", animal]))
                 break
     elif kind == "PLANT":
@@ -390,32 +670,42 @@ def job_offers(observation: dict[str, Any], tile: Any, x: int, y: int,
         spec = CROPS.get(crop)
         if spec is None:
             return jobs
-        price = unit_price(observation, crop)
-        age = day - int(tile.get("planted_day", day))
+        price = spot.get(crop, 1.0)
+        planted = int(tile.get("planted_day", day))
+        age = day - planted
         units = int(tile.get("yield_units", 0) or 0)
+        dry = int(tile.get("consecutive_unwatered", 0) or 0)
+        remaining = max(0, crop_units(crop, planted) - units)
+        tile_worth = remaining * price
         if not tile.get("watered_today"):
-            if spec["ongoing"]:
-                # Unwatered ongoing crops go to weed and the tile is lost.
-                jobs.append((crop_tile_value(observation, crop, day) * 0.5,
-                             1.0, ["WATER"]))
-            else:
+            gain = 0.0
+            if not spec["ongoing"]:
                 start = (int(spec["max_day"]) + 1) // 2
                 if start <= age <= int(spec["max_day"]):
-                    gain = 2 if int(tile.get("fertilized_until_day", -1)) >= day else 1
+                    step_up = (2 if int(tile.get("fertilized_until_day", -1))
+                               >= day else 1)
                     room = max(0, int(spec["max_yield"]) - units)
-                    jobs.append((price * min(gain, room), 1.0, ["WATER"]))
-                else:
-                    jobs.append((price * 0.4, 1.0, ["WATER"]))
+                    gain = price * min(step_up, room)
+            # An unwatered plant dies tonight if it is already one day dry.
+            # An established one survives a day, so ongoing crops are watered
+            # every other day and the labour halves.
+            rescue = tile_worth * WATER_RESCUE if dry >= 1 else 0.0
+            value = max(gain, rescue)
+            if value > 0:
+                jobs.append((value, 1.0, ["WATER"]))
         if (int(inventory.get("FERTILIZER", 0)) > 0 and not spec["ongoing"]
-                and int(tile.get("fertilized_until_day", -1)) < day):
+                and int(tile.get("fertilized_until_day", -1)) < day
+                and not closing):
             start = (int(spec["max_day"]) + 1) // 2
-            left = int(spec["max_day"]) - max(age, start) + 1
-            room = max(0, int(spec["max_yield"]) - units - max(0, left))
-            gain = min(room, min(3, max(0, left)))
-            if gain > 0:
-                worth = gain * price - unit_price(observation, "FERTILIZER")
-                if worth > 0:
-                    jobs.append((worth, 1.0, ["FERTILIZE"]))
+            window = [a for a in range(max(age, start), int(spec["max_day"]) + 1)
+                      if planted + a <= LAST_DAY]
+            plain = min(int(spec["max_yield"]) - units, len(window))
+            doubled = min(int(spec["max_yield"]) - units,
+                          sum(2 if k < 3 else 1 for k in range(len(window))))
+            gain = max(0, doubled - plain)
+            worth = gain * price - spot.get("FERTILIZER", 1.0)
+            if worth > 0:
+                jobs.append((worth, 1.0, ["FERTILIZE"]))
         if units > 0 and age >= int(spec["first"]):
             done = units >= int(spec["max_yield"])
             ripe = age >= int(spec["max_day"]) or done or closing
@@ -424,140 +714,225 @@ def job_offers(observation: dict[str, Any], tile: Any, x: int, y: int,
             elif counts["at_risk"] > 0 and crop == "WHEAT" and not shed.get("WHEAT"):
                 jobs.append((price * units, 1.0, ["HARVEST"]))
     elif kind == "WEED":
-        if not closing:
-            jobs.append((crop_tile_value(observation, "CARROT", day) * 0.3,
-                         1.0, ["DIG"]))
+        if not closing and plan["crops"]:
+            # A weed is a tile that could be growing the best crop we have.
+            jobs.append((plan["crops"][0][2] * 0.5, 1.0, ["DIG"]))
     return jobs
 
 
 # --- the market ---------------------------------------------------------
 
-def hands_wanted(day: int) -> int:
-    """Ten hands cost 143 coins for a day and are wiped each night.
+def _rival_standing(observation: dict[str, Any]) -> dict[str, float]:
+    """Ripe units on the other farm, which is public and is a real threat."""
+    out = {item: 0.0 for item in PRODUCTS}
+    farm = _rival(observation)
+    for row in farm.get("tiles") or []:
+        for tile in row:
+            if not isinstance(tile, dict):
+                continue
+            units = float(tile.get("yield_units", 0) or 0)
+            if units <= 0:
+                continue
+            if "animal" in tile:
+                item = ANIMAL_PRODUCT.get(str(tile.get("animal", "")))
+            elif tile.get("kind") == "PLANT":
+                item = str(tile.get("crop", ""))
+            else:
+                item = None
+            if item in out:
+                out[item] += units
+    return out
 
-    The limit is daylight, not money: a hand hired late cannot finish a
-    watering tour, so the roster is built in the first hours and then left
-    alone. The field plateaus around eleven.
+
+def sale_lots(ctx: dict[str, Any], shed: dict[str, int], counts: dict[str, Any],
+              closing: bool, cramped: bool) -> list[tuple[float, str, int]]:
+    """How many units of each good to offer now, and how urgent each lot is.
+
+    Fragile books are metered: sixty units of wool takes it from 200 coins to
+    1 and leaves it there for the rest of the game, for us and for the rival.
+    The ranking is the revenue the lot loses if a plausible rival batch lands
+    at a lower index than ours, which sorts the collapsing goods to the front
+    without a hand-written priority list.
     """
-    if day <= 0:
-        return 5
-    if day <= 4:
-        return 7
-    if day <= 8:
-        return 9
-    return 11
-
-
-def market_orders(observation: dict[str, Any], day: int, step: int,
-                  counts: dict[str, Any], shed: dict[str, int],
-                  seeds: dict[str, int], money: float,
-                  hands: int) -> list[list[Any]]:
-    """Sales first, inventory-priced buys next, fixed-price orders last.
-
-    `_process_market` walks both players' orders by index and quotes each
-    side at the same pre-commit inventory, so a sale at a low index brings in
-    cash and frees shed room before anything that needs either. A unit that
-    fails aborts its whole order, and the tenth order is the last one read.
-    """
-    sells: list[list[Any]] = []
-    buys: list[list[Any]] = []
-    fixed: list[list[Any]] = []
-    budget = money
-    closing = step >= LAST_ACT_STEP - 10
-    total_shed = sum(int(v) for v in shed.values())
-
-    # 1. Sales. Wheat and egg absorb thousands of units; the fragile books
-    #    are metered, because selling sixty units of wool takes it from 200
-    #    coins to 1 and leaves it there for the rest of the game.
-    feed_reserve = 0 if closing else min(12, counts["animals"] * 2)
-    for item in ("EGG", "FERTILIZER", "MILK", "WOOL", "STRAWBERRY",
-                 "MELON", "CARROT", "TOMATO", "WHEAT"):
+    lots: list[tuple[float, str, int]] = []
+    feed_reserve = 0 if closing else min(14, counts["animals"] * 2)
+    for item in PRODUCTS:
         held = int(shed.get(item, 0))
         if item == "WHEAT":
             held = max(0, held - feed_reserve)
         if held <= 0:
             continue
-        price = unit_price(observation, item)
-        if price < 2 and not closing:
+        inv = ctx["inv"][item]
+        price = ctx["spot"][item]
+        if closing:
+            lots.append((1e9 + price * held, item, held))
             continue
-        if item in FRAGILE and not closing and total_shed < SHED_CAP - 15:
-            held = min(held, FRAGILE_PER_TURN)
-        sells.append(["SELL", item, held])
+        if price < MIN_SELL_PRICE:
+            continue
+        if item in FRAGILE and not cramped:
+            base = float(MARKET_PARAMS[item]["base"])
+            room = 0
+            while room < held and room < FRAGILE_PER_TURN:
+                if price_at(item, inv + room) < base * FRAGILE_FLOOR:
+                    break
+                room += 1
+            held = room
+            if held <= 0:
+                continue
+        batch = ctx["rival_batch"].get(item, 8.0)
+        loss = (sum(price_at(item, inv + j) for j in range(held))
+                - sum(price_at(item, inv + batch + j) for j in range(held)))
+        lots.append((loss + price * held * 0.001, item, held))
+    lots.sort(reverse=True)
+    return lots
+
+
+def market_orders(ctx: dict[str, Any], observation: dict[str, Any],
+                  plan: dict[str, Any], day: int, step: int,
+                  counts: dict[str, Any], shed: dict[str, int],
+                  seeds: dict[str, int], money: float,
+                  hands: int) -> list[list[Any]]:
+    """Ten slots, and the plan claims its share before the sales do.
+
+    `_process_market` walks both players' orders by index and quotes each
+    side at the same pre-commit inventory, so a sale at a low index brings in
+    cash and frees shed room before anything that needs either. A unit that
+    fails aborts its whole order, and the tenth order is the last one read --
+    which is why the skeleton, emitting nine sell orders first, could not
+    hire or buy land once its shed held five goods.
+    """
+    hour = step % TURNS
+    if step == 0:
+        # Buy only the feed actually needed, at index 0 of turn 0, while the
+        # market is untouched and the shed is empty. The tape families' large
+        # wheat round trip is cash-neutral in isolation and loses badly once
+        # a rival trades inside the same lockstep window.
+        return [["BUY_PRODUCT", "WHEAT", OPEN_FEED],
+                ["BUY_ANIMAL", "COW", OPEN_COW],
+                ["BUY_ANIMAL", "SHEEP", OPEN_SHEEP],
+                ["BUY_SEED", "MELON", OPEN_MELON],
+                ["BUY_SEED", "WHEAT", OPEN_WHEAT],
+                *[["HIRE"] for _ in range(OPEN_HIRES)]]
+
+    total_shed = sum(int(v) for v in shed.values())
+    closing = step >= LAST_ACT_STEP - 1
+    cramped = total_shed >= SHED_CAP - 12 or hour == TURNS - 1
 
     if closing:
-        return sells[:MAX_ORDERS]
+        lots = sale_lots(ctx, shed, counts, True, True)
+        return [["SELL", item, qty] for _r, item, qty in lots][:MAX_ORDERS]
 
-    # 2. Feed bought from the market, but only what the flock needs now:
-    #    wheat carries an obligation no other good has.
-    short = counts["animals"] * 2 - int(shed.get("WHEAT", 0))
-    if short > 0 and budget > 60 and total_shed < SHED_CAP - 5:
-        want = min(short, 8, int((budget - 30) // 30))
-        if want > 0:
-            buys.append(["BUY_PRODUCT", "WHEAT", want])
-            budget -= 30.0 * want
+    # The crew, at dawn, before anything else. Hands spawn at the shed and a
+    # hand hired after hour two cannot finish a watering tour, so the whole
+    # roster is bought in one order block and then left alone.
+    if hour == 0 and hands < plan["hands_target"]:
+        return [["HIRE"] for _ in range(
+            min(MAX_ORDERS, plan["hands_target"] - hands))]
 
-    # 3. Crew, in the first hours only.
-    hour = step % TURNS
-    target = hands_wanted(day)
-    target = min(target, max(3, (counts["owned"] - counts["free"]) // 4 + 3))
-    if hour <= 2 and hands < target:
-        for _ in range(min(4, target - hands)):
+    fixed: list[list[Any]] = []
+    buys: list[list[Any]] = []
+    budget = money
+
+    if hour <= 2 and hands < plan["hands_target"]:
+        for _ in range(min(3, plan["hands_target"] - hands)):
             fixed.append(["HIRE"])
 
-    # 4. Ground. Every one of the top two hundred teams owns a second
-    #    quadrant by day 5 or 6 and a third by day 8 to 11, and ground is
-    #    what a crew converts into goods. The first costs 1,000, the second
-    #    2,000, the third 4,000.
-    price_of_land = (1000.0, 2000.0, 4000.0)
-    bought = max(0, (counts["owned"] - 25) // 25)
-    if (bought < 3 and day >= (5, 8, 11)[bought] and counts["free"] <= 14
-            and budget > price_of_land[bought] + 250):
+    if plan["want_land"]:
         fixed.append(["BUY_LAND"])
-        budget -= price_of_land[bought]
+        owned_quadrants = max(1, (counts["owned"] + 24) // 25)
+        budget -= LAND_PRICES[min(2, owned_quadrants - 1)]
 
-    # 5. Animals. These are the farm's engine and they must start on day
-    #    zero: a cow costs 400 and returns milk from day 8 every second day,
-    #    a sheep 500 and wool from day 6, a goose 300 and an egg a day from
-    #    day 4. Every top team owns cows and sheep within three days. The
-    #    floor here is only what the next meal costs, not a working balance.
-    if hour <= 4 and budget > 380:
-        best, gain = None, 0.0
-        for animal, house in ANIMAL_HOME.items():
-            room = (counts["empty_coops"] if house == "COOP"
-                    else counts["empty_pastures"])
-            if room <= int(shed.get(animal, 0)):
-                continue
-            if (counts.get("labour_used", 0) + 3.0
-                    > counts.get("work_turns", 0)):
-                continue
-            feed_ready = (counts.get("wheat", 0) * 4
-                          + int(shed.get("WHEAT", 0))
-                          >= (counts["animals"] + 1) * 2)
-            if not (feed_ready or budget > float(ANIMALS[animal]["cost"]) + 400):
-                continue
-            payback = animal_value(observation, animal, day) - float(
-                ANIMALS[animal]["cost"])
-            if payback > gain:
-                best, gain = animal, payback
-        if best is not None and budget > float(ANIMALS[best]["cost"]) + 60:
+    # Feed, confined to two hours a day and capped. Wheat carries an
+    # obligation no other good has, but buying it every turn the purse allows
+    # is how the skeleton spent five thousand coins a day on grain.
+    if hour in FEED_BUY_HOURS and counts["animals"] > 0:
+        standing = counts["wheat"] * 4 + int(shed.get("WHEAT", 0))
+        short = counts["animals"] * 3 - standing
+        if short > 0 and budget > 200 and total_shed < SHED_CAP - 10:
+            want = min(short, FEED_BUY_MAX,
+                       int((budget - 150) // max(1.0, ctx["spot"]["WHEAT"])))
+            if want > 0:
+                buys.append(["BUY_PRODUCT", "WHEAT", want])
+                budget -= ctx["spot"]["WHEAT"] * want
+
+    # The opening, days 0 to 3. Left to the value model, J spends these days
+    # planting melon -- a good in no shop's basket -- and owns one animal on
+    # day 10 where a strong opponent owns thirteen and is already earning
+    # from them. Across 1,006 replays of the current top 200, every one of
+    # the nine strongest teams buys cows and sheep inside the first three
+    # days; a cow returns milk from day 8 every second day and a sheep wool
+    # from day 6, so a day lost at the start is a day lost at the end.
+    #
+    # This is our own schedule, sized from the measured field: four head in
+    # the first three days, cattle first because milk starts earlier and
+    # feeds the deeper book, and enough grain bought to keep them alive
+    # until the wheat comes in.
+    if day <= OPENING_DAYS and hour <= 3:
+        herd = counts["animals"] + sum(int(shed.get(a, 0)) for a in ANIMAL_HOME)
+        want = OPENING_HERD[min(day, len(OPENING_HERD) - 1)]
+        if herd < want:
+            for animal in ("COW", "SHEEP", "GOOSE"):
+                cost = float(ANIMALS[animal]["cost"])
+                have = counts.get("have_" + animal, 0) + int(shed.get(animal, 0))
+                if have >= OPENING_MIX.get(animal, 0):
+                    continue
+                if budget >= cost + 80:
+                    fixed.append(["BUY_ANIMAL", animal, 1])
+                    budget -= cost
+                    break
+
+    # A beast, once there is a pen standing empty for it and the crew has the
+    # turns to tend it.
+    best = plan.get("best_beast")
+    herd_now = counts["animals"] + sum(int(shed.get(a, 0)) for a in ANIMAL_HOME)
+    if (best is not None and plan["labour_left"] >= ANIMAL_TURNS
+            and herd_now < plan.get("herd_cap", 20)
+            and total_shed < SHED_CAP - 4):
+        house = ANIMAL_HOME[best]
+        room = (counts["empty_coops"] if house == "COOP"
+                else counts["empty_pastures"])
+        cost = float(ANIMALS[best]["cost"])
+        if room > int(shed.get(best, 0)) and budget >= cost + 120:
             fixed.append(["BUY_ANIMAL", best, 1])
-            budget -= float(ANIMALS[best]["cost"])
+            budget -= cost
 
-    # 6. Seed for the ground we can actually sow and water.
-    if hour in (1, 2) and budget > 60:
-        for crop, _value in crop_targets(observation, day, counts):
-            if len(fixed) >= 6:
-                break
-            spec = CROPS[crop]
-            if day > LAST_DAY - int(spec["first"]) - 1:
-                continue
-            in_hand = int(seeds.get(crop, 0))
-            room = max(0, counts["free"] - sum(int(v) for v in seeds.values()))
-            want = min(4, room, int((budget - 40) // max(1, int(spec["seed"]))))
-            if in_hand < 3 and want > 0:
-                fixed.append(["BUY_SEED", crop, want])
-                budget -= float(spec["seed"]) * want
+    # Seed for ground the crew can actually sow and water.
+    sown = sum(int(v) for v in seeds.values())
+    room = max(0, counts["free"] + counts["weeds"] - sown)
+    for _rate, crop, _revenue, daily in plan["crops"][:2]:
+        if len(fixed) >= PLAN_SLOTS - 1 or room <= 0:
+            break
+        if plan["labour_left"] < daily:
+            break
+        price = float(CROPS[crop]["seed"])
+        want = min(4, room, int(max(0.0, budget - 100) // price))
+        if int(seeds.get(crop, 0)) < 3 and want > 0:
+            fixed.append(["BUY_SEED", crop, want])
+            budget -= price * want
+            room -= want
 
+    plan_orders = (buys + fixed)[:PLAN_SLOTS]
+    # A sale at `step % 4 == 0` is quoted before that step's town tick and
+    # throws a tick of scarcity away, so on a quiet turn the sale waits.
+    quiet = step % 4 == 0 and not cramped
+    slots = MAX_ORDERS - len(plan_orders)
+    sells: list[list[Any]] = []
+    if slots > 0 and not quiet:
+        lots = sale_lots(ctx, shed, counts, False, cramped)
+        sells = [["SELL", item, qty] for _r, item, qty in lots[:slots]]
+    # Sales first: they add cash and free shed room before anything that
+    # needs either. Inventory-priced buys next. Fixed-price orders last,
+    # because their index does not move their price.
+    # Only ten orders are read, and the engine drops the rest in silence.
+    # Sales belong first -- they bring the cash and the shed room everything
+    # else needs -- but nine of them will bury a HIRE that costs one coin and
+    # buys a whole day of labour, or the land the farm is saving for. So the
+    # cheap, decisive orders keep their slots and sales take what is left,
+    # richest first.
+    room_for_sales = max(1, MAX_ORDERS - len(buys) - len(fixed))
+    if len(sells) > room_for_sales:
+        sells.sort(key=lambda o: -ctx["spot"].get(o[1], 1.0) * int(o[2]))
+        sells = sells[:room_for_sales]
     return (sells + buys + fixed)[:MAX_ORDERS]
 
 
@@ -577,39 +952,39 @@ def decide(observation: dict[str, Any]) -> AgentAction:
     positions = _positions(farm)
     shed = _shed(observation)
     seeds = _seeds(observation)
-    counts = census(tiles, day)
     money = float(farm.get("money", 0.0) or 0.0)
+
+    ctx = _context(observation, day, step)
+    ctx["rival_batch"] = {
+        item: min(24.0, max(8.0, units))
+        for item, units in _rival_standing(observation).items()}
+    counts = census(ctx, tiles, day, shed)
     counts["money"] = money
-    counts["shed_wheat"] = int(shed.get("WHEAT", 0))
-    # The labour budget, which is what the whole farm is really limited by.
-    # A crew of n hands has n * 24 turns in a day and spends roughly half of
-    # them walking, so only about half are work. An animal wants feeding,
-    # caring and collecting -- call it three turns a day -- and a growing
-    # tile wants watering and eventually harvesting, call it one and a
-    # quarter. A farm that buys past this line starves: 35 animals bought on
-    # one run needed 105 turns a day against 130 available, the crops got
-    # nothing, and half the herd escaped.
-    crew = len(farm.get("hands") or []) + 1
-    counts["work_turns"] = crew * TURNS * 0.5
-    planted = sum(counts.get("crop_" + crop, 0) for crop in CROPS)
-    counts["planted"] = planted
-    counts["labour_used"] = counts["animals"] * 3.0 + planted * 1.25
+    plan = make_plan(ctx, observation, day, step, counts, shed, money)
+    # Manure is worth the greater of what it fetches and what it adds to a
+    # tile. It is in no shop basket and the town centre skips it, so nothing
+    # in the game consumes it and its price only decays, 100 -> 24; spread on
+    # a watered wheat tile inside its window it is two extra wheat.
+    counts["fert_worth"] = max(ctx["spot"]["FERTILIZER"],
+                               ctx["spot"]["WHEAT"] * 2.0)
+    counts["fertilizable"] = counts.get("crop_WHEAT", 0) + counts.get(
+        "crop_CARROT", 0)
 
     # Every (worker, job) pair, priced in coins per turn including the walk.
     candidates: list[tuple[float, int, tuple[int, int], list[Any]]] = []
     for worker, position in enumerate(positions):
         inventory = _inventory(observation, worker)
+        held = _EN_ROUTE.get((player, worker))
         for y in range(len(tiles)):
-            for x in range(len(tiles[y])):
-                if not _owned(tiles, x, y) and not _on_shed(x, y):
+            row = tiles[y]
+            for x in range(len(row)):
+                if row[x] == "LOCKED" and not _on_shed(x, y):
                     continue
                 travel = distance(position, (x, y))
                 for coins, turns, action in job_offers(
-                        observation, tiles[y][x], x, y, inventory, day, step,
+                        ctx, plan, row[x], x, y, inventory, day, step,
                         shed, seeds, counts):
-                    cost = turns + travel * WALK_COST
-                    rate = coins / max(0.5, cost)
-                    held = _EN_ROUTE.get((player, worker))
+                    rate = coins / max(0.5, turns + travel * WALK_COST)
                     if (held is not None and held[0] == (x, y)
                             and held[1] == action[0]):
                         rate *= COMMIT_BONUS
@@ -620,11 +995,17 @@ def decide(observation: dict[str, Any]) -> AgentAction:
     chosen: dict[int, list[Any]] = {}
     claimed: set[tuple[int, int]] = set()
     booked: list[tuple[int, tuple[int, int], list[Any], int]] = []
+    planted_now: dict[str, int] = {}
     for _rate, worker, cell, action in candidates:
         if worker in chosen or cell in claimed:
             continue
-        if action[0] == "PLANT" and int(seeds.get(action[1], 0)) <= 0:
-            continue
+        if action[0] == "PLANT":
+            # Atomic PLANT validation: if the turn's requests for a crop
+            # exceed the seeds held, the interpreter drops every one of them.
+            crop = action[1]
+            if planted_now.get(crop, 0) + 1 > int(seeds.get(crop, 0)):
+                continue
+            planted_now[crop] = planted_now.get(crop, 0) + 1
         if action[0] == "PICKUP" and int(shed.get(action[1], 0)) <= 0:
             continue
         travel = distance(positions[worker], cell)
@@ -634,13 +1015,21 @@ def decide(observation: dict[str, Any]) -> AgentAction:
         if action[0] not in ("DROP", "PICKUP"):
             claimed.add(cell)
         # Claim the consumable this job will spend, so two workers do not
-        # both plan to sow the last seed.
-        if action[0] == "PLANT":
-            seeds[action[1]] = max(0, int(seeds.get(action[1], 0)) - 1)
-        elif action[0] == "PICKUP" and len(action) > 2:
+        # both plan to place the last animal or spend the last grain.
+        if action[0] == "PICKUP" and len(action) > 2:
             shed[action[1]] = max(0, int(shed.get(action[1], 0)) - int(action[2]))
         elif action[0] == "FEED":
             counts["unfed"] = max(0, counts["unfed"] - 1)
+        elif action[0] in ("BUILD_COOP", "BUILD_PASTURE"):
+            key = ("empty_coops" if action[0] == "BUILD_COOP"
+                   else "empty_pastures")
+            counts[key] += 1
+            plan["labour_left"] -= ANIMAL_TURNS
+        elif action[0] == "PLACE":
+            key = ("empty_coops" if ANIMAL_HOME[action[1]] == "COOP"
+                   else "empty_pastures")
+            counts[key] = max(0, counts[key] - 1)
+            counts["animals"] += 1
 
     for worker, cell, action, travel in booked:
         if travel > 0:
@@ -651,12 +1040,16 @@ def decide(observation: dict[str, Any]) -> AgentAction:
         if worker not in chosen:
             _EN_ROUTE.pop((player, worker), None)
 
+    for crop, n in planted_now.items():
+        seeds[crop] = max(0, int(seeds.get(crop, 0)) - n)
+
     actions = [chosen.get(w, list(PASS)) for w in range(len(positions))]
     return {
         "farmer": actions[0] if actions else list(PASS),
         "hands": actions[1:],
-        "market": market_orders(observation, day, step, counts, shed, seeds,
-                                money, len(farm.get("hands") or [])),
+        "market": market_orders(ctx, observation, plan, day, step, counts,
+                                shed, seeds, money,
+                                len(farm.get("hands") or [])),
     }
 
 

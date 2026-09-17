@@ -107,6 +107,14 @@ DEFAULTS = {
     # seed -- mostly the day-0 melons that pay for day 10 -- and wins
     # nothing back. The live collapse depends on a real opponent's opening
     # squeezing H's cash, which replays cannot reproduce. Off.
+    # Measured and OFF. Sales before purchases is worth +734 a game on our
+    # own scheduler, and it costs this one 14,143: against the published
+    # aurax7 agent the margin goes from -990 to -15,133 and the own score
+    # from 98,271 to 87,214. The base under this layer is a chassis that
+    # orders its own queue on purpose, and the same reordering wrecked our
+    # replay agent too (-84,732). A route's market queue is part of the
+    # route; only re-order a queue this layer wrote itself.
+    "sequence_orders": False,
     "feed_reserve": 0.0,
     "reserve_until_day": 2,
     # Coins seed orders may never take the purse below, so the next morning's
@@ -323,6 +331,33 @@ def guard_cash(observation, action, cfg: dict):
     return revised
 
 
+def sequence_orders(action, cfg: dict):
+    """Put sales first in the market list, then purchases priced off the book.
+
+    `_process_market` walks both players' orders by index and quotes each
+    side's current unit at the same pre-commit inventory. A sale at a lower
+    index therefore brings in its cash and frees its shed room before
+    anything that needs either, and a unit that fails on cash or on a full
+    shed aborts the whole order it belongs to. Fixed-price orders -- seed,
+    animals, hires, land -- do not care where they sit, so they go last.
+    Anything past the tenth order is never read at all.
+
+    Measured on our other agent, where the same change is worth 734 coins a
+    game, higher in 18 games of 38 and lower in 4.
+    """
+    if not cfg.get("sequence_orders", True) or not isinstance(action, dict):
+        return action
+    orders = action.get("market") or []
+    if len(orders) < 2:
+        return action
+    rank = {"SELL": 0, "BUY_PRODUCT": 1}
+    revised = dict(action)
+    revised["market"] = sorted(
+        orders, key=lambda o: rank.get(str(o[0]) if isinstance(o, list)
+                                       and o else "", 2))
+    return revised
+
+
 def wrap(base_agent, settings: dict | None = None):
     """An agent that plays `base_agent` and re-decides its sales."""
     cfg = dict(DEFAULTS)
@@ -340,8 +375,9 @@ def wrap(base_agent, settings: dict | None = None):
         action = (base_agent(observation, configuration) if takes_config
                   else base_agent(observation))
         try:
-            return guard_cash(observation,
-                              plan_sales(observation, action, cfg), cfg)
+            return sequence_orders(
+                guard_cash(observation,
+                           plan_sales(observation, action, cfg), cfg), cfg)
         except Exception:
             return action
 
