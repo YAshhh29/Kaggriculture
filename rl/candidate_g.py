@@ -343,6 +343,15 @@ HERD_TARGET = 9
 # More sheep sold more wool (114 against 66) but put about 40 units a game
 # on the floor price, into a book the town drains slowly, and fewer cows
 # cut milk from 176 units to 100-121. The demand-weighted plan stays.
+# A leaner, sheep-light herd is what the top of the ladder runs (they hold
+# 3.0 sheep tiles against 5.4 for every band below them, because wool
+# collapses to 1-5 coins from day 16). It is much worse here: 4 geese, 4 cows
+# and 1 sheep on G's own 38 ladder games gives wins 23 -> 12 and own score
+# -18,898 a game, worse in 34 of them.
+#
+# G is not in the wool trap, because it is not the one flooding the book: it
+# sells 71 units of wool at 148 where the field sells 122 at 96. The trap
+# belongs to agents producing at twice G's volume.
 HERD_MIX: dict[str, int] | None = None
 # Count animals in transit when deciding what to buy.
 #
