@@ -2407,6 +2407,19 @@ SELL_TARGET = {
 # lays for the rest of the season, so patience costs compounding and buys
 # a price the market was going to offer anyway.
 SELL_PATIENCE = 0.0
+# A price below which a good is not worth handing over, borrowed from the
+# reactive layer stack that makes our other agent robust (its `clamp_sells`
+# uses a floor of 2). Selling everything every turn means G posts goods into
+# books it has already flooded: the engine does not even add a unit sold at 1
+# coin to market supply, so those units are given away for nothing. The
+# closing sell ignores this - a good unsold at the whistle is worth zero.
+# None disables the floor.
+# Measured and inert, kept only so nobody wonders. Instrumenting a live game
+# shows G never sells at the floor: of 1,142 units sold, 0 went at 1 coin, 0
+# between 2 and 5, 26 between 5 and 15, and 855 (74.9%) above 40. A floor of 2
+# is bit-identical in 27 of 38 games (own score -6); a floor of 8 moves the
+# own score by +3. G's books are not the flooded ones.
+MIN_SELL_PRICE: float | None = None
 # Track seeds as a claimable resource within a turn.
 #
 # Without it thirteen workers all read the same seed count and all issue
@@ -2549,6 +2562,9 @@ def market_orders(
                      and int(observation.get("step", 0)) % 24 >= 22
                      and total_shed + counts.get("carried_total", 0)
                      > NIGHT_TIP_GUARD)
+        if (MIN_SELL_PRICE is not None and not closing
+                and now < MIN_SELL_PRICE and total_shed < 85):
+            continue
         if now >= want or closing or total_shed >= 85 or night_tip:
             orders.append(["SELL", item, held])
 
