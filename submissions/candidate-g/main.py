@@ -489,11 +489,16 @@ OPENING_CROP_TILES: tuple[tuple[str, int], ...] | None = None
 OPENING_UNTIL_DAY = 3
 OPENING_SEED_BATCH = 8
 PEN_ORDER = ('COOP', 'PASTURE')
+LATE_FILL_FROM_DAY: int | None = None
+LATE_FILL_CROP = 'CARROT'
+LATE_FILL_TILES = 12
 
 def crop_plan(day: int) -> tuple[tuple[str, int], ...]:
     """The crop list in force today: the opening one, then CROP_TILES."""
     if OPENING_CROP_TILES is not None and day <= OPENING_UNTIL_DAY:
         return tuple((tuple(pair) for pair in OPENING_CROP_TILES))
+    if LATE_FILL_FROM_DAY is not None and day >= LATE_FILL_FROM_DAY:
+        return tuple(((crop, cap + LATE_FILL_TILES if crop == LATE_FILL_CROP else cap) for crop, cap in CROP_TILES))
     return CROP_TILES
 DEMAND_MARGIN = 0.8
 FEED_CARRY = 12
@@ -503,6 +508,7 @@ FEED_PICKUP_FOR_HUNGRY = False
 HAND_CAP = 12
 CREW_TO_WORK = 0.3
 CREW_FLOOR = 4
+FEED_SKIP_IDLE = False
 HARVEST_AT = 2
 SEED_BUFFER = 10
 CROP_SEED_FLOOR = 1500.0
@@ -571,8 +577,12 @@ BAND_PLACE = 3000.0
 BAND_SERVICE = 2000.0
 BAND_WATER = 3500.0
 BAND_FERTILIZE = 1600.0
+FERT_SELL_DISCOUNT = 1.0
+SELL_FERTILIZER = True
 BAND_BUILD = 800.0
 BAND_CROP = 600.0
+STICKY_TARGET: float | None = 3.0
+_EN_ROUTE: dict[tuple[int, int], tuple[tuple[int, int], str]] = {}
 GLOBAL_ASSIGN = True
 RESCUE_SHARE = 0.0
 TENDING = ('WATER', 'FEED', 'CARE', 'PICKUP', 'NORTH', 'SOUTH', 'EAST', 'WEST')
@@ -867,7 +877,13 @@ def job_value(observation: dict[str, Any], tile: Any, x: int, y: int, inventory:
     kind = tile.get('kind')
     if 'animal' in tile:
         held = int(tile.get('yield_units', 0) or 0)
-        if not tile.get('fed_today') and int(inventory.get('WHEAT', 0)) > 0:
+        idle_day = False
+        if FEED_SKIP_IDLE and int(tile.get('consecutive_unfed', 0) or 0) == 0:
+            spec = ANIMALS.get(str(tile.get('animal', '')))
+            if spec is not None:
+                since = day + 1 - int(tile.get('placed_day', day)) - int(spec['first'])
+                idle_day = not (since >= 0 and since % max(1, int(spec['interval'])) == 0)
+        if not tile.get('fed_today') and (not idle_day) and (int(inventory.get('WHEAT', 0)) > 0):
             jobs.append((BAND_FEED + egg * days_left * 0.1, ['FEED']))
         if held > 0 and (held >= HARVEST_AT or closing):
             jobs.append((BAND_HARVEST + egg * held, ['HARVEST']))
@@ -889,7 +905,7 @@ def job_value(observation: dict[str, Any], tile: Any, x: int, y: int, inventory:
             if gain > 0:
                 grown = str(tile.get('crop', 'WHEAT'))
                 worth = gain * price_at(grown, inventory_of(observation, grown))
-                if worth > manure:
+                if worth > manure * FERT_SELL_DISCOUNT:
                     jobs.append((BAND_FERTILIZE + worth, ['FERTILIZE']))
         crop = str(tile.get('crop', ''))
         spec = CROPS.get(crop)
@@ -1103,7 +1119,12 @@ def herd_plan(observation: dict[str, Any], counts: dict[str, int], total: int) -
     scale = sum(share.values()) or 1.0
     return {a: int(round(share[a] / scale * total)) for a in share}
 SELL_TARGET = {'WHEAT': 1.55, 'TOMATO': 1.25, 'EGG': 1.05, 'CARROT': 0.85, 'MELON': 0.75, 'MILK': 0.72, 'WOOL': 0.66, 'FERTILIZER': 0.55, 'STRAWBERRY': 0.3}
+PREMIUM_SELL_CAP: int | None = 3
+PREMIUM_SELL_PHASE = False
+PREMIUM_GOODS = ('WOOL', 'STRAWBERRY', 'MILK', 'MELON')
 SELL_PATIENCE = 0.0
+MIN_SELL_PRICE: float | None = None
+ORDER_MICROSTRUCTURE = True
 SEED_CLAIM = True
 MIXED_EARLY = 6
 
@@ -1179,6 +1200,14 @@ def market_orders(observation: dict[str, Any], day: int, counts: dict[str, int],
         want = base * SELL_TARGET.get(item, 0.8) * SELL_PATIENCE * slack
         now = price_at(item, inventory_of(observation, item))
         night_tip = NIGHT_TIP_GUARD is not None and int(observation.get('step', 0)) % 24 >= 22 and (total_shed + counts.get('carried_total', 0) > NIGHT_TIP_GUARD)
+        if PREMIUM_SELL_PHASE and item in PREMIUM_GOODS and (not closing) and (total_shed < 85) and (int(observation.get('step', 0)) % 4 != 1):
+            continue
+        if PREMIUM_SELL_CAP is not None and item in PREMIUM_GOODS and (not closing) and (total_shed < 85):
+            held = min(held, PREMIUM_SELL_CAP)
+        if item == 'FERTILIZER' and (not SELL_FERTILIZER) and (not closing) and (total_shed < 85):
+            continue
+        if MIN_SELL_PRICE is not None and (not closing) and (now < MIN_SELL_PRICE) and (total_shed < 85):
+            continue
         if now >= want or closing or total_shed >= 85 or night_tip:
             orders.append(['SELL', item, held])
     hour = int(observation.get('step', 0)) % 24
@@ -1258,11 +1287,17 @@ def market_orders(observation: dict[str, Any], day: int, counts: dict[str, int],
             orders.append(['BUY_PRODUCT', 'WHEAT', min(short, 6)])
     elif counts['unfed'] > 0 and int(shed.get('WHEAT', 0)) <= 0 and (budget > RATION_FLOOR) and (len(orders) < MAX_ORDERS):
         orders.append(['BUY_PRODUCT', 'WHEAT', min(counts['unfed'], 6)])
+    if ORDER_MICROSTRUCTURE:
+        rank = {'SELL': 0, 'BUY_PRODUCT': 1}
+        orders.sort(key=lambda o: rank.get(str(o[0]), 2))
     return orders[:MAX_ORDERS]
 
 def decide(observation: dict[str, Any]) -> AgentAction:
     farm = _farm(observation)
     tiles = farm.get('tiles') or []
+    player_id = int(observation.get('player', 0))
+    if int(observation.get('step', 0)) == 0:
+        _EN_ROUTE.clear()
     if not tiles:
         return {'farmer': PASS, 'hands': [], 'market': []}
     day = int(observation.get('day', int(observation.get('step', 0)) // 24))
@@ -1337,6 +1372,10 @@ def decide(observation: dict[str, Any]) -> AgentAction:
                         score = value / (travel + 1.0) ** TRAVEL_EXPONENT
                     if not in_zone:
                         score *= ZONE_TAX
+                    if STICKY_TARGET is not None:
+                        booked = _EN_ROUTE.get((player_id, worker))
+                        if booked is not None and booked[0] == (x, y) and (booked[1] == act[0]):
+                            score *= STICKY_TARGET
                     if score > 0.0:
                         candidates.append((score, worker, (x, y), list(act), travel))
     if GLOBAL_ASSIGN:
@@ -1344,6 +1383,7 @@ def decide(observation: dict[str, Any]) -> AgentAction:
     else:
         candidates.sort(key=lambda c: (c[1], -c[0]))
     chosen: dict[int, list[Any]] = {}
+    booked_this_turn: list[tuple[int, tuple[int, int], list[Any], int]] = []
     for _score, worker, cell, act, travel in candidates:
         if worker in chosen or cell in claimed:
             continue
@@ -1354,6 +1394,7 @@ def decide(observation: dict[str, Any]) -> AgentAction:
             continue
         final = act if travel == 0 else step_toward(positions[worker], cell, act)
         chosen[worker] = final
+        booked_this_turn.append((worker, cell, list(act), travel))
         if NIGHT_TIP_GUARD is not None and act[0] == 'DROP':
             load = sum((int(v) for v in _inventory(observation, worker).values() if int(v) > 0))
             counts['tip_carried'] = counts.get('tip_carried', counts.get('carried_total', 0)) - load
@@ -1361,6 +1402,15 @@ def decide(observation: dict[str, Any]) -> AgentAction:
             claimed.add(cell)
         claim(counts, act if building else final)
     actions = [chosen.get(worker, list(PASS)) for worker in range(len(positions))]
+    if STICKY_TARGET is not None:
+        for worker, cell, act, travel in booked_this_turn:
+            if travel > 0:
+                _EN_ROUTE[player_id, worker] = (cell, act[0])
+            else:
+                _EN_ROUTE.pop((player_id, worker), None)
+        for worker in range(len(positions)):
+            if worker not in chosen:
+                _EN_ROUTE.pop((player_id, worker), None)
     return {'farmer': actions[0] if actions else list(PASS), 'hands': actions[1:], 'market': market_orders(observation, day, counts, shed, seeds, money, len(farm.get('hands') or []))}
 
 def agent(observation: dict[str, Any]) -> AgentAction:
