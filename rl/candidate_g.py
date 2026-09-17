@@ -1538,6 +1538,32 @@ BAND_WATER = 3500.0
 # (1,646 to 2,036 and 2,155) and the extra berries sell lower. Priority just
 # moves the shortage to another job. 1,600 stays.
 BAND_FERTILIZE = 1600.0     # 0 disables the job entirely
+# What a unit of manure is worth if we sell it instead of spreading it, as a
+# multiple of its market price. The application gate asks `worth > manure`,
+# so this scales the bar the crop has to clear.
+#
+# 1.0 takes the quote at face value. That over-values it: a study of 347
+# bit-exact replays of the top 69 teams found FERTILIZER is in no shop's
+# basket and is excluded from the town centre's daily consumption, so nothing
+# in the game ever consumes it -- its price decays 100 -> 74 (day 10) -> 50
+# (day 16) -> 24 (day 28) and never recovers. In the same corpus, winners
+# apply more manure than the opponent they beat (187 games to 111, sign test
+# p = 0.00001), and FERTILIZE actions fall monotonically with rank while
+# fertilizer units sold rise monotonically with rank.
+# Measured on the 38 games G played on the ladder, and the ladder's edge does
+# NOT transfer. Valuing manure at a quarter of its quote, so the farm spreads
+# far more of it: wins 23 -> 13, own score -16,510 a game (worse in 32 of 38).
+# Also refusing to sell any of it: wins 23 -> 10, own score -17,894.
+#
+# The reason is G's own bottleneck rather than the engine. Spreading manure
+# costs worker turns, and G's crew is already the binding constraint -- half
+# its turns are spent walking. The top teams gain from the manure fork because
+# their labour has slack; G pays for it out of watering and feeding, and its
+# fertilizer sales are about 12,870 coins a game of real income besides.
+FERT_SELL_DISCOUNT = 1.0
+# Whether manure is sold at all before the closing liquidation. G has treated
+# it as a second income stream since day one -- about 12,870 coins a game.
+SELL_FERTILIZER = True
 
 BAND_BUILD = 800.0
 BAND_CROP = 600.0
@@ -2093,7 +2119,7 @@ def job_value(
                 # Manure is a good with a price, not a free input. Spread
                 # it only where the crop it creates beats what the same
                 # unit would fetch sold, which is 62 to 84 at our volume.
-                if worth > manure:
+                if worth > manure * FERT_SELL_DISCOUNT:
                     jobs.append((BAND_FERTILIZE + worth, ["FERTILIZE"]))
         # Only once it is actually ripe. `_new_plant` gives a non-ongoing
         # crop `yield_units = 1` the moment it goes in the ground, so a
@@ -2562,6 +2588,9 @@ def market_orders(
                      and int(observation.get("step", 0)) % 24 >= 22
                      and total_shed + counts.get("carried_total", 0)
                      > NIGHT_TIP_GUARD)
+        if (item == "FERTILIZER" and not SELL_FERTILIZER and not closing
+                and total_shed < 85):
+            continue
         if (MIN_SELL_PRICE is not None and not closing
                 and now < MIN_SELL_PRICE and total_shed < 85):
             continue
