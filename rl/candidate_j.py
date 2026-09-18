@@ -212,7 +212,12 @@ WORK_SHARE = 0.5
 # coins would have bought the twenty strawberry seeds that agent planted.
 #
 # So the crew grows with the farm rather than ahead of it.
-HAND_RAMP = ((0, 4), (3, 6), (6, 8), (9, 10), (12, 12))
+# Measured on the panel: a crew capped at nine is worth 67,177 against our
+# 2265-rated agent where twelve gives 59,190 and seven gives 46,462. The
+# fibonacci wage is only half the story -- the tenth and eleventh hands spend
+# most of their turns walking to work somebody nearer would have done, and
+# this farm already loses 1,444 turns a game to travel.
+HAND_RAMP = ((0, 4), (3, 6), (6, 8), (10, 9))
 # Days on which the next quadrant is bought, and the cash each must leave
 # behind. Two quadrants is 75 tiles, which is what a crew of twelve can work.
 LAND_DAYS = (5, 9, 24)
