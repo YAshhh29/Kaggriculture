@@ -126,6 +126,10 @@ STRUCTURE_ACTION = {"COOP": "BUILD_COOP", "PASTURE": "BUILD_PASTURE"}
 # what this really says is that a handful of geese is right and a farm full
 # of them is not -- an egg is 50 coins where milk is 160 and wool 200, and
 # each animal costs the same three worker-turns a day to keep.
+# Long-lead crops must go in early or their last cycles fall off the end of
+# the season. See the rate calculation in make_plan.
+LONG_LEAD_DAYS = 6
+LONG_LEAD_URGENCY = 3.0
 GOOSE_SHARE = 0.12
 TOWN_SHARE = 1.0
 # Share of base price that a good the town consumes is worth over a long
@@ -568,7 +572,14 @@ def make_plan(ctx: dict[str, Any], observation: dict[str, Any], day: int,
     # Measured against a live opponent: it keeps 18 to 30 wheat tiles and
     # waters 1,099 times a game, earning 19,962 from grain; this agent kept
     # 4 to 11 tiles, watered 545 times, and earned 9,500.
-    wheat_floor = max(10, int(counts["animals"] * 1.5))
+    # In the opening the flock is small and its grain can simply be bought,
+    # while strawberry's ten-day clock cannot be bought back: a top-200 agent
+    # has twelve strawberry standing on day 6 and twenty on day 9, where this
+    # one had none until day 7 because the wheat floor took every slot.
+    if day <= LONG_LEAD_DAYS:
+        wheat_floor = max(4, counts["animals"])
+    else:
+        wheat_floor = max(10, int(counts["animals"] * 1.5))
 
     crops: list[tuple[float, str, float, float]] = []
     for crop in CROPS:
@@ -590,6 +601,16 @@ def make_plan(ctx: dict[str, Any], observation: dict[str, Any], day: int,
         rate = revenue / turns
         if crop == "WHEAT" and counts.get("crop_WHEAT", 0) < wheat_floor:
             rate *= 4.0
+        # A crop's clock starts when it is sown, and strawberry and melon
+        # both wait ten days for their first yield. Measured against a
+        # top-200 agent on identical worlds, it holds 18,474 coins on day 12
+        # where this agent holds 2,628 -- while owning MORE animals and a
+        # similar number of plants. The assets were there; the revenue was
+        # six days late, because the long-lead crops went into the ground
+        # late. Every day of delay costs a whole cycle at the end.
+        first = int(CROPS[crop]["first"])
+        if day <= LONG_LEAD_DAYS and first >= 8:
+            rate *= LONG_LEAD_URGENCY
         crops.append((rate, crop, revenue, turns / span))
     crops.sort(reverse=True)
 
