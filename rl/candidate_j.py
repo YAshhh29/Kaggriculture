@@ -203,7 +203,11 @@ OPEN_HIRES = 5
 
 # What a worker-turn is worth when the farm has nothing better to do. A job
 # whose coins per turn fall below this is not worth the walk.
-IDLE_TURN_VALUE = 4.0
+# The floor a job must clear to be worth a worker's turn. At 8 coins a turn
+# this farm passed 401 times in its first ten days -- 26% of every turn it
+# had -- while a top-200 agent passed 232 and watered 236 times to our 139.
+# An idle turn is worth nothing at all, so the floor belongs near zero.
+IDLE_TURN_VALUE = 3.0
 # Turns charged per tile of travel. Measured against two strong opponents,
 # 12 games each: at 1.0 the margin against the published top-200 agent is
 # -78,619; at 2.0 it is -60,422; at 3.5 it slips back to -63,683 and the
@@ -249,7 +253,11 @@ PLAN_SLOTS = 6
 FEED_BUY_HOURS = (1, 7, 13, 19)
 FEED_BUY_MAX = 14
 # Days of eating to keep ahead of the flock, in grain standing plus stored.
-FEED_DAYS_AHEAD = 4
+# Days of eating to keep ahead of the flock. Four days of grain for every
+# animal cost 3,183 coins over the opening where a top-200 agent spent 2,542,
+# and the difference is seed that never got bought. An animal escapes only on
+# its second missed meal, so two days of cover is the honest margin.
+FEED_DAYS_AHEAD = 2
 
 _EN_ROUTE: dict[tuple[int, int], tuple[tuple[int, int], str]] = {}
 
