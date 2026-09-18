@@ -119,7 +119,28 @@ STRUCTURE_ACTION = {"COOP": "BUILD_COOP", "PASTURE": "BUILD_PASTURE"}
 # 23,972 from milk, because three of the eight shop types eat it and the town
 # drains the book all season. Crediting the whole appetite is worth about
 # 7,400 a game; crediting twice it is worse than crediting half.
+# The largest share of the flock that may be geese. The ladder's median herd
+# is three geese to eight cows and six sheep.
+# Measured on 12 games against our 2265-rated agent: at 0.3 the own score is
+# 47,556, at 0.12 it is 54,770. The rule floors at two geese either way, so
+# what this really says is that a handful of geese is right and a farm full
+# of them is not -- an egg is 50 coins where milk is 160 and wool 200, and
+# each animal costs the same three worker-turns a day to keep.
+GOOSE_SHARE = 0.12
 TOWN_SHARE = 1.0
+# Share of base price that a good the town consumes is worth over a long
+# horizon, however flooded its book looks right now. Fertilizer is excluded:
+# it is in no shop basket and the town centre does not take it, so nothing
+# ever drains it and its price only decays.
+# Measured and OFF. Flooring a long-horizon price at 0.8 of base costs
+# 10,248 a game against our 2265-rated agent and 11,462 against the
+# published top-200 one: it stops the rival's dump misleading this agent,
+# and in exchange makes it pour goods into books that really are saturated.
+# The town's appetite belongs in the inventory (see TOWN_SHARE), not as a
+# floor under the price.
+LONG_RUN_FLOOR = 0.0
+TOWN_EATS = ("WHEAT", "CARROT", "TOMATO", "STRAWBERRY", "MELON",
+             "EGG", "MILK", "WOOL")
 # Fraction of the care bonus the crew actually manages to collect. An animal
 # cared and fed every day yields `1 + interval` per event; one that misses
 # care yields 1. The crew misses some.
@@ -375,7 +396,18 @@ def _context(observation: dict[str, Any], day: int, step: int) -> dict[str, Any]
 
 def forward(ctx: dict[str, Any], item: str, already: float) -> float:
     inv = ctx["inv"][item] + already - ctx["credit"][item]
-    return max(1.0, price_at(item, inv))
+    price = max(1.0, price_at(item, inv))
+    # A rival's dump is a dent in today's book; the town's appetite is the
+    # shape of the whole season. Simulating 200 seasons of pure town drain
+    # with nobody selling ends with milk at 311, strawberry at 293, melon at
+    # 280 and wool at 246 -- every consumed good well above its base. So a
+    # price used to judge something that will produce for days on end is
+    # floored at a share of base, or a flooded book talks this agent out of
+    # the very goods the town is about to pay most for.
+    if LONG_RUN_FLOOR > 0 and item in TOWN_EATS:
+        base = float(MARKET_PARAMS.get(item, {}).get("base", 1))
+        price = max(price, base * LONG_RUN_FLOOR)
+    return price
 
 
 def forward_batch(ctx: dict[str, Any], item: str, already: float,
@@ -993,7 +1025,18 @@ def market_orders(ctx: dict[str, Any], observation: dict[str, Any],
         room = (counts["empty_coops"] if house == "COOP"
                 else counts["empty_pastures"])
         cost = float(ANIMALS[best]["cost"])
-        if room > int(shed.get(best, 0)) and budget >= cost + 120:
+        # A goose costs 300 where a sheep costs 500, so on a thin purse the
+        # cheap animal is the only one affordable at the moment of asking --
+        # and this farm filled itself with nineteen geese while its own
+        # ranking said sheep, then cow, then goose. Per animal-day a goose
+        # returns about 50 coins, a cow 80 and a sheep 66, and the top of the
+        # ladder keeps a median of three geese to eight cows and six sheep.
+        # So the flock is capped by kind: save the coins instead.
+        herd_kind = counts.get("have_" + best, 0) + int(shed.get(best, 0))
+        share_cap = int(plan.get("herd_cap", 20) * GOOSE_SHARE)
+        if best == "GOOSE" and herd_kind >= max(2, share_cap):
+            pass
+        elif room > int(shed.get(best, 0)) and budget >= cost + 120:
             fixed.append(["BUY_ANIMAL", best, 1])
             budget -= cost
 
