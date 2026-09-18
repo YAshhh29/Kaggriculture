@@ -130,6 +130,23 @@ STRUCTURE_ACTION = {"COOP": "BUILD_COOP", "PASTURE": "BUILD_PASTURE"}
 # the season. See the rate calculation in make_plan.
 LONG_LEAD_DAYS = 6
 LONG_LEAD_URGENCY = 3.0
+# What a meal and a grooming are worth, as multipliers on their own returns.
+#
+# A fed animal that is also cared for accrues a bonus that lands as an extra
+# unit on its next production day, so the pair roughly doubles what the
+# animal makes. Over a full game this agent fed 147 times where a top-200
+# agent fed 297 and cared 405, and sold 37 units of milk to that agent's 147.
+FEED_WORTH = 1.0
+CARE_WORTH = 0.9
+# Turns charged against a new tile for every future visit it will need,
+# per tile of distance from the shed. Keeps the farm compact.
+# Measured and OFF: charging a new tile for the travel its whole life will
+# cost drops the own score from 55,473 to 42,156 and shrinks the herd from
+# 16-22 head to 8-14. It makes the farm compact by making it small.
+SHED_PULL = 0.0
+# How far a worker will travel for a job. The board is ten tiles across, so
+# anything above nine is no limit at all.
+JOB_RADIUS = 99
 GOOSE_SHARE = 0.12
 TOWN_SHARE = 1.0
 # Which goods each shop type consumes, from the engine's SHOPS table.
@@ -182,7 +199,7 @@ WORK_SHARE = 0.5
 # coins would have bought the twenty strawberry seeds that agent planted.
 #
 # So the crew grows with the farm rather than ahead of it.
-HAND_RAMP = ((0, 4), (3, 5), (6, 7), (9, 9), (12, 11))
+HAND_RAMP = ((0, 4), (3, 6), (6, 8), (9, 10), (12, 12))
 # Days on which the next quadrant is bought, and the cash each must leave
 # behind. Two quadrants is 75 tiles, which is what a crew of twelve can work.
 LAND_DAYS = (5, 9, 24)
@@ -207,7 +224,7 @@ OPEN_HIRES = 5
 # this farm passed 401 times in its first ten days -- 26% of every turn it
 # had -- while a top-200 agent passed 232 and watered 236 times to our 139.
 # An idle turn is worth nothing at all, so the floor belongs near zero.
-IDLE_TURN_VALUE = 3.0
+IDLE_TURN_VALUE = 0.5
 # Turns charged per tile of travel. Measured against two strong opponents,
 # 12 games each: at 1.0 the margin against the published top-200 agent is
 # -78,619; at 2.0 it is -60,422; at 3.5 it slips back to -63,683 and the
@@ -314,6 +331,11 @@ def shed_tiles() -> list[tuple[int, int]]:
 
 
 _SHED_SET = set(shed_tiles())
+
+
+def shed_distance(x: int, y: int) -> int:
+    """Steps from this tile to the nearest shed-access tile."""
+    return min(abs(x - sx) + abs(y - sy) for sx, sy in shed_tiles())
 
 
 def _on_shed(x: int, y: int) -> bool:
@@ -849,8 +871,17 @@ def job_offers(ctx: dict[str, Any], plan: dict[str, Any], tile: Any,
                 continue
             # Sowing books its own watering turn: the tile dies tonight
             # without it.
-            jobs.append((revenue, 2.0 + crop_turns(crop, day) * 0.25,
-                         ["PLANT", crop]))
+            # Where a tile is matters as much as what is on it. A crop is
+            # visited again every day it is watered and once more when it is
+            # harvested, and each of those visits is a walk from the shed and
+            # back. This farm walks 4,298 turns a game where a top-200 agent
+            # walks 2,854, and the difference is roughly the whole gap
+            # between them. So a distant tile carries the travel its whole
+            # life will cost, not just the step needed to sow it.
+            visits = 1.0 + crop_turns(crop, day)
+            lifetime_walk = SHED_PULL * visits * min(shed_distance(x, y), 6)
+            jobs.append((revenue, 2.0 + crop_turns(crop, day) * 0.25
+                         + lifetime_walk, ["PLANT", crop]))
             break
         return jobs
 
@@ -871,8 +902,9 @@ def job_offers(ctx: dict[str, Any], plan: dict[str, Any], tile: Any,
                 jobs.append((max(stream, price * 4.0), 1.0, ["FEED"]))
             elif not closing:
                 # Otherwise a meal buys the care bonus and tomorrow's safety.
-                jobs.append((price * (1.0 + interval * CARE_RATE) * 0.5
-                             - spot.get("WHEAT", 25.0), 1.0, ["FEED"]))
+                jobs.append(((price * (1.0 + interval * CARE_RATE) * 0.5
+                              - spot.get("WHEAT", 25.0)) * FEED_WORTH,
+                             1.0, ["FEED"]))
         if held > 0:
             jobs.append((price * held, 1.0, ["HARVEST"]))
         if tile.get("fertilizer_available") and not closing:
@@ -883,7 +915,7 @@ def job_offers(ctx: dict[str, Any], plan: dict[str, Any], tile: Any,
                 and not closing):
             # A cared, fed day accrues one extra unit on the next production
             # day, which is worth a unit of the product.
-            jobs.append((price * 0.9, 1.0, ["CARE"]))
+            jobs.append((price * CARE_WORTH, 1.0, ["CARE"]))
     elif kind in ("COOP", "PASTURE"):
         for animal, house in ANIMAL_HOME.items():
             if house == kind and int(inventory.get(animal, 0)) > 0:
@@ -1242,6 +1274,12 @@ def decide(observation: dict[str, Any]) -> AgentAction:
                     if (held is not None and held[0] == (x, y)
                             and held[1] == action[0]):
                         rate *= COMMIT_BONUS
+                    # A worker that will not cross the farm for a job leaves
+                    # that job to whoever is already near it. Walking is 4,298
+                    # turns a game here against a top-200 agent's 2,854, and
+                    # every one of those turns is a watering not done.
+                    if travel > JOB_RADIUS and action[0] not in ("DROP",):
+                        continue
                     if rate > IDLE_TURN_VALUE:
                         candidates.append((rate, worker, (x, y), list(action)))
 
