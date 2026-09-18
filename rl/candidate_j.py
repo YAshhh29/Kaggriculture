@@ -132,6 +132,17 @@ LONG_LEAD_DAYS = 6
 LONG_LEAD_URGENCY = 3.0
 GOOSE_SHARE = 0.12
 TOWN_SHARE = 1.0
+# Which goods each shop type consumes, from the engine's SHOPS table.
+SHOP_BASKET = {
+    "BAKERY": ("EGG", "WHEAT"),
+    "PIZZA_SHOP": ("MILK", "TOMATO", "WHEAT"),
+    "BRUNCH_SPOT": ("EGG", "WHEAT", "STRAWBERRY"),
+    "YARN_STORE": ("WOOL",),
+    "ICE_CREAM_SHOP": ("STRAWBERRY", "MILK", "WHEAT"),
+    "PET_CAFE": ("CARROT",),
+    "SMOOTHIE_SHOP": ("STRAWBERRY", "MILK"),
+    "FARMERS_MARKET": ("WHEAT", "CARROT", "TOMATO", "STRAWBERRY"),
+}
 # Share of base price that a good the town consumes is worth over a long
 # horizon, however flooded its book looks right now. Fertilizer is excluded:
 # it is in no shop basket and the town centre does not take it, so nothing
@@ -163,7 +174,15 @@ OPENING_MIX = {"COW": 2, "SHEEP": 2, "GOOSE": 1}
 WORK_SHARE = 0.5
 # Crew size by day. Ten hands cost 143 coins for the day and are wiped every
 # night, so this is a rental, not an investment; the limit is daylight.
-HAND_RAMP = ((0, 5), (2, 7), (4, 9), (6, 11))
+# Hands are hired daily on a fibonacci curve that resets each night: the
+# first five cost 1+1+2+3+5 = 12 coins for the day, the ninth alone costs 34
+# and the eleventh 89. Measured over the first ten days of a live game, this
+# agent paid 1,194 coins in wages where a top-200 agent paid 223 -- it was
+# buying a full crew before it had ground for them to work, while the same
+# coins would have bought the twenty strawberry seeds that agent planted.
+#
+# So the crew grows with the farm rather than ahead of it.
+HAND_RAMP = ((0, 4), (3, 5), (6, 7), (9, 9), (12, 11))
 # Days on which the next quadrant is bought, and the cash each must leave
 # behind. Two quadrants is 75 tiles, which is what a crew of twelve can work.
 LAND_DAYS = (5, 9, 24)
@@ -392,10 +411,46 @@ def _context(observation: dict[str, Any], day: int, step: int) -> dict[str, Any]
     demand = remaining_demand(observation)
     credit = {item: float(demand.get(item, 0.0)) * TOWN_SHARE
               for item in PRODUCTS}
-    return {"inv": inv, "credit": credit,
+    town = observation.get("town") or {}
+    shops = tuple(town.get("unlocked_shops") or ())
+    return {"inv": inv, "credit": credit, "shops": shops,
             "spot": {item: max(1.0, price_at(item, inv[item]))
                      for item in PRODUCTS},
             "pipeline": {item: 0.0 for item in PRODUCTS}}
+
+
+def town_rate(ctx: dict[str, Any], item: str) -> float:
+    """Units a day the town takes off this book, from the shops it has drawn.
+
+    `_town_consume` runs every four steps: each unlocked shop removes one of
+    every product in its basket, or two when the shop sells a single product,
+    and every twenty four steps the town centre removes one of every product
+    except fertilizer. So a good in three shop baskets is drained eighteen
+    units a day while one in none is drained a single unit, and that rate is
+    the floor under its price for the rest of the season.
+    """
+    rate = 0.0
+    for shop in ctx.get("shops", ()):  # shop instances, with repeats
+        basket = SHOP_BASKET.get(shop, ())
+        if item in basket:
+            rate += (2.0 if len(basket) == 1 else 1.0) * (TURNS / 4.0)
+    if item != "FERTILIZER":
+        rate += 1.0
+    return rate
+
+
+def arrival_price(ctx: dict[str, Any], item: str, already: float,
+                  days_ahead: float) -> float:
+    """What a unit will fetch on the day it actually reaches the market.
+
+    Pricing tomorrow's harvest at today's book is what let a rival's dumping
+    talk this agent out of milk while that rival went on earning 24,000 from
+    it. Between now and delivery the town keeps eating, so the book this
+    produce will meet is today's less what the town will have taken.
+    """
+    drained = town_rate(ctx, item) * max(0.0, days_ahead)
+    inv = ctx["inv"][item] + already - drained
+    return max(1.0, price_at(item, inv))
 
 
 def forward(ctx: dict[str, Any], item: str, already: float) -> float:
@@ -592,7 +647,15 @@ def make_plan(ctx: dict[str, Any], observation: dict[str, Any], day: int,
         units = crop_units(crop, day)
         if units <= 0:
             continue
+        # A crop is sold on the day it ripens, not today, and the town eats
+        # the book in between. Pricing the batch at its arrival is what lets
+        # a ten-day crop compete honestly with a five-day one.
+        lead = max(0.0, float(CROPS[crop]["first"]))
+        arrival = arrival_price(ctx, crop, ctx["pipeline"][crop], lead)
+        spot_now = forward(ctx, crop, ctx["pipeline"][crop])
         revenue = forward_batch(ctx, crop, ctx["pipeline"][crop], units)
+        if spot_now > 0:
+            revenue *= max(0.5, min(2.5, arrival / spot_now))
         revenue -= float(CROPS[crop]["seed"])
         turns = crop_turns(crop, day)
         span = max(1, crop_span(crop, day))
@@ -1080,7 +1143,14 @@ def market_orders(ctx: dict[str, Any], observation: dict[str, Any],
         # from day 8, while the agent beating us reaches eleven head and
         # 10,774 coins by day 10 where we sit on five head and 69 coins.
         # So the early purse keeps enough back for the next animal.
-        floor = 420.0 if day <= OPENING_DAYS + 3 else 100.0
+        # Seed is the investment, not the luxury: a top-200 agent spends 2,000
+        # coins on strawberry seed inside the first six days and still holds
+        # 1,388 on day 6, while this one bought a single seed and sat on its
+        # purse. Long-lead seed is worth going thin for, because its clock
+        # cannot be bought back later.
+        long_lead = int(CROPS[crop]["first"]) >= 8
+        floor = 120.0 if (long_lead and day <= LONG_LEAD_DAYS) else (
+            420.0 if day <= OPENING_DAYS + 3 else 100.0)
         want = min(8, room, int(max(0.0, budget - floor) // price))
         if int(seeds.get(crop, 0)) < 6 and want > 0:
             fixed.append(["BUY_SEED", crop, want])
