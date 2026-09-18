@@ -179,8 +179,16 @@ PLAN_SLOTS = 6
 # day. The skeleton bought eight units every turn it had the cash, which at
 # thirty head is 5,700 coins a day and was the whole reason it never banked
 # anything.
-FEED_BUY_HOURS = (1, 13)
-FEED_BUY_MAX = 10
+# Feed. An animal eats one wheat a day and escapes after two missed meals,
+# and a wheat tile takes days to yield, so the opening flock lives on bought
+# grain. Measured over the first ten days of a live game: this agent bought
+# nine units and starved its five animals, while the agent beating it bought
+# a hundred and eleven. Grain is the cheapest thing on the board at about
+# thirty coins, against three hundred for the animal it keeps alive.
+FEED_BUY_HOURS = (1, 7, 13, 19)
+FEED_BUY_MAX = 14
+# Days of eating to keep ahead of the flock, in grain standing plus stored.
+FEED_DAYS_AHEAD = 4
 
 _EN_ROUTE: dict[tuple[int, int], tuple[tuple[int, int], str]] = {}
 
@@ -440,6 +448,35 @@ def hands_wanted(day: int) -> int:
     return target
 
 
+def sellable_tiles(ctx: dict[str, Any], crop: str, day: int) -> int:
+    """How many tiles of this crop the book can actually absorb.
+
+    Pricing a tile at today's quote is how this agent came to plant twenty
+    four melons by day ten: with an empty pipeline the curve still quotes
+    near base, so each melon looks like the best tile on the board, and by
+    the time the forward price notices, a hundred and forty four units are
+    on their way into a book that reaches the floor at a hundred and fifty
+    eight. Melon is in no shop's basket at all -- only the town centre's one
+    unit a day supports it.
+
+    So the cap comes from the curve itself: units that can be sold before
+    the price falls below half of base, divided by what a tile yields, and
+    halved again because the opponent sells into the same book.
+    """
+    spec = CROPS.get(crop)
+    if spec is None:
+        return 0
+    base = float(MARKET_PARAMS.get(crop, {}).get("base", 1))
+    inv = ctx["inv"][crop]
+    room = 0
+    for n in range(0, 400, 4):
+        if price_at(crop, inv + n) < base * 0.5:
+            break
+        room = n
+    per_tile = max(1.0, float(crop_units(crop, day) or spec["max_yield"]))
+    return max(1, int(room / per_tile / 2))
+
+
 def make_plan(ctx: dict[str, Any], observation: dict[str, Any], day: int,
               step: int, counts: dict[str, Any], shed: dict[str, int],
               money: float) -> dict[str, Any]:
@@ -457,8 +494,29 @@ def make_plan(ctx: dict[str, Any], observation: dict[str, Any], day: int,
     # Crops, best coins per worker-turn first. A crop that cannot reach its
     # first yield before the close is worth nothing, and `crop_units` already
     # returns zero for it.
+    # Wheat gets a floor, and it is the one crop that does.
+    #
+    # Priced as a single tile, wheat looks poor: 130 coins against a
+    # strawberry's 694. That comparison is wrong twice over. A wheat tile is
+    # harvested and resown every five days while a strawberry holds its
+    # ground for twenty, so per tile-day they are close; wheat's glut curve
+    # is logarithmic, so its book absorbs thousands of units where
+    # strawberry's floors after sixty two; and wheat is the only crop that
+    # is also an input, since every animal eats one a day and starves in two.
+    #
+    # Measured against a live opponent: it keeps 18 to 30 wheat tiles and
+    # waters 1,099 times a game, earning 19,962 from grain; this agent kept
+    # 4 to 11 tiles, watered 545 times, and earned 9,500.
+    wheat_floor = max(10, int(counts["animals"] * 1.5))
+
     crops: list[tuple[float, str, float, float]] = []
     for crop in CROPS:
+        # Ground already committed to this crop counts against its book.
+        cap = sellable_tiles(ctx, crop, day)
+        if crop == "WHEAT":
+            cap = max(cap, wheat_floor)
+        if counts.get("crop_" + crop, 0) >= cap:
+            continue
         units = crop_units(crop, day)
         if units <= 0:
             continue
@@ -468,7 +526,10 @@ def make_plan(ctx: dict[str, Any], observation: dict[str, Any], day: int,
         span = max(1, crop_span(crop, day))
         if revenue <= 0:
             continue
-        crops.append((revenue / turns, crop, revenue, turns / span))
+        rate = revenue / turns
+        if crop == "WHEAT" and counts.get("crop_WHEAT", 0) < wheat_floor:
+            rate *= 4.0
+        crops.append((rate, crop, revenue, turns / span))
     crops.sort(reverse=True)
 
     # Species, the same way. A beast is its product plus a unit of manure a
@@ -847,10 +908,10 @@ def market_orders(ctx: dict[str, Any], observation: dict[str, Any],
     # is how the skeleton spent five thousand coins a day on grain.
     if hour in FEED_BUY_HOURS and counts["animals"] > 0:
         standing = counts["wheat"] * 4 + int(shed.get("WHEAT", 0))
-        short = counts["animals"] * 3 - standing
-        if short > 0 and budget > 200 and total_shed < SHED_CAP - 10:
+        short = counts["animals"] * FEED_DAYS_AHEAD - standing
+        if short > 0 and budget > 90 and total_shed < SHED_CAP - 10:
             want = min(short, FEED_BUY_MAX,
-                       int((budget - 150) // max(1.0, ctx["spot"]["WHEAT"])))
+                       int((budget - 60) // max(1.0, ctx["spot"]["WHEAT"])))
             if want > 0:
                 buys.append(["BUY_PRODUCT", "WHEAT", want])
                 budget -= ctx["spot"]["WHEAT"] * want
