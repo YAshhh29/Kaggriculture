@@ -149,7 +149,13 @@ OPEN_HIRES = 5
 # What a worker-turn is worth when the farm has nothing better to do. A job
 # whose coins per turn fall below this is not worth the walk.
 IDLE_TURN_VALUE = 4.0
-WALK_COST = 1.0
+# Turns charged per tile of travel. Measured against two strong opponents,
+# 12 games each: at 1.0 the margin against the published top-200 agent is
+# -78,619; at 2.0 it is -60,422; at 3.5 it slips back to -63,683 and the
+# score against our own 2265-rated agent falls hard. Walking is not merely
+# time lost, it is a watering not done, and pricing it at two turns a tile
+# keeps the crew on the work in front of it.
+WALK_COST = 2.0
 # How much a worker prefers the job it is already walking to. Measured on our
 # other agent: without it, 17.1% of travelling turns ended in a change of
 # destination, and committing was worth +5,142 coins a game.
@@ -474,6 +480,11 @@ def sellable_tiles(ctx: dict[str, Any], crop: str, day: int) -> int:
             break
         room = n
     per_tile = max(1.0, float(crop_units(crop, day) or spec["max_yield"]))
+    # Halved for the rival, who sells into the same book. Loosening this to a
+    # third of base and dropping the halving was measured and is worse: own
+    # score fell from 36,020 to 30,104 against one strong opponent and from
+    # 41,465 to 26,589 against another. Filling ground with a crop whose
+    # price has already collapsed is worse than leaving the tile bare.
     return max(1, int(room / per_tile / 2))
 
 
@@ -675,7 +686,13 @@ def job_offers(ctx: dict[str, Any], plan: dict[str, Any], tile: Any,
             # A pen is free but for the turn, and an animal cannot be bought
             # without one standing empty. Keep one ahead of the queue and no
             # more: an empty pen is a tile that grows nothing.
-            if room <= waiting:
+            herd = (counts["animals"]
+                    + sum(int(shed.get(a, 0)) for a in ANIMAL_HOME))
+            pens_total = (counts["empty_coops"] + counts["empty_pastures"]
+                          + counts["animals"])
+            if (room <= waiting
+                    and herd < plan.get("herd_cap", 20)
+                    and pens_total < plan.get("herd_cap", 20) + 1):
                 jobs.append((plan["beast_value"][best] * 0.7, 1.0,
                              [STRUCTURE_ACTION[house]]))
         for _rate, crop, revenue, daily in plan["crops"]:
@@ -960,14 +977,19 @@ def market_orders(ctx: dict[str, Any], observation: dict[str, Any],
     # Seed for ground the crew can actually sow and water.
     sown = sum(int(v) for v in seeds.values())
     room = max(0, counts["free"] + counts["weeds"] - sown)
-    for _rate, crop, _revenue, daily in plan["crops"][:2]:
+    # Seed is the cheapest thing that turns an idle tile into a crop: ten
+    # coins for wheat, twenty for carrot. Buying four at a time from the top
+    # two crops only, and only while fewer than three sit unsown, held this
+    # farm to 33 planted tiles where the agent beating it had 58 -- it
+    # commits 63 seed purchases in the first ten days against our 23.
+    for _rate, crop, _revenue, daily in plan["crops"][:3]:
         if len(fixed) >= PLAN_SLOTS - 1 or room <= 0:
             break
         if plan["labour_left"] < daily:
             break
         price = float(CROPS[crop]["seed"])
-        want = min(4, room, int(max(0.0, budget - 100) // price))
-        if int(seeds.get(crop, 0)) < 3 and want > 0:
+        want = min(8, room, int(max(0.0, budget - 100) // price))
+        if int(seeds.get(crop, 0)) < 6 and want > 0:
             fixed.append(["BUY_SEED", crop, want])
             budget -= price * want
             room -= want
