@@ -108,7 +108,18 @@ STRUCTURE_ACTION = {"COOP": "BUILD_COOP", "PASTURE": "BUILD_PASTURE"}
 # of every book it eats from, so a good with two shops behind it can absorb
 # far more than its static glut depth -- which is the whole reason the herd
 # mix has to be read from `town.unlocked_shops` rather than fixed.
-TOWN_SHARE = 0.5
+# How much of the town's remaining appetite to credit against the book when
+# pricing something that does not exist yet.
+#
+# At 0.5 this agent was myopic in the one way that matters. Playing a strong
+# opponent, its milk sales collapsed from 317 units at 203 coins to 27 units
+# at 118, and it filled the pasture with geese instead -- 248 eggs at 55 --
+# because the rival's dumping had flooded the milk book and the forward price
+# said milk was finished. It was not: the same game saw that rival earn
+# 23,972 from milk, because three of the eight shop types eat it and the town
+# drains the book all season. Crediting the whole appetite is worth about
+# 7,400 a game; crediting twice it is worse than crediting half.
+TOWN_SHARE = 1.0
 # Fraction of the care bonus the crew actually manages to collect. An animal
 # cared and fed every day yields `1 + interval` per event; one that misses
 # care yields 1. The crew misses some.
@@ -479,6 +490,13 @@ def sellable_tiles(ctx: dict[str, Any], crop: str, day: int) -> int:
         if price_at(crop, inv + n) < base * 0.5:
             break
         room = n
+    # The curve alone is only half the story: the town keeps eating, so a
+    # good its shops consume has its book drained all season and can absorb
+    # far more than one snapshot of the price suggests. Strawberry sits in
+    # three of the eight shop baskets, and the agent beating us keeps 33
+    # tiles of it and sells 48,209 where this cap allowed 7 tiles and left
+    # twenty tiles of ground bare.
+    room += max(0.0, float(ctx["credit"].get(crop, 0.0)))
     per_tile = max(1.0, float(crop_units(crop, day) or spec["max_yield"]))
     # Halved for the rival, who sells into the same book. Loosening this to a
     # third of base and dropping the halving was measured and is worse: own
@@ -585,7 +603,12 @@ def make_plan(ctx: dict[str, Any], observation: dict[str, Any], day: int,
     # a wheat tile takes days to yield while an animal starts paying at once.
     # Counting only standing grain left the farm on one animal at day 10
     # against an opponent's ten, a hole it never climbed out of.
-    purchasable = money / 90.0 if day <= 12 else money / 240.0
+    # Grain can be bought again tomorrow out of what the farm earns, so the
+    # purse is a flow, not a stock. Treating it as a stock stalled the herd
+    # between days 5 and 10 -- five animals where the agent beating us had
+    # eleven -- and an animal bought on day 5 banks twice the production
+    # cycles of one bought on day 12.
+    purchasable = money / 45.0 if day <= 12 else money / 240.0
     grain_cap = (counts.get("wheat", 0) * 4 + int(counts.get("shed_wheat", 0))
                  + int(purchasable))
     herd_cap = max(4, min(tend_cap, grain_cap, 20))
@@ -988,7 +1011,13 @@ def market_orders(ctx: dict[str, Any], observation: dict[str, Any],
         if plan["labour_left"] < daily:
             break
         price = float(CROPS[crop]["seed"])
-        want = min(8, room, int(max(0.0, budget - 100) // price))
+        # In the opening, seed competes with livestock for the same purse and
+        # loses: a sheep bought on day 2 sells wool from day 6 and a cow milk
+        # from day 8, while the agent beating us reaches eleven head and
+        # 10,774 coins by day 10 where we sit on five head and 69 coins.
+        # So the early purse keeps enough back for the next animal.
+        floor = 420.0 if day <= OPENING_DAYS + 3 else 100.0
+        want = min(8, room, int(max(0.0, budget - floor) // price))
         if int(seeds.get(crop, 0)) < 6 and want > 0:
             fixed.append(["BUY_SEED", crop, want])
             budget -= price * want
