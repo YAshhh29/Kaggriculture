@@ -128,7 +128,17 @@ STRUCTURE_ACTION = {"COOP": "BUILD_COOP", "PASTURE": "BUILD_PASTURE"}
 # each animal costs the same three worker-turns a day to keep.
 # Long-lead crops must go in early or their last cycles fall off the end of
 # the season. See the rate calculation in make_plan.
-LONG_LEAD_DAYS = 6
+# Measured and OFF (-1 disables both the eased wheat floor and the long-lead
+# urgency below). Easing the wheat floor in the opening looked right -- a
+# top-200 agent has twelve strawberry standing on day 6 where J had none --
+# and against that one agent it did help. Against the other three it was a
+# disaster: the own score fell from 59,190 to 27,248 against our 2265-rated
+# agent and from 60,003 to 27,640 against another published one.
+#
+# The lesson is about method, not wheat: this was tuned against a single
+# opponent, and a single opponent is not a ladder. Every change is now judged
+# on the whole strong panel.
+LONG_LEAD_DAYS = -1
 LONG_LEAD_URGENCY = 3.0
 # What a meal and a grooming are worth, as multipliers on their own returns.
 #
@@ -147,6 +157,9 @@ SHED_PULL = 0.0
 # How far a worker will travel for a job. The board is ten tiles across, so
 # anything above nine is no limit at all.
 JOB_RADIUS = 99
+# Whether a crop's revenue is scaled by the book it will meet on the day it
+# ripens rather than today's book.
+ARRIVAL_PRICING = True
 GOOSE_SHARE = 0.12
 TOWN_SHARE = 1.0
 # Which goods each shop type consumes, from the engine's SHOPS table.
@@ -684,7 +697,7 @@ def make_plan(ctx: dict[str, Any], observation: dict[str, Any], day: int,
         arrival = arrival_price(ctx, crop, ctx["pipeline"][crop], lead)
         spot_now = forward(ctx, crop, ctx["pipeline"][crop])
         revenue = forward_batch(ctx, crop, ctx["pipeline"][crop], units)
-        if spot_now > 0:
+        if ARRIVAL_PRICING and spot_now > 0:
             revenue *= max(0.5, min(2.5, arrival / spot_now))
         revenue -= float(CROPS[crop]["seed"])
         turns = crop_turns(crop, day)
