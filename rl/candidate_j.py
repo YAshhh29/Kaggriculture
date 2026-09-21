@@ -142,6 +142,17 @@ STRUCTURE_ACTION = {"COOP": "BUILD_COOP", "PASTURE": "BUILD_PASTURE"}
 # The lesson is about method, not wheat: this was tuned against a single
 # opponent, and a single opponent is not a ladder. Every change is now judged
 # on the whole strong panel.
+# Re-tested after the watering fix made a strawberry worth seven units
+# instead of four, on the theory that the long-lead crops had become worth
+# hurrying. They have not. Over three tapes it looked like the best result
+# of the session -- 7.49 units a strawberry against their 6.73, 6.00 a
+# melon against their 4.36, scores level at 76,187 to 76,583 -- and over
+# sixty games it won nothing at all: median 65,484 against 75,786, and the
+# field's own median ROSE to 125,773. Hurrying the ten-day crops starves
+# the opening of the cash that buys everything else.
+#
+# Three tapes are not a sample. Use the small runs for counting waterings
+# and care days; never for a score.
 LONG_LEAD_DAYS = -1
 LONG_LEAD_URGENCY = 3.0
 # What a meal and a grooming are worth, as multipliers on their own returns.
@@ -371,9 +382,30 @@ STAY_BONUS = 1.0
 WINDOW_WATER = 1.0
 # The least a watering is worth to a hand that would otherwise pass. Zero
 # leaves the crew idle.
+#
+# Measured and left alone: in-window waterings per wheat stayed at 1.01 and
+# 1.11 with a floor of 6 and of 20, against a top-200 team's 2.10. The
+# hands are not idle for want of a watering to do -- the plants standing
+# are already watered. There are simply not enough plant-days, because a
+# wheat is pulled at three days old.
 WATER_FLOOR = 0.0
+# How much wider the tile cap runs for a crop that yields over many days
+# rather than all at once. One leaves it level with the rest.
+#
+# Measured and left alone: at 1.8 and at 3.0 the farm sowed exactly the
+# same 56 strawberries, to the unit. The cap was never what held the crop
+# back, so widening it buys nothing.
+ONGOING_CAP_BOOST = 1.0
 # Units of feed credited to each standing wheat plant when deciding whether
 # to buy grain. Four is the whole mature plant; the shed holds none of it.
+#
+# Measured and left alone, though the diagnosis was right: a top-200 team
+# buys 872 units of grain over four games where this farm buys 238, which
+# is how their wheat reaches 3.72 units a plant and ours 2.21. But cutting
+# the credit to buy the difference loses -- 44,814 at zero credit, 60,037
+# at one, against 85,010 -- because their grain bill is funded by selling
+# the matured crop at 36 a unit, and this farm sells wool, not wheat. The
+# grain economy does not transplant.
 WHEAT_STANDING_CREDIT = 4.0
 # Whether a hungry flock may pull unfinished wheat when the shed is empty.
 EARLY_WHEAT = True
@@ -777,7 +809,13 @@ def sellable_tiles(ctx: dict[str, Any], crop: str, day: int) -> int:
     # score fell from 36,020 to 30,104 against one strong opponent and from
     # 41,465 to 26,589 against another. Filling ground with a crop whose
     # price has already collapsed is worse than leaving the tile bare.
-    return max(1, int(room / per_tile / 2))
+    # An ongoing crop delivers its units across ten days, not in one lot,
+    # and the town drains the book the whole while. Strawberry is the single
+    # largest hole in this farm's book -- 386 units sold against a top-200
+    # team's 858, from 74 plants against their 116 -- and it is the best
+    # coin on the board at about 190 a unit.
+    share = 2.0 / ONGOING_CAP_BOOST if spec["ongoing"] else 2.0
+    return max(1, int(room / per_tile / share))
 
 
 def make_plan(ctx: dict[str, Any], observation: dict[str, Any], day: int,
