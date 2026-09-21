@@ -396,6 +396,21 @@ WATER_FLOOR = 0.0
 # same 56 strawberries, to the unit. The cap was never what held the crop
 # back, so widening it buys nothing.
 ONGOING_CAP_BOOST = 1.0
+# How many crops deep the seed order goes each turn. Sixty games: median
+# 75,786 at three and 80,730 at four, ahead in every band and by 12,484
+# against ranks 51-120. Five measures the same as four, so only the fourth
+# place was ever doing anything, and it costs an order slot for nothing.
+#
+# It does NOT work the way it was reached for. The fourth place was meant
+# to let strawberry past wheat, which holds a slot almost permanently
+# because WHEAT_BOOST fires whenever standing grain is below the floor and
+# harvesting a wheat tile guarantees that. Strawberry sowings went DOWN,
+# 37 to 32. What the fourth crop does is spread the same purse thinner:
+# 690 plants sown where three slots sowed 749, and every one of them better
+# tended -- wheat at 2.51 units a plant against 2.21, 1.24 in-window
+# waterings against 1.13, 0.48 of manure against 0.39. This farm has more
+# labour than jobs, so fewer tiles tended properly beat more tiles neglected.
+SEED_SLOTS = 4
 # Units of feed credited to each standing wheat plant when deciding whether
 # to buy grain. Four is the whole mature plant; the shed holds none of it.
 #
@@ -1510,7 +1525,14 @@ def market_orders(ctx: dict[str, Any], observation: dict[str, Any],
     # two crops only, and only while fewer than three sit unsown, held this
     # farm to 33 planted tiles where the agent beating it had 58 -- it
     # commits 63 seed purchases in the first ten days against our 23.
-    for _rate, crop, _revenue, daily in plan["crops"][:3]:
+    # Only the top few crops by rate are ever offered seed, and wheat holds
+    # one of those places almost permanently -- WHEAT_BOOST multiplies it by
+    # four whenever standing grain is below the floor, which harvesting a
+    # wheat tile guarantees. Strawberry, the best coin on the board at about
+    # 190 a unit, falls off the end of a three-deep queue: this farm buys 80
+    # strawberry seeds over four games against a top-200 team's 117, and
+    # sows 74 of the 80. The seed is the constraint, not the ground.
+    for _rate, crop, _revenue, daily in plan["crops"][:SEED_SLOTS]:
         if len(fixed) >= PLAN_SLOTS - 1 or room <= 0:
             break
         if plan["labour_left"] < daily:
