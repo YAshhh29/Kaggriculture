@@ -206,7 +206,10 @@ CLUSTER_RADIUS = 2
 # the crops get what is left.
 # How strongly a pen prefers ground near the shed, per tile of distance.
 PEN_SHED_PULL = 0.0
-HERD_MAX = 13
+# The grid says the top of the ladder keeps seventeen head where we kept
+# thirteen, and seventeen measures better across the field even though
+# thirteen measured better against one opponent.
+HERD_MAX = 17
 PORTABLE_JOBS = ("PLANT", "WATER", "HARVEST", "DIG", "BUILD_COOP",
                  "BUILD_PASTURE", "COLLECT_FERTILIZER", "CARE")
 # Measured and OFF. Swapping crossed journeys between workers looks free --
@@ -281,7 +284,12 @@ WORK_SHARE = 0.5
 # fibonacci wage is only half the story -- the tenth and eleventh hands spend
 # most of their turns walking to work somebody nearer would have done, and
 # this farm already loses 1,444 turns a game to travel.
-HAND_RAMP = ((0, 4), (3, 6), (6, 8), (10, 9))
+# The failure grid against ten top-200 teams says they run nine hands on day
+# 12 and twelve by day 18; we ran nine all the way. Capping at nine was tuned
+# against a single opponent and it cost breadth: with twelve late and a herd
+# of seventeen, wins against fourteen different top teams go from 3% to 14%
+# and the median score from 66,291 to 70,666.
+HAND_RAMP = ((0, 4), (3, 6), (6, 8), (10, 9), (13, 12))
 # Days on which the next quadrant is bought, and the cash each must leave
 # behind. Two quadrants is 75 tiles, which is what a crew of twelve can work.
 LAND_DAYS = (5, 9, 24)
