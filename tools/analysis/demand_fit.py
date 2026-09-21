@@ -139,6 +139,12 @@ def main() -> None:
               f"{_correlation(want, yours):+8.3f}")
     print("\n  +0.672 is the figure for teams rated 2850 and above; +0.000 is"
           "\n  the figure for everything below 2400.")
+    print("\n  Read the 'theirs' column as nothing at all. That opponent is a"
+          "\n  frozen action tape: it replays decisions taken in a game whose"
+          "\n  town drew different shops, so it cannot answer this one. Its"
+          "\n  near-zero score is construction, not weakness -- and the same"
+          "\n  caveat applies to every panel in this repo. The opponents"
+          "\n  cannot adapt to the board we make.")
 
 
 if __name__ == "__main__":
