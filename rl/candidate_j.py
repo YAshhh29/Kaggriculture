@@ -314,7 +314,15 @@ WORK_SHARE = 0.5
 HAND_RAMP = ((0, 4), (3, 6), (6, 8), (10, 9), (13, 12))
 # Days on which the next quadrant is bought, and the cash each must leave
 # behind. Two quadrants is 75 tiles, which is what a crew of twelve can work.
-LAND_DAYS = (5, 9, 24)
+#
+# The third quadrant is never bought. It costs 4,000 coins on day 24 for
+# ground this farm cannot work: it already idles 8.2% of its turns, has
+# more labour than jobs, and works the same rings of the board as a top-200
+# team that buys two quadrants and stops. Over four games the land bill was
+# 28,000 against their 12,000 -- a fifth of the whole deficit, spent on
+# acres. Dropping it is worth 3,464 a game over sixty, and gains against
+# every band of the ladder.
+LAND_DAYS = (5, 9, 99)
 LAND_PRICES = (1000.0, 2000.0, 4000.0)
 LAND_RESERVE = 400.0
 # The opening basket, in the shape the top-ten family runs: the field's own
@@ -361,6 +369,12 @@ STAY_BONUS = 1.0
 # day comes round, so paying more for a job that no longer exists only robs
 # the richer work that does.
 WINDOW_WATER = 1.0
+# The least a watering is worth to a hand that would otherwise pass. Zero
+# leaves the crew idle.
+WATER_FLOOR = 0.0
+# Units of feed credited to each standing wheat plant when deciding whether
+# to buy grain. Four is the whole mature plant; the shed holds none of it.
+WHEAT_STANDING_CREDIT = 4.0
 # Whether a hungry flock may pull unfinished wheat when the shed is empty.
 EARLY_WHEAT = True
 # Whether two workers may work the same tile in one turn, each on a
@@ -1192,7 +1206,14 @@ def job_offers(ctx: dict[str, Any], plan: dict[str, Any], tile: Any,
             # An established one survives a day, so ongoing crops are watered
             # every other day and the labour halves.
             rescue = tile_worth * WATER_RESCUE if dry >= 1 else 0.0
-            value = max(gain, rescue)
+            # A floor, so a hand with nothing better waters rather than
+            # stands. The farm idles 8.2% of its turns -- 479 of them in
+            # hours 16 to 19 alone, against a top-200 team's 139 -- while
+            # its wheat takes 1.11 waterings inside the window that pays
+            # against their 2.10. A skipped window day is a unit that never
+            # exists, and the turn it saved was spent standing still. Set
+            # below every real job, this only ever converts a pass.
+            value = max(gain, rescue, WATER_FLOOR)
             if value > 0:
                 jobs.append((value, 1.0, ["WATER"]))
         if (FERTILISE_ONGOING and int(inventory.get("FERTILIZER", 0)) > 0
@@ -1376,7 +1397,13 @@ def market_orders(ctx: dict[str, Any], observation: dict[str, Any],
     # obligation no other good has, but buying it every turn the purse allows
     # is how the skeleton spent five thousand coins a day on grain.
     if hour in FEED_BUY_HOURS and counts["animals"] > 0:
-        standing = counts["wheat"] * 4 + int(shed.get("WHEAT", 0))
+        # Grain in the field is not grain in the shed. Crediting four units
+        # for every standing plant stops the farm buying feed, so the flock
+        # goes hungry, the shed runs dry, and the emergency branch pulls
+        # that same crop at two units where six were coming. Deeper cover
+        # cannot fix it, because the credit grows with the crop.
+        standing = (counts["wheat"] * WHEAT_STANDING_CREDIT
+                    + int(shed.get("WHEAT", 0)))
         short = counts["animals"] * FEED_DAYS_AHEAD - standing
         if short > 0 and budget > 90 and total_shed < SHED_CAP - 10:
             want = min(short, FEED_BUY_MAX,

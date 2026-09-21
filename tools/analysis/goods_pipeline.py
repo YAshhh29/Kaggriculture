@@ -57,7 +57,8 @@ def _held(observation: dict[str, Any]) -> Counter:
 
 
 _HOOKED = ("_commit_unit", "_drop_inventories_to_shed",
-           "_process_market", "_end_of_day", "_apply_unit_action")
+           "_process_market", "_end_of_day", "_apply_unit_action",
+           "_do_hire", "_do_buy_land")
 _PRISTINE: dict | None = None
 
 
@@ -74,10 +75,23 @@ class Ledger:
         self.dumped: Counter = Counter()
         self.grown: Counter = Counter()
         self.fed = 0
+        self.hired = 0
+        self.hire_cost = 0.0
+        self.land = 0
+        self.land_cost = 0.0
         self.cared = 0
         self.planted: Counter = Counter()
         self.seats: dict[int, int] = {}
+        self.farms: dict[int, int] = {}
         self.other: "Ledger | None" = None
+
+    def _book_farm(self, key: int) -> "Ledger | None":
+        seat = self.farms.get(key)
+        if seat == 0:
+            return self
+        if seat == 1:
+            return self.other
+        return None
 
     def _book(self, key: int) -> "Ledger | None":
         seat = self.seats.get(key)
@@ -155,6 +169,27 @@ class Ledger:
                         break
             return result
 
+        raw_hire = engine._do_hire
+        raw_land = engine._do_buy_land
+
+        def hire(farm, private, board_size, mult=1):
+            before = float(farm["money"])
+            result = raw_hire(farm, private, board_size, mult)
+            book = self._book_farm(id(farm))
+            if book is not None and float(farm["money"]) < before:
+                book.hired += 1
+                book.hire_cost += before - float(farm["money"])
+            return result
+
+        def land(farm, board_size):
+            before = float(farm["money"])
+            result = raw_land(farm, board_size)
+            book = self._book_farm(id(farm))
+            if book is not None and float(farm["money"]) < before:
+                book.land += 1
+                book.land_cost += before - float(farm["money"])
+            return result
+
         raw_unit = engine._apply_unit_action
 
         def unit(farm, private, idx, action, board_size, day, turns_per_day,
@@ -214,6 +249,8 @@ class Ledger:
             # state here, so the seats are re-learnt every step.
             self.seats = {id(s.observation.private): seat
                           for seat, s in enumerate(state)}
+            self.farms = {id(farm): seat for seat, farm
+                          in enumerate(state[0].observation.farms)}
 
         def market(state, env):
             register(state)
@@ -223,6 +260,8 @@ class Ledger:
             register(state)
             return raw_endday(state, env, day)
 
+        engine._do_hire = hire
+        engine._do_buy_land = land
         engine._apply_unit_action = unit
         engine._commit_unit = commit
         engine._drop_inventories_to_shed = drop
@@ -302,6 +341,15 @@ def run(spec: str, tape: Path) -> dict[str, Any]:
         "their_sold": ledger.other.sold,
         "their_revenue": ledger.other.revenue,
         "their_refused": ledger.other.refused,
+        "bought": ledger.bought,
+        "spent": ledger.spent,
+        "their_bought": ledger.other.bought,
+        "their_spent": ledger.other.spent,
+        "wages": ledger.hire_cost, "hired": ledger.hired,
+        "acres": ledger.land_cost,
+        "their_wages": ledger.other.hire_cost,
+        "their_hired": ledger.other.hired,
+        "their_acres": ledger.other.land_cost,
     }
 
 
@@ -386,6 +434,49 @@ def main() -> None:
     for crop in sorted(set(sown) | set(their_sown),
                        key=lambda c: -their_sown.get(c, 0)):
         print(f"    {crop:12s} {sown.get(crop, 0):5d} {their_sown.get(crop, 0):7d}")
+
+    # What the farm paid out. Revenue less spending is the whole score, and
+    # a farm can out-sell its rival and still finish behind it.
+    bought: Counter = Counter()
+    their_bought: Counter = Counter()
+    for row in rows:
+        bought.update(row["bought"])
+        their_bought.update(row["their_bought"])
+    spent = sum(r["spent"] for r in rows)
+    their_spent = sum(r["their_spent"] for r in rows)
+    print(f"\n  paid out at the market: {spent:,.0f} against "
+          f"{their_spent:,.0f}\n")
+    print(f"    {'purchase':24s} {'ours':>7s} {'theirs':>7s}")
+    for what in sorted(set(bought) | set(their_bought),
+                       key=lambda k: -bought.get(k, 0)):
+        print(f"    {what:24s} {bought.get(what, 0):7d} "
+              f"{their_bought.get(what, 0):7d}")
+
+    wages = sum(r["wages"] for r in rows)
+    their_wages = sum(r["their_wages"] for r in rows)
+    acres = sum(r["acres"] for r in rows)
+    their_acres = sum(r["their_acres"] for r in rows)
+    revenue_ours = sum(sum(r["by_revenue"].values()) for r in rows)
+    revenue_theirs = sum(sum(r["their_revenue"].values()) for r in rows)
+    ours_end = sum(r["ours"] for r in rows)
+    theirs_end = sum(r["theirs"] for r in rows)
+    print(f"\n  the whole book, {len(rows)} games:\n")
+    print(f"    {'':24s} {'ours':>12s} {'theirs':>12s}")
+    for label, a, b in (
+            ("sold into the market", revenue_ours, revenue_theirs),
+            ("bought from it", -spent, -their_spent),
+            ("wages", -wages, -their_wages),
+            ("land", -acres, -their_acres)):
+        print(f"    {label:24s} {a:12,.0f} {b:12,.0f}")
+    left_ours = revenue_ours - spent - wages - acres
+    left_theirs = revenue_theirs - their_spent - their_wages - their_acres
+    print(f"    {'-' * 24} {'-' * 12} {'-' * 12}")
+    print(f"    {'adds up to':24s} {left_ours:12,.0f} {left_theirs:12,.0f}")
+    print(f"    {'actually finished with':24s} {ours_end:12,.0f} "
+          f"{theirs_end:12,.0f}")
+    hands = sum(r["hired"] for r in rows) / max(1, len(rows) * 30)
+    their_hands = sum(r["their_hired"] for r in rows) / max(1, len(rows) * 30)
+    print(f"\n  hands hired a day: {hands:.1f} against {their_hands:.1f}")
 
     # The same ledger for the seat opposite, so the mix is judged against a
     # top-200 team playing the same seed rather than against an opinion.
