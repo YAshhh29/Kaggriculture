@@ -348,6 +348,28 @@ WALK_COST = 2.0
 # other agent: without it, 17.1% of travelling turns ended in a change of
 # destination, and committing was worth +5,142 coins a game.
 COMMIT_BONUS = 2.5
+# How much a worker prefers a job on the tile it is already standing on,
+# over and above the travel it saves. One is no preference at all.
+STAY_BONUS = 1.0
+# How much an in-window watering is worth over its face value. One is the
+# honest price.
+#
+# Measured and left alone: the watering is not being outbid, it is not being
+# offered. At two and a half times face the waterings per wheat went 1.11 to
+# 1.22, at five times to 1.36, against a top-200 team's 2.10 -- and the score
+# fell 67,551 to 64,924 to 59,208. The plant is gone before its second window
+# day comes round, so paying more for a job that no longer exists only robs
+# the richer work that does.
+WINDOW_WATER = 1.0
+# Whether a hungry flock may pull unfinished wheat when the shed is empty.
+EARLY_WHEAT = True
+# Whether two workers may work the same tile in one turn, each on a
+# different job. The engine allows it -- and it loses. Measured: passes
+# barely moved, 8.4% to 8.2%, so tile contention was never what idled the
+# crew, and the score fell from 95,434 to 64,451 over the same three games
+# because the pairs conflict. One hand harvests a plant while the other is
+# still walking over to water it, and the watering lands on bare ground.
+SHARE_TILES = False
 # A plant dies the night it is sown unless it is watered, and an established
 # one dies after two dry days. Rescue watering is priced at this share of the
 # tile's whole remaining crop. Pricing it at the full value once collapsed an
@@ -1134,7 +1156,17 @@ def job_offers(ctx: dict[str, Any], plan: dict[str, Any], tile: Any,
                     step_up = (2 if int(tile.get("fertilized_until_day", -1))
                                >= day else 1)
                     room = max(0, int(spec["max_yield"]) - units)
-                    gain = price * min(step_up, room)
+                    # The engine adds the unit here and nowhere else:
+                    #     if window_start <= age_days <= max_yield_day:
+                    #         tile["yield_units"] += 2 if manured else 1
+                    # One turn, one unit, so the honest price is the unit.
+                    # But a wheat unit is 37 coins against a melon's 262, so
+                    # the auction leaves grain unwatered while hands stand
+                    # idle: this farm waters a wheat 1.11 times inside its
+                    # window against a top-200 team's 2.10, and pulls 2.24
+                    # units a plant against their 3.72. Its melons, worth
+                    # servicing, get 5.00 waterings and beat them outright.
+                    gain = price * min(step_up, room) * WINDOW_WATER
             else:
                 # `_daily_refresh_plants` settles the day at dusk, and the
                 # manure bonus is conditional on the water:
@@ -1204,7 +1236,12 @@ def job_offers(ctx: dict[str, Any], plan: dict[str, Any], tile: Any,
             ripe = age >= int(spec["max_day"]) or done or closing
             if spec["ongoing"] or ripe:
                 jobs.append((price * units, 1.0, ["HARVEST"]))
-            elif counts["at_risk"] > 0 and crop == "WHEAT" and not shed.get("WHEAT"):
+            elif (EARLY_WHEAT and counts["at_risk"] > 0 and crop == "WHEAT"
+                  and not shed.get("WHEAT")):
+                # Grain for a starving animal, taken from a plant that is
+                # not finished. It costs everything the plant had left: a
+                # wheat pulled at two carries two units where four days and
+                # two waterings would have made six.
                 jobs.append((price * units, 1.0, ["HARVEST"]))
     elif kind == "WEED":
         if not closing and plan["crops"]:
@@ -1527,7 +1564,22 @@ def decide(observation: dict[str, Any]) -> AgentAction:
                     rate = coins / max(0.5, turns + travel * WALK_COST)
                     if (held is not None and held[0] == (x, y)
                             and held[1] == action[0]):
+                        # Still applies on arrival: `_EN_ROUTE` keeps the
+                        # target until the booking loop clears it, so the
+                        # turn a worker reaches its tile is the turn the
+                        # commitment matters most.
                         rate *= COMMIT_BONUS
+                    if travel == 0:
+                        # Finish what is under your feet. A top-200 team
+                        # does 51% of its jobs without taking a step and
+                        # this farm manages 37.9%, on a board where the work
+                        # sits at the same distance from the shed for both
+                        # -- mean ring 2.53 against 2.66. The geography is
+                        # not the difference; re-auctioning every hand
+                        # against the whole board every turn is, because a
+                        # hand that has just fed an animal gets pulled away
+                        # before it cares for it.
+                        rate *= STAY_BONUS
                     # A worker that will not cross the farm for a job leaves
                     # that job to whoever is already near it. Walking is 4,298
                     # turns a game here against a top-200 agent's 2,854, and
@@ -1539,11 +1591,16 @@ def decide(observation: dict[str, Any]) -> AgentAction:
 
     candidates.sort(key=lambda c: -c[0])
     chosen: dict[int, list[Any]] = {}
-    claimed: set[tuple[int, int]] = set()
+    claimed: set[tuple[tuple[int, int], str]] = set()
     booked: list[tuple[int, tuple[int, int], list[Any], int]] = []
     planted_now: dict[str, int] = {}
     for _rate, worker, cell, action in candidates:
-        if worker in chosen or cell in claimed:
+        # One worker per tile per turn. The engine would allow two, each on
+        # a different job, and SHARE_TILES tries exactly that -- see the
+        # constant for why it loses. The crew is not idle for want of ground
+        # to stand on: passes barely moved when the tile was freed.
+        key = (cell, action[0]) if SHARE_TILES else (cell, "")
+        if worker in chosen or key in claimed:
             continue
         if action[0] == "PLANT":
             # Atomic PLANT validation: if the turn's requests for a crop
@@ -1559,7 +1616,7 @@ def decide(observation: dict[str, Any]) -> AgentAction:
                           else step_toward(positions[worker], cell, action))
         booked.append((worker, cell, action, travel))
         if action[0] not in ("DROP", "PICKUP"):
-            claimed.add(cell)
+            claimed.add(key)
         # Claim the consumable this job will spend, so two workers do not
         # both plan to place the last animal or spend the last grain.
         if action[0] == "PICKUP" and len(action) > 2:
