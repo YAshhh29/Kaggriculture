@@ -172,6 +172,20 @@ FERTILISE_ONGOING = True
 # against wheat's 23, and wheat was taking 145 sowings to strawberry's 13 --
 # and the measurement disagreed. Grain underpins the flock, and the flock is
 # where this farm's money is.
+# Whether a crop past its book depth is dropped from the plan or merely
+# discounted. See the cap in make_plan.
+# Inventory the crop cap measures depth from. 10000 is the market's
+# equilibrium; 0 means use the live book instead.
+# Measured and reverted to the live book (0). Anchoring the cap at the
+# market's equilibrium, so a rival's dumping cannot shrink our planting,
+# costs 9,500 a game against our 2265-rated agent and 9,600 against the
+# published one. Letting a saturated crop plant anyway at a quarter of its
+# rate is worse still (58,136 against 68,722). The bare ground this agent
+# leaves is not the disease: planting into a flooded book is worse than
+# planting nothing, and the real problem is upstream of both.
+CAP_ANCHOR = 0.0
+CAP_IS_SOFT = False
+OVER_CAP_RATE = 0.25
 WHEAT_URGENT = 1.0
 WHEAT_BOOST = 4.0
 GOOSE_SHARE = 0.12
@@ -637,7 +651,12 @@ def sellable_tiles(ctx: dict[str, Any], crop: str, day: int) -> int:
     if spec is None:
         return 0
     base = float(MARKET_PARAMS.get(crop, {}).get("base", 1))
-    inv = ctx["inv"][crop]
+    # Measure the book's depth from equilibrium, not from where a rival has
+    # pushed it today. Reading the live inventory made this agent cede the
+    # market: the opponent floods a book, our cap shrinks, we plant less, and
+    # that opponent goes on selling 1,723 units to our 826 at the same prices
+    # because the town keeps draining what it dumped.
+    inv = CAP_ANCHOR if CAP_ANCHOR > 0 else ctx["inv"][crop]
     room = 0
     for n in range(0, 400, 4):
         if price_at(crop, inv + n) < base * 0.5:
@@ -704,7 +723,8 @@ def make_plan(ctx: dict[str, Any], observation: dict[str, Any], day: int,
         cap = sellable_tiles(ctx, crop, day)
         if crop == "WHEAT":
             cap = max(cap, wheat_floor)
-        if counts.get("crop_" + crop, 0) >= cap:
+        over_cap = counts.get("crop_" + crop, 0) >= cap
+        if over_cap and not CAP_IS_SOFT:
             continue
         units = crop_units(crop, day)
         if units <= 0:
@@ -724,6 +744,13 @@ def make_plan(ctx: dict[str, Any], observation: dict[str, Any], day: int,
         if revenue <= 0:
             continue
         rate = revenue / turns
+        # A crop past its book's depth is not worthless, it is merely cheap,
+        # and an empty tile earns nothing at all. This agent stood at 27
+        # crops with 13 bare tiles and 10 weeds on day 20, holding nine
+        # strawberry seeds, because the cap struck the crop out of the plan
+        # entirely instead of letting its own low price decide.
+        if CAP_IS_SOFT and over_cap:
+            rate *= OVER_CAP_RATE
         # Wheat is boosted only while the flock is genuinely short of grain,
         # not merely below its target. Harvesting a wheat tile destroys it,
         # so standing wheat is below the floor on almost every turn, and a
