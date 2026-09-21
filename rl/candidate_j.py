@@ -183,6 +183,24 @@ FERTILISE_ONGOING = True
 # rate is worse still (58,136 against 68,722). The bare ground this agent
 # leaves is not the disease: planting into a flooded book is worse than
 # planting nothing, and the real problem is upstream of both.
+# What a sowing is charged in the per-turn auction. The future waterings are
+# already reserved in the labour budget, so weighting them here charges them
+# twice.
+# Passes of pairwise swaps over the turn's assignments, trading crossed
+# journeys for shorter ones. 0 disables.
+# Jobs that any worker can do, whatever it happens to be carrying.
+PORTABLE_JOBS = ("PLANT", "WATER", "HARVEST", "DIG", "BUILD_COOP",
+                 "BUILD_PASTURE", "COLLECT_FERTILIZER", "CARE")
+# Measured and OFF. Swapping crossed journeys between workers looks free --
+# the same jobs get done, by nearer hands -- and costs 28,000 a game against
+# our 2265-rated agent while gaining 9,500 against the published one. Two
+# reasons, both real: a swapped job may need what the other worker is
+# carrying (fixed by PORTABLE_JOBS above, and it still loses), and a worker
+# already walking toward a tile loses the commitment that is worth 5,142 a
+# game. Shorter journeys are not the same thing as better ones.
+SWAP_PASSES = 0
+PLANT_TURN_COST = 2.0
+PLANT_FUTURE_WEIGHT = 0.25
 CAP_ANCHOR = 0.0
 CAP_IS_SOFT = False
 OVER_CAP_RATE = 0.25
@@ -947,7 +965,14 @@ def job_offers(ctx: dict[str, Any], plan: dict[str, Any], tile: Any,
             # life will cost, not just the step needed to sow it.
             visits = 1.0 + crop_turns(crop, day)
             lifetime_walk = SHED_PULL * visits * min(shed_distance(x, y), 6)
-            jobs.append((revenue, 2.0 + crop_turns(crop, day) * 0.25
+            # A sowing costs one turn now, plus the watering it books for
+            # today. The waterings and the harvest it will want later are
+            # already held back in the labour budget (`labour_used`), so
+            # charging them here as well priced expansion out of the auction
+            # entirely: on day 14 this farm had seven strawberry standing
+            # against a cap of fifty eight, free ground, and seed in hand.
+            jobs.append((revenue, PLANT_TURN_COST
+                         + crop_turns(crop, day) * PLANT_FUTURE_WEIGHT
                          + lifetime_walk, ["PLANT", crop]))
             break
         return jobs
@@ -1412,6 +1437,38 @@ def decide(observation: dict[str, Any]) -> AgentAction:
                    else "empty_pastures")
             counts[key] = max(0, counts[key] - 1)
             counts["animals"] += 1
+
+    # Greedy by rate crosses the farm: the best job goes to whoever values it
+    # most, not to whoever stands nearest, so two workers can walk past each
+    # other to reach each other's tiles. This farm spends 4,298 turns a game
+    # walking where a top-200 agent spends 2,854. One pass of pairwise swaps
+    # fixes the crossings without changing which jobs get done.
+    if SWAP_PASSES > 0 and len(booked) > 1:
+        for _ in range(SWAP_PASSES):
+            improved = False
+            for a in range(len(booked)):
+                for b in range(a + 1, len(booked)):
+                    wa, ca, aa, ta = booked[a]
+                    wb, cb, ab, tb = booked[b]
+                    # Only jobs that need nothing in hand may change owner.
+                    # FEED needs the worker to be carrying wheat, PLACE an
+                    # animal, FERTILIZE manure, DROP its own load -- handing
+                    # those to another worker makes them silent no-ops.
+                    if (aa[0] not in PORTABLE_JOBS
+                            or ab[0] not in PORTABLE_JOBS):
+                        continue
+                    now = ta + tb
+                    swapped = (distance(positions[wa], cb)
+                               + distance(positions[wb], ca))
+                    if swapped < now:
+                        booked[a] = (wa, cb, ab, distance(positions[wa], cb))
+                        booked[b] = (wb, ca, aa, distance(positions[wb], ca))
+                        improved = True
+            if not improved:
+                break
+        for worker, cell, action, travel in booked:
+            chosen[worker] = (action if travel == 0
+                              else step_toward(positions[worker], cell, action))
 
     for worker, cell, action, travel in booked:
         if travel > 0:
