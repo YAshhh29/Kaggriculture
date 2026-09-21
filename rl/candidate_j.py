@@ -79,6 +79,7 @@ Each was read in `kaggriculture.py`, not assumed.
 
 from __future__ import annotations
 
+import sys
 from typing import Any
 
 from core.routing import distance, step_toward
@@ -87,6 +88,9 @@ from rl.economics import ANIMALS, CROPS
 from rl.market import MARKET_PARAMS, inventory_of, price_at
 from rl.runtime import AgentAction
 
+# Set once if `decide` ever raises, so the traceback is printed a
+# single time rather than 720 times.
+_FAILED = False
 PASS: list[str] = ["PASS"]
 BOARD = 10
 TURNS = 24
@@ -163,6 +167,24 @@ ARRIVAL_PRICING = True
 # Whether manure is spread on ongoing crops as well as the once-harvested
 # ones. See the FERTILIZE branch in job_offers.
 FERTILISE_ONGOING = True
+# A meal is priced at the units it actually cashes -- on a production night,
+# one plus every care day banked since the last event; on any other night,
+# the single care day it lets us bank -- and then discounted by this share,
+# which stands for the harvest turn behind each unit and the grain itself.
+#
+# Measured: pricing the production night at the full `(1 + pending) * price`
+# with no discount made a sheep's meal worth 848 coins for one turn, which
+# beat every crop in the auction. The flock's own numbers improved -- care
+# days wasted fell 214 to 42, production rose 36% -- and the score fell
+# 70,593 to 63,378 over sixty games, because the labour came out of the
+# fields. The units were real; they were not worth what they displaced.
+FEED_PRODUCTION_SHARE = 0.5
+# What a watering is worth on an ongoing crop's production day, as a share of
+# one unit. The engine only pays the manure bonus on a day the tile was also
+# watered, so this and FERTILISE_ONGOING are a pair: fertilising without
+# watering buys nothing at all. Setting it to zero restores the behaviour
+# that priced an established strawberry's watering as pure upkeep.
+WATER_ONGOING = 1.0
 # Wheat's rate is multiplied while standing wheat is below this share of the
 # floor, so grain is secured without starving every other crop of ground.
 # Measured, and the blanket boost wins. Narrowing it so wheat is only urgent
@@ -1033,13 +1055,46 @@ def job_offers(ctx: dict[str, Any], plan: dict[str, Any], tile: Any,
         price = spot.get(product, 1.0)
         interval = max(1, int(ANIMALS[animal]["interval"]))
         stream = plan["beast_value"].get(animal, 0.0)
+        # What the engine will settle on this animal tonight. `placed_day`,
+        # `pending_care_bonus` and `yield_units` are all in the public tile,
+        # so none of this has to be guessed.
+        placed = int(tile.get("placed_day", 0) or 0)
+        first = int(ANIMALS[animal]["first"])
+        max_held = int(ANIMALS[animal]["max_held"])
+        pending = int(tile.get("pending_care_bonus", 0) or 0)
+        since = (day + 1) - placed - first
+        yields_tonight = since >= 0 and since % interval == 0
+        room = max(0, max_held - held)
         if not tile.get("fed_today") and int(inventory.get("WHEAT", 0)) > 0:
             if int(tile.get("consecutive_unfed", 0) or 0) >= 1:
                 # It escapes tonight if this is missed: the whole stream.
                 jobs.append((max(stream, price * 4.0), 1.0, ["FEED"]))
+            elif yields_tonight and FEED_PRODUCTION_SHARE > 0.0:
+                # Tonight the engine cashes every care day banked since the
+                # last event -- and only if the animal was fed:
+                #
+                #     bonus = tile.pop("pending_care_bonus", 0)
+                #             if tile["fed_today"] else 0
+                #     ...
+                #     tile["pending_care_bonus"] = 0
+                #
+                # so an unfed production night pays nothing and wipes the
+                # lot anyway. For a sheep with three care days banked that
+                # is four fleeces, not the 0.5-of-a-unit the flat estimate
+                # below charged for it. This agent threw away 214 care days
+                # in three games where a top-200 team threw away 42.
+                gain = min(room, 1 + pending) * price
+                jobs.append(((gain * FEED_PRODUCTION_SHARE
+                              - spot.get("WHEAT", 25.0)) * FEED_WORTH,
+                             1.0, ["FEED"]))
             elif not closing:
-                # Otherwise a meal buys the care bonus and tomorrow's safety.
-                jobs.append(((price * (1.0 + interval * CARE_RATE) * 0.5
+                # Any other night the meal yields nothing by itself. All it
+                # buys is the right to bank one care day, worth a unit at
+                # the next event, plus another day away from escaping. The
+                # flat estimate this replaced charged a sheep 1.55 units for
+                # that, which is why the flock was eating turns the crops
+                # needed.
+                jobs.append(((price * FEED_PRODUCTION_SHARE
                               - spot.get("WHEAT", 25.0)) * FEED_WORTH,
                              1.0, ["FEED"]))
         if held > 0:
@@ -1080,6 +1135,27 @@ def job_offers(ctx: dict[str, Any], plan: dict[str, Any], tile: Any,
                                >= day else 1)
                     room = max(0, int(spec["max_yield"]) - units)
                     gain = price * min(step_up, room)
+            else:
+                # `_daily_refresh_plants` settles the day at dusk, and the
+                # manure bonus is conditional on the water:
+                #
+                #     fertilized = was_watered and fertilized_until_day >= day
+                #     yield_units += 2 if fertilized else 1
+                #
+                # so on a production day, watering an established strawberry
+                # is not upkeep -- it is the second unit, about 170 coins for
+                # one turn. Pricing it at zero is why this agent sowed 66
+                # strawberries to a top-200 team's 116 and harvested 219 to
+                # their 858: it was paying for the manure and then letting
+                # the bonus lapse for want of a watering can.
+                since = (day + 1) - planted - int(spec["first"])
+                interval = max(1, int(spec["interval"]))
+                count = since // interval + 1
+                room = max(0, int(spec["max_yield"]) - units)
+                if (since >= 0 and since % interval == 0 and room > 0
+                        and count <= int(spec["max_yield"])
+                        and int(tile.get("fertilized_until_day", -1)) >= day):
+                    gain = price * WATER_ONGOING
             # An unwatered plant dies tonight if it is already one day dry.
             # An established one survives a day, so ongoing crops are watered
             # every other day and the labour halves.
@@ -1567,6 +1643,18 @@ def agent(observation: dict[str, Any], configuration: Any = None) -> AgentAction
     try:
         return decide(observation)
     except Exception:
+        # On the ladder a raised exception forfeits the game, so the farm
+        # stands still instead. Locally that is worse than a crash: a single
+        # mistyped key turns this into an agent that passes for thirty days
+        # and quietly scores 1,278, which is exactly how one packaged
+        # submission went out dead. So the first failure is printed once, to
+        # stderr, where every local run will show it, and the ladder never
+        # sees a raise either way.
+        global _FAILED
+        if not _FAILED:
+            _FAILED = True
+            import traceback
+            traceback.print_exc(file=sys.stderr)
         farm = _farm(observation)
         hands = len(farm.get("hands") or [])
         return {"farmer": list(PASS),
