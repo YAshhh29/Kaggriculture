@@ -189,6 +189,22 @@ FERTILISE_ONGOING = True
 # Passes of pairwise swaps over the turn's assignments, trading crossed
 # journeys for shorter ones. 0 disables.
 # Jobs that any worker can do, whatever it happens to be carrying.
+# How much a tile beside existing work is preferred over one standing alone,
+# and how far "beside" reaches.
+# Measured and OFF: preferring tiles beside existing work costs 24,600 a game
+# against our 2265-rated agent. Clustering the farm shrinks it, the same way
+# every other repair aimed at walking has.
+CLUSTER_BONUS = 0.0
+CLUSTER_RADIUS = 2
+# The most head this farm will keep. Each one costs about three worker-turns
+# a day, and this farm delivers about 84 work turns a day in practice: at
+# twenty head the flock eats three quarters of everything the crew does.
+# Measured across two strong opponents, 12 games each (own scores summed):
+# 13 head gives 127,488, twenty gives 120,486 and sixteen 119,457. Each
+# animal costs about three worker-turns a day and this farm delivers about 84
+# a day, so twenty head eat three quarters of everything the crew does and
+# the crops get what is left.
+HERD_MAX = 13
 PORTABLE_JOBS = ("PLANT", "WATER", "HARVEST", "DIG", "BUILD_COOP",
                  "BUILD_PASTURE", "COLLECT_FERTILIZER", "CARE")
 # Measured and OFF. Swapping crossed journeys between workers looks free --
@@ -842,7 +858,7 @@ def make_plan(ctx: dict[str, Any], observation: dict[str, Any], day: int,
     purchasable = money / 45.0 if day <= 12 else money / 240.0
     grain_cap = (counts.get("wheat", 0) * 4 + int(counts.get("shed_wheat", 0))
                  + int(purchasable))
-    herd_cap = max(4, min(tend_cap, grain_cap, 20))
+    herd_cap = max(4, min(tend_cap, grain_cap, HERD_MAX))
 
     return {
         "hands_target": hands_target,
@@ -971,7 +987,9 @@ def job_offers(ctx: dict[str, Any], plan: dict[str, Any], tile: Any,
             # charging them here as well priced expansion out of the auction
             # entirely: on day 14 this farm had seven strawberry standing
             # against a cap of fifty eight, free ground, and seed in hand.
-            jobs.append((revenue, PLANT_TURN_COST
+            near = counts.get("density", {}).get((x, y), 0)
+            clustered = 1.0 + CLUSTER_BONUS * min(near, 8) / 8.0
+            jobs.append((revenue * clustered, PLANT_TURN_COST
                          + crop_turns(crop, day) * PLANT_FUTURE_WEIGHT
                          + lifetime_walk, ["PLANT", crop]))
             break
@@ -1360,6 +1378,24 @@ def decide(observation: dict[str, Any]) -> AgentAction:
         item: min(24.0, max(8.0, units))
         for item, units in _rival_standing(observation).items()}
     counts = census(ctx, tiles, day, shed)
+    # Where the farm's work already is. A tile sown beside four others will
+    # be watered by a worker who is already standing there; one sown alone in
+    # a far corner books a journey every day of its life. This farm spends
+    # 57% of its turns walking where a top-200 agent spends 42%, and the
+    # difference is roughly the production it is missing.
+    density: dict[tuple[int, int], int] = {}
+    if CLUSTER_BONUS > 0:
+        active = [(x, y)
+                  for y, row in enumerate(tiles)
+                  for x, t in enumerate(row)
+                  if isinstance(t, dict)
+                  and (t.get("kind") == "PLANT" or "animal" in t)]
+        for y in range(len(tiles)):
+            for x in range(len(tiles[y])):
+                near = sum(1 for ax, ay in active
+                           if abs(ax - x) + abs(ay - y) <= CLUSTER_RADIUS)
+                density[(x, y)] = near
+    counts["density"] = density
     counts["money"] = money
     plan = make_plan(ctx, observation, day, step, counts, shed, money)
     # Manure is worth the greater of what it fetches and what it adds to a
