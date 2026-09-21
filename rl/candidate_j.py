@@ -253,6 +253,12 @@ PORTABLE_JOBS = ("PLANT", "WATER", "HARVEST", "DIG", "BUILD_COOP",
 # already walking toward a tile loses the commitment that is worth 5,142 a
 # game. Shorter journeys are not the same thing as better ones.
 SWAP_PASSES = 0
+# Re-tested after the seed queue showed that 690 well-tended tiles beat
+# 749 neglected ones, on the idea that charging more for a sowing would
+# take the thought further. It does not generalise: sixty games, median
+# 80,730 at two, 79,340 at three and a half, 75,473 at five -- and five
+# won nothing at all. The seed queue's gain came from how the purse was
+# split between crops, not from sowing less eagerly.
 PLANT_TURN_COST = 2.0
 PLANT_FUTURE_WEIGHT = 0.25
 CAP_ANCHOR = 0.0
@@ -322,6 +328,12 @@ WORK_SHARE = 0.5
 # against a single opponent and it cost breadth: with twelve late and a herd
 # of seventeen, wins against fourteen different top teams go from 3% to 14%
 # and the median score from 66,291 to 70,666.
+# Twelve, and it is a peak not a plateau. Sixty games either side:
+# 63,908 at seven, 65,336 at nine, 80,730 at twelve, 37,652 at sixteen,
+# 24,141 at twenty. The crew is rented again every night on a fibonacci
+# curve, so a hand too many is ruinous, and the 8.2% of turns this crew
+# spends idle is not waste -- it is the cost of covering the hours when
+# there IS work, and cutting to cover the average loses 15,000 a game.
 HAND_RAMP = ((0, 4), (3, 6), (6, 8), (10, 9), (13, 12))
 # Days on which the next quadrant is bought, and the cash each must leave
 # behind. Two quadrants is 75 tiles, which is what a crew of twelve can work.
