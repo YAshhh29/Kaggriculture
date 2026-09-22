@@ -246,7 +246,25 @@ CLUSTER_RADIUS = 2
 # a day, so twenty head eat three quarters of everything the crew does and
 # the crops get what is left.
 # How strongly a pen prefers ground near the shed, per tile of distance.
+# Reverted. Alone, pricing a pen by distance barely moves it -- even at
+# eight times this pull the ring only shifted 1.97 to 1.92, because the
+# near ground it wants is gone before it bids: crops claim it first.
+# Combined with PEN_RESERVE_COUNT it does close the placement gap for
+# real -- 1.97 rings to 1.62, most of the way to a top-200 team's 1.39 --
+# and on a thirty-tape sample that looked worth 14,621 a game. At the
+# sixty-tape, hundred-twenty-game confirmation it reversed: median
+# 67,689 against the unreserved baseline's 66,559, statistically nothing,
+# and the margin actually fell, -49,823 against -42,959. Matching the
+# spatial pattern of a top-200 farm did not reproduce its score, because
+# this farm's economy is not that farm's economy. Sixth thirty-tape
+# result today to overstate itself; the largest sample wins.
 PEN_SHED_PULL = 0.0
+# Reverted alongside PEN_SHED_PULL -- see its comment. A flat ring cost
+# more than it saved (shed_distance <= 2 is twenty tiles against a herd
+# that tops out at seventeen) and a count sized to the herd fixed the
+# placement cleanly, but the combined mechanism did not survive its own
+# hundred-twenty-game confirmation. Nought reserves nothing.
+PEN_RESERVE_COUNT = 0
 # The grid says the top of the ladder keeps seventeen head where we kept
 # thirteen, and seventeen measures better across the field even though
 # thirteen measured better against one opponent.
@@ -533,6 +551,12 @@ FRAGILE_PER_TURN = 6
 # by the unit that frees it.
 CRAMPED_FLOOR = 0.0
 MIN_SELL_PRICE = 2.0
+# Hours before day's end after which a bare tile is no longer sown. Two
+# leaves only two turns for a late planting's own rescue watering to win
+# the auction against richer jobs elsewhere on the board, and four wheat
+# tiles a game go unwatered on their own sowing day for exactly that
+# reason -- planted, then outbid for the water turn before the day ends.
+PLANT_CUTOFF = 3
 # Whether the farm sits out the turn before the town eats. It does.
 #
 # Selling through it looked like the best idea of the session over thirty
@@ -1183,7 +1207,7 @@ def job_offers(ctx: dict[str, Any], plan: dict[str, Any], tile: Any,
                     break
 
     if tile is None:
-        if closing or hour >= TURNS - 2:
+        if closing or hour >= TURNS - PLANT_CUTOFF:
             # A tile sown without a watering turn behind it is a weed by
             # morning, so the last hours of the day are not for sowing.
             return jobs
@@ -1220,6 +1244,23 @@ def job_offers(ctx: dict[str, Any], plan: dict[str, Any], tile: Any,
                 jobs.append((plan["beast_value"][best] * 0.7
                              / (1.0 + PEN_SHED_PULL * walk), 1.0,
                              [STRUCTURE_ACTION[house]]))
+        if (x, y) in counts.get("pen_reserved", ()):
+            # Pricing a pen by distance never closed the gap: even at eight
+            # times the pull the ring barely moved, 1.97 to 1.92, because
+            # the near ground pens WANT is not there to bid on -- crops
+            # already hold it. Measured against a top-200 team's own farms,
+            # ring 0 next to the shed is 0% crops and ring 1 is under 9%;
+            # this farm has no such zone at all.
+            #
+            # A whole ring reserved regardless of the ring's size lost
+            # badly the first time this was tried: `shed_distance <= 2` is
+            # twenty plantable tiles, and this farm never houses more than
+            # HERD_MAX animals, so most of that ground sat idle for crops
+            # all game for a herd that was never going to fill it. So the
+            # reservation is sized to the herd instead of the ring: exactly
+            # the nearest tiles the herd still has room to use, computed
+            # once a turn in `decide` and looked up here.
+            return jobs
         for _rate, crop, revenue, daily in plan["crops"]:
             if int(seeds.get(crop, 0)) <= 0:
                 continue
@@ -1781,6 +1822,21 @@ def decide(observation: dict[str, Any]) -> AgentAction:
     counts["density"] = density
     counts["money"] = money
     plan = make_plan(ctx, observation, day, step, counts, shed, money)
+    if PEN_RESERVE_COUNT > 0:
+        herd_room = max(0, min(
+            PEN_RESERVE_COUNT,
+            plan.get("herd_cap", 20) - counts["empty_coops"]
+            - counts["empty_pastures"] - counts["animals"]))
+        if herd_room > 0:
+            bare = sorted(
+                ((x, y) for y, row in enumerate(tiles)
+                 for x, t in enumerate(row) if t is None),
+                key=lambda cell: shed_distance(cell[0], cell[1]))
+            counts["pen_reserved"] = set(bare[:herd_room])
+        else:
+            counts["pen_reserved"] = set()
+    else:
+        counts["pen_reserved"] = set()
     # Manure is worth the greater of what it fetches and what it adds to a
     # tile. It is in no shop basket and the town centre skips it, so nothing
     # in the game consumes it and its price only decays, 100 -> 24; spread on
