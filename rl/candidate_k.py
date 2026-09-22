@@ -156,7 +156,14 @@ HIRE_BEFORE_HOUR = 3
 #
 # It is also the cleanest diagnostic available: if splicing early scores
 # like J, J's weakness is its midgame; if late, its opening.
-SPLICE = 0
+# Day twelve, measured. Handing over at day nine scores 81,122 and at day
+# twelve 86,028, against the route alone at 96,082 -- so the trend says the
+# later the better, and that is the diagnostic answering itself: the
+# reactive engine is weaker than the route at every stage, not just in the
+# opening. K keeps the splice because an agent that re-decides can answer
+# an opponent a recorded route cannot, and that is what the corpus says
+# separates 3000 from 2800; but on this measure it is still behind.
+SPLICE = 288
 # Measured and left alone. The study is right that the field dumps
 # fertilizer and buys it back into a book the town never drains, but
 # stopping H2 doing it costs 1,116 a game on the median: it needs the

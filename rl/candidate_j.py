@@ -277,8 +277,24 @@ CAP_ANCHOR = 0.0
 # a fleece against their 192, 190 a strawberry against their 155, 97 a milk
 # against their 63, ahead on six goods of nine. They win on volume, not on
 # price, and volume is what twelve hands cannot buy.
-CAP_IS_SOFT = False
-OVER_CAP_RATE = 0.25
+# Soft, and this reverses a rejection made on the same biased panel. A crop
+# at its book's cap is no longer struck from the plan outright; it competes
+# at a fraction of its rate, so ground that would have stood bare gets the
+# cheap crop instead of nothing. On the fixed set: 75,357 against 73,047.
+#
+# It is the same lesson as the fourth quadrant, from the other side. The
+# farm leaves 8.2 tiles bare where a top-200 team leaves 2.2, and buying
+# more ground does not help -- 69,092 with a fourth quadrant against 73,047
+# without. Working the ground already owned does.
+CAP_IS_SOFT = True
+OVER_CAP_RATE = 0.6
+# Except for the crops the town never eats. Softening the cap let melon --
+# the highest base price on the board, and in NO shop basket, so the town
+# takes one a day and no more -- spread from 3.8 tiles to 7.8, and its
+# realised price fell from 175 to 129, which is 48% under base. A book the
+# shops do not drain cannot be sold into at any volume, so its cap stays
+# hard however cheap the ground looks.
+SOFT_CAP_EXCEPT = ("MELON",)
 WHEAT_URGENT = 1.0
 # Four, and it is load-bearing. Cutting it to reallocate ground toward
 # strawberry -- 1,425 coins a plant against wheat's 84 -- loses badly:
@@ -447,7 +463,11 @@ ONGOING_CAP_BOOST = 1.0
 # tended -- wheat at 2.51 units a plant against 2.21, 1.24 in-window
 # waterings against 1.13, 0.48 of manure against 0.39. This farm has more
 # labour than jobs, so fewer tiles tended properly beat more tiles neglected.
-SEED_SLOTS = 4
+# Three. Four was adopted this morning on a panel that discarded games per
+# agent when a tape collapsed, which judged each agent on a different set of
+# opponents. On the fixed set it is the other way round: three scores a
+# median of 76,157 against four's 73,047.
+SEED_SLOTS = 3
 # Units of feed credited to each standing wheat plant when deciding whether
 # to buy grain. Four is the whole mature plant; the shed holds none of it.
 #
@@ -935,7 +955,7 @@ def make_plan(ctx: dict[str, Any], observation: dict[str, Any], day: int,
         if crop == "WHEAT":
             cap = max(cap, wheat_floor)
         over_cap = counts.get("crop_" + crop, 0) >= cap
-        if over_cap and not CAP_IS_SOFT:
+        if over_cap and (not CAP_IS_SOFT or crop in SOFT_CAP_EXCEPT):
             continue
         units = crop_units(crop, day)
         if units <= 0:
