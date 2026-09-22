@@ -43,8 +43,22 @@ ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "submissions" / "candidate-j" / "main.py"
 
 # In dependency order: each may use only the ones above it.
+#
+# rl/runtime.py is deliberately NOT here. It is a bridge to an abandoned
+# reinforcement-learning "residual policy" experiment, and its only import
+# candidate_j.py actually uses is the AgentAction type alias -- but the
+# file ALSO does `from agents.experimental_distilled_calendar_agent import
+# decide as calendar`, a LOCAL PROJECT IMPORT that exists in this repo and
+# nowhere else. Inlining the whole file carried that import into every
+# submission built from these PARTS, and it always resolved fine locally
+# because every test script here starts with `sys.path.insert(0, ROOT)` --
+# the repo is never actually absent in development, the one condition
+# that matters on Kaggle's bare server. `agent()` is never even reached:
+# `get_last_callable` executes the WHOLE module top to bottom first, and
+# that import raises before any of our own code runs. Both J's and K's
+# first submissions failed on exactly this. AgentAction is defined
+# directly below instead, which is the only thing ever actually needed.
 PARTS = (
-    ROOT / "rl" / "runtime.py",
     ROOT / "rl" / "economics.py",
     ROOT / "rl" / "market.py",
     ROOT / "rl" / "demand.py",
@@ -108,6 +122,10 @@ def build() -> str:
         "import sys",
         "from typing import Any",
         "",
+        "# The only thing candidate_j.py ever used from rl/runtime.py; see",
+        "# PARTS above for why the rest of that file is not inlined.",
+        "AgentAction = dict[str, Any]",
+        "",
     ]
     body = [header[0:]]
     chunks = ["\n".join(header)]
@@ -146,10 +164,52 @@ def last_callable_name(path: Path) -> str:
     return names[-1]
 
 
+def check_only_stdlib_imports(path: Path) -> None:
+    """Refuse to ship a file that imports anything outside the standard
+    library.
+
+    This is the check that would have caught the bug that actually shipped:
+    `rl/runtime.py`, inlined whole, carried `from
+    agents.experimental_distilled_calendar_agent import decide` into every
+    packaged submission built from it. It always resolved in development,
+    because every test script here starts with `sys.path.insert(0, ROOT)`
+    -- the repo is never actually absent locally, which is the one
+    condition that is guaranteed true on Kaggle's bare server. Neither
+    `get_last_callable`'s own load nor a full local game caught it, because
+    both ran with the repo still on `sys.path`. A submission has no file
+    beside it and no project to fall back on, so nothing outside
+    `sys.stdlib_module_names` may appear in a top-level import anywhere in
+    the file.
+    """
+    import ast
+
+    tree = ast.parse(path.read_text(encoding="utf-8"))
+    bad: list[str] = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            for alias in node.names:
+                top = alias.name.split(".")[0]
+                if top not in sys.stdlib_module_names:
+                    bad.append(f"import {alias.name}")
+        elif isinstance(node, ast.ImportFrom):
+            if node.module is None or node.level > 0:
+                continue  # relative import; cannot exist at module level here
+            top = node.module.split(".")[0]
+            if top not in sys.stdlib_module_names:
+                bad.append(f"from {node.module} import ...")
+    if bad:
+        raise SystemExit(
+            "packaged file imports something outside the standard "
+            "library -- it will not exist on Kaggle's server even though "
+            "it resolves here, the same way rl/runtime.py's import once "
+            "did:\n  " + "\n  ".join(sorted(set(bad))))
+
+
 def verify(path: Path) -> dict:
     from kaggle_environments import make
     from kaggle_environments.agent import get_last_callable
 
+    check_only_stdlib_imports(path)
     name = last_callable_name(path)
     if name != "agent":
         raise SystemExit(

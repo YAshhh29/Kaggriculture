@@ -78,7 +78,7 @@ H2_SOURCE = ROOT / "submissions" / "candidate-h2" / "main.py"
 
 sys.path.insert(0, str(ROOT))
 from tools.packaging.prepare_candidate_j_submission import (  # noqa: E402
-    build as build_j, strip_module,
+    build as build_j, check_only_stdlib_imports, strip_module,
 )
 from tools.packaging.namespace_merge import merge, merge_file  # noqa: E402
 
@@ -206,6 +206,7 @@ def verify(path: Path) -> dict:
     from kaggle_environments import make
     from kaggle_environments.agent import get_last_callable
 
+    check_only_stdlib_imports(path)
     name = last_callable_name(path)
     if name != "agent":
         raise SystemExit(
