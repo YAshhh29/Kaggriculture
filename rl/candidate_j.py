@@ -449,6 +449,20 @@ COMMIT_BONUS = 2.5
 # How much a worker prefers a job on the tile it is already standing on,
 # over and above the travel it saves. One is no preference at all.
 STAY_BONUS = 1.0
+# Whether a hand that just finished a job commits to the best OTHER job
+# within QUEUE_RADIUS for next turn, rather than re-auctioning the whole
+# farm from nothing. Measured and off. Instrumented: it fires on 84% of
+# the turns a hand finishes a job (2,095 of 2,491 in one game), so it is
+# not sitting idle -- and it moved neither the walk share nor the steps
+# per job it targeted, because the auction's own distance-weighted rate
+# was already finding these same nearby jobs without help. On sixty
+# games the margin came out flat, -42,664 against -42,959. The walking
+# gap is not a scheduling discipline problem; the auction already
+# schedules locally when local work exists. What's missing is the work:
+# see CLUSTER_BONUS, which is about where a crop gets planted rather
+# than which already-planted tile is watered next.
+QUEUE_ROUND = False
+QUEUE_RADIUS = 2
 # How much an in-window watering is worth over its face value. One is the
 # honest price.
 #
@@ -538,6 +552,34 @@ CLOSING_STEPS = 10
 FRAGILE = ("WOOL", "STRAWBERRY", "MILK", "MELON")
 FRAGILE_FLOOR = 0.55
 FRAGILE_PER_TURN = 6
+# Days before LAST_DAY across which the fragile-book floor and per-turn
+# allowance slide toward "sell it all", instead of holding every book at
+# full protection right up to the literal final turn. Nought disables it.
+#
+# Measured at 3 against all four strong_panel opponents (aurax7, v34, our
+# own H2, our own route-replay I), 8 seeds x 2 seats each, and it moved
+# nothing: every margin shifted by 32 to 378 coins against a baseline of
+# -47,550 to -69,906, the same direction across all four but far inside
+# noise for a real game. J does not carry a large enough unsold backlog
+# into the last days against these opponents for a gradual wind-down to
+# matter. Not harmful, not worth the complexity; left off.
+WIND_DOWN_DAYS = 0
+# Whether a crowded turn's forced sell truncation keeps sale_lots' own
+# race-aware order, or throws it away for a pure dollar-value sort.
+#
+# Measured against all four strong_panel opponents, 8 seeds x 2 seats:
+# results came back byte-identical to the flag being off, digit for digit
+# on every margin. Instrumented directly rather than trusted -- the
+# truncation branch it guards fired zero times across five full games on
+# different seeds. `sells` is already capped to `slots` earlier in
+# market_orders, and `room_for_sales` only comes in smaller than that
+# when buys and fixed orders alone overflow PLAN_SLOTS, which apparently
+# never happens with this farm's own order budget. The ranking this flag
+# protects is real (shiiin9's Layer D, +124 to +133 a game in their own
+# measurement) but the specific place it was wired in here never sees a
+# crowded turn to protect. Left off; the entry point needs finding
+# somewhere else in the order pipeline, not here.
+RACE_AWARE_TRUNCATE = False
 # The floor a fragile book still keeps when the shed is nearly full or the
 # day is ending. Zero means no floor, and zero is right.
 #
@@ -779,7 +821,7 @@ def _context(observation: dict[str, Any], day: int, step: int) -> dict[str, Any]
               for item in PRODUCTS}
     town = observation.get("town") or {}
     shops = tuple(town.get("unlocked_shops") or ())
-    return {"inv": inv, "credit": credit, "shops": shops,
+    return {"inv": inv, "credit": credit, "shops": shops, "day": day,
             "spot": {item: max(1.0, price_at(item, inv[item]))
                      for item in PRODUCTS},
             "pipeline": {item: 0.0 for item in PRODUCTS}}
@@ -1544,6 +1586,23 @@ def sale_lots(ctx: dict[str, Any], shed: dict[str, int], counts: dict[str, Any],
             base = float(MARKET_PARAMS[item]["base"])
             floor = CRAMPED_FLOOR if cramped else FRAGILE_FLOOR
             allowance = held if cramped else FRAGILE_PER_TURN
+            # The floor protects a book for the games this farm will still
+            # play into it. In the last WIND_DOWN_DAYS there are none: a
+            # public notebook studying the top of this ladder independently
+            # names day 27 of 30 as where every strong route it mapped
+            # switches to a liquidation plan, seventy steps before this
+            # agent's own dump -- which was the LITERAL LAST TURN, one
+            # order, however many units had piled up by then, straight
+            # into a book that loses a quarter of its price over as few as
+            # 48-51 units. Wind-down lets that inventory go down gradually
+            # instead, floor and allowance sliding together across the
+            # last stretch so each day's sale still meets a partly-refreshed
+            # book rather than one flat crash at the final bell.
+            days_left = max(0, LAST_DAY - int(ctx.get("day", 0)))
+            if WIND_DOWN_DAYS > 0 and days_left <= WIND_DOWN_DAYS:
+                wind = 1.0 - days_left / float(WIND_DOWN_DAYS)
+                floor *= (1.0 - wind)
+                allowance = allowance + wind * (held - allowance)
             room = 0
             while room < held and room < allowance:
                 if price_at(item, inv + room) < base * floor:
@@ -1774,8 +1833,20 @@ def market_orders(ctx: dict[str, Any], observation: dict[str, Any],
     # richest first.
     room_for_sales = max(1, MAX_ORDERS - len(buys) - len(fixed))
     if len(sells) > room_for_sales:
-        sells.sort(key=lambda o: -ctx["spot"].get(o[1], 1.0) * int(o[2]))
-        sells = sells[:room_for_sales]
+        if RACE_AWARE_TRUNCATE:
+            # `sells` already arrived in `sale_lots`' own order -- loss
+            # against a plausible rival batch first, a small value tiebreak
+            # after -- which is close to what a public notebook studying
+            # this ladder calls Layer D: an exact slot-by-slot order-book
+            # simulation, worth +124 to +133 a game against seven strong
+            # published agents specifically because "these agents share
+            # most of their code and are decided by a few hundred coins."
+            # Truncating to fewer slots does not need a different ranking;
+            # it needs the SAME one, just cut short.
+            sells = sells[:room_for_sales]
+        else:
+            sells.sort(key=lambda o: -ctx["spot"].get(o[1], 1.0) * int(o[2]))
+            sells = sells[:room_for_sales]
     return (sells + buys + fixed)[:MAX_ORDERS]
 
 
@@ -1968,6 +2039,33 @@ def decide(observation: dict[str, Any]) -> AgentAction:
     for worker, cell, action, travel in booked:
         if travel > 0:
             _EN_ROUTE[(player, worker)] = (cell, action[0])
+        elif QUEUE_ROUND:
+            # This worker just acted where it stood. Every bonus tried
+            # against the walking gap -- stay, cluster, radius, walk cost,
+            # a distance pull on new ground -- failed, because each still
+            # re-decides from nothing next turn. What none of them did is
+            # commit a hand to a SECOND job before the first is even done.
+            # `candidates` already holds every (worker, cell, action) this
+            # turn considered and did not take; the best of them within
+            # QUEUE_RADIUS becomes next turn's committed target, exactly
+            # the way _EN_ROUTE already favours a job already being walked
+            # to. A hand that just watered finds the next watering next
+            # door instead of re-auctioning the whole farm to get there.
+            nearby = None
+            for _rate, w, next_cell, next_action in candidates:
+                if w != worker or next_cell == cell:
+                    continue
+                if distance(cell, next_cell) > QUEUE_RADIUS:
+                    continue
+                key = (next_cell, next_action[0]) if SHARE_TILES                     else (next_cell, "")
+                if key in claimed:
+                    continue
+                nearby = (next_cell, next_action[0])
+                break
+            if nearby is not None:
+                _EN_ROUTE[(player, worker)] = nearby
+            else:
+                _EN_ROUTE.pop((player, worker), None)
         else:
             _EN_ROUTE.pop((player, worker), None)
     for worker in range(len(positions)):
