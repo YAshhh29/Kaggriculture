@@ -533,6 +533,17 @@ FRAGILE_PER_TURN = 6
 # by the unit that frees it.
 CRAMPED_FLOOR = 0.0
 MIN_SELL_PRICE = 2.0
+# Whether the farm sits out the turn before the town eats. It does.
+#
+# Selling through it looked like the best idea of the session over thirty
+# games: it cost us 2,426 and cost the rival 6,436, a margin swing of
+# 4,010, which is exactly the shape of everything else learned today. Over
+# sixty it is nothing -- margin -39,964 against -40,083 -- and we lose
+# 7,134 of median and two wins for it.
+#
+# Fifth time a thirty-game sample has overstated a result today. Thirty
+# games is a direction. Sixty is a number.
+QUIET_TURNS = True
 # Slots. The engine reads ten orders; the plan claims first, because a farm
 # that cannot hire or buy land is finished whatever it is selling.
 PLAN_SLOTS = 6
@@ -1700,7 +1711,12 @@ def market_orders(ctx: dict[str, Any], observation: dict[str, Any],
     plan_orders = (buys + fixed)[:PLAN_SLOTS]
     # A sale at `step % 4 == 0` is quoted before that step's town tick and
     # throws a tick of scarcity away, so on a quiet turn the sale waits.
-    quiet = step % 4 == 0 and not cramped
+    # `_process_market` runs before `_town_consume`, so a sale on a step
+    # divisible by four is quoted before that step's tick and throws the
+    # scarcity away. That is right about the price and costs a quarter of
+    # every selling opportunity there is -- and volume is what denies a
+    # rival the book. QUIET_TURNS nought sells on every turn regardless.
+    quiet = QUIET_TURNS and step % 4 == 0 and not cramped
     slots = MAX_ORDERS - len(plan_orders)
     sells: list[list[Any]] = []
     if slots > 0 and not quiet:
