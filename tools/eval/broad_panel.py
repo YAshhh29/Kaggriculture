@@ -23,6 +23,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 TAPES = ROOT / "kaggle_cache" / "top200_tapes"
+# A replay must reach this share of the score its team really
+# recorded for the game to count as that team still playing.
+FIDELITY = 0.70
 
 
 def play(job):
@@ -65,23 +68,56 @@ def main() -> None:
     with Pool(args.workers) as pool:
         games = pool.map(play, jobs)
 
-    wins = sum(g["won"] for g in games)
-    print(f"\n{args.spec}: {len(games)} games against {len(paths)} different "
-          f"top-200 teams, both seats")
-    print(f"  wins {wins}/{len(games)} ({100 * wins / len(games):.0f}%)")
-    print(f"  our score   median {statistics.median(g['ours'] for g in games):,.0f}"
-          f"  mean {statistics.mean(g['ours'] for g in games):,.0f}")
-    print(f"  their score median {statistics.median(g['theirs'] for g in games):,.0f}")
-    bands = {"1-50": [], "51-120": [], "121-200": []}
-    for g in games:
-        rank = int(g["rank"] or 200)
-        key = "1-50" if rank <= 50 else "51-120" if rank <= 120 else "121-200"
-        bands[key].append(g)
-    for key, rows in bands.items():
-        if rows:
-            w = sum(r["won"] for r in rows)
-            print(f"  opponents ranked {key:8s}: {w:3d}/{len(rows):3d} wins, "
-                  f"median ours {statistics.median(r['ours'] for r in rows):,.0f}")
+    def report(rows, label):
+        if not rows:
+            print(f"\n  {label}: no games")
+            return
+        wins = sum(r["won"] for r in rows)
+        print(f"\n  {label}: {len(rows)} games, wins {wins}/{len(rows)} "
+              f"({100 * wins / len(rows):.0f}%)")
+        print(f"    our score   median "
+              f"{statistics.median(r['ours'] for r in rows):,.0f}  mean "
+              f"{statistics.mean(r['ours'] for r in rows):,.0f}")
+        print(f"    their score median "
+              f"{statistics.median(r['theirs'] for r in rows):,.0f}  "
+              f"(they really scored "
+              f"{statistics.median(r['recorded'] for r in rows):,.0f})")
+        bands = {"1-50": [], "51-120": [], "121-200": []}
+        for r in rows:
+            rank = int(r["rank"] or 200)
+            key = ("1-50" if rank <= 50 else
+                   "51-120" if rank <= 120 else "121-200")
+            bands[key].append(r)
+        for key, band in bands.items():
+            if band:
+                w = sum(b["won"] for b in band)
+                print(f"    ranked {key:8s}: {w:3d}/{len(band):3d} wins, "
+                      f"median ours "
+                      f"{statistics.median(b['ours'] for b in band):,.0f}")
+
+    # A replayed tape is an open-loop recording. When our play diverges from
+    # the game it was taken from, its orders stop fitting the farm it now
+    # has, and it collapses -- a team that really scored 130,000 finishes on
+    # 50,000. Beating that is not beating the team. So every game is scored
+    # for fidelity, `theirs / what they really scored`, and the honest
+    # number is the one over the games where the tape still played its own
+    # game. This was in the docstring from the first commit and never
+    # implemented, and it is why this panel has been flattering us: the
+    # same teams that score 115,000 here score 125,000 to 130,000 live.
+    for row in games:
+        row["fidelity"] = (row["theirs"] / row["recorded"]
+                           if row["recorded"] else 0.0)
+    clean = [g for g in games if g["fidelity"] >= FIDELITY]
+    collapsed = [g for g in games if g["fidelity"] < FIDELITY]
+
+    print(f"\n{args.spec}: {len(games)} games against {len(paths)} "
+          f"different ladder teams, both seats")
+    print(f"  tape fidelity: median "
+          f"{statistics.median(g['fidelity'] for g in games):.0%}, "
+          f"{len(collapsed)} of {len(games)} games below {FIDELITY:.0%} "
+          f"and discarded")
+    report(clean, "CLEAN GAMES (the honest number)")
+    report(games, "all games, including collapsed tapes")
 
 
 if __name__ == "__main__":
