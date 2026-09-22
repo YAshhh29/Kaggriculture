@@ -178,6 +178,14 @@ ARRIVAL_PRICING = True
 # Whether manure is spread on ongoing crops as well as the once-harvested
 # ones. See the FERTILIZE branch in job_offers.
 FERTILISE_ONGOING = True
+# Units an ongoing crop's production event really pays, given how often this
+# farm gets the manure and the water onto the tile together. One is the old
+# count; two is the engine's maximum.
+# One and a half, measured over sixty games: median 78,822 against 77,143
+# and seven wins against four. The thirty-game run that found it claimed
+# 4,523; the truth is 1,679, which is the third time today a thirty-game
+# sample has overstated a result.
+ONGOING_YIELD = 1.5
 # A meal is priced at the units it actually cashes -- on a production night,
 # one plus every care day banked since the last event; on any other night,
 # the single care day it lets us bank -- and then discounted by this share,
@@ -540,6 +548,16 @@ PLAN_SLOTS = 6
 # thirty coins, against three hundred for the animal it keeps alive.
 FEED_BUY_HOURS = (1, 7, 13, 19)
 FEED_BUY_MAX = 14
+# Units of grain bought each other hour purely to dump back into the book,
+# and the cash that must survive the raid.
+# Measured and off. Denial cannot be bought: raiding ten units an hour
+# costs us 32,590 a game -- 91,657 down to 59,067 -- and takes only 3,953
+# off the rival. H2's suppression is not a raid, it is scale. It grows 563
+# units of wheat a game and runs a 65,630-coin cycle that can carry the
+# buying; this farm's thinner purse goes into grain instead of seed and
+# stock, and the production that would have done the denying never happens.
+WHEAT_RAID = 0
+WHEAT_RAID_RESERVE = 1200.0
 # Days of eating to keep ahead of the flock, in grain standing plus stored.
 # Days of eating to keep ahead of the flock. Four days of grain for every
 # animal cost 3,183 coins over the opening where a top-200 agent spent 2,542,
@@ -639,7 +657,19 @@ def crop_units(crop: str, plant_day: int) -> int:
         for k in range(int(spec["max_yield"])):
             if plant_day + first + k * interval <= LAST_DAY:
                 n += 1
-        return n
+        # An event pays TWO units, not one, when the tile was fertilized and
+        # watered that day:
+        #
+        #     fertilized = was_watered and fertilized_until_day >= day
+        #     yield_units += 2 if fertilized else 1
+        #
+        # This farm does manure its ongoing crops -- about 1.9 applications
+        # to a strawberry -- so counting one a time valued a strawberry at
+        # half what it grows, and a crop undervalued by half loses its place
+        # in a seed queue three deep. It stands 6.0 tiles of strawberry
+        # against a top-200 team's 15.7, on the crop that sits in four of
+        # the eight shop baskets.
+        return int(round(n * ONGOING_YIELD))
     start = (int(spec["max_day"]) + 1) // 2
     waters = sum(1 for age in range(start, int(spec["max_day"]) + 1)
                  if plant_day + age <= LAST_DAY)
@@ -1551,6 +1581,29 @@ def market_orders(ctx: dict[str, Any], observation: dict[str, Any],
             if want > 0:
                 buys.append(["BUY_PRODUCT", "WHEAT", want])
                 budget -= ctx["spot"]["WHEAT"] * want
+
+    # Grain bought to be sold again, which is not a trade -- it loses a tick
+    # on every round because a purchase quotes at market_price(inventory - 1)
+    # and a sale at market_price(inventory). It is a raid.
+    #
+    # Measured on the same three tapes, what the OPPONENT earns against this
+    # farm and against H2: milk 130 coins a unit against 30, strawberry 149
+    # against 72, wool 196 against 123, and 437,673 in total against
+    # 228,458. H2 halves the prices its rival is paid, and not by pricing --
+    # by volume. It sells 4,216 units of wheat over three games where this
+    # farm sells 312, and wheat's book is bottomless, so the flood costs
+    # almost nothing a unit while it strips the book the rival sells into.
+    #
+    # So the grain is bought to be dumped. Nought turns the raid off.
+    if (WHEAT_RAID and not closing and hour % 2 == 0
+            and budget > WHEAT_RAID_RESERVE
+            and total_shed < SHED_CAP - 16):
+        room_for = min(WHEAT_RAID, SHED_CAP - 16 - total_shed,
+                       int((budget - WHEAT_RAID_RESERVE)
+                           // max(1.0, ctx["spot"]["WHEAT"])))
+        if room_for > 0:
+            buys.append(["BUY_PRODUCT", "WHEAT", room_for])
+            budget -= ctx["spot"]["WHEAT"] * room_for
 
     # The opening, days 0 to 3. Left to the value model, J spends these days
     # planting melon -- a good in no shop's basket -- and owns one animal on
