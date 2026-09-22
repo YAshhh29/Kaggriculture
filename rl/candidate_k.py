@@ -41,6 +41,8 @@ Two rules from J's measurements come with it, both learned expensively:
 from __future__ import annotations
 
 import importlib.util
+import json
+import os
 from pathlib import Path
 from typing import Any
 
@@ -58,10 +60,35 @@ _spec.loader.exec_module(_core)
 # the one good the town never eats, so holding it only costs a shed slot, and
 # metering it was measured in J and lost.
 FRAGILE = ("WOOL", "STRAWBERRY", "MILK", "MELON")
-FLOOR = 0.55
+# Zero: the meter is off, and it is off because it was measured.
+#
+# The idea was H2's volume at J's prices, and it is wrong. Every degree of
+# protection costs money, monotonically, on thirty teams and both seats:
+#
+#     floor 0.55   6/50 clean wins, median 82,928
+#     floor 0.42   8/50               86,394
+#     floor 0.30   9/50               85,854
+#     floor 0      27/48               96,082   (H2 exactly, to the digit)
+#
+# H2 is a cash cycle. It pushes 65,630 coins of inputs through the market a
+# game -- seed, stock, feed -- and that buying is funded by selling. Throttle
+# the sales and the buying stops, and tiles that were working go empty. The
+# extra coins a unit never pay for them.
+#
+# Which also means J's famous prices were never skill. Selling 103 strawberry
+# into a book the town drains at 720 a game will always look magnificent per
+# unit. H2 sells 249 and takes less for each because it is actually meeting
+# the demand. That is the whole lesson of this file: on this board,
+# throughput beats price, and it is now four experiments across two agents.
+FLOOR = 0.0
 SHED_CAP = 100
+
 # Above this the shed is the binding constraint and the meter comes off.
 CRAMPED = SHED_CAP - 12
+
+
+for _key, _value in json.loads(os.environ.get("K_SET", "{}")).items():
+    globals()[_key] = _value
 
 
 def _shed_total(observation: dict[str, Any]) -> int:
