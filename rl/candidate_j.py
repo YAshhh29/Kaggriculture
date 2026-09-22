@@ -242,6 +242,11 @@ PEN_SHED_PULL = 0.0
 # The grid says the top of the ladder keeps seventeen head where we kept
 # thirteen, and seventeen measures better across the field even though
 # thirteen measured better against one opponent.
+# Seventeen, and a peak like the crew. Sixty games: 80,730 at seventeen,
+# 67,526 at twenty-two, 58,089 at twenty-six. The empty pens and the wool
+# price above base both say there is room for more sheep, and there is not:
+# wool's book is thirty units deep before it gives up a quarter of its
+# price, so the extra fleeces arrive into a market that cannot take them.
 HERD_MAX = 17
 PORTABLE_JOBS = ("PLANT", "WATER", "HARVEST", "DIG", "BUILD_COOP",
                  "BUILD_PASTURE", "COLLECT_FERTILIZER", "CARE")
@@ -262,9 +267,25 @@ SWAP_PASSES = 0
 PLANT_TURN_COST = 2.0
 PLANT_FUTURE_WEIGHT = 0.25
 CAP_ANCHOR = 0.0
+# The hard cap is right, and the bare ground it leaves is not a fault.
+# Letting an over-cap crop be sown anyway at a fraction of its rate loses:
+# sixty games, 80,730 hard, 74,841 at 0.6, 70,486 at 0.25. The farm leaves
+# 8.2 tiles bare against a top-200 team's 2.2 and that is the correct
+# answer to a full book -- a plant whose units sell at the floor does not
+# repay the turns spent tending it. The same team plants the ground anyway
+# and takes worse prices for it: on the same seeds this farm realises 227
+# a fleece against their 192, 190 a strawberry against their 155, 97 a milk
+# against their 63, ahead on six goods of nine. They win on volume, not on
+# price, and volume is what twelve hands cannot buy.
 CAP_IS_SOFT = False
 OVER_CAP_RATE = 0.25
 WHEAT_URGENT = 1.0
+# Four, and it is load-bearing. Cutting it to reallocate ground toward
+# strawberry -- 1,425 coins a plant against wheat's 84 -- loses badly:
+# sixty games, median 80,730 at four, 71,344 at two, 66,970 at one. This is
+# a wool farm. Wheat is not a cash crop competing for the ground, it is the
+# feed the flock eats, and wool is 47,772 of the farm's goods revenue at
+# 227 coins a unit. Starve the grain and the flock goes with it.
 WHEAT_BOOST = 4.0
 GOOSE_SHARE = 0.12
 TOWN_SHARE = 1.0
@@ -307,6 +328,10 @@ OPENING_HERD = (2, 3, 4, 4)
 OPENING_MIX = {"COW": 2, "SHEEP": 2, "GOOSE": 1}
 # Share of a crew's turns that is work rather than walking. H2, the best
 # agent we have measured, runs 51.1%; G runs 41.6%.
+# Measured and left alone: raising it to 0.75 changes the sixty-game median
+# by nothing at all, 80,730 either way. The labour budget never gates a seed
+# purchase, so it is not what leaves 8.2 tiles bare against a top-200 team's
+# 2.2. The seed loop's shared `room` is, and WHEAT_BOOST spends it.
 WORK_SHARE = 0.5
 # Crew size by day. Ten hands cost 143 coins for the day and are wiped every
 # night, so this is a rental, not an investment; the limit is daylight.
@@ -457,9 +482,28 @@ CLOSING_STEPS = 10
 
 # Books that collapse if sold in bulk, and the price, as a share of base,
 # below which this agent will not push them on a normal turn.
+# Fertilizer is deliberately absent, and it was worth checking, because it
+# is the one good the town never eats -- excluded from the town centre and
+# in no shop basket -- so every unit sold sits in the book forever and the
+# farm realises 49.5 coins against a base of 100, with 48 units a game
+# going out under a quarter of base. Metering it like the others loses:
+# median 78,490 against 80,730. An unsold unit occupies one of a hundred
+# shed slots, and the shed is worth more than the coins forgone.
 FRAGILE = ("WOOL", "STRAWBERRY", "MILK", "MELON")
 FRAGILE_FLOOR = 0.55
 FRAGILE_PER_TURN = 6
+# The floor a fragile book still keeps when the shed is nearly full or the
+# day is ending. Zero means no floor, and zero is right.
+#
+# It looked like an unforced error: `cramped` is the last hour of every day
+# as well as a full shed, so the farm threw premium goods onto twenty-unit
+# books thirty times a game, 19 units of milk going out under a quarter of
+# base. Keeping a floor loses anyway -- sixty games, 80,730 at zero, 80,385
+# at 0.35, 80,052 at 0.55. Together with the fertilizer floor, which lost
+# the same way, that says the binding constraint late on is the hundred-slot
+# shed and not the price. A slot freed is worth more than the coins given up
+# by the unit that frees it.
+CRAMPED_FLOOR = 0.0
 MIN_SELL_PRICE = 2.0
 # Slots. The engine reads ten orders; the plan claims first, because a farm
 # that cannot hire or buy land is finished whatever it is selling.
@@ -1385,11 +1429,22 @@ def sale_lots(ctx: dict[str, Any], shed: dict[str, int], counts: dict[str, Any],
             continue
         if price < MIN_SELL_PRICE:
             continue
-        if item in FRAGILE and not cramped:
+        if item in FRAGILE:
+            # `cramped` is the last hour of every day as well as a full
+            # shed, so abandoning the floor here threw the premium goods
+            # onto the market thirty times a game at whatever it would pay:
+            # 19 units of milk a game went out under a quarter of base, into
+            # a book only twenty units deep. Under pressure the floor drops,
+            # it does not vanish -- and the deep books (wheat, egg, carrot,
+            # each good for a thousand units before the price stirs) are
+            # what should be shed to make room, which they now are, because
+            # they were never metered in the first place.
             base = float(MARKET_PARAMS[item]["base"])
+            floor = CRAMPED_FLOOR if cramped else FRAGILE_FLOOR
+            allowance = held if cramped else FRAGILE_PER_TURN
             room = 0
-            while room < held and room < FRAGILE_PER_TURN:
-                if price_at(item, inv + room) < base * FRAGILE_FLOOR:
+            while room < held and room < allowance:
+                if price_at(item, inv + room) < base * floor:
                     break
                 room += 1
             held = room
