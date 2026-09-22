@@ -95,29 +95,25 @@ def main() -> None:
                       f"median ours "
                       f"{statistics.median(b['ours'] for b in band):,.0f}")
 
-    # A replayed tape is an open-loop recording. When our play diverges from
-    # the game it was taken from, its orders stop fitting the farm it now
-    # has, and it collapses -- a team that really scored 130,000 finishes on
-    # 50,000. Beating that is not beating the team. So every game is scored
-    # for fidelity, `theirs / what they really scored`, and the honest
-    # number is the one over the games where the tape still played its own
-    # game. This was in the docstring from the first commit and never
-    # implemented, and it is why this panel has been flattering us: the
-    # same teams that score 115,000 here score 125,000 to 130,000 live.
+    # Fidelity is NOT a property of the tape. Replayed with both recorded
+    # sides on its own seed, a tape reproduces its game to the coin -- 149
+    # of 149 checked. It degrades only because WE replace one side, so the
+    # degradation is a property of the matchup, and filtering on it judges
+    # each agent on a different set of opponents: H2 on 64 games and J on
+    # 47, which is not a comparison at all. The fixed set of games is the
+    # comparison; fidelity is reported beside it as a diagnostic.
     for row in games:
         row["fidelity"] = (row["theirs"] / row["recorded"]
                            if row["recorded"] else 0.0)
-    clean = [g for g in games if g["fidelity"] >= FIDELITY]
-    collapsed = [g for g in games if g["fidelity"] < FIDELITY]
+    broken = [g for g in games if g["fidelity"] < FIDELITY]
 
     print(f"\n{args.spec}: {len(games)} games against {len(paths)} "
           f"different ladder teams, both seats")
     print(f"  tape fidelity: median "
-          f"{statistics.median(g['fidelity'] for g in games):.0%}, "
-          f"{len(collapsed)} of {len(games)} games below {FIDELITY:.0%} "
-          f"and discarded")
-    report(clean, "CLEAN GAMES (the honest number)")
-    report(games, "all games, including collapsed tapes")
+          f"{statistics.median(g['fidelity'] for g in games):.0%}; "
+          f"{len(broken)} of {len(games)} games fell below {FIDELITY:.0%} "
+          f"(diagnostic only -- every agent is scored on all {len(games)})")
+    report(games, "ALL GAMES (the comparison)")
 
 
 if __name__ == "__main__":

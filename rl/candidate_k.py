@@ -47,6 +47,8 @@ from pathlib import Path
 from typing import Any
 
 from rl.economics import BASE_PRICE
+import rl.candidate_j as _reactive
+from rl.crew_extra import actions_for
 from rl.market import MARKET_PARAMS, inventory_of, price_at
 
 _PATH = (Path(__file__).resolve().parents[1] / "submissions"
@@ -97,6 +99,64 @@ LOT = 0
 # market, and the study's ELITE buy 183 units of wheat a game to H2's 1,165
 # in games where nobody is racing them for it.
 WHEAT_BUY_CAP = 0
+
+# --- the crew the route never planned for -----------------------------
+#
+# This is the one lever a recorded route structurally cannot reach, and the
+# study of the top-200 corpus calls it the clearest unexploited edge in the
+# dataset: both cohorts stop at eleven hands while holding 7,600+ coins and
+# leaving 22 tiles bare on day 28. Hiring is a fibonacci curve on the count
+# already taken today and it resets each night, so the n-th hand costs
+# fib(n) outright -- 144 for the twelfth, 233 for the thirteenth, 377 for
+# the fourteenth -- against a job-turn measured at 37.3 coins.
+#
+# The route has no action to give those hands, so rl/crew_extra.py does:
+# take the job under your feet, else step toward the nearest one worth the
+# walk, else stand. It only has to beat standing still.
+# Measured and off: the lever is already taken. H2 ends a game with
+# THIRTEEN hands where the corpus caps at eleven, so the study's unhired
+# twelfth does not exist here, and pushing past thirteen collapses exactly
+# as it does everywhere else on this board -- 146,301 at one extra hand and
+# 34,925 at three, against 167,832 at none. The crew is rented again every
+# night on a fibonacci curve and a hand too many is ruinous.
+EXTRA_HANDS = 0
+# What is NOT taken is the standing still. H2 passes 7.2% of its
+# worker-turns, the same share as the 2800 band, and those are hands it has
+# already paid for. A pass is worth nothing; the worst job on the board is
+# worth more. So a hand the route leaves idle is given the job under its
+# feet, or a step toward the nearest one worth the walk.
+# Measured, off, and the most instructive failure of the lot: 90,409
+# against 184,922. Overriding a PASS MOVES a hand, and H2's route is a
+# recorded programme that assumes where every hand is standing -- relocate
+# one and every scripted action it is given afterwards lands on the wrong
+# tile. That is why nothing bolted onto this agent has ever helped: it is a
+# frozen programme, and any deviation desyncs the rest of it. The way past
+# H2 is not to modify H2.
+FILL_IDLE = False
+# Cash that must remain after the hire, so the spare crew never starves the
+# route's own buying -- which is what funds the farm it is working.
+HIRE_RESERVE = 2500.0
+# Hire only while a hand still has most of a day to work.
+HIRE_BEFORE_HOUR = 3
+
+# --- the splice ---------------------------------------------------------
+#
+# The study of the corpus found what separates the top of the ladder from
+# the 2800 band, and it is not the farm: production is at parity, 1,769
+# units a game either way. It is that the leaders RE-DECIDE. Comparing each
+# team's farmer action across its own games, the 2800 band repeats 95.7% of
+# them and first diverges at step 258; the teams rated 3000+ repeat 40.5%
+# and diverge at step 40. Rank 1 is byte-identical for steps 0-11, identical
+# again 14-25, and completely different in every game from step 26.
+#
+# What they keep is the opening. So does this: H2's recorded route plays the
+# first SPLICE steps -- an opening that reaches 58 worked tiles of 60 and
+# wastes nothing -- and the reactive engine takes the farm on from there.
+# Nought hands the whole game to H2 and is the agent we already had.
+#
+# It is also the cleanest diagnostic available: if splicing early scores
+# like J, J's weakness is its midgame; if late, its opening.
+SPLICE = 0
 # Measured and left alone. The study is right that the field dumps
 # fertilizer and buys it back into a book the town never drains, but
 # stopping H2 doing it costs 1,116 a game on the median: it needs the
@@ -187,12 +247,116 @@ def meter(observation: dict[str, Any], market: list) -> list:
     return out
 
 
+def _seat(observation: dict[str, Any]) -> int:
+    try:
+        return int(observation.get("player", 0))
+    except (TypeError, ValueError):
+        return 0
+
+
+def _busy(action: dict[str, Any], observation: dict[str, Any],
+          seat: int) -> set:
+    """Tiles the route's own hands are working or walking to this turn."""
+    farms = observation.get("farms") or []
+    if seat >= len(farms):
+        return set()
+    farm = farms[seat]
+    units = [farm.get("farmer")] + list(farm.get("hands") or [])
+    orders = [action.get("farmer")] + list(action.get("hands") or [])
+    held = set()
+    for spot, order in zip(units, orders):
+        if not isinstance(spot, (list, tuple)) or len(spot) < 2:
+            continue
+        op = order[0] if isinstance(order, (list, tuple)) and order else None
+        if op in MOVES_ONLY:
+            continue
+        held.add((int(spot[0]), int(spot[1])))
+    return held
+
+
+MOVES_ONLY = ("NORTH", "SOUTH", "EAST", "WEST", "PASS")
+
+
+def extend(observation: dict[str, Any], action: dict[str, Any]) -> None:
+    """Hire beyond the route's plan, and give those hands something to do."""
+    seat = _seat(observation)
+    farms = observation.get("farms") or []
+    if seat >= len(farms):
+        return
+    farm = farms[seat]
+    hands = list(farm.get("hands") or [])
+    planned = list(action.get("hands") or [])
+
+    busy = _busy(action, observation, seat)
+
+    # Any hand the route did not write an action for is standing still.
+    if EXTRA_HANDS and len(hands) > len(planned):
+        planned = planned + actions_for(observation, seat, len(planned), busy)
+        action["hands"] = planned
+
+    # And any hand it told to stand still is standing still by instruction.
+    if FILL_IDLE and planned:
+        private = observation.get("private") or {}
+        bags = private.get("inventories") or []
+        tiles = farm.get("tiles") or []
+        day = int(observation.get("day", 0))
+        filled = list(planned)
+        for index, order in enumerate(planned):
+            op = order[0] if isinstance(order, (list, tuple)) and order else None
+            if op != "PASS" or index >= len(hands):
+                continue
+            spot = hands[index]
+            if not isinstance(spot, (list, tuple)) or len(spot) < 2:
+                continue
+            here = (int(spot[0]), int(spot[1]))
+            carrying = bags[index + 1] if index + 1 < len(bags) else {}
+            found = actions_for(observation, seat, index, busy)
+            if found:
+                filled[index] = found[0]
+        action["hands"] = filled
+
+    if not EXTRA_HANDS:
+        return
+    step = int(observation.get("step", 0))
+    if step % 24 > HIRE_BEFORE_HOUR:
+        return
+    try:
+        money = float(farm.get("money", 0.0) or 0.0)
+    except (TypeError, ValueError):
+        return
+    market = action.setdefault("market", [])
+    already = sum(1 for o in market
+                  if isinstance(o, (list, tuple)) and o and o[0] == "HIRE")
+    # The route's own hires come out of the same fibonacci curve, so its
+    # orders are counted before ours and ours are appended behind them.
+    want = EXTRA_HANDS - already
+    hires_today = int(farm.get("hires_today", 0) or 0)
+    cost = 0.0
+    a, b = 1, 1
+    for _ in range(hires_today):
+        a, b = b, a + b
+    for _ in range(max(0, want)):
+        if len(market) >= 10 or money - cost - a < HIRE_RESERVE:
+            break
+        market.append(["HIRE"])
+        cost += a
+        a, b = b, a + b
+
+
 def agent(observation: dict[str, Any], configuration: Any = None):
     """Entry point. Must stay the last callable defined in this module."""
+    step = int(observation.get("step", 0) or 0)
+    if SPLICE and step >= SPLICE:
+        return _reactive.agent(observation, configuration)
+    # The route is driven every step up to the splice, because it is a
+    # recorded programme and skipping a step leaves its hands somewhere it
+    # does not expect them.
     action = _core.agent(observation, configuration)
     try:
-        if isinstance(action, dict) and action.get("market"):
-            action["market"] = meter(observation, action["market"])
+        if isinstance(action, dict):
+            if action.get("market"):
+                action["market"] = meter(observation, action["market"])
+            extend(observation, action)
     except Exception:
         return action
     return action
