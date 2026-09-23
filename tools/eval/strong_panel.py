@@ -1,13 +1,35 @@
-"""Measure a candidate against strong opponents only.
+"""Measure a candidate against four fixed strong opponents. NOT the ladder.
 
-The benchmark that matters is the one the ladder applies. Our own weak
-agents are useless as a bar: an agent rated 635 tells you nothing about
-whether you can beat a field that starts at 2760 for rank 200. So this
-panel is fixed, and every opponent in it is either published top-of-ladder
-code or one of our own agents with a live rating above 2000:
+READ THIS BEFORE QUOTING A NUMBER FROM HERE. This panel measures whether
+a change helps against four specific opponents. It does NOT tell you how
+you would rank, and its roster is not a sample of any rating band:
 
-    aurax7      aurax7 / kaggriculture-shop-router-reactive-v7, a current
-                top-200 notebook agent, played live from its own source
+    checked 2026-09-23 against the live board (top 136 teams fetched)
+    * h2 is rated 2265 -- BELOW the 2600-2900 band, not above it
+    * aurax7 and v34 are published NOTEBOOK code; neither author appears
+      anywhere in the top 136 live teams, so their true current rating is
+      unverified and may be far from "top-200"
+    * i was never on the ladder at all -- it is ours, calibrated only by
+      a local result against v34
+
+So zero of the four are confirmed members of the 2600-2900 band, which is
+where the real field sits: rank 23 is 2900 and rank 136 is 2711, so that
+band is most of the visible board. For a number about THAT population use
+`broad_panel`, which replays kaggle_cache/top200_tapes -- 498 of its 561
+tapes are teams rated 2600-2899, across 197 distinct teams. This panel's
+earlier claim to represent "a field that starts at 2760 for rank 200" was
+never verified and is what caused a whole session of results to be
+reported against the wrong population.
+
+Still useful for what it is: fast, live (opponents react, unlike
+broad_panel's open-loop recordings), and a fixed bar for A/B comparisons.
+
+The four:
+
+    aurax7      aurax7 / kaggriculture-shop-router-reactive-v7, a published
+                notebook agent played live from its own source. Described
+                here as "top-200" when it was added; that was never checked
+                against a rating and did not hold up when it finally was.
     v34         ahmedberatozer / kaggriculture-v34-observed-market-timing,
                 an earlier agent of the same lineage
     h2          our submission 56272262, live rating 2265, which sits about
