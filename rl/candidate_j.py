@@ -317,6 +317,20 @@ SWAP_PASSES = 0
 # won nothing at all. The seed queue's gain came from how the purse was
 # split between crops, not from sowing less eagerly.
 PLANT_TURN_COST = 2.0
+# Tested at 0.0 on the bracket -- charging a planting job nothing for the
+# tending its crop will need, which roughly halves what PLANT costs in the
+# auction and should have sown the bare ground the profile found. 12 of 120
+# bracket games against 16 of 120 untouched. Worse, like every other
+# attempt to make J plant more.
+#
+# Five interventions now, all measured on 60 bracket tapes: the crop cap,
+# the fragile sale allowance, the sale floor, this, and the cold-start
+# radius (the only one that moved anything, 8% to 13%). J holds seed and
+# bare ground simultaneously and none of these five is why. The remaining
+# explanation is that the auction is choosing correctly given what it can
+# see, and what it cannot see is that a tile left bare for ten days is a
+# compounding loss rather than a turn saved -- which is a different shape
+# of defect from any constant in this file.
 PLANT_FUTURE_WEIGHT = 0.25
 CAP_ANCHOR = 0.0
 # The hard cap is right, and the bare ground it leaves is not a fault.
