@@ -22,10 +22,28 @@ over 51 units and strawberry over 48, while wheat takes two thousand. H2
 sells whatever its route projects, in one lot, into a book sixteen units
 deep.
 
-Strawberry alone is 249 units at 80 coins of difference. So K is H2,
-unaltered, with one thing added: before the action leaves, every sale of a
-fragile good is cut back to what the book will pay for. The route, the
+Strawberry alone is 249 units at 80 coins of difference. So K was built as
+H2 unaltered, with one thing added: before the action leaves, every sale of
+a fragile good is cut back to what the book will pay for. The route, the
 timing layers and the opening are untouched.
+
+**WHAT K ACTUALLY IS TODAY, 2026-09-23.** That added thing is currently
+switched off and this docstring described an agent that no longer exists.
+Walk `meter()` with the constants as they stand -- FLOOR 0.0, LOT 0,
+WHEAT_BUY_CAP 0, FERTILIZER_BUY True -- and every branch falls through to
+`out.append(list(order))`. It rebuilds the order list identically. Both
+the lot cap and the price floor were measured and turned off in earlier
+sessions, for reasons recorded on each constant, and nothing was left
+behind. So K is H2's route plus `extend()`'s extra hires, and the sale
+metering in the title is dead code until LOT or FLOOR is set.
+
+That matters because the defect it was built for is still happening.
+Profiling sixteen games against teams rated 2600-2900
+(tools.analysis.bracket_profile): they issue ZERO dump-all orders a game,
+K issues 77, starting around step 671. When they name a quantity we match
+them exactly -- median lot 4 against 4, p90 13 against 12 -- so the whole
+difference is the endgame, where H2's route sells each good in one
+"SELL <GOOD> 1000" that walks the glut curve down unit by unit.
 
 Two rules from J's measurements come with it, both learned expensively:
 
@@ -189,6 +207,76 @@ SPLICE = 0
 FERTILIZER_BUY = True
 SHED_CAP = 100
 
+# --- the endgame, which is the one thing the bracket actually does
+# --- differently ---------------------------------------------------------
+#
+# Profiling sixteen games against teams rated 2600-2900
+# (tools.analysis.bracket_profile) found production at parity -- their crew,
+# plants and herd track ours day for day, and we finish day 29 slightly
+# ahead on money -- and exactly one behavioural gap. They issue ZERO
+# dump-all orders a game. We issue 77, every one of them from about step
+# 671, because H2's route liquidates each good in a single
+# "SELL <GOOD> 1000". The engine fills that unit by unit down the glut
+# curve (`_commit_unit`), so a shallow book pays less for every unit after
+# the first: wool gives up a quarter of its price over 51 units and
+# strawberry over 48. On sized orders we are indistinguishable from them,
+# median lot 4 against 4 and p90 13 against 12.
+#
+# `meter` was built for exactly this and cannot do it, for two reasons that
+# are both fixed here rather than tuned around:
+#   1. it lifts entirely when the shed is tight, and in the endgame the
+#      shed is ALWAYS tight, so it is off precisely when it is needed;
+#   2. FLOOR was measured and abandoned because once a book is already
+#      under the floor the allowance computes to zero, the good is never
+#      sold again, stock piles up and the hundred-slot shed jams.
+# So the floor here is never allowed to return zero: SPREAD_MIN units
+# always go, which drains the book steadily instead of seizing.
+#
+# Steps before the last acting step over which the shed is emptied
+# gradually rather than dumped.
+#
+# MEASURED AND BACKWARDS. Built on the dump-order count above and it was
+# the wrong reading of it: order SHAPE is not sale TIMING. Tracking the
+# shed itself over eight bracket games settles what they actually do --
+# they are not spreading a dump, they never build the pile:
+#       day      22    24    26    28
+#       THEM      6     2     2     6   units held
+#       US       40    23    38    28
+# They run the shed near empty from day 22 on. We carry 20-40 units late
+# and then liquidate. Spreading that liquidation makes K hold LONGER,
+# which is the opposite of the gap, and it measures that way: 92,446 at
+# off against 92,251 at 48 steps and 89,869 at 96. Left at zero, and the
+# real mechanism is DRAIN_TO below, which sells sooner instead.
+ENDGAME_SPREAD = 0
+# Share of base the book must still pay for a unit to be worth selling now
+# rather than a few turns later, once the town has eaten some of it.
+SPREAD_FLOOR = 0.45
+# Units always permitted even when the book is already under the floor.
+# This is the anti-jam rule; without it this mechanism is the old FLOOR.
+SPREAD_MIN = 3
+LAST_ACT_STEP = 718
+
+# Units the shed may hold before spare market slots are spent selling it
+# down. Zero disables and is H2's own behaviour.
+#
+# This is the same evidence as ENDGAME_SPREAD read the right way round.
+# The bracket holds 2-6 units from day 22; the route holds 20-40. Stock in
+# the shed is not money -- the score is coins held -- and it is not safety
+# either, because price depends on inventory alone and there is no recovery
+# with time, only the town eating. Holding a unit therefore gains nothing
+# and risks the hundred-slot shed jamming against the harvest. Selling it
+# sooner also crashes the shared book before the opponent's orders land,
+# which is the denial that every price experiment in this project
+# eventually ran into from the wrong side.
+#
+# Only SPARE slots are used. The engine reads ten orders a turn and the
+# route's own come first; appending cannot shift them, but anything past
+# the tenth is dropped, so this never displaces a route order.
+DRAIN_TO = 0
+# Never push a unit below this share of base while draining -- a drain is
+# not a reason to give the crop away.
+DRAIN_FLOOR = 0.55
+
 # Above this the shed is the binding constraint and the meter comes off.
 CRAMPED = SHED_CAP - 12
 
@@ -217,6 +305,8 @@ def meter(observation: dict[str, Any], market: list) -> list:
     if not market:
         return market
     tight = _shed_total(observation) >= CRAMPED
+    step = int(observation.get("step", 0) or 0)
+    endgame = bool(ENDGAME_SPREAD) and step >= LAST_ACT_STEP - ENDGAME_SPREAD
     out = []
     for order in market:
         if (isinstance(order, (list, tuple)) and len(order) >= 3
@@ -235,8 +325,15 @@ def meter(observation: dict[str, Any], market: list) -> list:
                 continue
             out.append(list(order))
             continue
+        # Outside the endgame only the fragile four are worth metering. In
+        # the endgame every good is, because the dump-all orders cover
+        # carrot and wheat too -- and a deep book regulates itself, since
+        # the floor walk below simply allows many units when the price
+        # barely moves.
         if (not isinstance(order, (list, tuple)) or len(order) < 3
-                or order[0] != "SELL" or order[1] not in FRAGILE):
+                or order[0] != "SELL"
+                or (order[1] not in FRAGILE and not endgame)
+                or order[1] not in MARKET_PARAMS):
             out.append(list(order) if isinstance(order, (list, tuple))
                        else order)
             continue
@@ -248,6 +345,23 @@ def meter(observation: dict[str, Any], market: list) -> list:
             continue
         if want <= 0:
             out.append(list(order))
+            continue
+        if endgame:
+            # Deliberately BEFORE the `tight` lift. The endgame shed is
+            # always tight, so deferring to it here is what made the old
+            # meter useless exactly when the dumping happens.
+            inventory = inventory_of(observation, item)
+            base = float(MARKET_PARAMS.get(item, {}).get(
+                "base", BASE_PRICE.get(item, 1)))
+            allowed = 0
+            while allowed < want:
+                if price_at(item, inventory + allowed) < base * SPREAD_FLOOR:
+                    break
+                allowed += 1
+            # Never zero: a book already under the floor would otherwise
+            # never be sold again and the shed would jam, which is exactly
+            # how the old FLOOR failed.
+            out.append(["SELL", item, max(min(want, SPREAD_MIN), allowed)])
             continue
         if tight:
             # The shed binds harder than the book: a freed slot is worth
@@ -269,6 +383,54 @@ def meter(observation: dict[str, Any], market: list) -> list:
         # index into this list, and a shorter one shifts every order behind
         # it into a different slot of the ten the engine reads.
         out.append(["SELL", item, allowed])
+    return out
+
+
+def drain(observation: dict[str, Any], market: list) -> list:
+    """Spend spare market slots selling the shed down toward DRAIN_TO."""
+    if not DRAIN_TO:
+        return market
+    private = observation.get("private") or {}
+    shed = private.get("shed") or {}
+    try:
+        total = sum(int(v) for v in shed.values())
+    except (TypeError, ValueError):
+        return market
+    excess = total - DRAIN_TO
+    if excess <= 0 or len(market) >= 10:
+        return market
+
+    # Sell the deepest books first: a unit of wheat costs the book almost
+    # nothing where a unit of wool costs it a fiftieth of its price, so
+    # draining by depth frees the same slot for the least money given up.
+    held = []
+    for item, count in shed.items():
+        try:
+            count = int(count)
+        except (TypeError, ValueError):
+            continue
+        if count <= 0 or item not in MARKET_PARAMS:
+            continue
+        inventory = inventory_of(observation, item)
+        base = float(MARKET_PARAMS.get(item, {}).get(
+            "base", BASE_PRICE.get(item, 1)))
+        room = 0
+        while room < count:
+            if price_at(item, inventory + room) < base * DRAIN_FLOOR:
+                break
+            room += 1
+        if room > 0:
+            held.append((room, item))
+    held.sort(reverse=True)
+
+    out = list(market)
+    for room, item in held:
+        if len(out) >= 10 or excess <= 0:
+            break
+        take = min(room, excess)
+        if take > 0:
+            out.append(["SELL", item, int(take)])
+            excess -= take
     return out
 
 
@@ -382,6 +544,9 @@ def agent(observation: dict[str, Any], configuration: Any = None):
             if action.get("market"):
                 action["market"] = meter(observation, action["market"])
             extend(observation, action)
+            # After extend, so the route's own orders and its hires both
+            # keep their slots and the drain only takes what is left.
+            action["market"] = drain(observation, action.get("market") or [])
     except Exception:
         return action
     return action
