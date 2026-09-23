@@ -3943,6 +3943,7 @@ _J_FEED_WORTH = 1.0
 _J_CARE_WORTH = 0.9
 _J_SHED_PULL = 0.0
 _J_JOB_RADIUS = 99
+_J_COLD_START_RADIUS = 2
 _J_ARRIVAL_PRICING = True
 _J_FERTILISE_ONGOING = True
 _J_ONGOING_YIELD = 1.5
@@ -4026,6 +4027,7 @@ _J_WHEAT_RAID = 0
 _J_WHEAT_RAID_RESERVE = 1200.0
 _J_FEED_DAYS_AHEAD = 2
 _J__EN_ROUTE: dict[tuple[int, int], tuple[tuple[int, int], str]] = {}
+_J__EVER_WORKED: set[tuple[int, int]] = set()
 
 def _J__farm(observation: dict[str, _J_Any]) -> dict[str, _J_Any]:
     player = int(observation.get('player', 0))
@@ -4716,6 +4718,7 @@ def _J_decide(observation: dict[str, _J_Any]) -> _J_AgentAction:
     step = int(observation.get('step', 0))
     if step == 0:
         _J__EN_ROUTE.clear()
+        _J__EVER_WORKED.clear()
     if not tiles:
         return {'farmer': list(_J_PASS), 'hands': [], 'market': []}
     day = int(observation.get('day', step // _J_TURNS))
@@ -4751,10 +4754,13 @@ def _J_decide(observation: dict[str, _J_Any]) -> _J_AgentAction:
     for worker, position in enumerate(positions):
         inventory = _J__inventory(observation, worker)
         held = _J__EN_ROUTE.get((player, worker))
+        cold = _J_COLD_START_RADIUS > 0 and (player, worker) not in _J__EVER_WORKED
         for y in range(len(tiles)):
             row = tiles[y]
             for x in range(len(row)):
                 if row[x] == 'LOCKED' and (not _J__on_shed(x, y)):
+                    continue
+                if cold and _J_distance(position, (x, y)) > _J_COLD_START_RADIUS:
                     continue
                 travel = _J_distance(position, (x, y))
                 for coins, turns, action in _J_job_offers(ctx, plan, row[x], x, y, inventory, day, step, shed, seeds, counts):
@@ -4786,6 +4792,7 @@ def _J_decide(observation: dict[str, _J_Any]) -> _J_AgentAction:
         travel = _J_distance(positions[worker], cell)
         chosen[worker] = action if travel == 0 else _J_step_toward(positions[worker], cell, action)
         booked.append((worker, cell, action, travel))
+        _J__EVER_WORKED.add((player, worker))
         if action[0] not in ('DROP', 'PICKUP'):
             claimed.add(key)
         if action[0] == 'PICKUP' and len(action) > 2:

@@ -172,6 +172,32 @@ SHED_PULL = 0.0
 # How far a worker will travel for a job. The board is ten tiles across, so
 # anything above nine is no limit at all.
 JOB_RADIUS = 99
+# A hand's radius for its OWN first assignment, the turn it is hired and
+# every turn until it completes one. Traced against a real game
+# (tools/analysis/trace_new_hire.py): a day-3 hire crossed three genuinely
+# unowned tiles and did not touch anything productive until seven turns
+# after spawning, walking a straight line to a single far target the whole
+# way -- the shortest possible path to it (Manhattan is optimal on this
+# open board, so no routing algorithm changes that number), chosen because
+# the global rate auction found it the single best job on the board that
+# turn. WALK_COST already prices that choice and is tuned on it, but every
+# one of those numbers is an average over an established crew's
+# steady-state walk, not the specific case of a hand with no momentum.
+#
+# Measured against strong_panel, confirmed at 24 games/opponent after an
+# initial 16: margin improves by 9,000 to 24,000 coins against every one
+# of the four opponents at radius 2 (aurax7 -69,961 -> -46,488, v34
+# -59,681 -> -50,853, h2 -66,344 -> -53,819, i -47,743 -> -46,428) -- by
+# far the largest single change found this session. Radius 3 and 4 are
+# WORSE, in one case worse than off entirely (v34 at radius 3: -63,871).
+# Not a tuning curve that peaks and decays gently: the auction is a
+# whole-board allocation, and a cold hand taking a bad nearby job at
+# radius 2 FREES the good distant job for whoever was already closer to
+# it, where a wider radius just lets the cold hand make the same long
+# walk anyway while still perturbing everyone else's assignments. Zero
+# means no restriction, every hand in the same board-wide auction from
+# its first turn; that was the default this was measured against.
+COLD_START_RADIUS = 2
 # Whether a crop's revenue is scaled by the book it will meet on the day it
 # ripens rather than today's book.
 ARRIVAL_PRICING = True
@@ -681,6 +707,7 @@ WHEAT_RAID_RESERVE = 1200.0
 FEED_DAYS_AHEAD = 2
 
 _EN_ROUTE: dict[tuple[int, int], tuple[tuple[int, int], str]] = {}
+_EVER_WORKED: set[tuple[int, int]] = set()
 
 
 # --- reading the world -------------------------------------------------
@@ -1897,6 +1924,7 @@ def decide(observation: dict[str, Any]) -> AgentAction:
     step = int(observation.get("step", 0))
     if step == 0:
         _EN_ROUTE.clear()
+        _EVER_WORKED.clear()
     if not tiles:
         return {"farmer": list(PASS), "hands": [], "market": []}
 
@@ -1960,10 +1988,13 @@ def decide(observation: dict[str, Any]) -> AgentAction:
     for worker, position in enumerate(positions):
         inventory = _inventory(observation, worker)
         held = _EN_ROUTE.get((player, worker))
+        cold = COLD_START_RADIUS > 0 and (player, worker) not in _EVER_WORKED
         for y in range(len(tiles)):
             row = tiles[y]
             for x in range(len(row)):
                 if row[x] == "LOCKED" and not _on_shed(x, y):
+                    continue
+                if cold and distance(position, (x, y)) > COLD_START_RADIUS:
                     continue
                 travel = distance(position, (x, y))
                 for coins, turns, action in job_offers(
@@ -2023,6 +2054,7 @@ def decide(observation: dict[str, Any]) -> AgentAction:
         chosen[worker] = (action if travel == 0
                           else step_toward(positions[worker], cell, action))
         booked.append((worker, cell, action, travel))
+        _EVER_WORKED.add((player, worker))
         if action[0] not in ("DROP", "PICKUP"):
             claimed.add(key)
         # Claim the consumable this job will spend, so two workers do not
