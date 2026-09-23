@@ -272,6 +272,17 @@ LAST_ACT_STEP = 718
 # Only SPARE slots are used. The engine reads ten orders a turn and the
 # route's own come first; appending cannot shift them, but anything past
 # the tenth is dropped, so this never displaces a route order.
+#
+# MEASURED AND MUCH WORSE, and the most useful failure of the day. At
+# DRAIN_TO 6 -- the level the bracket actually carries -- K wins 4 of 120
+# bracket games against the baseline's 58, and the median own score falls
+# from 99,667 to 55,783. Copying the number was the error. Their shed is
+# empty as a RESULT of production and sale timing that earns full price;
+# ours emptied by force means dumping into our own books all game and
+# living on the floor of every curve. A statistic about a stronger agent
+# is not an instruction, and this is the third mechanism today built by
+# reading one off their play -- after ENDGAME_SPREAD above and the LOT
+# cap -- that lost once measured.
 DRAIN_TO = 0
 # Never push a unit below this share of base while draining -- a drain is
 # not a reason to give the crop away.

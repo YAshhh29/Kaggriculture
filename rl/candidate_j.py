@@ -514,6 +514,19 @@ WATER_FLOOR = 0.0
 # Measured and left alone: at 1.8 and at 3.0 the farm sowed exactly the
 # same 56 strawberries, to the unit. The cap was never what held the crop
 # back, so widening it buys nothing.
+# Re-tested 2026-09-23 on the population that actually matters. The note
+# above rejecting a looser cap was measured on strong_panel -- four fixed
+# opponents, none of them confirmed to be in the 2600-2900 band -- and at
+# own-scores of 36,020 and 41,465 where J now scores 85,375, so it was
+# both stale and pointed at the wrong field. It was still right. Against
+# 60 bracket teams, 120 games, recorded baseline 95,048 matching across
+# arms: 12/120 wins at a boost of 2.0 against 16/120 at 1.0.
+#
+# Worth knowing WHY, because the profile said J under-plants: it holds 45
+# plants at day 24 where the bracket holds 58, and decays from 53 while
+# they stay flat. Doubling the allowance does not fix that, so the bare
+# ground is not the cap refusing to plant -- something else is failing to
+# keep it sown. That is the thread to pull, not this constant.
 ONGOING_CAP_BOOST = 1.0
 # How many crops deep the seed order goes each turn. Sixty games: median
 # 75,786 at three and 80,730 at four, ahead in every band and by 12,484
@@ -577,6 +590,14 @@ CLOSING_STEPS = 10
 # shed slots, and the shed is worth more than the coins forgone.
 FRAGILE = ("WOOL", "STRAWBERRY", "MILK", "MELON")
 FRAGILE_FLOOR = 0.55
+# Re-tested on the bracket 2026-09-23, because the profile says J sells
+# 977 units a game in sized lots where those teams sell 2,820 and is
+# broke at day 9 with 340 coins against their 2,518, which looked like
+# J throttling its own selling. It is not: at PER_TURN 24 and FLOOR 0.30
+# -- four times the allowance and half the floor -- J wins 16 of 120
+# bracket games, exactly the 16 of 120 it wins untouched. The selling
+# rules are not what holds J's revenue down. Its production does: 45
+# plants at day 24 against their 58, with seed in hand and ground bare.
 FRAGILE_PER_TURN = 6
 # Days before LAST_DAY across which the fragile-book floor and per-turn
 # allowance slide toward "sell it all", instead of holding every book at
