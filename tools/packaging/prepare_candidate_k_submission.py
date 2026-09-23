@@ -283,7 +283,8 @@ def main() -> None:
         else:
             print(f"  {key:16s} {value}")
     print("\n  agent() is the last callable, the packaged file makes the same")
-    print("  decisions as the source across the H2-to-J splice, and it plays")
+    print("  decisions as the source turn for turn (SPLICE controls whether")
+    print("  that includes a handover to the reactive engine), and it plays")
     print("  a clean game when loaded by path the way Kaggle loads it.")
 
 

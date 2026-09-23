@@ -4974,21 +4974,39 @@ HIRE_BEFORE_HOUR = 3
 # and diverge at step 40. Rank 1 is byte-identical for steps 0-11, identical
 # again 14-25, and completely different in every game from step 26.
 #
-# What they keep is the opening. So does this: H2's recorded route plays the
-# first SPLICE steps -- an opening that reaches 58 worked tiles of 60 and
-# wastes nothing -- and the reactive engine takes the farm on from there.
-# Nought hands the whole game to H2 and is the agent we already had.
+# What they keep is the opening. So this was tried: H2's recorded route
+# plays the first SPLICE steps -- an opening that reaches 58 worked tiles
+# of 60 and wastes nothing -- and the reactive engine takes the farm on
+# from there. Nought hands the whole game to H2 and is the agent we
+# already had, with only the fragile-goods meter added.
 #
-# It is also the cleanest diagnostic available: if splicing early scores
-# like J, J's weakness is its midgame; if late, its opening.
-# Day twelve, measured. Handing over at day nine scores 81,122 and at day
-# twelve 86,028, against the route alone at 96,082 -- so the trend says the
-# later the better, and that is the diagnostic answering itself: the
-# reactive engine is weaker than the route at every stage, not just in the
-# opening. K keeps the splice because an agent that re-decides can answer
-# an opponent a recorded route cannot, and that is what the corpus says
-# separates 3000 from 2800; but on this measure it is still behind.
-SPLICE = 288
+# It was also the cleanest diagnostic available: if splicing early scores
+# like J, J's weakness is its midgame; if late, its opening. Day nine
+# scored 81,122 and day twelve 86,028 against the route alone at 96,082,
+# so the trend said later is better, and that was the diagnostic
+# answering itself: the reactive engine was weaker than the route at
+# every stage, not just the opening. Kept anyway at the time, on a
+# robustness argument: an agent that re-decides can answer an opponent a
+# recorded route cannot, and that is what the corpus says separates 3000
+# from 2800.
+#
+# Re-measured 2026-09-23 against strong_panel after J's cold-start fix
+# (COLD_START_RADIUS, candidate_j.py) -- the fix that should have helped
+# the reactive engine most, since it is exactly the kind of midgame
+# defect the diagnostic above was built to find. It did not close the
+# gap; splice=0 still wins on every single opponent, by more than before
+# in absolute terms:
+#     aurax7  splice=0 -990      splice=216 -48,114   splice=288 -31,662
+#     v34     splice=0 +54,689   splice=216 +13,117   splice=288 +15,905
+#     h2      splice=0 +0        splice=216 -30,935   splice=288 -31,202
+#     i       splice=0 +4,437    splice=216 -35,362   splice=288 -26,873
+# The robustness argument for keeping a splice is untested, not
+# disproven -- strong_panel's opponents are strong but none of them are
+# built to specifically exploit a scripted, predictable route, so this
+# does not settle whether a splice would earn its keep against one that
+# is. It does settle which config is better against everything actually
+# measured, which is what the ladder is made of until shown otherwise.
+SPLICE = 0
 # Measured and left alone. The study is right that the field dumps
 # fertilizer and buys it back into a book the town never drains, but
 # stopping H2 doing it costs 1,116 a game on the median: it needs the
