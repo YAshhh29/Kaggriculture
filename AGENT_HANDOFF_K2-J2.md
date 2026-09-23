@@ -191,7 +191,7 @@ be bought — 32,590 lost to take 3,953 off the rival), a wheat "float"
 through the pre-town-tick quiet turn, pricing pens by shed-distance
 alone, reserving ground near the shed for pens (matched the elite's
 spatial pattern almost exactly and still lost money at 120-game
-confirmation — see `rl/data/public_meta_study.md` for the full story),
+confirmation — see `docs/public_meta_study.md` for the full story),
 an explicit job-queue/commitment mechanism for the auction (fired on 84%
 of eligible turns and moved nothing, because the auction's own
 distance-weighted pricing was already finding the same jobs), giving K
@@ -229,7 +229,7 @@ J_SET='{"RACE_AWARE_TRUNCATE": true}' python -m tools.eval.broad_panel rl.j_vari
 Confirm any positive result on 60 tapes before adopting, given today's
 six-for-six record of 30-tape results overstating themselves.
 
-## What public code taught us (full detail in `rl/data/public_meta_study.md`)
+## What public code taught us (full detail in `docs/public_meta_study.md`)
 
 Seven notebooks read by explicit user request: ahmedberatozer's v39 and
 v34, leoprovorov's reverse-engineering writeup, two of dmitriigluzdov's
