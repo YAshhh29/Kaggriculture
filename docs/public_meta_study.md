@@ -6,6 +6,23 @@ agents, shiiin9's order-book notebook, and lynnsakurai's invariant-checked
 wrapper. Read for mechanisms and independent confirmation, not copied --
 none of this is in J or K's source.
 
+> **CORRECTION, 2026-09-23. None of these seven authors is in the target
+> bracket, and none is on the live board.** Searched the 561-tape corpus
+> (222 distinct teams, 197 of them rated 2600-2900) and the top 136 live
+> teams fetched from the API: aurax7, ahmedberatozer, dmitriigluzdov,
+> shiiin9, lynnsakurai, leoprovorov, Hayashi and Tschinkel appear in
+> **neither**. The only near-match is "Dmitriy Ulybin" (rank 88, 2754.6),
+> a different person.
+>
+> So the claim below that this lineage is "very likely most of what the
+> 2700-2900 bracket is actually running" is an inference that was stated
+> as fact and is **not supported by any data in this repo**. These are
+> published notebooks of unknown current standing; some may be months
+> old. Their mechanisms may still be worth taking -- a good idea does not
+> need its author to be ranked -- but nothing here describes the bracket.
+> For that, use `tools.analysis.bracket_roster` and the tapes, which name
+> the 197 teams actually in the band.
+
 ## 1. The whole strong field is one converging lineage
 
 Every one of the six agent-bearing notebooks credits the same chain:
