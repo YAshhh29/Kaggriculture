@@ -68,9 +68,26 @@ def _public_aliases() -> dict[str, str]:
     return out
 
 
+# Our own live submissions, as the exact files Kaggle rated. Each was matched
+# to its submission by byte count against the API's totalBytes, so these are
+# the rated code itself, not "probably the same" local source. Ratings as
+# read 2026-09-26. They anchor the scale that turns local tournament results
+# into a predicted live rating (tools/arena/calibrate.py).
+LIVE_ANCHORS = {
+    "live_J": ("submissions/candidate-j/main.py", 56489751, 685.3),
+    "live_C2": ("submissions/candidate-c2/main.py", 56498060, 1049.7),
+    "live_F": ("submissions/candidate-f/main.py", 56439601, 1343.7),
+    "live_I": ("submissions/candidate-i/main.py", 56317289, 1381.4),
+    "live_K": ("submissions/candidate-k/main.py", 56493502, 1467.1),
+    "live_H2": ("submissions/candidate-h2/main.py", 56434220, 1576.2),
+}
+
+
 def spec_of(name: str) -> str:
     if name == "random" or ":" in name:
         return name
+    if name in LIVE_ANCHORS:
+        return "file:" + LIVE_ANCHORS[name][0]
     table = {**ALIASES, **_public_aliases()}
     if name not in table:
         raise SystemExit(f"unknown agent {name!r}; run `agents` for the list")
@@ -81,6 +98,12 @@ def load(name: str):
     spec = spec_of(name)
     if spec == "random":
         return "random"
+    if spec.startswith("file:"):
+        # Loaded exactly the way Kaggle loads a submission.
+        from kaggle_environments.agent import get_last_callable
+        path = ROOT / spec[len("file:"):]
+        return get_last_callable(path.read_text(encoding="utf-8"),
+                                 path=str(path))
     module_name, attr = spec.rsplit(":", 1)
     import importlib
     return getattr(importlib.import_module(module_name), attr)
@@ -96,12 +119,27 @@ def _unpack(blob: str) -> Any:
 
 
 def _timed(agent, bucket: list[float]):
+    # Kaggle calls an agent with only as many arguments as it declares
+    # (kaggle_environments/agent.py truncates to __code__.co_argcount). Several
+    # of our own submissions end in a one-argument decide(observation); calling
+    # those with (observation, configuration) raised every turn, the farm stood
+    # still, and two live-rated anchors scored exactly the 3,000 they started
+    # with. The wrapper must pass what Kaggle passes.
+    code = getattr(agent, "__code__", None)
+    arity = code.co_argcount if code is not None else 2
+
     def wrapped(observation, configuration=None):
         start = time.perf_counter()
         try:
-            return agent(observation, configuration)
+            return agent(*(observation, configuration)[:arity])
+        except Exception:
+            # The engine swallows an agent's exception and still reports the
+            # game DONE, so a raising agent looks like a quiet one. Count it.
+            wrapped.errors += 1
+            raise
         finally:
             bucket.append((time.perf_counter() - start) * 1000.0)
+    wrapped.errors = 0
     return wrapped
 
 
@@ -128,7 +166,18 @@ def _label(env, names: list[str]) -> None:
 
 
 def play_one(job: tuple[str, str, int]) -> dict[str, Any]:
-    """One game, stored compactly. Runs in a worker process."""
+    """One game, stored compactly; a crash becomes a result, not an abort."""
+    try:
+        return _play_one(job)
+    except Exception as error:  # one broken agent must not end a tourney
+        a_name, b_name, seed = job
+        return {"game_id": f"{a_name}__vs__{b_name}__s{seed}",
+                "agents": [a_name, b_name], "seed": seed,
+                "rewards": [0.0, 0.0], "statuses": ["CRASH", "CRASH"],
+                "winner": None, "error": f"{type(error).__name__}: {error}"}
+
+
+def _play_one(job: tuple[str, str, int]) -> dict[str, Any]:
     a_name, b_name, seed = job
     sys.path.insert(0, str(ROOT))
     times: list[list[float]] = [[], []]
@@ -142,6 +191,11 @@ def play_one(job: tuple[str, str, int]) -> dict[str, Any]:
     final = env.steps[-1]
     rewards = [float(final[i].get("reward") or 0.0) for i in (0, 1)]
     statuses = [str(final[i].get("status")) for i in (0, 1)]
+    turn_errors = [getattr(a, "errors", 0) for a in agents]
+    for i in (0, 1):
+        # An agent that raised is not DONE whatever the engine says.
+        if turn_errors[i] and statuses[i] == "DONE":
+            statuses[i] = f"RAISED_{turn_errors[i]}"
     tapes = [_pack([env.steps[s][i].get("action") for s in range(len(env.steps))])
              for i in (0, 1)]
     game_id = f"{a_name}__vs__{b_name}__s{seed}"
@@ -151,6 +205,7 @@ def play_one(job: tuple[str, str, int]) -> dict[str, Any]:
         "rewards": rewards, "statuses": statuses,
         "winner": (a_name if rewards[0] > rewards[1] else
                    b_name if rewards[1] > rewards[0] else None),
+        "turn_errors": turn_errors,
         "ms_mean": [round(sum(t) / len(t), 1) if t else None for t in times],
         "ms_max": [round(max(t), 1) if t else None for t in times],
         "seconds": round(time.time() - started, 1),
@@ -363,6 +418,9 @@ def main() -> None:
     if args.cmd == "agents":
         for name, spec in {**ALIASES, **_public_aliases()}.items():
             print(f"  {name:32s} {spec}")
+        for name, (path, ref, rating) in LIVE_ANCHORS.items():
+            print(f"  {name:32s} file:{path}  (submission {ref}, "
+                  f"live {rating})")
         return
     if args.cmd == "play":
         jobs = [(args.a, args.b, s) for s in args.seeds]
@@ -387,12 +445,16 @@ def main() -> None:
         jobs += [(b, a, s) for a, b in pairs for s in args.seeds]
         print(f"  {len(jobs)} games ({len(pairs)} pairs x {len(args.seeds)} "
               f"seeds x 2 seats) on {args.workers} workers", flush=True)
-        with Pool(args.workers) as pool:
+        # One process per game. Agents keep module-level state (route
+        # cursors, commitment tables, caches), and a worker that plays two
+        # games in a row would carry the first game's state into the second.
+        with Pool(args.workers, maxtasksperchild=1) as pool:
             for result in pool.imap_unordered(play_one, jobs):
+                note = f"  ERROR {result['error']}" if result.get("error") else ""
                 print(f"    {' vs '.join(result['agents']):48s} "
                       f"s{result['seed']}: {result['rewards'][0]:9,.0f} : "
-                      f"{result['rewards'][1]:9,.0f}  {result['statuses']}",
-                      flush=True)
+                      f"{result['rewards'][1]:9,.0f}  {result['statuses']}"
+                      f"{note}", flush=True)
         names = set(args.agents)
         mine = [r for r in _records()
                 if set(r["agents"]) <= names and r.get("seed") in args.seeds]
