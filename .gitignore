@@ -33,3 +33,14 @@ artifacts/replays/
 
 # Live opponent tapes fetched from the ladder (large, refetchable).
 kaggle_cache/live_clones/
+
+# Arena output. A rendered replay is ~45 MB; stored games re-render
+# deterministically from their seed and action tapes.
+arena/replays/
+arena/games/
+arena/shots/
+arena/index.html
+
+# Extracted public notebook agents: other people's code, kept for local
+# evaluation only and re-extractable from kaggle_cache/notebooks.
+rl/public/nb_*.py
