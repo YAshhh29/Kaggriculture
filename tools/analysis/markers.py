@@ -39,7 +39,7 @@ def _unpack(blob: str) -> list:
 
 def measure(job) -> dict:
     """Replay one game and read one side's markers."""
-    label, seed, tapes, seat = job
+    label, seed, tapes, seat, recorded = job
     sys.path.insert(0, str(ROOT))
     from kaggle_environments import make
 
@@ -53,10 +53,15 @@ def measure(job) -> dict:
     land_days: list[int] = []
     prev_quadrants = None
     bank = {}
-    for t in range(min(len(tapes[0]), len(tapes[1]), 719)):
+    # The action stored at index k was chosen while observing step k-1 (see
+    # rl/replay_agent.py). The first version of this tool applied index t at
+    # step t -- one turn late -- and the cash-tight top teams fell apart
+    # under it while the lineage's fixed scripts did not, which read as
+    # "top teams score 26k". Index t+1 at step t is the recorded game.
+    for t in range(min(len(tapes[0]), len(tapes[1])) - 1):
         obs = env.state[0].observation
         prices = (obs.get("market") or {}).get("prices") or {}
-        act = tapes[seat][t] or {}
+        act = tapes[seat][t + 1] or {}
         for u in [act.get("farmer")] + list(act.get("hands") or []):
             if isinstance(u, list) and u:
                 if u[0] == "PLANT" and len(u) > 1 and u[1] in plants:
@@ -67,7 +72,7 @@ def measure(job) -> dict:
             if (isinstance(o, list) and len(o) >= 2 and o[0] == "SELL"
                     and float(prices.get(o[1], 99)) <= 2):
                 floor_sells += 1
-        env.step([tapes[0][t] or {}, tapes[1][t] or {}])
+        env.step([tapes[0][t + 1] or {}, tapes[1][t + 1] or {}])
         farm = env.state[0].observation["farms"][seat]
         quads = farm.get("unlocked_quadrants")
         n = len(quads) if isinstance(quads, (list, tuple)) else int(quads or 0)
@@ -79,6 +84,7 @@ def measure(job) -> dict:
     final = [float(env.state[i].reward or 0) for i in (0, 1)]
     return {"label": label, "won": final[seat] > final[1 - seat],
             "score": final[seat],
+            "fidelity": final[seat] / recorded if recorded else None,
             "land2": land_days[0] if len(land_days) >= 1 else None,
             "land3": land_days[1] if len(land_days) >= 2 else None,
             "quadrants": 1 + len(land_days),
@@ -103,7 +109,7 @@ def jobs_from_arena(names: list[str], limit: int) -> list:
                 continue
             seat = r["agents"].index(name)
             out.append((name, r["seed"], [_unpack(t) for t in r["tapes"]],
-                        seat))
+                        seat, float(r["rewards"][seat])))
             taken += 1
     return out
 
@@ -124,13 +130,14 @@ def jobs_from_corpus(lo: int, hi: int, limit: int) -> list:
         tapes = [None, None]
         tapes[seat] = _unpack(r["actions_zlib_b64"])
         tapes[1 - seat] = _unpack(r["opponent_actions_zlib_b64"])
-        out.append((f"ladder #{lo}-{hi}", r["seed"], tapes, seat))
+        out.append((f"ladder #{lo}-{hi}", r["seed"], tapes, seat,
+                    float((r.get("rewards") or {}).get("them") or 0)))
     return out
 
 
 KEYS = ["land2", "land3", "quadrants", "plantings", "p_WHEAT", "p_STRAWBERRY",
         "p_TOMATO", "p_CARROT", "p_MELON", "care", "floor_sells",
-        "bank_d5", "bank_d8", "bank_d11", "bank_d20", "score"]
+        "bank_d5", "bank_d8", "bank_d11", "bank_d20", "score", "fidelity"]
 
 
 def main() -> None:
@@ -163,8 +170,12 @@ def main() -> None:
         cells = []
         for k in KEYS:
             vals = [r[k] for r in rs if r.get(k) is not None]
-            cells.append(f"{statistics.median(vals):8.0f}" if vals
-                         else f"{'-':>8}")
+            if k == "fidelity":
+                cells.append(f"{statistics.median(vals):8.1%}" if vals
+                             else f"{'-':>8}")
+            else:
+                cells.append(f"{statistics.median(vals):8.0f}" if vals
+                             else f"{'-':>8}")
         win = 100 * sum(r["won"] for r in rs) / len(rs)
         print(f"  {label[:22]:22s} {len(rs):3d} {win:5.0f} " + " ".join(cells))
 

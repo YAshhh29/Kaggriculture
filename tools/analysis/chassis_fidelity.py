@@ -65,8 +65,15 @@ def one(job):
         if mode == "raw":
             ours = build_replay_agent(tuple(tape))
         else:
+            # Corpus tapes use Kaggle's replay convention -- the action at index
+            # k was chosen while observing step k-1 -- but the Chassis plays
+            # tape[step] at step `step`. Unshifted, every action lands a turn
+            # late; the first run of this test did exactly that and even the
+            # lineage control fell from 90% to 42%.
+            route = tape[1:] + [{"farmer": ["PASS"], "hands": [],
+                                 "market": []}]
             mod = importlib.import_module(f"rl.public.{chassis_module}")
-            ours = mod.make_agent({0: tape}, router=None)
+            ours = mod.make_agent({0: route}, router=None)
         live = load(live_name)
         players = [None, None]
         players[seat], players[1 - seat] = ours, live
