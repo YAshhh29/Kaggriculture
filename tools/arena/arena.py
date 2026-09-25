@@ -407,6 +407,8 @@ def main() -> None:
     t.add_argument("agents", nargs="+")
     t.add_argument("--seeds", type=int, nargs="+", default=[11, 12])
     t.add_argument("--workers", type=int, default=8)
+    t.add_argument("--skip-existing", action="store_true",
+                   help="do not replay games already in arena/games")
     r = sub.add_parser("render"); r.add_argument("game_id")
     r.add_argument("--open", action="store_true")
     e = sub.add_parser("episode"); e.add_argument("ref")
@@ -443,6 +445,11 @@ def main() -> None:
         pairs = list(itertools.combinations(args.agents, 2))
         jobs = [(a, b, s) for a, b in pairs for s in args.seeds]
         jobs += [(b, a, s) for a, b in pairs for s in args.seeds]
+        if args.skip_existing:
+            before = len(jobs)
+            jobs = [j for j in jobs
+                    if not (GAMES / f"{j[0]}__vs__{j[1]}__s{j[2]}.json").exists()]
+            print(f"  skipping {before - len(jobs)} games already stored")
         print(f"  {len(jobs)} games ({len(pairs)} pairs x {len(args.seeds)} "
               f"seeds x 2 seats) on {args.workers} workers", flush=True)
         # One process per game. Agents keep module-level state (route
