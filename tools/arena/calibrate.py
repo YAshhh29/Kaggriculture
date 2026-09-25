@@ -104,7 +104,26 @@ def main() -> None:
     if not games:
         raise SystemExit("no clean local games found for those agents")
     theta = bradley_terry(games)
-    anchors = {n: LIVE_ANCHORS[n][2] for n in theta if n in LIVE_ANCHORS}
+    record: dict[str, list[float]] = {n: [0.0, 0.0] for n in theta}
+    for a_, b_, s_ in games:
+        record[a_][0] += s_
+        record[a_][1] += 1
+        record[b_][0] += 1 - s_
+        record[b_][1] += 1
+    anchors = {}
+    for n in theta:
+        if n not in LIVE_ANCHORS:
+            continue
+        won, played = record[n]
+        # An anchor that never wins (or never loses) has no finite strength:
+        # the fit only knows it is below (above) everything, so it would drag
+        # the line. J lost all 104 of its tournament games and alone moved the
+        # leave-one-out error from ~74 to 123.
+        if won == 0 or won == played:
+            print(f"  anchor {n} excluded from the fit: {won:.0f}/{played:.0f} "
+                  f"is unbeaten or winless, so its strength is unbounded")
+            continue
+        anchors[n] = LIVE_ANCHORS[n][2]
     print(f"\n{len(games)} clean local games, {len(theta)} agents, "
           f"{len(anchors)} live anchors")
     if len(anchors) < 3:
