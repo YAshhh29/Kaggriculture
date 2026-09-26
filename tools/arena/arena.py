@@ -64,6 +64,12 @@ ALIASES = {
     "A_noV219": "rl.candidate_l:no_v219",
     "L_gate140": "rl.candidate_l:gate140",
     "L_gate120": "rl.candidate_l:gate120",
+    "L_front": "rl.candidate_l:front",
+    "L_front_gate": "rl.candidate_l:front_gate",
+    "L_fg140": "rl.candidate_l:front_gate140",
+    "L_fg120": "rl.candidate_l:front_gate120",
+    "L_fg100": "rl.candidate_l:front_gate100",
+    "L_fg0": "rl.candidate_l:front_gate0",
 }
 
 
@@ -414,6 +420,8 @@ def main() -> None:
     t.add_argument("agents", nargs="+")
     t.add_argument("--seeds", type=int, nargs="+", default=[11, 12])
     t.add_argument("--workers", type=int, default=8)
+    t.add_argument("--vs", default=None,
+                   help="play every listed agent against this one only")
     t.add_argument("--skip-existing", action="store_true",
                    help="do not replay games already in arena/games")
     r = sub.add_parser("render"); r.add_argument("game_id")
@@ -449,7 +457,8 @@ def main() -> None:
         build_index()
         return
     if args.cmd == "tourney":
-        pairs = list(itertools.combinations(args.agents, 2))
+        pairs = ([(a, args.vs) for a in args.agents if a != args.vs] if args.vs
+                 else list(itertools.combinations(args.agents, 2)))
         jobs = [(a, b, s) for a, b in pairs for s in args.seeds]
         jobs += [(b, a, s) for a, b in pairs for s in args.seeds]
         if args.skip_existing:

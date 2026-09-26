@@ -65,6 +65,11 @@ def _build(name):
     if name.startswith("gate"):
         _v219_gate(env, int(name[4:] or 140))
         return entry
+    if name == "front" or name.startswith("front_gate"):
+        from rl.market_front import mf_wrap
+        if name.startswith("front_gate"):
+            _v219_gate(env, int(name[len("front_gate"):] or 140))
+        return mf_wrap(entry)
     from rl.se_project import se_wrap
     settings = {
         "agent": {},

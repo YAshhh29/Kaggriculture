@@ -1,0 +1,964 @@
+  skipping 0 games already stored
+  480 games (4 pairs x 60 seeds x 2 seats) on 7 workers
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s101:    95,886 :    95,753  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s104:   110,606 :   110,451  ['DONE', 'DONE']
+    L_fg0 vs A                                       s106:    95,606 :    95,407  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s103:    99,311 :    99,244  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s102:   107,052 :   108,785  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s100:    83,232 :    81,891  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s105:    90,835 :    90,852  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s107:   109,763 :   109,609  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s110:   153,954 :   153,811  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s108:    85,331 :    85,129  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s112:   122,840 :   122,517  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s109:    77,438 :    75,229  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s113:   114,637 :   114,469  ['DONE', 'DONE']
+    L_fg0 vs A                                       s111:    63,928 :    61,882  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s118:   139,814 :   139,831  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s117:    99,882 :    99,727  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s116:    68,139 :    68,123  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s115:    74,633 :    74,397  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s120:    90,170 :    90,215  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s114:    69,620 :    69,433  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s119:   105,110 :   104,991  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s123:    92,995 :    92,781  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s122:    56,840 :    56,511  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s121:    90,858 :    90,718  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s126:    97,182 :    97,097  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s125:    66,412 :    66,343  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s127:    77,419 :    76,063  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s124:    93,142 :    93,078  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s129:    67,845 :    67,715  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s128:   123,688 :   123,535  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s132:    70,098 :    70,054  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s134:   128,127 :   127,671  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s130:   102,784 :   102,776  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s133:    80,937 :    81,527  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s131:   105,061 :   104,983  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s135:   103,990 :   103,858  ['DONE', 'DONE']
+    L_fg0 vs A                                       s138:    81,341 :    81,245  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s136:    77,403 :    76,937  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s139:    79,812 :    79,679  ['DONE', 'DONE']
+    L_fg0 vs A                                       s137:   127,312 :   127,093  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s141:   110,567 :   109,227  ['DONE', 'DONE']
+    L_fg0 vs A                                       s140:   118,266 :   118,180  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s142:    66,436 :    66,544  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s146:   104,765 :   104,730  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s147:    87,343 :    87,195  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s143:    85,449 :    87,002  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s144:   140,747 :   140,618  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s145:    99,084 :    99,042  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s148:    63,929 :    63,578  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s149:    94,524 :    95,989  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s153:    96,462 :    96,363  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s151:   123,863 :   123,652  ['DONE', 'DONE']
+    L_fg0 vs A                                       s154:    90,680 :    88,674  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s150:   128,448 :   128,438  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s152:    97,552 :    97,377  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s155:   140,120 :   141,229  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s156:   133,361 :   133,326  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s157:    68,923 :    68,863  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s158:   116,411 :   116,336  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg0 vs A                                       s159:    99,141 :    99,330  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s101:    95,886 :    95,753  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s102:   103,607 :   103,386  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s100:    83,232 :    81,891  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s103:    99,311 :    99,244  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s104:   110,606 :   110,451  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s106:    95,606 :    95,407  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s107:   109,763 :   109,609  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s105:    90,835 :    90,852  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s108:    85,331 :    85,129  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s109:    77,438 :    75,229  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s110:   153,954 :   153,811  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s112:   122,840 :   122,517  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s113:   114,637 :   114,469  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s111:    63,928 :    61,882  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s115:    74,633 :    74,397  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s114:    69,620 :    69,433  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s116:    68,139 :    68,123  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s117:    99,882 :    99,727  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s118:   139,814 :   139,831  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s120:    90,170 :    90,215  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s119:   105,110 :   104,991  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s123:    92,995 :    92,781  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s121:    90,858 :    90,718  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s122:    56,840 :    56,511  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s124:    93,142 :    93,078  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s125:    66,412 :    66,343  ['DONE', 'DONE']
+    L_fg100 vs A                                     s126:    97,182 :    97,097  ['DONE', 'DONE']Loading environment open_spiel_env failed: No module named 'pyspiel'
+
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s127:    77,419 :    76,063  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s129:    67,845 :    67,715  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s130:   102,784 :   102,776  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s128:   123,688 :   123,535  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s133:    80,937 :    81,527  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s132:    70,098 :    70,054  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s131:   105,061 :   104,983  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s134:   128,127 :   127,671  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s135:   103,990 :   103,858  ['DONE', 'DONE']
+    L_fg100 vs A                                     s136:    77,403 :    76,937  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s137:   127,312 :   127,093  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s139:    79,812 :    79,679  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s138:    81,341 :    81,245  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s141:   110,567 :   109,227  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s140:   118,266 :   118,180  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s142:    66,436 :    66,544  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s143:    85,449 :    87,002  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s144:   140,747 :   140,618  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s146:   104,765 :   104,730  ['DONE', 'DONE']
+    L_fg100 vs A                                     s147:    87,343 :    87,195  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s145:    99,084 :    99,042  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s148:    63,929 :    63,578  ['DONE', 'DONE']
+    L_fg100 vs A                                     s149:    94,524 :    95,989  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s150:   128,448 :   128,438  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s151:   123,863 :   123,652  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s153:    96,462 :    96,363  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s154:    90,680 :    88,674  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s152:    97,552 :    97,377  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s155:   140,120 :   141,229  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s156:   133,361 :   133,326  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s157:    68,923 :    68,863  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s158:   116,411 :   116,336  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg100 vs A                                     s159:    99,141 :    99,330  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s101:    95,886 :    95,753  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s100:    83,232 :    81,891  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s102:   103,607 :   103,386  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s103:    99,311 :    99,244  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s104:   110,606 :   110,451  ['DONE', 'DONE']
+    L_fg120 vs A                                     s105:    90,835 :    90,852  ['DONE', 'DONE']Loading environment open_spiel_env failed: No module named 'pyspiel'
+
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s106:    95,606 :    95,407  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s107:   109,763 :   109,609  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s108:    85,331 :    85,129  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s110:   153,954 :   153,811  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s109:    77,438 :    75,229  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s111:    63,928 :    61,882  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s112:   122,840 :   122,517  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s113:   114,637 :   114,469  ['DONE', 'DONE']
+    L_fg120 vs A                                     s114:    69,620 :    69,433  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s115:    74,633 :    74,397  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s116:    68,139 :    68,123  ['DONE', 'DONE']
+    L_fg120 vs A                                     s117:    99,882 :    99,727  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s118:   139,814 :   139,831  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s119:   105,110 :   104,991  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s120:    90,170 :    90,215  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s123:    92,995 :    92,781  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s122:    56,840 :    56,511  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s121:    90,858 :    90,718  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s124:    93,142 :    93,078  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s125:    66,412 :    66,343  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s126:    97,182 :    97,097  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s127:    77,419 :    76,063  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s129:    67,845 :    67,715  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s128:   123,688 :   123,535  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s130:   102,784 :   102,776  ['DONE', 'DONE']
+    L_fg120 vs A                                     s131:   105,061 :   104,983  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s132:    70,098 :    70,054  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s133:    80,937 :    81,527  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s134:   128,127 :   127,671  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s135:   103,990 :   103,858  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s136:    77,403 :    76,937  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s137:   127,312 :   127,093  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s138:    81,341 :    81,245  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s139:    79,812 :    79,679  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s140:   118,266 :   118,180  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s141:   110,567 :   109,227  ['DONE', 'DONE']
+    L_fg120 vs A                                     s142:    66,436 :    66,544  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s143:    78,158 :    77,772  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s144:   140,747 :   140,618  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s147:    87,343 :    87,195  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s145:    99,084 :    99,042  ['DONE', 'DONE']
+    L_fg120 vs A                                     s146:   104,765 :   104,730  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s148:    63,929 :    63,578  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s149:    98,195 :    98,059  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s150:   128,448 :   128,438  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s153:    96,462 :    96,363  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s151:   123,863 :   123,652  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s154:    90,680 :    88,674  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s152:    97,552 :    97,377  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s155:   140,120 :   141,229  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s156:   133,361 :   133,326  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s157:    68,923 :    68,863  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s158:   116,411 :   116,336  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg120 vs A                                     s159:    99,141 :    99,330  ['DONE', 'DONE']
+    L_fg140 vs A                                     s101:    95,886 :    95,753  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s100:    83,232 :    81,891  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s102:   103,607 :   103,386  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s103:    99,311 :    99,244  ['DONE', 'DONE']
+    L_fg140 vs A                                     s104:   110,606 :   110,451  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s106:    95,606 :    95,407  ['DONE', 'DONE']
+    L_fg140 vs A                                     s105:    90,835 :    90,852  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s107:   109,763 :   109,609  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s108:    85,331 :    85,129  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s109:    77,438 :    75,229  ['DONE', 'DONE']
+    L_fg140 vs A                                     s110:   153,954 :   153,811  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s112:   122,840 :   122,517  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s111:    63,928 :    61,882  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s113:   114,637 :   114,469  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s115:    74,633 :    74,397  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s114:    69,620 :    69,433  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s116:    68,139 :    68,123  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s117:    99,882 :    99,727  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s118:   139,814 :   139,831  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s120:    90,170 :    90,215  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s119:   105,110 :   104,991  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s122:    56,840 :    56,511  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s121:    90,858 :    90,718  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s123:    92,995 :    92,781  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s124:    93,142 :    93,078  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s125:    66,412 :    66,343  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s126:    97,182 :    97,097  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s127:    77,419 :    76,063  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s129:    67,845 :    67,715  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s128:   123,688 :   123,535  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s130:   102,784 :   102,776  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s132:    70,098 :    70,054  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s133:    80,937 :    81,527  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s131:   105,061 :   104,983  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s134:   128,127 :   127,671  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s135:   103,990 :   103,858  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s136:    77,403 :    76,937  ['DONE', 'DONE']
+    L_fg140 vs A                                     s137:   127,312 :   127,093  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s138:    81,341 :    81,245  ['DONE', 'DONE']
+    L_fg140 vs A                                     s139:    79,812 :    79,679  ['DONE', 'DONE']Loading environment open_spiel_env failed: No module named 'pyspiel'
+
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s141:   110,567 :   109,227  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s140:   118,266 :   118,180  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s142:    66,436 :    66,544  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s143:    78,158 :    77,772  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s144:   140,747 :   140,618  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s147:    87,343 :    87,195  ['DONE', 'DONE']
+    L_fg140 vs A                                     s146:   104,765 :   104,730  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s145:    99,084 :    99,042  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s148:    63,929 :    63,578  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s149:    98,195 :    98,059  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s150:   128,448 :   128,438  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s151:   123,863 :   123,652  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s153:    96,462 :    96,363  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s154:    90,680 :    88,674  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s152:    97,552 :    97,377  ['DONE', 'DONE']
+    L_fg140 vs A                                     s156:   133,361 :   133,326  ['DONE', 'DONE']Loading environment open_spiel_env failed: No module named 'pyspiel'
+
+    L_fg140 vs A                                     s155:   140,120 :   141,229  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s157:    68,923 :    68,863  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    L_fg140 vs A                                     s158:   116,411 :   116,336  ['DONE', 'DONE']
+    L_fg140 vs A                                     s159:    99,141 :    99,330  ['DONE', 'DONE']Loading environment open_spiel_env failed: No module named 'pyspiel'
+
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s101:    95,753 :    95,886  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s100:    81,891 :    83,232  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s102:   108,785 :   107,052  ['DONE', 'DONE']
+    A vs L_fg0                                       s103:    99,244 :    99,311  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s104:   110,451 :   110,606  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s105:    90,852 :    90,835  ['DONE', 'DONE']
+    A vs L_fg0                                       s106:    95,407 :    95,606  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s107:   109,609 :   109,763  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s108:    85,129 :    85,331  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s110:   153,811 :   153,954  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s109:    75,229 :    77,438  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s111:    61,882 :    63,928  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s112:   122,517 :   122,840  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s113:   114,469 :   114,637  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s116:    68,123 :    68,139  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s115:    74,397 :    74,633  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s117:    99,727 :    99,882  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s114:    69,433 :    69,620  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s118:   139,831 :   139,814  ['DONE', 'DONE']
+    A vs L_fg0                                       s119:   104,991 :   105,110  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s120:    90,215 :    90,170  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s123:    92,781 :    92,995  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s122:    56,576 :    56,775  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s121:    90,718 :    90,858  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s125:    66,343 :    66,412  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s124:    93,078 :    93,142  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s126:    97,097 :    97,182  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s127:    76,063 :    77,419  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s129:    67,715 :    67,845  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s130:   102,776 :   102,784  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s128:   123,535 :   123,688  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s132:    70,054 :    70,098  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s131:   104,983 :   105,061  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s133:    81,527 :    80,937  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s134:   127,671 :   128,127  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s135:   103,858 :   103,990  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s136:    76,156 :    78,184  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s137:   127,093 :   127,312  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s139:    79,679 :    79,812  ['DONE', 'DONE']
+    A vs L_fg0                                       s138:    81,245 :    81,341  ['DONE', 'DONE']Loading environment open_spiel_env failed: No module named 'pyspiel'
+
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s140:   118,180 :   118,266  ['DONE', 'DONE']
+    A vs L_fg0                                       s141:   109,227 :   110,567  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s142:    66,398 :    66,582  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s143:    87,002 :    85,449  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s146:   104,730 :   104,765  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s144:   140,618 :   140,747  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s145:    99,042 :    99,084  ['DONE', 'DONE']
+    A vs L_fg0                                       s147:    87,195 :    87,343  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s148:    63,460 :    64,047  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s149:    95,989 :    94,524  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s153:    96,363 :    96,462  ['DONE', 'DONE']
+    A vs L_fg0                                       s150:   128,438 :   128,448  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s151:   123,652 :   123,863  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s152:    97,377 :    97,552  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s154:    88,674 :    90,680  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s155:   139,959 :   141,379  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s156:   133,326 :   133,361  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s157:    68,863 :    68,923  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s158:   116,336 :   116,411  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg0                                       s159:    99,330 :    99,141  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s100:    81,891 :    83,232  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s101:    95,753 :    95,886  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s102:   103,386 :   103,607  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s103:    99,244 :    99,311  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s104:   110,451 :   110,606  ['DONE', 'DONE']
+    A vs L_fg100                                     s106:    95,407 :    95,606  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s105:    90,852 :    90,835  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s107:   109,609 :   109,763  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s108:    85,129 :    85,331  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s109:    75,229 :    77,438  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s110:   153,811 :   153,954  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s111:    61,882 :    63,928  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s112:   122,517 :   122,840  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s113:   114,469 :   114,637  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s114:    69,433 :    69,620  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s115:    74,397 :    74,633  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s116:    68,123 :    68,139  ['DONE', 'DONE']
+    A vs L_fg100                                     s117:    99,727 :    99,882  ['DONE', 'DONE']Loading environment open_spiel_env failed: No module named 'pyspiel'
+
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s118:   139,831 :   139,814  ['DONE', 'DONE']
+    A vs L_fg100                                     s119:   104,991 :   105,110  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s120:    90,215 :    90,170  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s121:    90,718 :    90,858  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s122:    56,576 :    56,775  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s123:    92,781 :    92,995  ['DONE', 'DONE']
+    A vs L_fg100                                     s124:    93,078 :    93,142  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s125:    66,343 :    66,412  ['DONE', 'DONE']
+    A vs L_fg100                                     s126:    97,097 :    97,182  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s127:    76,063 :    77,419  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s128:   123,535 :   123,688  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s129:    67,715 :    67,845  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s130:   102,776 :   102,784  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s131:   104,983 :   105,061  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s132:    70,054 :    70,098  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s133:    81,527 :    80,937  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s134:   127,671 :   128,127  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s135:   103,858 :   103,990  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s136:    76,156 :    78,184  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s137:   127,093 :   127,312  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s138:    81,245 :    81,341  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s139:    79,679 :    79,812  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s141:   109,227 :   110,567  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s140:   118,180 :   118,266  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s142:    66,398 :    66,582  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s143:    87,002 :    85,449  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s144:   140,618 :   140,747  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s145:    99,042 :    99,084  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s146:   104,730 :   104,765  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s147:    87,195 :    87,343  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s148:    63,460 :    64,047  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s149:    95,989 :    94,524  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s150:   128,438 :   128,448  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s151:   123,652 :   123,863  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s152:    97,377 :    97,552  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s153:    96,363 :    96,462  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s154:    88,674 :    90,680  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s155:   139,959 :   141,379  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s156:   133,326 :   133,361  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s157:    68,863 :    68,923  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s158:   116,336 :   116,411  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg100                                     s159:    99,330 :    99,141  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s100:    81,891 :    83,232  ['DONE', 'DONE']
+    A vs L_fg120                                     s101:    95,753 :    95,886  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s102:   103,386 :   103,607  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s103:    99,244 :    99,311  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s104:   110,451 :   110,606  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s105:    90,852 :    90,835  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s106:    95,407 :    95,606  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s107:   109,609 :   109,763  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s108:    85,129 :    85,331  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s109:    75,229 :    77,438  ['DONE', 'DONE']
+    A vs L_fg120                                     s110:   153,811 :   153,954  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s111:    61,882 :    63,928  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s112:   122,517 :   122,840  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s113:   114,469 :   114,637  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s114:    69,433 :    69,620  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s115:    74,397 :    74,633  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s116:    68,123 :    68,139  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s117:    99,727 :    99,882  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s118:   139,831 :   139,814  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s119:   104,991 :   105,110  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s120:    90,215 :    90,170  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s121:    90,718 :    90,858  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s122:    56,576 :    56,775  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s123:    92,781 :    92,995  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s124:    93,078 :    93,142  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s125:    66,343 :    66,412  ['DONE', 'DONE']
+    A vs L_fg120                                     s126:    97,097 :    97,182  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s127:    76,063 :    77,419  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s128:   123,535 :   123,688  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s129:    67,715 :    67,845  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s130:   102,776 :   102,784  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s131:   104,983 :   105,061  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s132:    70,054 :    70,098  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s133:    81,527 :    80,937  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s134:   127,671 :   128,127  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s135:   103,858 :   103,990  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s136:    76,156 :    78,184  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s137:   127,093 :   127,312  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s138:    81,245 :    81,341  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s139:    79,679 :    79,812  ['DONE', 'DONE']
+    A vs L_fg120                                     s140:   118,180 :   118,266  ['DONE', 'DONE']Loading environment open_spiel_env failed: No module named 'pyspiel'
+
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s141:   109,227 :   110,567  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s142:    66,398 :    66,582  ['DONE', 'DONE']
+    A vs L_fg120                                     s143:    77,772 :    78,158  ['DONE', 'DONE']Loading environment open_spiel_env failed: No module named 'pyspiel'
+
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s144:   140,618 :   140,747  ['DONE', 'DONE']
+    A vs L_fg120                                     s145:    99,042 :    99,084  ['DONE', 'DONE']Loading environment open_spiel_env failed: No module named 'pyspiel'
+
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s146:   104,730 :   104,765  ['DONE', 'DONE']
+    A vs L_fg120                                     s147:    87,195 :    87,343  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s148:    63,460 :    64,047  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s149:    98,059 :    98,195  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s150:   128,438 :   128,448  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s151:   123,652 :   123,863  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s152:    97,377 :    97,552  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s153:    96,363 :    96,462  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s154:    88,674 :    90,680  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s155:   139,959 :   141,379  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s156:   133,326 :   133,361  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s157:    68,863 :    68,923  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s158:   116,336 :   116,411  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg120                                     s159:    99,330 :    99,141  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s100:    81,891 :    83,232  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s101:    95,753 :    95,886  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s102:   103,386 :   103,607  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s103:    99,244 :    99,311  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s104:   110,451 :   110,606  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s105:    90,852 :    90,835  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s106:    95,407 :    95,606  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s107:   109,609 :   109,763  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s108:    85,129 :    85,331  ['DONE', 'DONE']
+    A vs L_fg140                                     s109:    75,229 :    77,438  ['DONE', 'DONE']Loading environment open_spiel_env failed: No module named 'pyspiel'
+
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s110:   153,811 :   153,954  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s111:    61,882 :    63,928  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s112:   122,517 :   122,840  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s113:   114,469 :   114,637  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s114:    69,433 :    69,620  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s115:    74,397 :    74,633  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s116:    68,123 :    68,139  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s117:    99,727 :    99,882  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s118:   139,831 :   139,814  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s119:   104,991 :   105,110  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s120:    90,215 :    90,170  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s121:    90,718 :    90,858  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s122:    56,576 :    56,775  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s123:    92,781 :    92,995  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s124:    93,078 :    93,142  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s125:    66,343 :    66,412  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s126:    97,097 :    97,182  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s127:    76,063 :    77,419  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s128:   123,535 :   123,688  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s129:    67,715 :    67,845  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s130:   102,776 :   102,784  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s131:   104,983 :   105,061  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s132:    70,054 :    70,098  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s133:    81,527 :    80,937  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s134:   127,671 :   128,127  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s135:   103,858 :   103,990  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s136:    76,156 :    78,184  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s137:   127,093 :   127,312  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s139:    79,679 :    79,812  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s138:    81,245 :    81,341  ['DONE', 'DONE']
+    A vs L_fg140                                     s140:   118,180 :   118,266  ['DONE', 'DONE']Loading environment open_spiel_env failed: No module named 'pyspiel'
+
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s141:   109,227 :   110,567  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s142:    66,398 :    66,582  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s143:    77,772 :    78,158  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s144:   140,618 :   140,747  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s146:   104,730 :   104,765  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s145:    99,042 :    99,084  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s147:    87,195 :    87,343  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s148:    63,460 :    64,047  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s149:    98,059 :    98,195  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s150:   128,438 :   128,448  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s151:   123,652 :   123,863  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s153:    96,363 :    96,462  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s152:    97,377 :    97,552  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s154:    88,674 :    90,680  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s155:   139,959 :   141,379  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s156:   133,326 :   133,361  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s157:    68,863 :    68,923  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s158:   116,336 :   116,411  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    A vs L_fg140                                     s159:    99,330 :    99,141  ['DONE', 'DONE']
+
+  standings (this tourney):
