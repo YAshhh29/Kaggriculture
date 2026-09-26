@@ -57,6 +57,12 @@ ALIASES = {
     "I": "rl.candidate_i:agent",
     "aurax7": "rl.public_agents:aurax7",
     "v34": "rl.public_agents:v34",
+    # Agent A: the exact packaged file. Agent 1: that file plus the SE project.
+    "A": "file:submissions/agent-a/main.py",
+    "A1se": "rl.agent1:agent",
+    "A_noV219": "rl.agent1:no_v219",
+    "A_gate140": "rl.agent1:gate140",
+    "A_gate120": "rl.agent1:gate120",
 }
 
 
