@@ -11,7 +11,7 @@ opponent that is a copy of it, so the verbatim A source is embedded too and
 exec'd by a factory (locally it reads submissions/agent-a/main.py).
 
 Composition (innermost first), identical to rl.l2_combo.ship():
-    A (gate 120) -> wheat_fert -> animals -> wheat_rt -> outfarm.lot
+    A (gate 120) -> animals -> wheat_rt -> outfarm.lot
       -> market_front -> labour -> shadow (reorder + early) -> safety
 
 Verification: stdlib only (the main file and every embedded layer source);
@@ -43,7 +43,6 @@ from tools.packaging.package_public import stdlib_only  # noqa: E402
 
 LAYERS = [  # name, file, names injected from earlier layers
     ("market_front", "rl/market_front.py", []),
-    ("wheat_fert", "rl/l2_wheat_fert.py", []),
     ("animals", "rl/l2_animals.py", []),
     ("wheat_rt", "rl/l2_wheat_rt.py", [("_mf_price", "market_front")]),
     ("outfarm", "rl/l2_outfarm.py", []),
@@ -87,7 +86,6 @@ _L2_ENV = globals()
 _L2 = {{}}
 {loads}
 _l2_agent = kaggle_agent                  # Agent A's entry point (ig_agent), gate 120
-_l2_agent = _L2["wheat_fert"]["fert_inner"](_l2_agent, _L2_ENV)
 _l2_agent = _L2["animals"]["an_wrap"](_l2_agent, _L2_ENV, {{}})
 _l2_agent = _L2["wheat_rt"]["rt_inner"](_l2_agent, _L2_ENV)
 _l2_agent = _L2["outfarm"]["lot_wrap"](_l2_agent, _L2_ENV)

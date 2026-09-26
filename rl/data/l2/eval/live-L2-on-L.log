@@ -1,0 +1,12 @@
+saved rl\data\live_replays\l2-ship-on-l-live-games.json
+
+L2 ship on L live games (factory, settings {}, commit ff11757): 45 games, 0 errors
+  wins 43 (96%), median margin +2,707; live record 40 wins; identical to live 0; opponent drifted in 1
+L2 ship on L live games against L on L live games, 45 shared games
+  all                               45 games | wins 40 -> 43 | margin change -283 (median +90), better in 26, worse in 19, identical in 0
+                                       own score change -559 (median +455), higher in 36, lower in 9
+  opponent stayed close in both     44 games | wins 39 -> 42 | margin change +120 (median +97), better in 26, worse in 18, identical in 0
+                                       own score change +400 (median +458), higher in 36, lower in 8
+  no live collapse                  45 games | wins 40 -> 43 | margin change -283 (median +90), better in 26, worse in 19, identical in 0
+                                       own score change -559 (median +455), higher in 36, lower in 9
+  results that flipped: 3 to wins, 0 to losses

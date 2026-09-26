@@ -90,7 +90,9 @@ def full():                     # everything, with the shadow and the safety gua
 # What ships as L2: everything except the endgame dump, which is inert once the
 # lot layer runs (dump_units 0 in every combined game) and whose module defines
 # its own `projected_shed`, a name the parent also uses.
-SHIP = ("fert", "feed", "rt", "lot", "labour", "shadow", "safety")
+# Round 3 (seeds 130-159): the wheat-fertilizer layer is a wash against A and L
+# (better in 30/60 and 31/60 games) with a worse tail, so it does not ship.
+SHIP = ("feed", "rt", "lot", "labour", "shadow", "safety")
 
 
 def ship():

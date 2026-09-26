@@ -1,0 +1,4 @@
+60 games: r3-nofert-vsL vs L on 30 seeds x 2 seats, 1 workers
+saved rl\data\l2\paired\r3-nofert-vsL.json
+  r3-nofert-vsL vs L                         55/60  won (0 tied)  mean     +843  median     +866  worst     -821  errors 0  crashes 0
+  telemetry (mean per game): CARE 1.5, COLLECT_FERTILIZER 1.1, HARVEST 0.0, WATER 12.5, an_collect_swaps 0.6, an_errors 0.0, an_feed_skips 1.2, an_feed_skips_d28 0.6, an_feed_skips_young 0.6, an_max_ms 1.3, early_budget_stops 0.0, early_multi_skips 0.0, early_pred_gain 0.0, early_rejected_react 0.0, early_sales 0.0, early_units 0.0

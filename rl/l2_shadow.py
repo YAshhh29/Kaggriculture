@@ -678,6 +678,62 @@ def sh_lockstep_margin(ours, theirs, inventory, stock_ours, stock_theirs):
     return rev[0] - rev[1], rev[0], rev[1]
 
 
+# Exhaustive search costs one full lockstep simulation per permutation: 5,040
+# for seven orders took ~3 s on the day-27 sell-off turn (Kaggle allows 1 s per
+# turn plus a 60 s reserve). Above this many orders the search switches to an
+# exact assignment solve.
+_SH_EXHAUSTIVE_MAX = 5
+
+
+def _sh_best_order_assign(priced, other, theirs, inventory, stock_ours, stock_theirs,
+                          base, fallback):
+    """Exact best order when every priced order is for a different item.
+
+    The lockstep simulation keeps items separate (per-item stock and market
+    inventory; money is not simulated), so an item's revenue depends only on
+    which slot our order for it takes relative to the opponent's orders.
+    margin(order) = margin(no priced orders) + sum over items of gain(item, slot),
+    which makes the search an assignment problem: n*n single-item simulations,
+    then a subset DP over (items placed, next slot) -- about 10^4 steps for 10
+    orders instead of 10! simulations. Ties keep the lowest item index.
+    """
+    n = len(priced)
+    hole = ["PASS_SLOT"]                     # a non-priced placeholder occupying a slot
+    empty = sh_lockstep_margin([], theirs, inventory, stock_ours, stock_theirs)[0]
+    gain = [[sh_lockstep_margin([hole] * k + [priced[j]], theirs, inventory,
+                                stock_ours, stock_theirs)[0] - empty
+             for k in range(n)] for j in range(n)]
+    size = 1 << n
+    neg = float("-inf")
+    dp = [neg] * size
+    choice = [-1] * size
+    dp[0] = 0.0
+    for mask in range(size):
+        if dp[mask] == neg:
+            continue
+        k = bin(mask).count("1")
+        if k >= n:
+            continue
+        for j in range(n):
+            if mask & (1 << j):
+                continue
+            nxt = mask | (1 << j)
+            val = dp[mask] + gain[j][k]
+            if val > dp[nxt] + 1e-9:
+                dp[nxt] = val
+                choice[nxt] = j
+    order, mask = [], size - 1
+    while mask:
+        j = choice[mask]
+        order.append(j)
+        mask &= ~(1 << j)
+    order.reverse()
+    best_val = empty + dp[size - 1]
+    if best_val <= base + 1e-9:
+        return fallback, 0.0
+    return [priced[j] for j in order] + other, best_val - base
+
+
 def sh_best_order(ours, theirs, inventory, stock_ours, stock_theirs, max_perm=5040):
     """Permute our priced orders (quantities unchanged) to maximise the lockstep
     margin against the opponent's known queue; non-priced orders keep their
@@ -689,6 +745,12 @@ def sh_best_order(ours, theirs, inventory, stock_ours, stock_theirs, max_perm=50
     base = sh_lockstep_margin(list(ours or []), theirs, inventory, stock_ours, stock_theirs)[0]
     if len(priced) < 1:
         return list(ours or []), 0.0
+    items = [o[1] for o in priced]
+    if len(priced) > _SH_EXHAUSTIVE_MAX and len(set(items)) == len(items):
+        return _sh_best_order_assign(priced, other, theirs, inventory, stock_ours,
+                                     stock_theirs, base, list(ours or []))
+    if len(priced) > _SH_EXHAUSTIVE_MAX:
+        max_perm = min(max_perm, 120)   # repeated items: bounded, deterministic search
     best, best_val = None, base
     seen = set()
     count = 0
