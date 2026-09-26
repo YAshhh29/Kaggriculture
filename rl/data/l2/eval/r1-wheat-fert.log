@@ -1,0 +1,4 @@
+60 games: r1-wheat-fert vs L on 30 seeds x 2 seats, 1 workers
+saved rl\data\l2\paired\r1-wheat-fert.json
+  r1-wheat-fert vs L                         39/60  won (0 tied)  mean      +35  median      +58  worst     -555  errors 0  crashes 0
+  telemetry (mean per game): errors 0.0, reordered_turns 69.8, wf_errors 0.0, wf_r1 4.1, wf_r2 0.8, wf_r3_abort 1.0, wf_r3_collect_skips 2.8, wf_r3_done 3.6, wf_r3_start 4.6, wf_value 160.6

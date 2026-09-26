@@ -1,0 +1,4 @@
+60 games: r1-endgame vs L on 30 seeds x 2 seats, 1 workers
+saved rl\data\l2\paired\r1-endgame.json
+  r1-endgame vs L                         60/60  won (0 tied)  mean     +621  median     +647  worst       +9  errors 0  crashes 0
+  telemetry (mean per game): clone_steps 0.0, dump_errors 0.0, dump_turns 6.7, dump_units 58.6, errors 0.0, mirror_rate_x100 0.0, reordered_turns 65.2

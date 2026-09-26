@@ -1,0 +1,4 @@
+60 games: r1-labour vs L on 30 seeds x 2 seats, 1 workers
+saved rl\data\l2\paired\r1-labour.json
+  r1-labour vs L                         20/60  won (40 tied)  mean      +49  median       +0  worst       +0  errors 0  crashes 0
+  telemetry (mean per game): CARE 1.6, COLLECT_FERTILIZER 0.5, HARVEST 0.1, WATER 13.2, errors 0.0, from_other 0.8, from_pass 14.6, lb_errors 0.0, lb_ms_max 2.4, lb_turns 15.2, reordered_turns 71.0

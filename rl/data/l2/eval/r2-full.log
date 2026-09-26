@@ -1,0 +1,4 @@
+60 games: r2-full vs L on 30 seeds x 2 seats, 1 workers
+saved rl\data\l2\paired\r2-full.json
+  r2-full vs L                         60/60  won (0 tied)  mean   +1,062  median     +984  worst     +389  errors 0  crashes 0
+  telemetry (mean per game): CARE 1.5, COLLECT_FERTILIZER 0.5, HARVEST 0.1, WATER 14.6, an_collect_swaps 0.5, an_errors 0.0, an_feed_skips 1.1, an_feed_skips_d28 0.7, an_feed_skips_young 0.5, an_max_ms 1.1, clone_steps 0.0, dump_errors 0.0, dump_turns 0.0, dump_units 0.0, early_budget_stops 0.0, early_multi_skips 0.0

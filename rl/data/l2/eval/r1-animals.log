@@ -1,0 +1,4 @@
+60 games: r1-animals vs L on 30 seeds x 2 seats, 1 workers
+saved rl\data\l2\paired\r1-animals.json
+  r1-animals vs L                         21/60  won (38 tied)  mean      +25  median       +0  worst      -65  errors 0  crashes 0
+  telemetry (mean per game): an_collect_swaps 0.5, an_errors 0.0, an_feed_skips 1.1, an_feed_skips_d28 0.7, an_feed_skips_young 0.5, an_max_ms 2.9, errors 0.0, reordered_turns 71.0

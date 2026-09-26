@@ -1,0 +1,86 @@
+[
+ {
+  "opponent": "L",
+  "seed": 100,
+  "seat": 1,
+  "ours": 82799.0,
+  "theirs": 82799.0,
+  "margin": 0.0,
+  "won": false,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 40.8,
+  "telemetry": {
+   "turns": 719,
+   "errors": 0,
+   "repaired": 0,
+   "max_ms": 121.92530004540458,
+   "total_s": 5.119939299591351,
+   "slow_turns": 0,
+   "reordered_turns": 118
+  }
+ },
+ {
+  "opponent": "L",
+  "seed": 100,
+  "seat": 0,
+  "ours": 82799.0,
+  "theirs": 82799.0,
+  "margin": 0.0,
+  "won": false,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 41.0,
+  "telemetry": {
+   "turns": 719,
+   "errors": 0,
+   "repaired": 0,
+   "max_ms": 148.69920001365244,
+   "total_s": 5.3001348993275315,
+   "slow_turns": 0,
+   "reordered_turns": 118
+  }
+ },
+ {
+  "opponent": "L",
+  "seed": 101,
+  "seat": 0,
+  "ours": 95843.0,
+  "theirs": 95843.0,
+  "margin": 0.0,
+  "won": false,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 37.3,
+  "telemetry": {
+   "turns": 719,
+   "errors": 0,
+   "repaired": 0,
+   "max_ms": 139.81359999161214,
+   "total_s": 4.868052600766532,
+   "slow_turns": 0,
+   "reordered_turns": 64
+  }
+ },
+ {
+  "opponent": "L",
+  "seed": 101,
+  "seat": 1,
+  "ours": 95843.0,
+  "theirs": 95843.0,
+  "margin": 0.0,
+  "won": false,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 38.4,
+  "telemetry": {
+   "turns": 719,
+   "errors": 0,
+   "repaired": 0,
+   "max_ms": 323.84349999483675,
+   "total_s": 5.01884739974048,
+   "slow_turns": 0,
+   "reordered_turns": 64
+  }
+ }
+]

@@ -1,0 +1,4 @@
+60 games: r2-lot-dump vs L on 30 seeds x 2 seats, 1 workers
+saved rl\data\l2\paired\r2-lot-dump.json
+  r2-lot-dump vs L                         58/60  won (0 tied)  mean     +673  median     +502  worst      -26  errors 0  crashes 0
+  telemetry (mean per game): clone_steps 0.0, dump_errors 0.0, dump_turns 0.0, dump_units 0.0, errors 0.0, lot_errors 0.0, lot_turns 23.7, lot_units 130.4, mirror_rate_x100 0.0, reordered_turns 62.2

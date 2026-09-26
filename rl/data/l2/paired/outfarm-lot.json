@@ -1,0 +1,762 @@
+[
+ {
+  "opponent": "L",
+  "seed": 100,
+  "seat": 1,
+  "ours": 82842.0,
+  "theirs": 82087.0,
+  "margin": 755.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 40.3,
+  "telemetry": {
+   "reordered_turns": 104,
+   "errors": 0,
+   "lot_turns": 15,
+   "lot_units": 99,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "L",
+  "seed": 100,
+  "seat": 0,
+  "ours": 82842.0,
+  "theirs": 82087.0,
+  "margin": 755.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 42.5,
+  "telemetry": {
+   "reordered_turns": 104,
+   "errors": 0,
+   "lot_turns": 15,
+   "lot_units": 99,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "L",
+  "seed": 101,
+  "seat": 0,
+  "ours": 95115.0,
+  "theirs": 95141.0,
+  "margin": -26.0,
+  "won": false,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 38.7,
+  "telemetry": {
+   "reordered_turns": 55,
+   "errors": 0,
+   "lot_turns": 20,
+   "lot_units": 103,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "L",
+  "seed": 101,
+  "seat": 1,
+  "ours": 95115.0,
+  "theirs": 95141.0,
+  "margin": -26.0,
+  "won": false,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 40.5,
+  "telemetry": {
+   "reordered_turns": 55,
+   "errors": 0,
+   "lot_turns": 20,
+   "lot_units": 103,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "L",
+  "seed": 102,
+  "seat": 1,
+  "ours": 103495.0,
+  "theirs": 101554.0,
+  "margin": 1941.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 31.1,
+  "telemetry": {
+   "reordered_turns": 62,
+   "errors": 0,
+   "lot_turns": 30,
+   "lot_units": 185,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "L",
+  "seed": 102,
+  "seat": 0,
+  "ours": 103495.0,
+  "theirs": 101554.0,
+  "margin": 1941.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 38.3,
+  "telemetry": {
+   "reordered_turns": 62,
+   "errors": 0,
+   "lot_turns": 30,
+   "lot_units": 185,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "L",
+  "seed": 103,
+  "seat": 0,
+  "ours": 99495.0,
+  "theirs": 98495.0,
+  "margin": 1000.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 32.8,
+  "telemetry": {
+   "reordered_turns": 68,
+   "errors": 0,
+   "lot_turns": 24,
+   "lot_units": 116,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "L",
+  "seed": 103,
+  "seat": 1,
+  "ours": 99495.0,
+  "theirs": 98495.0,
+  "margin": 1000.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 36.5,
+  "telemetry": {
+   "reordered_turns": 68,
+   "errors": 0,
+   "lot_turns": 24,
+   "lot_units": 116,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "L",
+  "seed": 104,
+  "seat": 0,
+  "ours": 110475.0,
+  "theirs": 109828.0,
+  "margin": 647.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 33.4,
+  "telemetry": {
+   "reordered_turns": 66,
+   "errors": 0,
+   "lot_turns": 27,
+   "lot_units": 126,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "L",
+  "seed": 104,
+  "seat": 1,
+  "ours": 110475.0,
+  "theirs": 109828.0,
+  "margin": 647.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 41.4,
+  "telemetry": {
+   "reordered_turns": 66,
+   "errors": 0,
+   "lot_turns": 27,
+   "lot_units": 126,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "L",
+  "seed": 105,
+  "seat": 0,
+  "ours": 90913.0,
+  "theirs": 89715.0,
+  "margin": 1198.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 44.8,
+  "telemetry": {
+   "reordered_turns": 69,
+   "errors": 0,
+   "lot_turns": 33,
+   "lot_units": 191,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "L",
+  "seed": 105,
+  "seat": 1,
+  "ours": 90913.0,
+  "theirs": 89715.0,
+  "margin": 1198.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 43.1,
+  "telemetry": {
+   "reordered_turns": 69,
+   "errors": 0,
+   "lot_turns": 33,
+   "lot_units": 191,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "L",
+  "seed": 106,
+  "seat": 0,
+  "ours": 95273.0,
+  "theirs": 94939.0,
+  "margin": 334.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 36.6,
+  "telemetry": {
+   "reordered_turns": 62,
+   "errors": 0,
+   "lot_turns": 23,
+   "lot_units": 126,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "L",
+  "seed": 106,
+  "seat": 1,
+  "ours": 95273.0,
+  "theirs": 94939.0,
+  "margin": 334.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 39.1,
+  "telemetry": {
+   "reordered_turns": 62,
+   "errors": 0,
+   "lot_turns": 23,
+   "lot_units": 126,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "L",
+  "seed": 107,
+  "seat": 0,
+  "ours": 109490.0,
+  "theirs": 108924.0,
+  "margin": 566.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 35.2,
+  "telemetry": {
+   "reordered_turns": 64,
+   "errors": 0,
+   "lot_turns": 24,
+   "lot_units": 140,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "L",
+  "seed": 107,
+  "seat": 1,
+  "ours": 109490.0,
+  "theirs": 108924.0,
+  "margin": 566.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 44.2,
+  "telemetry": {
+   "reordered_turns": 64,
+   "errors": 0,
+   "lot_turns": 24,
+   "lot_units": 140,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "L",
+  "seed": 108,
+  "seat": 0,
+  "ours": 84838.0,
+  "theirs": 84683.0,
+  "margin": 155.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 56.0,
+  "telemetry": {
+   "reordered_turns": 63,
+   "errors": 0,
+   "lot_turns": 21,
+   "lot_units": 106,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "L",
+  "seed": 108,
+  "seat": 1,
+  "ours": 84838.0,
+  "theirs": 84683.0,
+  "margin": 155.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 59.2,
+  "telemetry": {
+   "reordered_turns": 63,
+   "errors": 0,
+   "lot_turns": 21,
+   "lot_units": 106,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "L",
+  "seed": 109,
+  "seat": 0,
+  "ours": 75036.0,
+  "theirs": 74629.0,
+  "margin": 407.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 53.4,
+  "telemetry": {
+   "reordered_turns": 63,
+   "errors": 0,
+   "lot_turns": 20,
+   "lot_units": 110,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "L",
+  "seed": 109,
+  "seat": 1,
+  "ours": 75036.0,
+  "theirs": 74629.0,
+  "margin": 407.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 36.4,
+  "telemetry": {
+   "reordered_turns": 63,
+   "errors": 0,
+   "lot_turns": 20,
+   "lot_units": 110,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "A",
+  "seed": 100,
+  "seat": 0,
+  "ours": 83311.0,
+  "theirs": 81469.0,
+  "margin": 1842.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 42.8,
+  "telemetry": {
+   "reordered_turns": 104,
+   "errors": 0,
+   "lot_turns": 15,
+   "lot_units": 97,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "A",
+  "seed": 100,
+  "seat": 1,
+  "ours": 83311.0,
+  "theirs": 81469.0,
+  "margin": 1842.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 56.6,
+  "telemetry": {
+   "reordered_turns": 104,
+   "errors": 0,
+   "lot_turns": 15,
+   "lot_units": 97,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "A",
+  "seed": 101,
+  "seat": 0,
+  "ours": 95160.0,
+  "theirs": 95079.0,
+  "margin": 81.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 51.4,
+  "telemetry": {
+   "reordered_turns": 55,
+   "errors": 0,
+   "lot_turns": 20,
+   "lot_units": 103,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "A",
+  "seed": 101,
+  "seat": 1,
+  "ours": 95160.0,
+  "theirs": 95079.0,
+  "margin": 81.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 50.0,
+  "telemetry": {
+   "reordered_turns": 55,
+   "errors": 0,
+   "lot_turns": 20,
+   "lot_units": 103,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "A",
+  "seed": 102,
+  "seat": 0,
+  "ours": 103560.0,
+  "theirs": 101465.0,
+  "margin": 2095.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 109.2,
+  "telemetry": {
+   "reordered_turns": 62,
+   "errors": 0,
+   "lot_turns": 30,
+   "lot_units": 185,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "A",
+  "seed": 102,
+  "seat": 1,
+  "ours": 103560.0,
+  "theirs": 101465.0,
+  "margin": 2095.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 109.0,
+  "telemetry": {
+   "reordered_turns": 62,
+   "errors": 0,
+   "lot_turns": 30,
+   "lot_units": 185,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "A",
+  "seed": 103,
+  "seat": 0,
+  "ours": 99531.0,
+  "theirs": 98483.0,
+  "margin": 1048.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 61.0,
+  "telemetry": {
+   "reordered_turns": 68,
+   "errors": 0,
+   "lot_turns": 24,
+   "lot_units": 116,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "A",
+  "seed": 103,
+  "seat": 1,
+  "ours": 99531.0,
+  "theirs": 98483.0,
+  "margin": 1048.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 64.9,
+  "telemetry": {
+   "reordered_turns": 68,
+   "errors": 0,
+   "lot_turns": 24,
+   "lot_units": 116,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "A",
+  "seed": 104,
+  "seat": 0,
+  "ours": 110520.0,
+  "theirs": 109741.0,
+  "margin": 779.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 82.7,
+  "telemetry": {
+   "reordered_turns": 66,
+   "errors": 0,
+   "lot_turns": 27,
+   "lot_units": 126,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "A",
+  "seed": 104,
+  "seat": 1,
+  "ours": 110520.0,
+  "theirs": 109741.0,
+  "margin": 779.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 82.7,
+  "telemetry": {
+   "reordered_turns": 66,
+   "errors": 0,
+   "lot_turns": 27,
+   "lot_units": 126,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "A",
+  "seed": 105,
+  "seat": 0,
+  "ours": 90817.0,
+  "theirs": 89785.0,
+  "margin": 1032.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 83.3,
+  "telemetry": {
+   "reordered_turns": 69,
+   "errors": 0,
+   "lot_turns": 34,
+   "lot_units": 193,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "A",
+  "seed": 105,
+  "seat": 1,
+  "ours": 90817.0,
+  "theirs": 89785.0,
+  "margin": 1032.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 83.6,
+  "telemetry": {
+   "reordered_turns": 69,
+   "errors": 0,
+   "lot_turns": 34,
+   "lot_units": 193,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "A",
+  "seed": 106,
+  "seat": 0,
+  "ours": 95359.0,
+  "theirs": 94799.0,
+  "margin": 560.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 68.6,
+  "telemetry": {
+   "reordered_turns": 62,
+   "errors": 0,
+   "lot_turns": 23,
+   "lot_units": 126,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "A",
+  "seed": 106,
+  "seat": 1,
+  "ours": 95359.0,
+  "theirs": 94799.0,
+  "margin": 560.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 76.4,
+  "telemetry": {
+   "reordered_turns": 62,
+   "errors": 0,
+   "lot_turns": 23,
+   "lot_units": 126,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "A",
+  "seed": 107,
+  "seat": 0,
+  "ours": 109554.0,
+  "theirs": 108818.0,
+  "margin": 736.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 68.6,
+  "telemetry": {
+   "reordered_turns": 64,
+   "errors": 0,
+   "lot_turns": 24,
+   "lot_units": 140,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "A",
+  "seed": 107,
+  "seat": 1,
+  "ours": 109554.0,
+  "theirs": 108818.0,
+  "margin": 736.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 70.3,
+  "telemetry": {
+   "reordered_turns": 64,
+   "errors": 0,
+   "lot_turns": 24,
+   "lot_units": 140,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "A",
+  "seed": 108,
+  "seat": 0,
+  "ours": 84871.0,
+  "theirs": 84615.0,
+  "margin": 256.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 70.5,
+  "telemetry": {
+   "reordered_turns": 63,
+   "errors": 0,
+   "lot_turns": 21,
+   "lot_units": 106,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "A",
+  "seed": 108,
+  "seat": 1,
+  "ours": 84871.0,
+  "theirs": 84615.0,
+  "margin": 256.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 73.0,
+  "telemetry": {
+   "reordered_turns": 63,
+   "errors": 0,
+   "lot_turns": 21,
+   "lot_units": 106,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "A",
+  "seed": 109,
+  "seat": 1,
+  "ours": 77151.0,
+  "theirs": 74490.0,
+  "margin": 2661.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 63.9,
+  "telemetry": {
+   "reordered_turns": 62,
+   "errors": 0,
+   "lot_turns": 20,
+   "lot_units": 110,
+   "lot_errors": 0
+  }
+ },
+ {
+  "opponent": "A",
+  "seed": 109,
+  "seat": 0,
+  "ours": 77151.0,
+  "theirs": 74490.0,
+  "margin": 2661.0,
+  "won": true,
+  "status": "DONE",
+  "errors": 0,
+  "seconds": 70.4,
+  "telemetry": {
+   "reordered_turns": 62,
+   "errors": 0,
+   "lot_turns": 20,
+   "lot_units": 110,
+   "lot_errors": 0
+  }
+ }
+]

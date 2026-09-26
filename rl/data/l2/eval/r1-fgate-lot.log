@@ -1,0 +1,4 @@
+60 games: r1-fgate-lot vs L on 30 seeds x 2 seats, 1 workers
+saved rl\data\l2\paired\r1-fgate-lot.json
+  r1-fgate-lot vs L                         52/60  won (0 tied)  mean     +542  median     +502  worst   -1,574  errors 0  crashes 0
+  telemetry (mean per game): errors 0.0, lot_errors 0.0, lot_turns 23.9, lot_units 131.0, reordered_turns 62.3

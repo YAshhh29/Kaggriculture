@@ -1,0 +1,4 @@
+60 games: r2-lot-rt vs L on 30 seeds x 2 seats, 1 workers
+saved rl\data\l2\paired\r2-lot-rt.json
+  r2-lot-rt vs L                         60/60  won (0 tied)  mean     +950  median     +874  worst      +82  errors 0  crashes 0
+  telemetry (mean per game): errors 0.0, lot_errors 0.0, lot_turns 23.8, lot_units 130.3, reordered_turns 162.0, rt_errors 0.0, rt_expected 676.5, rt_merged_sells 0.0, rt_sells 92.3, rt_skip_cash 20.1, rt_skip_profit 7.5, rt_skip_room 2.3, rt_skip_slots 18.2, rt_trips 92.3, rt_units 5274.9, rt_unsold 0.0

@@ -1,0 +1,4 @@
+60 games: r1-wheat-rt vs L on 30 seeds x 2 seats, 1 workers
+saved rl\data\l2\paired\r1-wheat-rt.json
+  r1-wheat-rt vs L                         48/60  won (0 tied)  mean     +203  median     +244  worst     -521  errors 0  crashes 0
+  telemetry (mean per game): errors 0.0, reordered_turns 170.8, rt_errors 0.0, rt_expected 673.1, rt_merged_sells 0.0, rt_sells 92.0, rt_skip_cash 20.4, rt_skip_profit 7.7, rt_skip_room 2.4, rt_skip_slots 18.1, rt_trips 92.0, rt_units 5238.6, rt_unsold 0.0
