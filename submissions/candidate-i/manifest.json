@@ -1,0 +1,106 @@
+{
+  "candidate": "I",
+  "kind": "route replay of recorded top-200 leaderboard episodes",
+  "source_corpus": "kaggle_cache/top200_tapes (public Kaggriculture episode API)",
+  "routes": [
+    {
+      "ep": 110022381,
+      "team": "Matthew Labrador",
+      "team_rank": 162,
+      "team_score": 2797.5,
+      "recorded_own": 117533.0,
+      "recorded_opponent": 81329.0,
+      "dev_median_own": 96552,
+      "shops": [
+        "FARMERS_MARKET",
+        "ICE_CREAM_SHOP",
+        "YARN_STORE",
+        "BAKERY",
+        "FARMERS_MARKET",
+        "PIZZA_SHOP",
+        "FARMERS_MARKET",
+        "BAKERY"
+      ],
+      "why": "dry run"
+    },
+    {
+      "ep": 110022405,
+      "team": "EthanL67",
+      "team_rank": 32,
+      "team_score": 2926.3,
+      "recorded_own": 158958.0,
+      "recorded_opponent": 157657.0,
+      "dev_median_own": 88274,
+      "shops": [
+        "ICE_CREAM_SHOP",
+        "SMOOTHIE_SHOP",
+        "SMOOTHIE_SHOP",
+        "YARN_STORE",
+        "PIZZA_SHOP",
+        "PET_CAFE",
+        "ICE_CREAM_SHOP",
+        "FARMERS_MARKET"
+      ],
+      "why": "dry run"
+    },
+    {
+      "ep": 110032835,
+      "team": "binghua",
+      "team_rank": 52,
+      "team_score": 2892.5,
+      "recorded_own": 121581.0,
+      "recorded_opponent": 101885.0,
+      "dev_median_own": 84035,
+      "shops": [
+        "PIZZA_SHOP",
+        "YARN_STORE",
+        "PIZZA_SHOP",
+        "BRUNCH_SPOT",
+        "ICE_CREAM_SHOP",
+        "ICE_CREAM_SHOP",
+        "PIZZA_SHOP",
+        "PET_CAFE"
+      ],
+      "why": "dry run"
+    },
+    {
+      "ep": 110040717,
+      "team": "ymg_aq",
+      "team_rank": 8,
+      "team_score": 3055.7,
+      "recorded_own": 107624.0,
+      "recorded_opponent": 95900.0,
+      "dev_median_own": 79614,
+      "shops": [
+        "PIZZA_SHOP",
+        "SMOOTHIE_SHOP",
+        "SMOOTHIE_SHOP",
+        "FARMERS_MARKET",
+        "PET_CAFE",
+        "PET_CAFE",
+        "BRUNCH_SPOT",
+        "SMOOTHIE_SHOP"
+      ],
+      "why": "dry run"
+    }
+  ],
+  "default_route": 0,
+  "decide_step": 144,
+  "liquidate_from": 708,
+  "shop_map_cells": 64,
+  "main_sha256": "44f2a06fc49d8dc2969d4e84542b738999c9ad1c117fe508fec46b94572a14c6",
+  "main_bytes": 67033,
+  "checks": {
+    "steps_compared": 719,
+    "identical": true,
+    "source_payload_sha256": "a2ae493d480ad4c74487f3216986ab9293edfbfee955f7308de09dfc88bd0539",
+    "packaged_payload_sha256": "a2ae493d480ad4c74487f3216986ab9293edfbfee955f7308de09dfc88bd0539",
+    "smoke_game": {
+      "seed": 4242,
+      "reward": 148312.0,
+      "status": "DONE"
+    },
+    "routes": 4
+  },
+  "built": "2026-09-17 19:56"
+}

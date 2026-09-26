@@ -1,0 +1,39 @@
+{
+  "created_at": "2026-08-26T21:47:51.929371+00:00",
+  "competition": "kaggriculture",
+  "agent": "main.py",
+  "sha256": "684693161aebb51bd6293a497033d630218af5eabf92870899efabef69d158b2",
+  "combined_source_sha256": "d13fcb64343603f951591ff284a542515ec99701277f3a644747bf311eb92909",
+  "source_files": [
+    "../experimental_throughput_agent.py",
+    "../experimental_premium_throughput_agent.py",
+    "../experimental_adaptive_counter_agent.py",
+    "../experimental_deadline_tapered_wheat_agent.py",
+    "../macro_policy.py",
+    "../service_policy.py",
+    "../experimental_learned_service_agent.py",
+    "../v1327-service-bandit-depth2.json"
+  ],
+  "policy": "deadline-safe three-quadrant capacity with a frozen day-1 contextual selector over baseline and zero-travel colocated FEED+CARE service",
+  "promotion_evidence": {
+    "training_contexts": 80,
+    "validation_contexts": 40,
+    "validation": "37-3 learned vs 35-5 baseline",
+    "direct_spent_seed_league": "37-3",
+    "fresh_six_policy_league": "23-1",
+    "fresh_vs_deadline": "3-1",
+    "elite_replay_controls": "0-4 with exact deadline fallback"
+  },
+  "kaggle": {
+    "submission_id": 55803952,
+    "uploaded_bytes": 133479,
+    "validation_episode_id": 100394606,
+    "validation_rewards": [
+      60004,
+      57984
+    ],
+    "initial_score": 600.0,
+    "status": "COMPLETE"
+  },
+  "status": "submitted to Kaggle; validation complete"
+}

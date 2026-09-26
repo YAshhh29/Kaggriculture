@@ -1,0 +1,33 @@
+{
+  "candidate": "H",
+  "base_source_notebook": "arsgorynich/kaggriculture-v40-challenger",
+  "base_sha256": "546c42248996ea4bf9d13bbe713440f7428770b85fba92a886a20af4f3ce25d5",
+  "demand_layer_sha256": "6d70d7f3bb947da7605be9a37b965271a6e2e12024b734d0bb401bd5eed94e76",
+  "demand_settings": {
+    "tolerance": 0.25,
+    "hire_reserve": 15,
+    "hire_reserve_until_day": 1
+  },
+  "main_sha256": "2af3228ed45e0f128ec97720bc79b1bab6ea7413e969fe5ce9e736136679135d",
+  "license": "Apache-2.0 base with notices retained; demand layer appended",
+  "checks": {
+    "exposes_agent": true,
+    "seat_0": {
+      "status": [
+        "DONE",
+        "DONE"
+      ],
+      "H": 147874.0,
+      "G": 87132.0
+    },
+    "seat_1": {
+      "status": [
+        "DONE",
+        "DONE"
+      ],
+      "H": 98333.0,
+      "G": 61992.0
+    }
+  },
+  "built": "2026-09-16 00:52"
+}

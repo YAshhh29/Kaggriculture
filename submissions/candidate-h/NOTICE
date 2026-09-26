@@ -1,0 +1,17 @@
+Candidate H
+
+main.py combines two parts.
+
+1. A route-replay farming base, published with the Kaggle notebook
+   https://www.kaggle.com/code/arsgorynich/kaggriculture-v40-challenger
+   and licensed under the Apache License, Version 2.0. Its own copyright
+   and attribution notices are retained in main.py. The license text is
+   provided in LICENSE.
+
+2. Candidate H's market-demand layer, appended at the end of main.py
+   (section "Candidate H market-demand layer"). It re-decides the base's
+   SELL orders from a forecast of town consumption and the market price
+   curves.
+
+Modification to the base: the demand layer is appended and wraps the
+base's final agent(); the base's code is otherwise unchanged.

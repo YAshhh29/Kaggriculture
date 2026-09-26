@@ -1,0 +1,43 @@
+{
+  "created_at": "2026-08-27T09:47:16.361299+00:00",
+  "competition": "kaggriculture",
+  "agent": "main.py",
+  "sha256": "53cbab96eaf7eba10a55adac2208b273636ba45274b5cac34967bedae335f5ac",
+  "combined_source_sha256": "4956ba3fa8fb1e97a10cf8b916bc95dbdb8b4af1b8a1921198ded629d4e68c87",
+  "source_files": [
+    "agents\\experimental_throughput_agent.py",
+    "agents\\experimental_premium_throughput_agent.py",
+    "agents\\experimental_adaptive_counter_agent.py",
+    "agents\\experimental_deadline_tapered_wheat_agent.py",
+    "policies\\macro_policy.py",
+    "policies\\service_policy.py",
+    "agents\\experimental_learned_service_agent.py",
+    "models\\v1327-service-bandit-depth2.json",
+    "core\\economics.py",
+    "policies\\demand_policy.py",
+    "agents\\experimental_demand_aware_agent.py",
+    "agents\\experimental_demand_animal_agent.py"
+  ],
+  "policy": "learned safe service plus day-6 shop-demand selection for two expansion-animal slots; wheat crop rotation",
+  "promotion_evidence": {
+    "development_vs_submitted": "13-7",
+    "validation_vs_submitted": "7-3",
+    "spent_five-policy_league": "47-3",
+    "fresh_six-policy_league": "23-1 on seeds 186-187",
+    "elite_replay_controls": "0-4 with exact baseline fallback",
+    "learned_three_arm_tree": "rejected: 35-5 ties fixed cows and trails margin",
+    "overnight_shadow_gate": "92-8 across 100 unseen games versus 89-11 for the submitted control; no opponent regression"
+  },
+  "kaggle": {
+    "submission_id": 55817911,
+    "submitted_at": "2026-08-27T12:15:52.800Z",
+    "validation_episode_id": 100869093,
+    "validation_rewards": [
+      58100,
+      59301
+    ],
+    "initial_score": 600.0,
+    "status": "COMPLETE"
+  },
+  "status": "submitted to Kaggle; validation complete"
+}

@@ -1,0 +1,9 @@
+Candidate I
+
+Candidate I is a replay agent. It does not contain an original playing policy.
+Its route portfolio is a set of action sequences recorded from public
+Kaggriculture episodes played by the teams named in manifest.json, captured
+from the public episode API into kaggle_cache/top200_tapes/ and replayed
+unchanged apart from two mechanical guards (suppression of SELL orders the shed
+cannot fill, and terminal liquidation). Credit for the play belongs to those
+teams. The only code in main.py is this project's replay chassis.
