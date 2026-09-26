@@ -57,6 +57,26 @@ def _v219_gate(env, deficit=140):
     exec(body.replace(_SHOPS3, relaxed), env)
 
 
+def l_stack(inner=None, outer=None, gate=120):
+    """Agent L exactly as submitted, optionally with one more layer.
+
+    inner(agent, env) wraps the parent before L's queue-order layer (so the
+    layer's own orders get reordered too, and it can patch the parent's
+    namespace `env`); outer(agent) wraps the finished L. With neither, this is
+    the live L (submissions/candidate-l/main.py plays identically).
+    """
+    from rl.market_front import mf_wrap
+    env, entry = parent_namespace()
+    _v219_gate(env, gate)
+    agent = entry
+    if inner is not None:
+        agent = inner(agent, env)
+    agent = mf_wrap(agent)
+    if outer is not None:
+        agent = outer(agent)
+    return agent
+
+
 def _build(name):
     env, entry = parent_namespace()
     if name == "no_v219":
