@@ -1,0 +1,1248 @@
+  skipping 120 games already stored
+  608 games (91 pairs x 4 seeds x 2 seats) on 8 workers
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_J vs nb_boatlee_v16rc5                      s97:    80,197 :   115,755  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_J vs nb_flexonafft_multiroute               s97:    77,798 :   113,906  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_J vs nb_flexonafft_multiroute               s11:    48,403 :    66,096  ['DONE', 'DONE']
+    live_J vs nb_flexonafft_multiroute               s53:    70,137 :    85,701  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_J vs nb_boatlee_v16rc5                      s11:    47,803 :    84,218  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_J vs nb_flexonafft_multiroute               s29:    58,842 :    86,610  ['DONE', 'DONE']
+    live_J vs nb_boatlee_v16rc5                      s29:    48,420 :    71,420  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_J vs nb_boatlee_v16rc5                      s53:    92,688 :   110,195  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_J vs nb_guru_master_v4                      s11:    57,733 :   103,457  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_J vs nb_haideptry_2965                      s11:    59,618 :   106,383  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_J vs nb_guru_master_v4                      s29:    61,123 :   136,138  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_J vs nb_guru_master_v4                      s97:    56,961 :   100,527  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_J vs nb_haideptry_2965                      s29:    63,444 :   139,492  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_J vs nb_guru_master_v4                      s53:    69,853 :   141,545  ['DONE', 'DONE']
+    live_J vs nb_haideptry_2965                      s53:    90,094 :   153,754  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_J vs nb_haideptry_2965                      s97:    52,419 :    95,159  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_J vs nb_leoprovorov_forecast                s11:    61,785 :   110,827  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_J vs nb_leoprovorov_forecast                s53:    69,979 :   141,792  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_J vs nb_leoprovorov_forecast                s29:    60,635 :   140,046  ['DONE', 'DONE']
+    live_J vs nb_tetsutani_demand                    s29:    61,820 :   137,423  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_J vs nb_leoprovorov_forecast                s97:    38,570 :    88,739  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_J vs nb_tetsutani_demand                    s11:    56,206 :   101,287  ['DONE', 'DONE']
+    live_J vs nb_tetsutani_demand                    s53:    89,129 :   154,708  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_J vs nb_tetsutani_demand                    s97:    60,100 :   115,849  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_J vs nb_tschinkel_2945                      s11:    53,500 :   101,845  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_J vs nb_tschinkel_2945                      s29:    62,486 :   134,935  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_J vs nb_tschinkel_metav4_v13                s11:    54,276 :   103,399  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_J vs nb_tschinkel_2945                      s97:    52,469 :    88,279  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_J vs nb_tschinkel_2945                      s53:    87,604 :   162,086  ['DONE', 'DONE']
+    live_J vs nb_tschinkel_metav4_v13                s29:    55,662 :   135,125  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_J vs nb_tschinkel_metav4_v13                s53:    86,795 :   161,775  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_J vs nb_tschinkel_metav4_v13                s97:    57,174 :    87,838  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_C2 vs nb_boatlee_v16rc5                     s11:    82,987 :    69,226  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_C2 vs nb_boatlee_v16rc5                     s29:    68,948 :    58,867  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_C2 vs nb_boatlee_v16rc5                     s53:    70,093 :    54,232  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_C2 vs nb_boatlee_v16rc5                     s97:    65,877 :    52,279  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_C2 vs nb_flexonafft_multiroute              s11:    51,015 :    28,448  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_C2 vs nb_flexonafft_multiroute              s29:    52,613 :    29,489  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_C2 vs nb_flexonafft_multiroute              s53:   117,296 :   101,864  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_C2 vs nb_flexonafft_multiroute              s97:    62,796 :    41,283  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_C2 vs nb_guru_master_v4                     s11:    56,911 :    74,421  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_C2 vs nb_guru_master_v4                     s29:    85,740 :   100,634  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_C2 vs nb_guru_master_v4                     s97:    46,293 :    62,781  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_C2 vs nb_haideptry_2965                     s11:    56,739 :    74,118  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_C2 vs nb_guru_master_v4                     s53:    85,824 :   128,756  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_C2 vs nb_haideptry_2965                     s29:    85,702 :   100,486  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_C2 vs nb_haideptry_2965                     s53:    84,936 :   127,991  ['DONE', 'DONE']
+    live_C2 vs nb_haideptry_2965                     s97:    46,680 :    66,181  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_C2 vs nb_leoprovorov_forecast               s11:    65,038 :    81,684  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_C2 vs nb_leoprovorov_forecast               s29:    92,103 :   104,753  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_C2 vs nb_leoprovorov_forecast               s53:    85,776 :   129,513  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_C2 vs nb_tetsutani_demand                   s11:    64,342 :    80,725  ['DONE', 'DONE']
+    live_C2 vs nb_tetsutani_demand                   s29:    92,506 :   104,174  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_C2 vs nb_leoprovorov_forecast               s97:    41,238 :    72,100  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_C2 vs nb_tetsutani_demand                   s97:    41,326 :    69,581  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_C2 vs nb_tetsutani_demand                   s53:    85,338 :   129,059  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_C2 vs nb_tschinkel_2945                     s11:    57,536 :    75,585  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_C2 vs nb_tschinkel_2945                     s29:    85,771 :   100,709  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_C2 vs nb_tschinkel_2945                     s53:    85,275 :   132,140  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_C2 vs nb_tschinkel_2945                     s97:    46,960 :    65,453  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_C2 vs nb_tschinkel_metav4_v13               s11:    56,933 :    74,206  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_C2 vs nb_tschinkel_metav4_v13               s29:    85,795 :   100,611  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_C2 vs nb_tschinkel_metav4_v13               s97:    46,749 :    66,038  ['DONE', 'DONE']
+    live_C2 vs nb_tschinkel_metav4_v13               s53:    85,122 :   132,418  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_F vs nb_boatlee_v16rc5                      s11:    99,029 :    64,892  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_F vs nb_boatlee_v16rc5                      s29:    93,106 :    82,095  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_F vs nb_boatlee_v16rc5                      s97:    86,323 :    60,119  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_F vs nb_boatlee_v16rc5                      s53:    91,093 :    57,072  ['DONE', 'DONE']
+    live_F vs nb_flexonafft_multiroute               s11:    80,168 :    43,641  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_F vs nb_flexonafft_multiroute               s29:    68,465 :    42,966  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_F vs nb_flexonafft_multiroute               s53:   133,773 :   112,431  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_F vs nb_flexonafft_multiroute               s97:    70,579 :    49,906  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_F vs nb_guru_master_v4                      s11:    79,909 :    97,464  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_F vs nb_guru_master_v4                      s29:    89,110 :    92,856  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_F vs nb_guru_master_v4                      s97:    53,315 :    57,481  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_F vs nb_guru_master_v4                      s53:   108,399 :   138,944  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_F vs nb_haideptry_2965                      s11:    79,274 :    96,875  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_F vs nb_haideptry_2965                      s29:    89,104 :    93,366  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_F vs nb_haideptry_2965                      s53:   108,242 :   138,236  ['DONE', 'DONE']
+    live_F vs nb_haideptry_2965                      s97:    52,408 :    59,223  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_F vs nb_leoprovorov_forecast                s29:    89,064 :    93,033  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_F vs nb_leoprovorov_forecast                s11:    79,339 :    97,353  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_F vs nb_leoprovorov_forecast                s53:   108,467 :   139,609  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_F vs nb_tetsutani_demand                    s11:    79,494 :    97,092  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_F vs nb_leoprovorov_forecast                s97:    52,347 :    60,610  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_F vs nb_tetsutani_demand                    s29:    89,674 :    92,981  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_F vs nb_tetsutani_demand                    s53:   108,298 :   137,760  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_F vs nb_tetsutani_demand                    s97:    52,552 :    59,015  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_F vs nb_tschinkel_2945                      s29:    89,329 :    93,146  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_F vs nb_tschinkel_2945                      s53:   108,297 :   138,934  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_F vs nb_tschinkel_2945                      s11:    79,950 :    97,655  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_F vs nb_tschinkel_2945                      s97:    53,560 :    59,938  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_F vs nb_tschinkel_metav4_v13                s11:    79,420 :    97,250  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_F vs nb_tschinkel_metav4_v13                s29:    89,117 :    92,605  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_F vs nb_tschinkel_metav4_v13                s53:   108,471 :   139,194  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_F vs nb_tschinkel_metav4_v13                s97:    52,677 :    60,089  ['DONE', 'DONE']
+    live_I vs nb_boatlee_v16rc5                      s11:   138,768 :    92,114  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_I vs nb_boatlee_v16rc5                      s29:    85,307 :    78,134  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_I vs nb_boatlee_v16rc5                      s97:   105,895 :    81,756  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_I vs nb_boatlee_v16rc5                      s53:    72,082 :    50,434  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_I vs nb_flexonafft_multiroute               s29:   133,172 :   136,923  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_I vs nb_flexonafft_multiroute               s11:    92,480 :    60,840  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_I vs nb_flexonafft_multiroute               s53:    82,028 :    65,748  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_I vs nb_flexonafft_multiroute               s97:    93,862 :    62,697  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_I vs nb_guru_master_v4                      s11:    71,756 :    72,471  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_I vs nb_guru_master_v4                      s53:    75,268 :    82,346  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_I vs nb_guru_master_v4                      s97:    79,865 :   105,442  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_I vs nb_haideptry_2965                      s11:    71,764 :    72,391  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_I vs nb_guru_master_v4                      s29:    63,800 :    81,216  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_I vs nb_haideptry_2965                      s29:    63,661 :    80,805  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_I vs nb_haideptry_2965                      s53:    74,693 :    81,559  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_I vs nb_haideptry_2965                      s97:    79,675 :   105,303  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_I vs nb_tetsutani_demand                    s11:    71,411 :    71,795  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_I vs nb_leoprovorov_forecast                s11:    72,713 :    72,989  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_I vs nb_leoprovorov_forecast                s97:    79,837 :   105,504  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_I vs nb_leoprovorov_forecast                s53:    75,609 :    82,084  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_I vs nb_leoprovorov_forecast                s29:    59,235 :    75,103  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_I vs nb_tetsutani_demand                    s29:    62,879 :    78,254  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_I vs nb_tetsutani_demand                    s53:    75,293 :    82,613  ['DONE', 'DONE']
+    live_I vs nb_tetsutani_demand                    s97:    79,713 :   105,519  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_I vs nb_tschinkel_2945                      s11:    72,505 :    72,205  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_I vs nb_tschinkel_2945                      s97:    80,217 :   105,049  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_I vs nb_tschinkel_2945                      s29:    63,973 :    75,942  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_I vs nb_tschinkel_metav4_v13                s11:    72,735 :    72,628  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_I vs nb_tschinkel_2945                      s53:    75,351 :    82,126  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_I vs nb_tschinkel_metav4_v13                s29:    63,961 :    81,043  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_I vs nb_tschinkel_metav4_v13                s53:    75,651 :    81,982  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_I vs nb_tschinkel_metav4_v13                s97:    79,897 :   105,457  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_K vs nb_boatlee_v16rc5                      s29:   102,584 :    82,176  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_K vs nb_boatlee_v16rc5                      s97:    90,886 :    49,296  ['DONE', 'DONE']
+    live_K vs nb_boatlee_v16rc5                      s11:   121,433 :    68,371  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_K vs nb_boatlee_v16rc5                      s53:   108,502 :    54,368  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_K vs nb_flexonafft_multiroute               s11:    86,692 :    43,967  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_K vs nb_flexonafft_multiroute               s29:    75,200 :    36,551  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_K vs nb_flexonafft_multiroute               s97:    74,307 :    38,802  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_K vs nb_flexonafft_multiroute               s53:   137,894 :   105,573  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_K vs nb_guru_master_v4                      s11:    98,699 :   104,048  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_K vs nb_guru_master_v4                      s29:    96,539 :   100,548  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_K vs nb_guru_master_v4                      s97:    73,589 :    84,898  ['DONE', 'DONE']
+    live_K vs nb_guru_master_v4                      s53:    87,106 :    92,859  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_K vs nb_haideptry_2965                      s11:    98,631 :   105,116  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_K vs nb_haideptry_2965                      s29:    96,655 :   100,294  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_K vs nb_haideptry_2965                      s97:    73,234 :    84,530  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_K vs nb_haideptry_2965                      s53:    86,406 :    92,035  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_K vs nb_leoprovorov_forecast                s53:    72,613 :    78,961  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_K vs nb_leoprovorov_forecast                s11:    78,698 :    82,588  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_K vs nb_leoprovorov_forecast                s29:    93,848 :    98,074  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_K vs nb_tetsutani_demand                    s29:    92,878 :    98,857  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_K vs nb_leoprovorov_forecast                s97:    53,522 :    61,176  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_K vs nb_tetsutani_demand                    s11:    78,217 :    81,826  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_K vs nb_tetsutani_demand                    s97:    52,592 :    59,938  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_K vs nb_tetsutani_demand                    s53:    72,399 :    78,798  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_K vs nb_tschinkel_2945                      s29:    97,504 :   100,117  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_K vs nb_tschinkel_2945                      s97:    77,091 :    86,959  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_K vs nb_tschinkel_2945                      s11:    98,785 :   103,663  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_K vs nb_tschinkel_2945                      s53:    86,571 :    93,719  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_K vs nb_tschinkel_metav4_v13                s29:    96,935 :    99,854  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_K vs nb_tschinkel_metav4_v13                s11:    98,727 :   104,754  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_K vs nb_tschinkel_metav4_v13                s97:    73,661 :    84,205  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_K vs nb_tschinkel_metav4_v13                s53:    87,395 :    92,897  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_H2 vs nb_boatlee_v16rc5                     s11:   121,433 :    68,371  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_H2 vs nb_boatlee_v16rc5                     s97:    90,886 :    49,296  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_H2 vs nb_boatlee_v16rc5                     s29:   102,584 :    82,176  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_H2 vs nb_boatlee_v16rc5                     s53:   108,502 :    54,368  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_H2 vs nb_flexonafft_multiroute              s11:    86,692 :    43,967  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_H2 vs nb_flexonafft_multiroute              s29:    75,200 :    36,551  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_H2 vs nb_flexonafft_multiroute              s97:    74,307 :    38,802  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_H2 vs nb_flexonafft_multiroute              s53:   137,894 :   105,573  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_H2 vs nb_guru_master_v4                     s11:    98,699 :   104,048  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_H2 vs nb_guru_master_v4                     s29:    96,539 :   100,548  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_H2 vs nb_guru_master_v4                     s53:    87,106 :    92,859  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_H2 vs nb_guru_master_v4                     s97:    73,589 :    84,898  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_H2 vs nb_haideptry_2965                     s29:    96,655 :   100,294  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_H2 vs nb_haideptry_2965                     s11:    98,631 :   105,116  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_H2 vs nb_haideptry_2965                     s53:    86,406 :    92,035  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_H2 vs nb_haideptry_2965                     s97:    73,234 :    84,530  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_H2 vs nb_leoprovorov_forecast               s11:    78,698 :    82,588  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_H2 vs nb_leoprovorov_forecast               s29:    93,848 :    98,074  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_H2 vs nb_leoprovorov_forecast               s53:    72,613 :    78,961  ['DONE', 'DONE']
+    live_H2 vs nb_leoprovorov_forecast               s97:    53,522 :    61,176  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_H2 vs nb_tetsutani_demand                   s29:    92,878 :    98,857  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_H2 vs nb_tetsutani_demand                   s11:    78,217 :    81,826  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_H2 vs nb_tetsutani_demand                   s53:    72,399 :    78,798  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_H2 vs nb_tetsutani_demand                   s97:    52,592 :    59,938  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_H2 vs nb_tschinkel_2945                     s29:    97,504 :   100,117  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_H2 vs nb_tschinkel_2945                     s97:    77,091 :    86,959  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_H2 vs nb_tschinkel_2945                     s11:    98,785 :   103,663  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_H2 vs nb_tschinkel_metav4_v13               s29:    96,935 :    99,854  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_H2 vs nb_tschinkel_2945                     s53:    86,571 :    93,719  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_H2 vs nb_tschinkel_metav4_v13               s11:    98,727 :   104,754  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_H2 vs nb_tschinkel_metav4_v13               s97:    73,661 :    84,205  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    live_H2 vs nb_tschinkel_metav4_v13               s53:    87,395 :    92,897  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs nb_flexonafft_multiroute    s11:    68,369 :    85,209  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs nb_flexonafft_multiroute    s29:    91,210 :    88,745  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs nb_flexonafft_multiroute    s53:    53,639 :    88,492  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs nb_flexonafft_multiroute    s97:    91,537 :    92,476  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs nb_guru_master_v4           s29:    81,587 :   102,108  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs nb_guru_master_v4           s11:    82,555 :   115,645  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs nb_guru_master_v4           s53:    53,909 :   112,956  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs nb_guru_master_v4           s97:    51,402 :    91,543  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs nb_haideptry_2965           s29:    81,349 :   102,114  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs nb_haideptry_2965           s11:    82,750 :   115,116  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs nb_haideptry_2965           s53:    53,609 :   112,857  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs nb_haideptry_2965           s97:    50,423 :    91,716  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs nb_leoprovorov_forecast     s29:    81,803 :   103,640  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs nb_leoprovorov_forecast     s11:    82,791 :   115,905  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs nb_leoprovorov_forecast     s53:    53,589 :   112,907  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs nb_leoprovorov_forecast     s97:    50,798 :    92,480  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs nb_tetsutani_demand         s11:    82,398 :   115,309  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs nb_tschinkel_2945           s11:    82,665 :   114,421  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs nb_tetsutani_demand         s29:    81,592 :   101,942  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs nb_tetsutani_demand         s97:    50,403 :    90,282  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs nb_tetsutani_demand         s53:    53,792 :   112,590  ['DONE', 'DONE']
+    nb_boatlee_v16rc5 vs nb_tschinkel_2945           s29:    81,817 :   102,512  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs nb_tschinkel_2945           s53:    54,475 :   112,526  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs nb_tschinkel_2945           s97:    50,294 :    91,658  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs nb_tschinkel_metav4_v13     s11:    83,050 :   115,238  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs nb_tschinkel_metav4_v13     s29:    81,700 :   101,928  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs nb_tschinkel_metav4_v13     s97:    50,920 :    91,547  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs nb_tschinkel_metav4_v13     s53:    53,994 :   112,652  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs nb_guru_master_v4    s29:    36,522 :    76,765  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs nb_guru_master_v4    s11:    25,856 :    68,954  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs nb_guru_master_v4    s53:   100,350 :   139,411  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs nb_guru_master_v4    s97:    38,833 :    74,753  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs nb_haideptry_2965    s29:    36,412 :    76,645  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs nb_haideptry_2965    s11:    25,753 :    68,856  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs nb_haideptry_2965    s97:    41,458 :    77,502  ['DONE', 'DONE']
+    nb_flexonafft_multiroute vs nb_haideptry_2965    s53:   101,797 :   138,101  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs nb_leoprovorov_forecast s11:    26,233 :    69,144  ['DONE', 'DONE']
+    nb_flexonafft_multiroute vs nb_leoprovorov_forecast s29:    36,447 :    77,074  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs nb_leoprovorov_forecast s97:    41,623 :    78,158  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs nb_leoprovorov_forecast s53:   100,341 :   139,366  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs nb_tetsutani_demand  s11:    25,809 :    67,948  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs nb_tetsutani_demand  s29:    36,595 :    76,199  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs nb_tetsutani_demand  s97:    41,726 :    77,136  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs nb_tschinkel_2945    s11:    25,813 :    68,520  ['DONE', 'DONE']
+    nb_flexonafft_multiroute vs nb_tetsutani_demand  s53:   101,135 :   138,520  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs nb_tschinkel_2945    s29:    36,543 :    76,702  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs nb_tschinkel_2945    s53:   100,023 :   140,229  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs nb_tschinkel_2945    s97:    41,788 :    77,334  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs nb_tschinkel_metav4_v13 s11:    25,932 :    68,495  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs nb_tschinkel_metav4_v13 s29:    36,473 :    76,905  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs nb_tschinkel_metav4_v13 s97:    41,785 :    77,870  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs nb_tschinkel_metav4_v13 s53:   100,357 :   139,373  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs nb_haideptry_2965           s11:    80,193 :    81,456  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs nb_haideptry_2965           s29:    97,142 :    94,018  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs nb_haideptry_2965           s97:    58,624 :    61,548  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs nb_haideptry_2965           s53:    77,188 :    78,788  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs nb_leoprovorov_forecast     s29:    95,415 :    93,322  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs nb_leoprovorov_forecast     s11:    79,773 :    81,986  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs nb_tetsutani_demand         s11:    80,529 :    81,560  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs nb_leoprovorov_forecast     s97:    59,098 :    61,464  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs nb_leoprovorov_forecast     s53:    76,351 :    77,400  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs nb_tetsutani_demand         s29:    94,976 :    96,062  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs nb_tetsutani_demand         s53:    72,699 :    80,834  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs nb_tetsutani_demand         s97:    57,576 :    60,678  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs nb_tschinkel_2945           s11:    81,256 :    79,980  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs nb_tschinkel_2945           s29:    97,678 :    93,174  ['DONE', 'DONE']
+    nb_guru_master_v4 vs nb_tschinkel_2945           s53:    78,720 :    75,708  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs nb_tschinkel_2945           s97:    59,996 :    60,050  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs nb_tschinkel_metav4_v13     s29:    97,329 :    93,251  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs nb_tschinkel_metav4_v13     s11:    80,963 :    80,914  ['DONE', 'DONE']
+    nb_guru_master_v4 vs nb_tschinkel_metav4_v13     s97:    59,652 :    61,168  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_leoprovorov_forecast     s11:    80,707 :    81,721  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs nb_tschinkel_metav4_v13     s53:    79,466 :    77,364  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_leoprovorov_forecast     s29:    94,082 :    94,842  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_leoprovorov_forecast     s97:    62,459 :    59,815  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_tetsutani_demand         s29:    93,950 :    96,969  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_leoprovorov_forecast     s53:    77,364 :    76,776  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_tetsutani_demand         s11:    80,606 :    81,212  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_tetsutani_demand         s53:    72,756 :    80,492  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_tschinkel_2945           s11:    81,972 :    79,901  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_tetsutani_demand         s97:    60,542 :    60,620  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_tschinkel_2945           s29:    96,405 :    94,626  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_tschinkel_2945           s97:    62,569 :    59,384  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_tschinkel_2945           s53:    79,457 :    75,330  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_tschinkel_metav4_v13     s11:    81,095 :    80,551  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_tschinkel_metav4_v13     s29:    96,075 :    94,696  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_tschinkel_metav4_v13     s53:    79,295 :    76,975  ['DONE', 'DONE']
+Loading environment halite failed: Error importing numpy: you should not try to import numpy from
+        its source directory; please exit the numpy source tree, and relaunch
+        your python interpreter from there.
+Loading environment kore_fleets failed: Error importing numpy: you should not try to import numpy from
+        its source directory; please exit the numpy source tree, and relaunch
+        your python interpreter from there.
+Loading environment lux_ai_s3 failed: Error importing numpy: you should not try to import numpy from
+        its source directory; please exit the numpy source tree, and relaunch
+        your python interpreter from there.
+Loading environment open_spiel_env failed: Error importing numpy: you should not try to import numpy from
+        its source directory; please exit the numpy source tree, and relaunch
+        your python interpreter from there.
+Loading environment reinforce_tactics failed: Error importing numpy: you should not try to import numpy from
+        its source directory; please exit the numpy source tree, and relaunch
+        your python interpreter from there.
+    nb_haideptry_2965 vs nb_tschinkel_metav4_v13     s97:    62,427 :    59,653  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_tetsutani_demand   s11:    80,604 :    81,431  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_tetsutani_demand   s29:    93,014 :    95,597  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_tschinkel_2945     s11:    81,549 :    79,699  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_tetsutani_demand   s53:    72,971 :    80,200  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_tetsutani_demand   s97:    60,128 :    62,085  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_tschinkel_2945     s29:    96,606 :    94,378  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_tschinkel_2945     s53:    79,187 :    75,661  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_tschinkel_metav4_v13 s11:    81,373 :    80,351  ['DONE', 'DONE']
+    nb_leoprovorov_forecast vs nb_tschinkel_2945     s97:    62,178 :    59,681  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_tschinkel_metav4_v13 s29:    96,242 :    94,560  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_tschinkel_metav4_v13 s53:    78,677 :    75,905  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_tschinkel_metav4_v13 s97:    61,973 :    59,788  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_tschinkel_2945         s11:    81,584 :    79,719  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_tschinkel_2945         s29:    97,305 :    93,350  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_tschinkel_2945         s53:    80,880 :    72,567  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_tschinkel_metav4_v13   s11:    80,941 :    80,805  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_tschinkel_2945         s97:    61,877 :    59,208  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_tschinkel_metav4_v13   s29:    96,722 :    93,586  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_tschinkel_metav4_v13   s53:    80,958 :    72,842  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_tschinkel_metav4_v13   s97:    61,694 :    59,728  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs nb_tschinkel_metav4_v13     s11:    80,125 :    82,342  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs nb_tschinkel_metav4_v13     s29:    94,667 :    95,869  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs nb_tschinkel_metav4_v13     s97:    59,997 :    62,140  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs live_J                      s11:    67,052 :    46,239  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs nb_tschinkel_metav4_v13     s53:    76,799 :    78,919  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs live_J                      s29:    69,740 :    49,202  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs live_J                      s53:   113,934 :    90,920  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs live_J                      s97:   115,755 :    80,197  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs live_J               s11:    83,873 :    58,575  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs live_J               s29:    79,924 :    54,838  ['DONE', 'DONE']
+    nb_flexonafft_multiroute vs live_J               s53:    83,728 :    71,196  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs live_J               s97:   119,470 :    83,983  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs live_J                      s29:   140,578 :    68,421  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs live_J                      s53:   141,533 :    69,860  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs live_J                      s97:   100,527 :    56,961  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs live_J                      s11:    88,002 :    43,226  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs live_J                      s11:    91,290 :    40,665  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs live_J                      s29:   138,606 :    60,285  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs live_J                      s53:   153,754 :    90,094  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs live_J                      s97:    95,159 :    52,419  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs live_J                s11:    87,858 :    44,738  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs live_J                s29:   135,577 :    62,114  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs live_J                s53:   141,739 :    69,967  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs live_J                s97:    88,739 :    38,570  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs live_J                    s11:    84,938 :    42,336  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs live_J                    s29:   136,440 :    58,855  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs live_J                    s53:   154,649 :    89,129  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs live_J                    s97:   115,849 :    60,100  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs live_J                      s53:   162,086 :    87,604  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs live_J                      s11:   105,222 :    52,479  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs live_J                      s29:   136,817 :    66,437  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs live_J                      s97:    88,279 :    52,469  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs live_J                s11:   105,132 :    53,057  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs live_J                s29:   136,779 :    66,436  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs live_J                s53:   161,775 :    86,795  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs live_C2                     s29:    58,867 :    68,948  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs live_C2                     s53:    54,232 :    70,093  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs live_C2                     s11:    78,924 :    90,288  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs live_J                s97:    87,838 :    57,174  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs live_C2              s11:    35,969 :    59,051  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs live_C2                     s97:    52,279 :    65,877  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs live_C2              s29:    29,489 :    52,613  ['DONE', 'DONE']
+    nb_flexonafft_multiroute vs live_C2              s53:   101,864 :   117,296  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs live_C2              s97:    41,283 :    62,796  ['DONE', 'DONE']
+    nb_guru_master_v4 vs live_C2                     s97:    62,781 :    46,293  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs live_C2                     s11:    73,586 :    57,480  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs live_C2                     s11:    73,872 :    57,525  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs live_C2                     s29:   100,634 :    85,740  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs live_C2                     s53:   128,756 :    85,824  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs live_C2                     s29:   100,486 :    85,702  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs live_C2                     s53:   127,991 :    84,936  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs live_C2                     s97:    66,181 :    46,680  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs live_C2               s11:    81,718 :    65,617  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs live_C2               s29:   104,753 :    92,103  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs live_C2               s53:   129,513 :    85,776  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs live_C2                   s11:    80,725 :    64,761  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs live_C2               s97:    72,100 :    41,238  ['DONE', 'DONE']
+    nb_tetsutani_demand vs live_C2                   s29:   104,174 :    92,506  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs live_C2                   s53:   129,059 :    85,338  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs live_C2                   s97:    69,581 :    41,326  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs live_C2                     s53:   132,140 :    85,275  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs live_C2                     s29:   100,709 :    85,771  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs live_C2                     s11:    74,870 :    58,070  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs live_C2               s11:    73,576 :    57,652  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs live_C2                     s97:    65,453 :    46,960  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs live_C2               s29:   100,611 :    85,795  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs live_C2               s53:   132,418 :    85,122  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs live_C2               s97:    66,038 :    46,749  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs live_F                      s29:    82,095 :    93,106  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs live_F                      s53:    57,072 :    91,093  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs live_F                      s97:    60,119 :    86,323  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs live_F                      s11:    94,015 :   110,864  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs live_F               s11:    31,461 :    60,875  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs live_F               s29:    42,966 :    68,465  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs live_F               s53:   112,431 :   133,773  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs live_F               s97:    49,906 :    70,579  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs live_F                      s53:   138,944 :   108,399  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs live_F                      s97:    57,481 :    53,315  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs live_F                      s29:    92,856 :    89,110  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs live_F                      s11:    96,684 :    81,013  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs live_F                      s11:    96,124 :    80,348  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs live_F                      s29:    93,366 :    89,104  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs live_F                      s53:   138,236 :   108,242  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs live_F                      s97:    59,223 :    52,408  ['DONE', 'DONE']
+    nb_leoprovorov_forecast vs live_F                s11:    96,607 :    80,386  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs live_F                s29:    93,033 :    89,064  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs live_F                s53:   139,609 :   108,467  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs live_F                s97:    60,610 :    52,347  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs live_F                    s29:    92,981 :    89,674  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs live_F                    s11:    96,256 :    80,573  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs live_F                    s53:   137,760 :   108,298  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs live_F                    s97:    59,015 :    52,552  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs live_F                s11:    96,498 :    80,469  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs live_F                      s11:    96,824 :    80,886  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs live_F                      s29:    93,146 :    89,329  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs live_F                      s53:   138,934 :   108,297  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs live_F                      s97:    59,938 :    53,560  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs live_F                s29:    92,605 :    89,117  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs live_F                s53:   139,194 :   108,471  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs live_I                      s29:    78,134 :    85,307  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs live_I                      s11:    91,890 :   139,024  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs live_F                s97:    60,089 :    52,677  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs live_I               s29:   137,199 :   132,557  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs live_I                      s53:    50,434 :    72,082  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs live_I                      s97:    81,756 :   105,895  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs live_I               s11:    49,435 :    86,701  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs live_I               s97:    64,504 :    95,542  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs live_I               s53:    65,748 :    82,028  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs live_I                      s29:    81,216 :    63,800  ['DONE', 'DONE']
+    nb_guru_master_v4 vs live_I                      s11:    75,324 :    72,470  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs live_I                      s97:   105,442 :    79,865  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs live_I                      s11:    75,001 :    72,165  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs live_I                      s53:    82,346 :    75,268  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs live_I                      s29:    80,805 :    63,661  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs live_I                      s97:   105,303 :    79,675  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs live_I                      s53:    81,559 :    74,693  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs live_I                s11:    75,611 :    72,415  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs live_I                s53:    82,084 :    75,609  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs live_I                s29:    75,103 :    59,235  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs live_I                s97:   105,504 :    79,837  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs live_I                    s11:    74,923 :    72,527  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs live_I                    s53:    82,590 :    75,295  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs live_I                    s97:   105,519 :    79,713  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs live_I                    s29:    78,254 :    62,879  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs live_I                      s11:    74,493 :    72,458  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs live_I                s29:    81,043 :    63,961  ['DONE', 'DONE']
+    nb_tschinkel_2945 vs live_I                      s97:   105,049 :    80,217  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs live_I                      s29:    75,942 :    63,973  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs live_I                      s53:    82,126 :    75,351  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs live_I                s11:    75,226 :    72,401  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs live_I                s97:   105,457 :    79,897  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs live_I                s53:    81,982 :    75,651  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs live_K                      s11:    85,604 :   116,304  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs live_K                      s29:    82,176 :   102,584  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs live_K                      s53:    54,368 :   108,502  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs live_K               s11:    25,824 :    68,378  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs live_K               s53:   105,573 :   137,894  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs live_K               s29:    36,551 :    75,200  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs live_K                      s97:    49,296 :    90,886  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs live_K               s97:    38,802 :    74,307  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs live_K                      s29:   100,294 :    96,655  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs live_K                      s11:   102,830 :    99,930  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs live_K                      s11:   103,899 :    99,859  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs live_K                      s97:    84,898 :    73,589  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs live_K                      s29:   100,548 :    96,539  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs live_K                      s53:    92,859 :    87,106  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs live_K                      s53:    92,035 :    86,406  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs live_K                      s97:    84,530 :    73,234  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs live_K                    s11:    81,004 :    78,994  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs live_K                s11:    81,863 :    79,441  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs live_K                s29:    98,074 :    93,848  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs live_K                s97:    61,176 :    53,522  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs live_K                    s29:    98,857 :    92,878  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs live_K                    s53:    78,798 :    72,399  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs live_K                s53:    78,961 :    72,613  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs live_K                    s97:    59,938 :    52,592  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs live_K                      s11:   102,445 :   100,016  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs live_K                      s97:    86,959 :    77,091  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs live_K                      s53:    93,719 :    86,571  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs live_K                      s29:   100,117 :    97,504  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs live_K                s29:    99,854 :    96,935  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs live_K                s11:   103,534 :    99,958  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs live_K                s97:    84,205 :    73,661  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs live_K                s53:    92,897 :    87,395  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs live_H2              s53:   105,573 :   137,894  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs live_H2                     s29:    82,176 :   102,584  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs live_H2              s29:    36,551 :    75,200  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs live_H2                     s53:    54,368 :   108,502  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs live_H2                     s11:    85,604 :   116,304  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs live_H2              s11:    25,824 :    68,378  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs live_H2              s97:    38,802 :    74,307  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_boatlee_v16rc5 vs live_H2                     s97:    49,296 :    90,886  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs live_H2                     s11:   102,830 :    99,930  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs live_H2                     s97:    84,898 :    73,589  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs live_H2                     s97:    84,530 :    73,234  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs live_H2                     s29:   100,548 :    96,539  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs live_H2                     s53:    92,035 :    86,406  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs live_H2                     s11:   103,899 :    99,859  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs live_H2                     s53:    92,859 :    87,106  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs live_H2                     s29:   100,294 :    96,655  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs live_H2               s11:    81,863 :    79,441  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs live_H2               s29:    98,074 :    93,848  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs live_H2               s53:    78,961 :    72,613  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs live_H2               s97:    61,176 :    53,522  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs live_H2                   s29:    98,857 :    92,878  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs live_H2                   s11:    81,004 :    78,994  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs live_H2                   s97:    59,938 :    52,592  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs live_H2                   s53:    78,798 :    72,399  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs live_H2                     s11:   102,445 :   100,016  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs live_H2                     s97:    86,959 :    77,091  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs live_H2                     s29:   100,117 :    97,504  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs live_H2                     s53:    93,719 :    86,571  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs live_H2               s11:   103,534 :    99,958  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs live_H2               s29:    99,854 :    96,935  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs live_H2               s97:    84,205 :    73,661  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs live_H2               s53:    92,897 :    87,395  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs nb_boatlee_v16rc5    s11:    85,157 :    68,357  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs nb_boatlee_v16rc5    s29:    88,745 :    91,210  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs nb_boatlee_v16rc5    s53:    88,492 :    53,639  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs nb_boatlee_v16rc5           s29:   102,108 :    81,587  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_flexonafft_multiroute vs nb_boatlee_v16rc5    s97:    92,476 :    91,537  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs nb_boatlee_v16rc5           s11:   125,982 :    66,543  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_boatlee_v16rc5           s11:   125,397 :    66,381  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs nb_boatlee_v16rc5           s53:   112,956 :    53,909  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs nb_boatlee_v16rc5           s97:    91,543 :    51,402  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_boatlee_v16rc5           s53:   112,857 :    53,609  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_boatlee_v16rc5           s29:   102,114 :    81,349  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_boatlee_v16rc5     s11:   126,008 :    66,309  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_boatlee_v16rc5           s97:    91,716 :    50,423  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_boatlee_v16rc5     s29:   103,640 :    81,803  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_boatlee_v16rc5     s53:   112,907 :    53,589  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_boatlee_v16rc5     s97:    92,480 :    50,798  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_boatlee_v16rc5         s11:   125,370 :    66,408  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_boatlee_v16rc5         s29:   101,942 :    81,592  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_boatlee_v16rc5         s53:   112,590 :    53,792  ['DONE', 'DONE']
+    nb_tetsutani_demand vs nb_boatlee_v16rc5         s97:    90,282 :    50,403  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs nb_boatlee_v16rc5           s11:   125,633 :    67,185  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs nb_boatlee_v16rc5           s29:   102,512 :    81,817  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs nb_boatlee_v16rc5           s97:    91,658 :    50,294  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs nb_boatlee_v16rc5           s53:   112,526 :    54,475  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs nb_boatlee_v16rc5     s11:   125,723 :    66,830  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs nb_boatlee_v16rc5     s29:   101,928 :    81,700  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs nb_boatlee_v16rc5     s53:   112,652 :    53,994  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs nb_flexonafft_multiroute    s11:    87,488 :    44,526  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs nb_flexonafft_multiroute    s29:    76,765 :    36,522  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs nb_boatlee_v16rc5     s97:    91,547 :    50,920  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs nb_flexonafft_multiroute    s97:    74,753 :    38,833  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_guru_master_v4 vs nb_flexonafft_multiroute    s53:   139,411 :   100,350  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_flexonafft_multiroute    s29:    76,645 :    36,412  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_flexonafft_multiroute    s11:    87,490 :    44,402  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_flexonafft_multiroute    s97:    77,502 :    41,458  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_flexonafft_multiroute    s53:   138,101 :   101,797  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_flexonafft_multiroute s11:    88,324 :    45,118  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_flexonafft_multiroute s29:    77,074 :    36,447  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_flexonafft_multiroute s53:   139,366 :   100,341  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_flexonafft_multiroute s97:    78,158 :    41,623  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_flexonafft_multiroute  s11:    87,635 :    44,338  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_flexonafft_multiroute  s29:    76,199 :    36,595  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_flexonafft_multiroute  s97:    77,136 :    41,726  ['DONE', 'DONE']
+    nb_tetsutani_demand vs nb_flexonafft_multiroute  s53:   138,479 :   101,135  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs nb_flexonafft_multiroute    s11:    87,360 :    44,268  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs nb_flexonafft_multiroute    s29:    76,702 :    36,543  ['DONE', 'DONE']
+    nb_tschinkel_2945 vs nb_flexonafft_multiroute    s53:   140,229 :   100,023  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs nb_flexonafft_multiroute    s97:    77,334 :    41,788  ['DONE', 'DONE']
+    nb_tschinkel_metav4_v13 vs nb_flexonafft_multiroute s11:    87,291 :    44,579  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs nb_flexonafft_multiroute s29:    76,905 :    36,473  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs nb_flexonafft_multiroute s53:   139,373 :   100,357  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs nb_flexonafft_multiroute s97:    77,870 :    41,785  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_guru_master_v4           s11:    81,674 :    81,891  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_guru_master_v4           s29:    94,018 :    97,142  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_guru_master_v4           s53:    78,788 :    77,188  ['DONE', 'DONE']
+    nb_haideptry_2965 vs nb_guru_master_v4           s97:    61,548 :    58,624  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_guru_master_v4     s11:    82,122 :    81,715  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_guru_master_v4     s29:    93,322 :    95,415  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_guru_master_v4     s53:    77,400 :    76,351  ['DONE', 'DONE']
+    nb_leoprovorov_forecast vs nb_guru_master_v4     s97:    61,464 :    59,098  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_guru_master_v4         s11:    81,416 :    81,053  ['DONE', 'DONE']
+    nb_tetsutani_demand vs nb_guru_master_v4         s29:    96,062 :    94,976  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_guru_master_v4         s97:    60,678 :    57,576  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_guru_master_v4         s53:    80,834 :    72,699  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs nb_guru_master_v4           s29:    93,174 :    97,678  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs nb_guru_master_v4           s11:    79,580 :    82,305  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs nb_guru_master_v4           s97:    60,050 :    59,996  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs nb_guru_master_v4           s53:    75,708 :    78,720  ['DONE', 'DONE']
+    nb_tschinkel_metav4_v13 vs nb_guru_master_v4     s11:    80,350 :    81,874  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs nb_guru_master_v4     s29:    93,251 :    97,329  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs nb_guru_master_v4     s53:    77,364 :    79,466  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs nb_guru_master_v4     s97:    61,168 :    59,652  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_haideptry_2965     s11:    80,722 :    81,163  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_haideptry_2965     s29:    94,842 :    94,082  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_haideptry_2965     s97:    59,815 :    62,459  ['DONE', 'DONE']
+    nb_tetsutani_demand vs nb_haideptry_2965         s29:    96,969 :    93,950  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_haideptry_2965     s53:    76,776 :    77,364  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_haideptry_2965         s11:    80,291 :    81,172  ['DONE', 'DONE']
+    nb_tetsutani_demand vs nb_haideptry_2965         s97:    60,620 :    60,542  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_haideptry_2965         s53:    80,492 :    72,756  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs nb_haideptry_2965           s11:    79,391 :    82,764  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs nb_haideptry_2965           s97:    59,384 :    62,569  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs nb_haideptry_2965           s29:    94,626 :    96,405  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs nb_haideptry_2965     s11:    80,006 :    82,007  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs nb_haideptry_2965           s53:    75,330 :    79,457  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs nb_haideptry_2965     s29:    94,696 :    96,075  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs nb_haideptry_2965     s97:    59,653 :    62,427  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs nb_haideptry_2965     s53:    76,975 :    79,295  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_leoprovorov_forecast   s11:    80,511 :    81,193  ['DONE', 'DONE']
+    nb_tetsutani_demand vs nb_leoprovorov_forecast   s53:    80,200 :    72,971  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_leoprovorov_forecast   s29:    95,597 :    93,014  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs nb_leoprovorov_forecast     s11:    79,188 :    82,308  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_leoprovorov_forecast   s97:    62,085 :    60,128  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs nb_leoprovorov_forecast     s29:    94,378 :    96,606  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs nb_leoprovorov_forecast     s53:    75,661 :    79,187  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs nb_leoprovorov_forecast     s97:    59,681 :    62,178  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs nb_leoprovorov_forecast s11:    79,787 :    82,306  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs nb_leoprovorov_forecast s29:    94,560 :    96,242  ['DONE', 'DONE']
+    nb_tschinkel_metav4_v13 vs nb_leoprovorov_forecast s53:    75,905 :    78,677  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs nb_leoprovorov_forecast s97:    59,788 :    61,973  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs nb_tetsutani_demand         s11:    79,161 :    82,484  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs nb_tetsutani_demand         s29:    93,350 :    97,305  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs nb_tetsutani_demand         s97:    59,208 :    61,877  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_2945 vs nb_tetsutani_demand         s53:    72,567 :    80,880  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs nb_tetsutani_demand   s29:    93,586 :    96,722  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs nb_tetsutani_demand   s11:    80,207 :    81,844  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs nb_tschinkel_2945     s11:    81,396 :    80,499  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs nb_tetsutani_demand   s53:    72,842 :    80,958  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs nb_tetsutani_demand   s97:    59,728 :    61,694  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs nb_tschinkel_2945     s29:    95,869 :    94,667  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs nb_tschinkel_2945     s53:    78,919 :    76,799  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tschinkel_metav4_v13 vs nb_tschinkel_2945     s97:    62,140 :    59,997  ['DONE', 'DONE']
+
+  standings (this tourney):
+   1. nb_tetsutani_demand            102/104   98%  mean    89,282  margin   +16,916  errors 0
+   2. nb_haideptry_2965               91/104   88%  mean    90,798  margin   +15,767  errors 0
+   3. nb_leoprovorov_forecast         90/104   87%  mean    88,455  margin   +16,103  errors 0
+   4. nb_guru_master_v4               81/104   78%  mean    90,406  margin   +15,522  errors 0
+   5. nb_tschinkel_metav4_v13         73/104   70%  mean    90,666  margin   +15,002  errors 0
+   6. nb_tschinkel_2945               65/104   62%  mean    90,363  margin   +14,348  errors 0
+   7. live_H2                         47/104   45%  mean    94,754  margin   +14,969  errors 0
+   8. live_K                          47/104   45%  mean    94,754  margin   +14,969  errors 0
+   9. live_F                          39/104   38%  mean    87,163  margin    -7,650  errors 0
+  10. live_I                          37/104   36%  mean    84,836  margin    +1,510  errors 0
+  11. live_C2                         24/104   23%  mean    71,683  margin   -11,384  errors 0
+  12. nb_flexonafft_multiroute        16/104   15%  mean    61,480  margin   -26,088  errors 0
+  13. nb_boatlee_v16rc5               10/104   10%  mean    69,045  margin   -28,963  errors 0
+  14. live_J                           0/104    0%  mean    64,356  margin   -51,020  errors 0

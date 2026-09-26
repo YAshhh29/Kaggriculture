@@ -1,4 +1,4 @@
-# ---- BEGIN se_project (Agent 1's own layer) ----
+# ---- BEGIN se_project (Agent L's own layer) ----
 # A fourth-quadrant production project wrapped around a complete agent.
 #
 # Why: the lineage agents keep three quadrants all game while their cash sits

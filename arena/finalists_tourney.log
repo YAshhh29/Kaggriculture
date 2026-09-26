@@ -1,0 +1,412 @@
+  skipping 24 games already stored
+  200 games (28 pairs x 4 seeds x 2 seats) on 8 workers
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_ahmed_v48              s97:    62,217 :    54,315  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_ahmed_v48              s29:    98,166 :    93,624  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_ahmed_v48              s11:    82,214 :    80,200  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_ahmed_v48              s53:    79,300 :    71,582  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_dmitrii_herdsafe_2700  s97:    61,882 :    59,799  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_dmitrii_herdsafe_2700  s29:    95,677 :    92,714  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_dmitrii_herdsafe_2700  s11:    80,732 :    80,979  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_dmitrii_herdsafe_2700  s53:    80,587 :    72,667  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_ahmed_v55              s11:    80,912 :    80,888  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_ahmed_v55              s29:    97,020 :    93,205  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_ahmed_v55              s97:    61,674 :    59,810  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_ahmed_v55              s53:    80,963 :    72,899  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_haideptry_shepherds    s29:    95,587 :    93,027  ['DONE', 'DONE']
+    nb_tetsutani_demand vs nb_haideptry_shepherds    s11:    80,820 :    81,484  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_haideptry_shepherds    s97:    62,328 :    60,444  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_haideptry_shepherds    s53:    80,179 :    72,955  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_leoprovorov_godmode    s29:    97,414 :    93,605  ['DONE', 'DONE']
+    nb_tetsutani_demand vs nb_leoprovorov_godmode    s11:    81,285 :    79,454  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_leoprovorov_godmode    s53:    80,077 :    73,018  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_tetsutani_demand vs nb_leoprovorov_godmode    s97:    61,613 :    59,157  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_dmitrii_herdsafe_2700    s53:    78,163 :    76,998  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_dmitrii_herdsafe_2700    s97:    62,309 :    59,402  ['DONE', 'DONE']
+    nb_haideptry_2965 vs nb_dmitrii_herdsafe_2700    s29:    94,243 :    94,513  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_dmitrii_herdsafe_2700    s11:    80,825 :    81,291  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_ahmed_v48                s11:    81,307 :    79,898  ['DONE', 'DONE']
+    nb_haideptry_2965 vs nb_ahmed_v48                s29:    97,138 :    94,725  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_ahmed_v48                s97:    63,205 :    54,502  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_ahmed_v48                s53:    78,254 :    71,255  ['DONE', 'DONE']
+    nb_haideptry_2965 vs nb_ahmed_v55                s29:    96,058 :    94,650  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_ahmed_v55                s11:    81,063 :    80,635  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_ahmed_v55                s53:    79,282 :    77,058  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_ahmed_v55                s97:    62,400 :    59,732  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_haideptry_shepherds      s11:    80,621 :    81,852  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_haideptry_shepherds      s29:    94,080 :    94,846  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_haideptry_shepherds      s97:    62,130 :    60,041  ['DONE', 'DONE']
+    nb_haideptry_2965 vs nb_haideptry_shepherds      s53:    77,657 :    77,001  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_leoprovorov_godmode      s29:    96,584 :    94,783  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_leoprovorov_godmode      s11:    81,464 :    79,570  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_leoprovorov_godmode      s97:    62,554 :    59,270  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_2965 vs nb_leoprovorov_godmode      s53:    77,676 :    75,368  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_dmitrii_herdsafe_2700 s11:    81,017 :    81,124  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_dmitrii_herdsafe_2700 s29:    94,644 :    94,237  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_ahmed_v48          s11:    81,717 :    79,835  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_ahmed_v48          s29:    96,991 :    94,816  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_dmitrii_herdsafe_2700 s97:    62,278 :    60,025  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_dmitrii_herdsafe_2700 s53:    77,305 :    76,496  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_ahmed_v48          s97:    63,739 :    54,629  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_ahmed_v48          s53:    78,250 :    71,159  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_ahmed_v55          s11:    81,340 :    80,435  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_ahmed_v55          s29:    94,899 :    93,832  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_ahmed_v55          s97:    61,955 :    59,870  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_ahmed_v55          s53:    78,678 :    75,970  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_haideptry_shepherds s11:    80,619 :    81,540  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_haideptry_shepherds s29:    94,530 :    94,539  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_haideptry_shepherds s97:    61,678 :    61,832  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_haideptry_shepherds s53:    77,568 :    77,874  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_dmitrii_herdsafe_2700 vs nb_ahmed_v48         s11:    81,528 :    80,012  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_leoprovorov_godmode s11:    81,231 :    79,373  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_leoprovorov_godmode s29:    96,712 :    94,632  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_dmitrii_herdsafe_2700 vs nb_ahmed_v48         s29:    96,829 :    94,803  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_forecast vs nb_leoprovorov_godmode s53:    78,501 :    76,004  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_dmitrii_herdsafe_2700 vs nb_ahmed_v48         s97:    63,533 :    54,617  ['DONE', 'DONE']
+    nb_leoprovorov_forecast vs nb_leoprovorov_godmode s97:    62,138 :    59,330  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_dmitrii_herdsafe_2700 vs nb_ahmed_v48         s53:    78,257 :    71,329  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_dmitrii_herdsafe_2700 vs nb_ahmed_v55         s29:    94,622 :    93,959  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_dmitrii_herdsafe_2700 vs nb_ahmed_v55         s97:    60,847 :    60,983  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_dmitrii_herdsafe_2700 vs nb_ahmed_v55         s11:    80,895 :    81,340  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_dmitrii_herdsafe_2700 vs nb_ahmed_v55         s53:    78,719 :    77,631  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_dmitrii_herdsafe_2700 vs nb_haideptry_shepherds s11:    80,102 :    82,385  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_dmitrii_herdsafe_2700 vs nb_haideptry_shepherds s29:    94,232 :    94,648  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_dmitrii_herdsafe_2700 vs nb_haideptry_shepherds s53:    76,475 :    77,283  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_dmitrii_herdsafe_2700 vs nb_haideptry_shepherds s97:    60,025 :    62,278  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v48 vs nb_ahmed_v55                     s29:    94,778 :    96,443  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v48 vs nb_ahmed_v55                     s97:    54,855 :    63,311  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_dmitrii_herdsafe_2700 vs nb_leoprovorov_godmode s29:    96,549 :    94,662  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_dmitrii_herdsafe_2700 vs nb_leoprovorov_godmode s11:    81,094 :    79,911  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_dmitrii_herdsafe_2700 vs nb_leoprovorov_godmode s53:    77,313 :    76,775  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_dmitrii_herdsafe_2700 vs nb_leoprovorov_godmode s97:    61,980 :    59,448  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v48 vs nb_ahmed_v55                     s11:    79,241 :    81,988  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v48 vs nb_ahmed_v55                     s53:    71,599 :    78,449  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v48 vs nb_haideptry_shepherds           s97:    54,663 :    63,968  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v48 vs nb_haideptry_shepherds           s29:    94,816 :    96,991  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v48 vs nb_leoprovorov_godmode           s29:    95,092 :    96,283  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v48 vs nb_haideptry_shepherds           s11:    79,310 :    82,666  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v48 vs nb_leoprovorov_godmode           s97:    56,656 :    62,609  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v48 vs nb_leoprovorov_godmode           s11:    79,494 :    80,636  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v48 vs nb_haideptry_shepherds           s53:    71,183 :    78,350  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v48 vs nb_leoprovorov_godmode           s53:    71,922 :    78,766  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v55 vs nb_haideptry_shepherds           s29:    93,832 :    94,899  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v55 vs nb_haideptry_shepherds           s97:    59,870 :    61,955  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v55 vs nb_leoprovorov_godmode           s29:    95,931 :    94,614  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v55 vs nb_haideptry_shepherds           s11:    79,871 :    82,273  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v55 vs nb_leoprovorov_godmode           s11:    81,255 :    80,325  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v55 vs nb_haideptry_shepherds           s53:    76,350 :    79,059  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v55 vs nb_leoprovorov_godmode           s97:    62,213 :    59,562  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v55 vs nb_leoprovorov_godmode           s53:    77,395 :    76,774  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_shepherds vs nb_leoprovorov_godmode s29:    96,712 :    94,632  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_dmitrii_herdsafe_2700 vs nb_tetsutani_demand  s11:    80,390 :    81,652  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_dmitrii_herdsafe_2700 vs nb_tetsutani_demand  s29:    92,714 :    95,677  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_shepherds vs nb_leoprovorov_godmode s97:    62,344 :    59,355  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_shepherds vs nb_leoprovorov_godmode s53:    78,479 :    75,984  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_shepherds vs nb_leoprovorov_godmode s11:    81,231 :    79,373  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_dmitrii_herdsafe_2700 vs nb_tetsutani_demand  s97:    59,799 :    61,882  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_dmitrii_herdsafe_2700 vs nb_tetsutani_demand  s53:    72,667 :    80,587  ['DONE', 'DONE']
+    nb_ahmed_v48 vs nb_tetsutani_demand              s97:    54,315 :    62,217  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v48 vs nb_tetsutani_demand              s29:    93,624 :    98,166  ['DONE', 'DONE']
+    nb_ahmed_v48 vs nb_tetsutani_demand              s11:    79,270 :    82,703  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v48 vs nb_tetsutani_demand              s53:    71,582 :    79,300  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v55 vs nb_tetsutani_demand              s29:    93,205 :    97,020  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v55 vs nb_tetsutani_demand              s11:    80,294 :    81,815  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v55 vs nb_tetsutani_demand              s97:    59,810 :    61,674  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v55 vs nb_tetsutani_demand              s53:    72,899 :    80,963  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_shepherds vs nb_tetsutani_demand    s29:    93,027 :    95,587  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_shepherds vs nb_tetsutani_demand    s11:    80,703 :    81,518  ['DONE', 'DONE']
+    nb_haideptry_shepherds vs nb_tetsutani_demand    s97:    60,444 :    62,328  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_shepherds vs nb_tetsutani_demand    s53:    72,955 :    80,179  ['DONE', 'DONE']
+    nb_leoprovorov_godmode vs nb_tetsutani_demand    s29:    93,605 :    97,414  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_godmode vs nb_tetsutani_demand    s53:    73,018 :    80,077  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_godmode vs nb_tetsutani_demand    s11:    78,880 :    82,100  ['DONE', 'DONE']
+    nb_leoprovorov_godmode vs nb_tetsutani_demand    s97:    59,157 :    61,613  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_dmitrii_herdsafe_2700 vs nb_haideptry_2965    s11:    79,976 :    81,880  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_dmitrii_herdsafe_2700 vs nb_haideptry_2965    s29:    94,513 :    94,243  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v48 vs nb_haideptry_2965                s11:    78,957 :    81,846  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_dmitrii_herdsafe_2700 vs nb_haideptry_2965    s97:    59,402 :    62,309  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_dmitrii_herdsafe_2700 vs nb_haideptry_2965    s53:    76,998 :    78,163  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v48 vs nb_haideptry_2965                s29:    94,725 :    97,138  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v48 vs nb_haideptry_2965                s97:    54,502 :    63,205  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v48 vs nb_haideptry_2965                s53:    71,255 :    78,254  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v55 vs nb_haideptry_2965                s11:    80,090 :    81,977  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v55 vs nb_haideptry_2965                s29:    94,650 :    96,058  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v55 vs nb_haideptry_2965                s97:    59,732 :    62,400  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v55 vs nb_haideptry_2965                s53:    77,058 :    79,282  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_shepherds vs nb_haideptry_2965      s29:    94,846 :    94,080  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_shepherds vs nb_haideptry_2965      s11:    80,801 :    81,239  ['DONE', 'DONE']
+    nb_haideptry_shepherds vs nb_haideptry_2965      s97:    60,041 :    62,130  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_shepherds vs nb_haideptry_2965      s53:    77,001 :    77,657  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_godmode vs nb_haideptry_2965      s29:    94,783 :    96,584  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_godmode vs nb_haideptry_2965      s11:    79,065 :    82,277  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_godmode vs nb_haideptry_2965      s53:    75,368 :    77,676  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_godmode vs nb_haideptry_2965      s97:    59,270 :    62,554  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_dmitrii_herdsafe_2700 vs nb_leoprovorov_forecast s11:    80,096 :    82,290  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_dmitrii_herdsafe_2700 vs nb_leoprovorov_forecast s29:    94,237 :    94,644  ['DONE', 'DONE']
+    nb_dmitrii_herdsafe_2700 vs nb_leoprovorov_forecast s97:    60,025 :    62,278  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_dmitrii_herdsafe_2700 vs nb_leoprovorov_forecast s53:    76,496 :    77,305  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v48 vs nb_leoprovorov_forecast          s97:    54,629 :    63,739  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v48 vs nb_leoprovorov_forecast          s29:    94,816 :    96,991  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v48 vs nb_leoprovorov_forecast          s53:    71,159 :    78,250  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v48 vs nb_leoprovorov_forecast          s11:    78,896 :    82,250  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v55 vs nb_leoprovorov_forecast          s11:    79,871 :    82,273  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v55 vs nb_leoprovorov_forecast          s29:    93,832 :    94,899  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v55 vs nb_leoprovorov_forecast          s97:    59,870 :    61,955  ['DONE', 'DONE']
+    nb_ahmed_v55 vs nb_leoprovorov_forecast          s53:    75,970 :    78,678  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_shepherds vs nb_leoprovorov_forecast s11:    80,812 :    81,408  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_shepherds vs nb_leoprovorov_forecast s29:    94,539 :    94,530  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_shepherds vs nb_leoprovorov_forecast s97:    61,832 :    61,678  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_shepherds vs nb_leoprovorov_forecast s53:    77,874 :    77,568  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_godmode vs nb_leoprovorov_forecast s97:    59,330 :    62,138  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_godmode vs nb_leoprovorov_forecast s11:    79,321 :    82,428  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_godmode vs nb_leoprovorov_forecast s29:    94,632 :    96,712  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_godmode vs nb_leoprovorov_forecast s53:    76,004 :    78,501  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v48 vs nb_dmitrii_herdsafe_2700         s11:    79,079 :    82,075  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v48 vs nb_dmitrii_herdsafe_2700         s29:    94,803 :    96,829  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v48 vs nb_dmitrii_herdsafe_2700         s97:    54,617 :    63,533  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v48 vs nb_dmitrii_herdsafe_2700         s53:    71,329 :    78,257  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v55 vs nb_dmitrii_herdsafe_2700         s11:    80,781 :    81,836  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v55 vs nb_dmitrii_herdsafe_2700         s29:    93,959 :    94,622  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v55 vs nb_dmitrii_herdsafe_2700         s53:    77,631 :    78,719  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v55 vs nb_dmitrii_herdsafe_2700         s97:    60,983 :    60,847  ['DONE', 'DONE']
+    nb_haideptry_shepherds vs nb_dmitrii_herdsafe_2700 s29:    94,648 :    94,232  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_shepherds vs nb_dmitrii_herdsafe_2700 s11:    81,511 :    80,601  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_shepherds vs nb_dmitrii_herdsafe_2700 s97:    62,278 :    60,025  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_shepherds vs nb_dmitrii_herdsafe_2700 s53:    77,283 :    76,475  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_godmode vs nb_dmitrii_herdsafe_2700 s11:    79,899 :    82,253  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_godmode vs nb_dmitrii_herdsafe_2700 s29:    94,662 :    96,549  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_godmode vs nb_dmitrii_herdsafe_2700 s53:    76,775 :    77,313  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_godmode vs nb_dmitrii_herdsafe_2700 s97:    59,448 :    61,980  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v55 vs nb_ahmed_v48                     s29:    96,443 :    94,778  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v55 vs nb_ahmed_v48                     s53:    78,449 :    71,599  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v55 vs nb_ahmed_v48                     s11:    81,446 :    80,142  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_ahmed_v55 vs nb_ahmed_v48                     s97:    63,311 :    54,855  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_shepherds vs nb_ahmed_v48           s11:    82,127 :    80,236  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_shepherds vs nb_ahmed_v48           s29:    96,991 :    94,816  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_shepherds vs nb_ahmed_v48           s53:    78,350 :    71,183  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_shepherds vs nb_ahmed_v48           s97:    63,968 :    54,663  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_godmode vs nb_ahmed_v48           s11:    81,054 :    80,363  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_godmode vs nb_ahmed_v48           s53:    78,766 :    71,922  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_godmode vs nb_ahmed_v48           s29:    96,283 :    95,092  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_godmode vs nb_ahmed_v48           s97:    62,609 :    56,656  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_shepherds vs nb_ahmed_v55           s29:    94,899 :    93,832  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_shepherds vs nb_ahmed_v55           s11:    81,340 :    80,435  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_shepherds vs nb_ahmed_v55           s97:    61,955 :    59,870  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_haideptry_shepherds vs nb_ahmed_v55           s53:    79,059 :    76,350  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_godmode vs nb_ahmed_v55           s11:    79,713 :    82,224  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_godmode vs nb_ahmed_v55           s29:    94,614 :    95,931  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_godmode vs nb_ahmed_v55           s97:    59,562 :    62,213  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_godmode vs nb_ahmed_v55           s53:    76,774 :    77,395  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_godmode vs nb_haideptry_shepherds s29:    94,632 :    96,712  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_godmode vs nb_haideptry_shepherds s11:    79,321 :    82,428  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_godmode vs nb_haideptry_shepherds s97:    59,355 :    62,344  ['DONE', 'DONE']
+Loading environment open_spiel_env failed: No module named 'pyspiel'
+    nb_leoprovorov_godmode vs nb_haideptry_shepherds s53:    75,984 :    78,479  ['DONE', 'DONE']
+
+  standings (this tourney):
+   1. nb_tetsutani_demand             52/56    93%  mean    80,009  margin    +3,607  errors 0
+   2. nb_haideptry_shepherds          43/56    77%  mean    78,968  margin    +1,115  errors 0
+   3. nb_haideptry_2965               40/56    71%  mean    78,999  margin    +1,259  errors 0
+   4. nb_leoprovorov_forecast         36/56    64%  mean    78,851  margin    +1,008  errors 0
+   5. nb_dmitrii_herdsafe_2700        26/56    46%  mean    78,334  margin       +43  errors 0
+   6. nb_ahmed_v55                    19/56    34%  mean    78,185  margin      -486  errors 0
+   7. nb_leoprovorov_godmode           8/56    14%  mean    77,592  margin    -1,566  errors 0
+   8. nb_ahmed_v48                     0/56     0%  mean    75,157  margin    -4,980  errors 0

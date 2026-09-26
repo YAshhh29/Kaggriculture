@@ -1,4 +1,4 @@
-"""Agent 1 for local play: Agent A's exact submitted file, plus changes.
+"""Agent L for local play: Agent A's exact submitted file, plus changes.
 
 The parent is loaded from submissions/agent-a/main.py the way Kaggle loads a
 submission (compiled and exec'd into a fresh namespace; the entry point is the
@@ -6,7 +6,7 @@ last callable), so what is tested is the code that ships. Each variant gets its
 own namespace, so variants never share state with each other or with an
 opponent that is also Agent A.
 
-    python -m tools.arena.arena play A1 A --seeds 11 29 --both-seats
+    python -m tools.arena.arena play L A --seeds 11 29 --both-seats
 """
 
 from __future__ import annotations
