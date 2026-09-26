@@ -65,6 +65,13 @@ def _build(name):
     if name.startswith("gate"):
         _v219_gate(env, int(name[4:] or 140))
         return entry
+    if name.startswith("fw"):
+        # L2 candidate: queue order + tomato gate 120 + fertilizer worker.
+        from rl.fert_worker import fw_wrap
+        from rl.market_front import mf_wrap
+        _v219_gate(env, 120)
+        cap = int(name[2:] or 150)
+        return mf_wrap(fw_wrap(entry, max_hire_cost=cap))
     if name == "front" or name.startswith("front_gate"):
         from rl.market_front import mf_wrap
         if name.startswith("front_gate"):

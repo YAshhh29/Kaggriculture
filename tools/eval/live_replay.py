@@ -58,6 +58,10 @@ def build_agent(kind: str, settings: dict[str, Any],
                 package: str | None = None):
     """The agent to play in our seat, built inside the worker process."""
     sys.path.insert(0, str(ROOT))
+    if kind == "spec":
+        # Any arena agent by name (A, L_fg120, live_K, ...), loaded fresh.
+        from tools.arena.arena import load
+        return load(package)
     if kind == "g":
         import rl.candidate_g as G
         for key, value in settings.items():
@@ -255,7 +259,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
     p_run = sub.add_parser("run")
-    p_run.add_argument("--agent", choices=("h-package", "h", "g"), required=True)
+    p_run.add_argument("--agent", choices=("h-package", "h", "g", "spec"), required=True)
     p_run.add_argument("--set", action="append", default=[])
     p_run.add_argument("--label", required=True)
     p_run.add_argument("--workers", type=int, default=6)

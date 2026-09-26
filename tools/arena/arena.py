@@ -70,6 +70,9 @@ ALIASES = {
     "L_fg120": "rl.candidate_l:front_gate120",
     "L_fg100": "rl.candidate_l:front_gate100",
     "L_fg0": "rl.candidate_l:front_gate0",
+    "L2_fw150": "rl.candidate_l:fw150",
+    "L2_fw100": "rl.candidate_l:fw100",
+    "L2_fw250": "rl.candidate_l:fw250",
 }
 
 
