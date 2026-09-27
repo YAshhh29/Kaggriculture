@@ -145,3 +145,12 @@ def l4():
     from rl.l2_shadow import SH_LIBRARY
     return combo(*SHIP4, shadow_programs=tuple(SH_LIBRARY) + NEW_LIBRARY,
                  shadow_opts={"early_when_agree": True})
+
+
+# L4b: L3 as tested (lot layer kept) + the 14-program library + the agree rule.
+# Between near-copies that are not in each other's library the lot layer wins
+# the selling race (L3 beat L4-without-lot by 3.6k in a direct game), so it stays.
+def l4b():
+    from rl.l2_shadow import SH_LIBRARY
+    return combo(*SHIP, shadow_programs=tuple(SH_LIBRARY) + NEW_LIBRARY,
+                 shadow_opts={"early_when_agree": True})

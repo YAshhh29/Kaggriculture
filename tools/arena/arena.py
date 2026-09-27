@@ -64,6 +64,7 @@ ALIASES = {
     "L2": "rl.l2_combo:ship",                  # submissions/candidate-l2
     "L3": "rl.l2_combo:ship_lib",              # submissions/candidate-l3
     "L4": "rl.l2_combo:l4",
+    "L4b": "rl.l2_combo:l4b",
     "L_se": "rl.candidate_l:agent",
     "A_noV219": "rl.candidate_l:no_v219",
     "L_gate140": "rl.candidate_l:gate140",
@@ -126,7 +127,14 @@ def load(name: str):
                                  path=str(path))
     module_name, attr = spec.rsplit(":", 1)
     import importlib
-    return getattr(importlib.import_module(module_name), attr)
+    target = getattr(importlib.import_module(module_name), attr)
+    # A zero-argument callable is a factory (rl.l2_combo:ship_lib etc.): build
+    # the agent. Passing the factory itself as the agent made it raise every
+    # turn, the opponent scored 0, and a head-to-head read +164k.
+    code = getattr(target, "__code__", None)
+    if code is not None and code.co_argcount == 0 and not code.co_flags & 0x04:
+        return target()
+    return target
 
 
 def _pack(obj: Any) -> str:

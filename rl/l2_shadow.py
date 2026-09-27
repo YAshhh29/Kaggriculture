@@ -887,7 +887,7 @@ _SH_PREV_CACHE = {}     # one turn's shared decoded public state (see observe)
 def _sh_plain_public(obs):
     """JSON copies of the public parts of this turn's observation, shared by
     every shadow (callers must not mutate them)."""
-    key = (id(obs), int(obs["step"]))
+    key = (id(obs), int(obs["step"]), int(obs["player"]))   # seat: two agents in one process
     if _SH_PLAIN_CACHE["key"] != key:
         _SH_PLAIN_CACHE["key"] = key
         _SH_PLAIN_CACHE["val"] = {"farms": _sh_json.dumps(obs["farms"]), "market": _sh_json.dumps(obs["market"]),
@@ -1036,9 +1036,10 @@ class OpponentShadow:
                 # The public part and our own private state are the same for
                 # every shadow this turn and only ever read (sh_transition
                 # copies them), so they are decoded once per turn and shared.
-                if _SH_PREV_CACHE.get("step") != step or _SH_PREV_CACHE.get("id") != id(obs):
+                if (_SH_PREV_CACHE.get("step") != step or _SH_PREV_CACHE.get("id") != id(obs)
+                        or _SH_PREV_CACHE.get("seat") != int(obs["player"])):
                     pub = _sh_plain_public(obs)
-                    _SH_PREV_CACHE.update(step=step, id=id(obs), val=(
+                    _SH_PREV_CACHE.update(step=step, id=id(obs), seat=int(obs["player"]), val=(
                         {"farms": _sh_json.loads(pub["farms"]), "market": _sh_json.loads(pub["market"]),
                          "town": _sh_json.loads(pub["town"])}, _sh_json.loads(pub["private"])))
                 shared_pub, shared_own = _SH_PREV_CACHE["val"]
