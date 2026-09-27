@@ -66,6 +66,8 @@ ALIASES = {
     "L4": "rl.l2_combo:l4",
     "L4b": "rl.l2_combo:l4b",
     "L4c": "rl.l2_combo:l4c",
+    "L4e": "rl.l2_combo:l4e",                # submissions/candidate-l4e
+    "L5": "rl.l2_combo:l5e",
     "L_se": "rl.candidate_l:agent",
     "A_noV219": "rl.candidate_l:no_v219",
     "L_gate140": "rl.candidate_l:gate140",
@@ -132,8 +134,10 @@ def load(name: str):
     # A zero-argument callable is a factory (rl.l2_combo:ship_lib etc.): build
     # the agent. Passing the factory itself as the agent made it raise every
     # turn, the opponent scored 0, and a head-to-head read +164k.
+    # A factory's arguments all have defaults (rl.l2_combo:l4e(window=8)).
     code = getattr(target, "__code__", None)
-    if code is not None and code.co_argcount == 0 and not code.co_flags & 0x04:
+    required = (code.co_argcount - len(target.__defaults__ or ())) if code is not None else None
+    if required == 0 and not code.co_flags & 0x04:
         return target()
     return target
 
