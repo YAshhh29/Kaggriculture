@@ -20,11 +20,11 @@ finished L like they did when tested alone.
 
 from rl.candidate_l import l_stack
 
-ALL = ("fert", "feed", "rt", "lot", "dump", "labour", "shadow", "safety")
+ALL = ("fert", "feed", "rt", "lot", "dump", "labour", "shadow", "race", "safety")
 
 
 def combo(*names, shadow_mode="both", shadow_programs=("A",), lot_opts=None,
-          shadow_opts=None):
+          shadow_opts=None, gate=120, rt_opts=None, race_opts=None):
     names = set(names)
     unknown = names - set(ALL)
     if unknown:
@@ -39,7 +39,7 @@ def combo(*names, shadow_mode="both", shadow_programs=("A",), lot_opts=None,
             agent = an_wrap(agent, env, {})
         if "rt" in names:
             from rl.l2_wheat_rt import rt_inner
-            agent = rt_inner(agent, env)
+            agent = rt_inner(agent, env, **(rt_opts or {}))
         if "lot" in names:
             from rl.l2_outfarm import lot_wrap
             agent = lot_wrap(agent, env, **(lot_opts or {}))
@@ -58,12 +58,15 @@ def combo(*names, shadow_mode="both", shadow_programs=("A",), lot_opts=None,
                                 reorder=shadow_mode in ("both", "reorder"),
                                 early=shadow_mode in ("both", "early"),
                                 **(shadow_opts or {}))
+        if "race" in names:
+            from rl.l2_race import race_wrap
+            agent = race_wrap(agent, **(race_opts or {}))
         if "safety" in names:
             from rl.safety import sf_wrap
             agent = sf_wrap(agent, name="L2")
         return agent
 
-    return l_stack(inner=inner, outer=outer)
+    return l_stack(inner=inner, outer=outer, gate=gate)
 
 
 def lot_dump():
@@ -154,3 +157,66 @@ def l4b():
     from rl.l2_shadow import SH_LIBRARY
     return combo(*SHIP, shadow_programs=tuple(SH_LIBRARY) + NEW_LIBRARY,
                  shadow_opts={"early_when_agree": True})
+
+
+def l4b_origgate():
+    """L4 with A's original V219 gate (three tomato shops) instead of L's relaxed one."""
+    from rl.l2_shadow import SH_LIBRARY
+    return combo(*SHIP, shadow_programs=tuple(SH_LIBRARY) + NEW_LIBRARY,
+                 shadow_opts={"early_when_agree": True}, gate=None)
+
+
+# L4c: L4 without the wheat round trip. In real ladder games the round trip can
+# hand money to an opponent that trades wheat on the same steps (live episode
+# 114070787 vs tomfng: with it -18,053, without it +1,124; the opponent gained
+# ~8.8k from our trades).
+SHIP4C = ("feed", "lot", "labour", "shadow", "safety")
+
+
+def l4c():
+    from rl.l2_shadow import SH_LIBRARY
+    return combo(*SHIP4C, shadow_programs=tuple(SH_LIBRARY) + NEW_LIBRARY,
+                 shadow_opts={"early_when_agree": True})
+
+
+# L4d: L4 whose round trip prices each trip against the opponent's recent
+# wheat flow. Against tomfng the opponent sold wheat into every trip window
+# (the engine quotes both players the same unit price, so their sales rode on
+# our purchase and our sale landed on their supply); against most opponents
+# the windows are empty and L4d trades exactly like L4.
+def l4d(window=8):
+    from rl.l2_shadow import SH_LIBRARY
+    return combo(*SHIP, shadow_programs=tuple(SH_LIBRARY) + NEW_LIBRARY,
+                 shadow_opts={"early_when_agree": True}, rt_opts={"flow_window": window})
+
+
+def l4d4():
+    return l4d(4)
+
+
+def l4d16():
+    return l4d(16)
+
+
+def l4e(window=8):
+    """L4d pricing each trip against the median recent window (one-off sales ignored)."""
+    from rl.l2_shadow import SH_LIBRARY
+    return combo(*SHIP, shadow_programs=tuple(SH_LIBRARY) + NEW_LIBRARY,
+                 shadow_opts={"early_when_agree": True},
+                 rt_opts={"flow_window": window, "flow_stat": "median"})
+
+
+# L5 candidates: L4 + the endgame selling race (rl/l2_race.py), outside the
+# shadow so it sees our final orders. `rt` picks the round-trip pricing.
+def l5(rt=None, **race):
+    from rl.l2_shadow import SH_LIBRARY
+    return combo(*SHIP, "race", shadow_programs=tuple(SH_LIBRARY) + NEW_LIBRARY,
+                 shadow_opts={"early_when_agree": True}, rt_opts=rt, race_opts=race)
+
+
+def l5_d24():
+    return l5(first_step=576)
+
+
+def l5e():
+    return l5(rt={"flow_window": 8, "flow_stat": "median"})

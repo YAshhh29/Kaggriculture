@@ -45,6 +45,12 @@ DEFAULTS = {
     "min_profit": 2.0,    # coins per trip, from the exact price table
     "min_per_unit": 0.04,
     "room_margin": 10,
+    # Opponent-aware pricing (0 = off, the L2/L3 layer). The opponent's net
+    # wheat sold in each trip window (the draw step and the next) follows from
+    # the public inventory, the town draw and our own orders; a trip is priced
+    # against each of the last `flow_window` windows (see _flow_gain).
+    "flow_window": 0,
+    "flow_stat": "mean",  # or "median": ignore one-off sales (a harvest sold once)
 }
 
 
@@ -134,6 +140,44 @@ def shed_room(env, obs, action, step: int) -> int:
     return 100 - total - buys - drops
 
 
+def our_net_wheat(obs, action) -> int:
+    """Wheat our final orders take off the market (buys minus filled sells).
+
+    The engine fills a queue slot by slot; a SELL fills only while the shed
+    holds wheat, so sells are capped by the shed after the earlier slots."""
+    have = int((obs["private"].get("shed") or {}).get("WHEAT", 0))
+    net = 0
+    for o in (action.get("market") or [])[:MAX_ORDERS]:
+        if not isinstance(o, list) or len(o) < 3 or o[1] != "WHEAT":
+            continue
+        try:
+            n = max(0, int(o[2]))
+        except (TypeError, ValueError):
+            continue
+        if o[0] == "BUY_PRODUCT":
+            net += n
+            have += n
+        elif o[0] == "SELL":
+            n = min(n, max(0, have))
+            net -= n
+            have -= n
+    return net
+
+
+def _flow_gain(base: int, q: int, d: int, windows, stat: str = "mean") -> float:
+    """Mean trip profit if the opponent again sells what it sold in each window.
+
+    Their net sales between our buy and our sale land before or alongside our
+    sale, so a window with w units sold works like a draw of d - w. Windows in
+    which they bought count as zero: this never trades more than the plain
+    layer. With stat="median" the trip is priced against the median window,
+    so only an opponent that sells into most windows stops the trips."""
+    if stat == "median":
+        w = sorted(windows)[len(windows) // 2]
+        return trip_profit(base, q, d - max(0, w))
+    return sum(trip_profit(base, q, d - max(0, w)) for w in windows) / len(windows)
+
+
 def _masked(obs, q: int):
     """The observation without our round-trip wheat (shed) and purchase (market)."""
     obs2 = dict(obs)
@@ -161,8 +205,11 @@ def rt_inner(parent, env, **overrides):
     report = {"rt_trips": 0, "rt_units": 0, "rt_expected": 0.0, "rt_sells": 0,
               "rt_merged_sells": 0, "rt_unsold": 0, "rt_skip_cash": 0, "rt_skip_room": 0,
               "rt_skip_slots": 0, "rt_skip_profit": 0, "rt_errors": 0}
+    window = int(cfg["flow_window"])
+    if window > 0:
+        report.update({"rt_skip_flow": 0, "rt_windows": [], "rt_flow_errors": 0})
 
-    def buy_order(obs, action, step):
+    def buy_order(obs, action, step, windows=()):
         market = [list(o) for o in action.get("market") or []]
         if len(market) >= MAX_ORDERS:
             report["rt_skip_slots"] += 1
@@ -194,6 +241,11 @@ def rt_inner(parent, env, **overrides):
         if gain < max(cfg["min_profit"], cfg["min_per_unit"] * q):
             report["rt_skip_profit"] += 1
             return action, 0
+        if windows:
+            gain = _flow_gain(base, q, d, windows, cfg["flow_stat"])
+            if gain < max(cfg["min_profit"], cfg["min_per_unit"] * q):
+                report["rt_skip_flow"] += 1
+                return action, 0
         market.append(["BUY_PRODUCT", "WHEAT", q])
         report["rt_trips"] += 1
         report["rt_units"] += q
@@ -220,8 +272,11 @@ def rt_inner(parent, env, **overrides):
         player = int(observation["player"])
         st = states.get(player)
         if st is None or step <= st["step"]:
-            st = states[player] = {"step": -1, "pending": 0, "pend_step": -1}
+            st = states[player] = {"step": -1, "pending": 0, "pend_step": -1,
+                                   "prev": None, "flow": {}, "windows": []}
         st["step"] = step
+        if window > 0:
+            watch(observation, st, step)
         pending = st["pending"] if st["pend_step"] == step - 1 else 0
         st["pending"] = 0
         view = observation
@@ -234,14 +289,41 @@ def rt_inner(parent, env, **overrides):
         action = parent(view, configuration)
         try:
             if pending > 0:
-                return sell_order(action, pending)
-            if cfg["first_step"] <= step <= cfg["last_step"] and step % 4 == 0:
-                action, q = buy_order(observation, action, step)
+                action = sell_order(action, pending)
+            elif cfg["first_step"] <= step <= cfg["last_step"] and step % 4 == 0:
+                action, q = buy_order(observation, action, step, st["windows"][-window:] if window > 0 else ())
                 if q:
                     st["pending"], st["pend_step"] = q, step
         except Exception:
             report["rt_errors"] += 1
+        if window > 0:
+            try:
+                st["prev"] = (step, int(observation["market"]["inventory"]["WHEAT"]),
+                              our_net_wheat(observation, action),
+                              draw_units(observation["town"]["unlocked_shops"], step))
+            except Exception:
+                report["rt_flow_errors"] += 1
+                st["prev"] = None
         return action
+
+    def watch(obs, st, step):
+        """Record what the opponent sold last step, and close a trip window."""
+        prev, st["prev"] = st["prev"], None
+        if prev is None or prev[0] != step - 1:
+            return
+        try:
+            inv = int(obs["market"]["inventory"]["WHEAT"])
+        except Exception:
+            report["rt_flow_errors"] += 1
+            return
+        # inventory change = their net sold - our net bought - the town draw
+        st["flow"][step - 1] = inv - prev[1] + prev[2] + prev[3]
+        s = step - 2
+        if s % 4 == 0 and s in st["flow"] and s + 1 in st["flow"]:
+            w = st["flow"].pop(s) + st["flow"].pop(s + 1)
+            st["windows"].append(w)
+            report["rt_windows"].append((s, w))
+        st["flow"] = {k: v for k, v in st["flow"].items() if k >= step - 2}
 
     wheat_rt_agent.telemetry = report
     return wheat_rt_agent
