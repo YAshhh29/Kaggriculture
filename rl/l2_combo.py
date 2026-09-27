@@ -23,7 +23,7 @@ from rl.candidate_l import l_stack
 ALL = ("fert", "feed", "rt", "lot", "dump", "labour", "shadow", "safety")
 
 
-def combo(*names, shadow_mode="both", shadow_programs=("A",)):
+def combo(*names, shadow_mode="both", shadow_programs=("A",), lot_opts=None):
     names = set(names)
     unknown = names - set(ALL)
     if unknown:
@@ -41,7 +41,7 @@ def combo(*names, shadow_mode="both", shadow_programs=("A",)):
             agent = rt_inner(agent, env)
         if "lot" in names:
             from rl.l2_outfarm import lot_wrap
-            agent = lot_wrap(agent, env)
+            agent = lot_wrap(agent, env, **(lot_opts or {}))
         if "dump" in names:
             from rl.l2_endgame import trickle_dump
             agent = trickle_dump(agent)
@@ -104,3 +104,13 @@ def ship_lib():
     """L2 with the shadow modelling the whole public library, not only A."""
     from rl.l2_shadow import SH_LIBRARY
     return combo(*SHIP, shadow_programs=SH_LIBRARY)
+
+
+def l3_lot_rival():
+    from rl.l2_shadow import SH_LIBRARY
+    return combo(*SHIP, shadow_programs=SH_LIBRARY, lot_opts={"rival_only": True})
+
+
+def l3_lot_similar():
+    from rl.l2_shadow import SH_LIBRARY
+    return combo(*SHIP, shadow_programs=SH_LIBRARY, lot_opts={"similar": 0.5})

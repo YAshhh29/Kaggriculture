@@ -141,7 +141,28 @@ def _rival_producers(obs) -> set:
     return out
 
 
-def lot_wrap(parent, env, theta=0.0, min_step=96, items=LOT_ITEMS, rival_only=False):
+def _producers(farm) -> dict:
+    """Producing tiles per LOT item on a farm: standing crops, kept animals."""
+    out: dict = {}
+    for row in farm.get("tiles") or []:
+        for t in row:
+            if isinstance(t, dict):
+                if t.get("kind") == "PLANT":
+                    out[t.get("crop")] = out.get(t.get("crop"), 0) + 1
+                elif "animal" in t:
+                    for k, v in PRODUCER.items():
+                        if v == t["animal"]:
+                            out[k] = out.get(k, 0) + 1
+    return out
+
+
+def lot_wrap(parent, env, theta=0.0, min_step=96, items=LOT_ITEMS, rival_only=False,
+             similar=0.0):
+    """similar > 0: enlarge a sale only while the rival holds at least `similar`
+    times as many producing tiles/animals for that item as we do -- a race for
+    the same book. Against a rival that is not selling the item, a whole-lot
+    dump only walks our own price down (live episodes 113853574, 113884206,
+    113892712: without the lot layer L3 gains ~1,000 in each)."""
     report = {"lot_turns": 0, "lot_units": 0, "lot_errors": 0}
     farm_view = env["FarmView"]
     projected = env["projected_shed"]
@@ -158,6 +179,12 @@ def lot_wrap(parent, env, theta=0.0, min_step=96, items=LOT_ITEMS, rival_only=Fa
             stock = projected(action, farm_view(observation))
             prices = observation["market"]["prices"]
             rivals = _rival_producers(observation) if rival_only else None
+            if similar > 0:
+                seat = int(observation["player"])
+                ours_p = _producers(observation["farms"][seat])
+                theirs_p = _producers(observation["farms"][1 - seat])
+                rivals = {k for k in items
+                          if theirs_p.get(k, 0) >= similar * max(1, ours_p.get(k, 0))}
             committed: dict = {}
             new, extra = [], 0
             for o in market:
