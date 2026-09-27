@@ -294,3 +294,33 @@ def m7():
 def m8():
     """M5, where being beaten on one good starts races on every good."""
     return m1(after_beaten=True, beaten_any=True)
+
+
+def m9():
+    """M8 without wool races: one shop type buys wool, so a raced lot walks its
+    price down steeply (the largest same-step leak left after M5)."""
+    return m1(after_beaten=True, beaten_any=True,
+              items=("CARROT", "TOMATO", "STRAWBERRY", "MELON", "EGG", "MILK"))
+
+
+# 2026-09-28: tetsutani's own notebook now ships harvest-ledger's program (they
+# tie to the coin, seats swapped); a second variant, haideptry's 2965 master
+# hybrid, plays 5 of L4's 80 opponents all game and 9 more past day 16.
+LIBRARY_0928 = ("nb_haodou092_harvest_ledger", "nb_haideptry_the_2965_master_hybrid_engine")
+
+
+def l6():
+    """L5 + the 2965 master hybrid in the shadow library (16 programs)."""
+    from rl.l2_shadow import SH_LIBRARY
+    return combo(*SHIP, shadow_programs=tuple(SH_LIBRARY) + NEW_LIBRARY + LIBRARY_0928,
+                 shadow_opts={"early_when_agree": True},
+                 rt_opts={"flow_window": 8, "flow_stat": "median"})
+
+
+def m10():
+    """M8 (race every good once beaten on one) + the 2965 master hybrid in the library."""
+    from rl.l2_shadow import SH_LIBRARY
+    return combo(*SHIP, "msell", shadow_programs=tuple(SH_LIBRARY) + NEW_LIBRARY + LIBRARY_0928,
+                 shadow_opts={"early_when_agree": True},
+                 rt_opts={"flow_window": 8, "flow_stat": "median"},
+                 msell_opts={"after_beaten": True, "beaten_any": True})
