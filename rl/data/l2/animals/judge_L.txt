@@ -1,0 +1,13 @@
+L: 45 exact games (per game)
+  CARE  applied  395.5: paid: 214.2 (54%), unfed: 67.0 (17%), paid_low: 44.0 (11%), paid_glut: 23.6 (6%), lost_unfed: 19.9 (5%), unpaid: 18.3 (5%), lost_cap: 8.3 (2%)
+      COW    191.5: paid: 99.4, unfed: 37.5, paid_low: 26.6, lost_cap: 8.1, paid_glut: 8.0, unpaid: 6.8, lost_unfed: 5.0
+      GOOSE   38.6: paid: 27.0, paid_low: 6.3, lost_unfed: 2.1, unfed: 2.0, unpaid: 1.0, lost_cap: 0.2
+      SHEEP  165.4: paid: 87.9, unfed: 27.5, paid_glut: 15.6, lost_unfed: 12.9, paid_low: 11.1, unpaid: 10.5
+  FEED  applied  329.2: care_paid: 156.7 (48%), payout: 136.2 (41%), survive: 21.0 (6%), care_glut: 7.7 (2%), wasted: 7.6 (2%)
+      COW    154.4: care_paid: 73.2, payout: 68.3, wasted: 6.5, survive: 5.8, care_glut: 0.7
+      GOOSE   37.6: payout: 29.1, care_paid: 8.4, survive: 0.2
+      SHEEP  137.1: care_paid: 75.2, payout: 38.9, survive: 15.0, care_glut: 7.0, wasted: 1.1
+  wheat value of wasted FEEDs 280/game; of FEEDs whose CARE was paid into a <=$5 book 305/game
+  wasted-CARE context: fert_available: 92.7, empty_tile: 83.2, product_on_tile: 30.4, no_fert: 20.9
+  wasted-CARE by day: 0:1.0 2:1.0 3:2.0 4:1.0 6:0.9 7:3.4 8:1.8 9:1.2 10:1.4 11:4.6 12:2.0 13:2.7 14:4.2 15:4.0 16:5.3 17:3.5 18:4.2 19:4.1 20:4.4 21:3.8 22:5.2 23:4.2 24:7.4 25:5.4 26:6.6 27:12.4 28:13.0 29:2.7
+  wasted-CARE by hour: 1:1.6 2:1.8 3:4.5 4:9.3 5:10.2 6:6.6 7:6.5 8:7.5 9:4.2 10:6.5 11:5.3 12:4.0 13:4.0 14:2.5 15:7.7 16:5.8 17:2.0 18:6.4 19:1.2 20:2.6 21:4.4 22:6.9 23:2.0
