@@ -1,0 +1,70 @@
+== A: 103 games, exact replays 103/103
+unit-turns per game (median), share of all unit-turns:
+  move/farmer    median    275  share   4.0%
+  move/hand      median   2626  share  38.4%
+  noop/farmer    median      8  share   0.1%
+  noop/hand      median     41  share   0.6%
+  pass/farmer    median     68  share   1.0%
+  pass/hand      median    417  share   6.7%
+  work/farmer    median    365  share   5.2%
+  work/hand      median   3039  share  44.1%
+top no-op reasons (per game mean):
+     12.0  CARE: already cared
+      8.0  WATER: already watered
+      6.2  COLLECT_FERTILIZER: none available
+      5.4  HARVEST: zero yield
+      3.8  HARVEST: nothing here
+      3.0  DIG: empty tile
+      2.9  WATER: nothing to water
+      2.3  PLACE: nothing to place/shed full
+      1.0  FERTILIZE: no fertilizer in hand
+      0.7  FEED: no wheat in hand
+      0.6  CARE: no animal
+      0.5  FEED: no animal
+      0.3  DROP: carrying nothing
+      0.1  COLLECT_FERTILIZER: no animal
+      0.1  PICKUP: shed has no WHEAT
+      0.0  FERTILIZE: no plant
+      0.0  PICKUP: shed has no FERTILIZER
+tile under idle/no-op unit (per game mean): animal 276.8, PLANT 234.9, empty 47.6, LOCKED 14.7, PASTURE 9.8, COOP 1.9
+idle/no-op by hour (per game mean): 0:2 1:7 2:4 3:8 4:14 5:14 6:11 7:11 8:9 9:15 10:14 11:15 12:11 13:10 14:11 15:18 16:19 17:27 18:29 19:38 20:43 21:59 22:84 23:111
+in-place opportunities at idle/no-op turns (per game means; unique = first per command/tile/day):
+  COLLECT_FERTILIZER uncollected at night (sale value)        turns    8.9  unique    3.1  units   3.1  coins       41
+  CARE               banked, paid                             turns    0.1  unique    0.1  units   0.1  coins       14
+  WATER              window bonus, harvested                  turns    0.0  unique    0.0  units   0.0  coins        3
+  HARVEST            below max                                turns   67.4  unique   25.5  units   0.0  coins        0
+  FEED               unfed at night                           turns   54.7  unique   47.1  units   0.0  coins        0
+  COLLECT_FERTILIZER tape collects later                      turns   72.7  unique   62.3  units   0.0  coins        0
+  FERTILIZE          unit carries fertilizer unused           turns   11.0  unique    6.5  units   0.0  coins        0
+  CARE               tape cares later                         turns   61.1  unique   52.2  units   0.0  coins        0
+  FEED               fed later                                turns   10.7  unique    5.8  units   0.0  coins        0
+  WATER              tape waters later                        turns   15.4  unique    8.6  units   0.0  coins        0
+  HARVEST            no cap loss                              turns   32.8  unique   29.0  units   0.0  coins        0
+  WATER              survival only                            turns   14.9  unique    7.1  units   0.0  coins        0
+  FERTILIZE          unit uses its fertilizer later today     turns    0.9  unique    0.9  units   0.0  coins        0
+  COLLECT_FERTILIZER animal gone                              turns   11.3  unique    1.5  units   0.0  coins        0
+  CARE               animal unfed at night                    turns    3.3  unique    1.6  units   0.0  coins        0
+  HARVEST            ongoing, not decaying                    turns    0.2  unique    0.2  units   0.0  coins        0
+  CARE               banked, lost (unfed/capped/end)          turns    0.0  unique    0.0  units   0.0  coins        0
+  HARVEST            at max, tape harvests later              turns    0.6  unique    0.2  units   0.0  coins        0
+estimated recyclable coins per game by command (mean / median):
+  WATER                     3 /        0
+  CARE                     14 /        0
+  COLLECT_FERTILIZER       41 /       28
+  HARVEST                   0 /        0
+  DIG                       0 /        0
+  FERTILIZE                 0 /        0
+  FEED                      0 /        0
+  ALL                      58 /       28
+day-level waste per game (mean): count | coins | with an idle unit on the tile that day
+  animal_cap_units                2.0 |      225 |    0.0
+  animal_unfed                   68.8 |        0 |    0.0
+  animals_escaped                 0.5 |      180 |    0.0
+  care_missed_fed                 3.8 |      279 |    0.1
+  fert_uncollected               21.8 |      383 |    3.1
+  harvest_below_max_units       122.5 |     4716 |    0.0
+  plant_unwatered               395.1 |        0 |    6.8
+  plants_died                     1.1 |      111 |    0.0
+  rot_units                       0.1 |        9 |    0.0
+  weed_tile_days                  2.5 |        0 |    0.0
+  window_unwatered                4.7 |      202 |    0.0
