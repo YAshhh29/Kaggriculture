@@ -112,7 +112,7 @@ def _blob(text: str) -> str:
 
 
 def build(deficit: int, library=SH_LIBRARY, name="L3", lot=True, agree=False,
-          rt=None, msell=None) -> str:
+          rt=None, msell=None, early_now=False) -> str:
     """rt: keyword settings for the round trip (e.g. flow_window=8, flow_stat="median")."""
     src = PARENT_FILE.read_text(encoding="utf-8")
     assert src.count(_SHOPS3) == 1, "V219 gate text changed or repeated"
@@ -157,7 +157,8 @@ def build(deficit: int, library=SH_LIBRARY, name="L3", lot=True, agree=False,
                 if lot else '')
     return header + parent + ENTRY.format(src_table=src_table, library=tuple(library),
                                           lot_line=lot_line, agent_name=name,
-                                          agree=(', early_when_agree=True' if agree else ''),
+                                          agree=(', early_when_agree=True' if agree else '')
+                                                + (', early_now=True' if early_now else ''),
                                           rt="".join(f", {k}={v!r}" for k, v in (rt or {}).items()),
                                           msell_line=("" if msell is None else
                                                       '_l2_agent = _L2["m_sell"]["m_sell_wrap"](_l2_agent'
@@ -178,6 +179,8 @@ def main() -> None:
     ap.add_argument("--agree", action="store_true",
                     help="early sales also while several in-sync programs agree (L4b)")
     ap.add_argument("--name", default="L3")
+    ap.add_argument("--early-now", action="store_true",
+                    help="the shadow also races the opponent's current-turn sale (M2)")
     ap.add_argument("--msell", nargs="*", default=None, metavar="KEY=VALUE",
                     help="add Agent M's seller, e.g. --msell value_check=True (M2)")
     ap.add_argument("--rt", nargs="*", default=[], metavar="KEY=VALUE",
@@ -199,7 +202,8 @@ def main() -> None:
             key, _, raw = item.partition("=")
             msell[key] = {"True": True, "False": False}.get(raw, int(raw) if raw.lstrip("-").isdigit() else raw)
     out.write_text(build(args.deficit, tuple(args.library), args.name, lot=not args.no_lot,
-                         agree=args.agree, rt=rt, msell=msell), encoding="utf-8")
+                         agree=args.agree, rt=rt, msell=msell, early_now=args.early_now),
+                   encoding="utf-8")
     data = out.read_bytes()
     print(f"wrote {out} ({len(data):,} bytes, sha256 {hashlib.sha256(data).hexdigest()[:12]}) "
           f"in {time.perf_counter() - t0:.1f} s")

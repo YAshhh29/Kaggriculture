@@ -77,6 +77,7 @@ ALIASES = {
     "M5": "rl.l2_combo:m5",
     "M7": "rl.l2_combo:m7",
     "M8": "rl.l2_combo:m8",
+    "M": "rl.l2_combo:m8",                   # submissions/candidate-m
     "M9": "rl.l2_combo:m9",
     "L6": "rl.l2_combo:l6",
     "M10": "rl.l2_combo:m10",
