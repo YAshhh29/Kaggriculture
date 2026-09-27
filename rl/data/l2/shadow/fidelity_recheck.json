@@ -1,0 +1,61 @@
+[
+ {
+  "episode": 113773406,
+  "program": "A",
+  "tracker": {
+   "turns": 719,
+   "sync_turns": 719,
+   "lost_at": null,
+   "lost_reason": null,
+   "ms": 17402.277301065624,
+   "own_model_miss": 0,
+   "errors": 0,
+   "lookaheads": 0,
+   "lookahead_ms": 0.0,
+   "ms_per_turn": 24.2
+  },
+  "tracked_pred_misses": 0,
+  "first_tracked_miss": null,
+  "clone_misses": 0,
+  "first_clone_miss": null,
+  "clone_ms": 24.04,
+  "plan_state_names": 138,
+  "plan_shared": [
+   "_ROUTES",
+   "_R108_SHOP_ROUTES",
+   "_UNIT_NS",
+   "_PLANNER_NS",
+   "_PIPE_RAW"
+  ],
+  "seconds": 80
+ },
+ {
+  "episode": 113722929,
+  "program": "nb_haideptry_2965",
+  "tracker": {
+   "turns": 719,
+   "sync_turns": 719,
+   "lost_at": null,
+   "lost_reason": null,
+   "ms": 22119.53899997752,
+   "own_model_miss": 0,
+   "errors": 0,
+   "lookaheads": 0,
+   "lookahead_ms": 0.0,
+   "ms_per_turn": 30.76
+  },
+  "tracked_pred_misses": 0,
+  "first_tracked_miss": null,
+  "clone_misses": 0,
+  "first_clone_miss": null,
+  "clone_ms": 41.4,
+  "plan_state_names": 137,
+  "plan_shared": [
+   "_ROUTES",
+   "_R108_SHOP_ROUTES",
+   "_UNIT_NS",
+   "_PLANNER_NS"
+  ],
+  "seconds": 109
+ }
+]

@@ -1,0 +1,167 @@
+[
+ {
+  "episode_id": 113802345,
+  "submission": 56582917,
+  "opponent": "\u5927\u5c71",
+  "opponent_rating": 1712.2627922369325,
+  "live": [
+   99019.0,
+   99055.0
+  ],
+  "our_side": 0,
+  "won": false,
+  "replayed": [
+   99019.0,
+   99055.0
+  ],
+  "seconds": 13.3,
+  "candidates": {
+   "A": {
+    "turns": 270,
+    "full": 246,
+    "units": 252,
+    "market": 264,
+    "market_set": 264,
+    "first_miss": 0,
+    "misses": [
+     0,
+     2,
+     3,
+     4,
+     5,
+     6,
+     29,
+     49,
+     50,
+     51,
+     52,
+     84,
+     85,
+     86,
+     87,
+     88,
+     89,
+     90,
+     91,
+     150,
+     215,
+     221,
+     263,
+     269
+    ],
+    "ms": 690.7338005839847,
+    "dropped_at": 269,
+    "raised": 0,
+    "ms_per_turn": 2.56
+   },
+   "L": {
+    "turns": 264,
+    "full": 240,
+    "units": 246,
+    "market": 258,
+    "market_set": 258,
+    "first_miss": 0,
+    "misses": [
+     0,
+     2,
+     3,
+     4,
+     5,
+     6,
+     29,
+     49,
+     50,
+     51,
+     52,
+     84,
+     85,
+     86,
+     87,
+     88,
+     89,
+     90,
+     91,
+     121,
+     150,
+     215,
+     221,
+     263
+    ],
+    "ms": 686.7627001483925,
+    "dropped_at": 263,
+    "raised": 0,
+    "ms_per_turn": 2.6
+   }
+  }
+ },
+ {
+  "episode_id": 113773406,
+  "submission": 56571049,
+  "opponent": "ZechHuang",
+  "opponent_rating": 2128.6303167411565,
+  "live": [
+   120859.0,
+   120859.0
+  ],
+  "our_side": 0,
+  "won": false,
+  "replayed": [
+   120859.0,
+   120859.0
+  ],
+  "seconds": 17.1,
+  "candidates": {
+   "A": {
+    "turns": 719,
+    "full": 719,
+    "units": 719,
+    "market": 719,
+    "market_set": 719,
+    "first_miss": null,
+    "misses": [],
+    "ms": 3764.7369004553184,
+    "dropped_at": null,
+    "raised": 0,
+    "ms_per_turn": 5.24
+   },
+   "L": {
+    "turns": 482,
+    "full": 458,
+    "units": 482,
+    "market": 458,
+    "market_set": 470,
+    "first_miss": 121,
+    "misses": [
+     121,
+     150,
+     196,
+     200,
+     217,
+     222,
+     241,
+     249,
+     253,
+     255,
+     264,
+     265,
+     312,
+     350,
+     360,
+     361,
+     385,
+     409,
+     431,
+     433,
+     457,
+     473,
+     477,
+     481
+    ],
+    "ms": 2062.1393002802506,
+    "dropped_at": 481,
+    "raised": 0,
+    "ms_per_turn": 4.28
+   }
+  }
+ }
+]

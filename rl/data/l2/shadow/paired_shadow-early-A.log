@@ -1,0 +1,4 @@
+60 games: shadow-early-A vs A on 30 seeds x 2 seats, 2 workers
+saved rl\data\l2\paired\shadow-early-A.json
+  shadow-early-A vs A                         60/60  won (0 tied)  mean   +1,700  median   +1,560  worst     +177  errors 0  crashes 0
+  telemetry (mean per game): early_budget_stops 3.9, early_pred_gain 930.7, early_rejected_react 10.5, early_sales 15.6, early_units 100.3, errors 0.0, reordered_turns 64.9, shadow_errors 0.0, shadow_lost 0.0, shadow_max_ms 538.2, shadow_ms 35909.6, shadow_reorder_gain 0.0, shadow_reorders 0.0, shadow_slow_turns 5.2, shadow_sync_turns 719.0, shadow_turns 719.0

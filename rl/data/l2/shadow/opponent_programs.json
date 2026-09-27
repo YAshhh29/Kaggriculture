@@ -1,0 +1,1762 @@
+{
+ "A_live_103": {
+  "games": 103,
+  "classes": {
+   "other": 45,
+   "exact_other_public": 18,
+   "near_copy_sync_past_day9": 22,
+   "mostly_matching_600plus": 12,
+   "exact_A": 6
+  },
+  "rating_2000_plus": {
+   "games": 28,
+   "classes": {
+    "other": 9,
+    "near_copy_sync_past_day9": 6,
+    "mostly_matching_600plus": 3,
+    "exact_A": 4,
+    "exact_other_public": 6
+   }
+  },
+  "exact_program_counts": {
+   "nb_boatlee_v16rc5": 1,
+   "nb_nihilistic_robust": 1,
+   "nb_tschinkel_metav4_v13": 1,
+   "nb_dmitrii_herdsafe_2700": 2,
+   "A": 6,
+   "nb_haideptry_2965": 5,
+   "nb_arsgorynich_herdsafe_v3": 6,
+   "nb_guru_master_v4": 2
+  },
+  "per_game": [
+   {
+    "episode": 113591464,
+    "opponent": "Movilly",
+    "rating": 530.7,
+    "live_margin": 80050.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "A",
+    "first_miss": 0,
+    "matched_turns": 1
+   },
+   {
+    "episode": 113592743,
+    "opponent": "EveryJust",
+    "rating": 697.2,
+    "live_margin": 38150.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "A",
+    "first_miss": 0,
+    "matched_turns": 0
+   },
+   {
+    "episode": 113593808,
+    "opponent": "Tekin24",
+    "rating": 708.9,
+    "live_margin": 68583.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_flexonafft_multiroute",
+    "first_miss": 0,
+    "matched_turns": 3
+   },
+   {
+    "episode": 113594971,
+    "opponent": "KK #2",
+    "rating": 875.0,
+    "live_margin": 32383.0,
+    "class": "exact_other_public",
+    "exact_programs": [
+     "nb_boatlee_v16rc5"
+    ],
+    "best": "nb_boatlee_v16rc5",
+    "first_miss": null,
+    "matched_turns": 719
+   },
+   {
+    "episode": 113596153,
+    "opponent": "Justin Sabu Sebastian",
+    "rating": 840.9,
+    "live_margin": 58559.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_flexonafft_multiroute",
+    "first_miss": 0,
+    "matched_turns": 2
+   },
+   {
+    "episode": 113597285,
+    "opponent": "thegoatman7",
+    "rating": 1168.6,
+    "live_margin": 12078.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "A",
+    "first_miss": 0,
+    "matched_turns": 1
+   },
+   {
+    "episode": 113598439,
+    "opponent": "Justin Gao",
+    "rating": 1241.1,
+    "live_margin": 8644.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_ahmed_v48",
+    "first_miss": 0,
+    "matched_turns": 75
+   },
+   {
+    "episode": 113599623,
+    "opponent": "Masahiro Yamagata",
+    "rating": 1360.4,
+    "live_margin": -1731.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "A",
+    "first_miss": 0,
+    "matched_turns": 0
+   },
+   {
+    "episode": 113600865,
+    "opponent": "Dmitry Larko",
+    "rating": 1247.6,
+    "live_margin": 3069.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_ahmed_v48",
+    "first_miss": 0,
+    "matched_turns": 130
+   },
+   {
+    "episode": 113602016,
+    "opponent": "Bernardus",
+    "rating": 1421.5,
+    "live_margin": 9498.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_ahmed_v48",
+    "first_miss": 0,
+    "matched_turns": 399
+   },
+   {
+    "episode": 113602062,
+    "opponent": "edteoh",
+    "rating": 1386.4,
+    "live_margin": -463.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "A",
+    "first_miss": 1,
+    "matched_turns": 8
+   },
+   {
+    "episode": 113603173,
+    "opponent": "yuyinghuang",
+    "rating": 1388.0,
+    "live_margin": 3390.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_ahmed_v48",
+    "first_miss": 0,
+    "matched_turns": 212
+   },
+   {
+    "episode": 113604364,
+    "opponent": "weiooocnnnnnn",
+    "rating": 1266.3,
+    "live_margin": 3570.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "A",
+    "first_miss": 0,
+    "matched_turns": 1
+   },
+   {
+    "episode": 113605616,
+    "opponent": "lancerhim",
+    "rating": 1416.3,
+    "live_margin": 7905.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_ahmed_v48",
+    "first_miss": 0,
+    "matched_turns": 210
+   },
+   {
+    "episode": 113606799,
+    "opponent": "Bantam",
+    "rating": 1430.7,
+    "live_margin": 2215.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_ahmed_v48",
+    "first_miss": 0,
+    "matched_turns": 194
+   },
+   {
+    "episode": 113607976,
+    "opponent": "suzu10",
+    "rating": 1520.2,
+    "live_margin": 3448.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_ahmed_v48",
+    "first_miss": 0,
+    "matched_turns": 446
+   },
+   {
+    "episode": 113608412,
+    "opponent": "Aleksandr Isakov",
+    "rating": 1497.9,
+    "live_margin": 5791.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_ahmed_v48",
+    "first_miss": 0,
+    "matched_turns": 386
+   },
+   {
+    "episode": 113609203,
+    "opponent": "thwaitsusa2",
+    "rating": 1555.5,
+    "live_margin": 2252.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_ahmed_v48",
+    "first_miss": 0,
+    "matched_turns": 405
+   },
+   {
+    "episode": 113610373,
+    "opponent": "chiikavyshy",
+    "rating": 1592.0,
+    "live_margin": 4775.0,
+    "class": "near_copy_sync_past_day9",
+    "exact_programs": [],
+    "best": "nb_ahmed_v48",
+    "first_miss": 253,
+    "matched_turns": 647
+   },
+   {
+    "episode": 113611555,
+    "opponent": "Nat Bel ML Fun",
+    "rating": 1645.1,
+    "live_margin": 1407.0,
+    "class": "exact_other_public",
+    "exact_programs": [
+     "nb_nihilistic_robust",
+     "nb_tschinkel_2945"
+    ],
+    "best": "nb_nihilistic_robust",
+    "first_miss": null,
+    "matched_turns": 719
+   },
+   {
+    "episode": 113612738,
+    "opponent": "Xuanhao Wang",
+    "rating": 1686.8,
+    "live_margin": 1071.0,
+    "class": "exact_other_public",
+    "exact_programs": [
+     "nb_tschinkel_metav4_v13"
+    ],
+    "best": "nb_tschinkel_metav4_v13",
+    "first_miss": null,
+    "matched_turns": 719
+   },
+   {
+    "episode": 113613924,
+    "opponent": "dijia zhang735",
+    "rating": 1698.5,
+    "live_margin": 39.0,
+    "class": "mostly_matching_600plus",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 53,
+    "matched_turns": 706
+   },
+   {
+    "episode": 113615088,
+    "opponent": "Mohd Aasim Ansari",
+    "rating": 1663.5,
+    "live_margin": 1067.0,
+    "class": "near_copy_sync_past_day9",
+    "exact_programs": [],
+    "best": "nb_nihilistic_robust",
+    "first_miss": 312,
+    "matched_turns": 674
+   },
+   {
+    "episode": 113616277,
+    "opponent": "Troy_xx",
+    "rating": 1764.7,
+    "live_margin": 373.0,
+    "class": "mostly_matching_600plus",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 31,
+    "matched_turns": 716
+   },
+   {
+    "episode": 113617489,
+    "opponent": "markastra",
+    "rating": 1755.0,
+    "live_margin": 3231.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 0,
+    "matched_turns": 550
+   },
+   {
+    "episode": 113618486,
+    "opponent": "Danieler",
+    "rating": 1697.3,
+    "live_margin": 2339.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_ahmed_v48",
+    "first_miss": 0,
+    "matched_turns": 262
+   },
+   {
+    "episode": 113619127,
+    "opponent": "bono",
+    "rating": 1811.1,
+    "live_margin": 492.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_haideptry_shepherds",
+    "first_miss": 150,
+    "matched_turns": 334
+   },
+   {
+    "episode": 113619817,
+    "opponent": "Daiki Yasui",
+    "rating": 1805.1,
+    "live_margin": 1397.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 151,
+    "matched_turns": 287
+   },
+   {
+    "episode": 113621110,
+    "opponent": "Mohd Aasim Ansari",
+    "rating": 1771.9,
+    "live_margin": 777.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 53,
+    "matched_turns": 441
+   },
+   {
+    "episode": 113621248,
+    "opponent": "YoungDSML [dsml.kz]",
+    "rating": 1730.3,
+    "live_margin": 640.0,
+    "class": "mostly_matching_600plus",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 53,
+    "matched_turns": 703
+   },
+   {
+    "episode": 113622529,
+    "opponent": "PyJa",
+    "rating": 1815.8,
+    "live_margin": 1171.0,
+    "class": "mostly_matching_600plus",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 91,
+    "matched_turns": 706
+   },
+   {
+    "episode": 113622717,
+    "opponent": "tokawa2997",
+    "rating": 1865.4,
+    "live_margin": -237.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "A",
+    "first_miss": 49,
+    "matched_turns": 336
+   },
+   {
+    "episode": 113623710,
+    "opponent": "jasonstillchasin",
+    "rating": 1907.3,
+    "live_margin": 1025.0,
+    "class": "exact_other_public",
+    "exact_programs": [
+     "nb_dmitrii_herdsafe_2700"
+    ],
+    "best": "nb_dmitrii_herdsafe_2700",
+    "first_miss": null,
+    "matched_turns": 719
+   },
+   {
+    "episode": 113624047,
+    "opponent": "Umut Keltek",
+    "rating": 1813.1,
+    "live_margin": 1135.0,
+    "class": "mostly_matching_600plus",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 0,
+    "matched_turns": 699
+   },
+   {
+    "episode": 113625049,
+    "opponent": "ifarm",
+    "rating": 1831.5,
+    "live_margin": 1523.0,
+    "class": "mostly_matching_600plus",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 91,
+    "matched_turns": 646
+   },
+   {
+    "episode": 113626093,
+    "opponent": "chiikavyshy",
+    "rating": 1846.6,
+    "live_margin": 1357.0,
+    "class": "near_copy_sync_past_day9",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 292,
+    "matched_turns": 697
+   },
+   {
+    "episode": 113627261,
+    "opponent": "yudai_000111",
+    "rating": 1881.8,
+    "live_margin": -8717.0,
+    "class": "near_copy_sync_past_day9",
+    "exact_programs": [],
+    "best": "nb_arsgorynich_herdsafe_v3",
+    "first_miss": 357,
+    "matched_turns": 497
+   },
+   {
+    "episode": 113627557,
+    "opponent": "Piyorin",
+    "rating": 1869.5,
+    "live_margin": 0.0,
+    "class": "exact_A",
+    "exact_programs": [
+     "A",
+     "nb_guru_master_v3",
+     "nb_tetsutani_demand",
+     "nb_tetsutani_mirror"
+    ],
+    "best": "A",
+    "first_miss": null,
+    "matched_turns": 719
+   },
+   {
+    "episode": 113628464,
+    "opponent": "Rufeng Toxins",
+    "rating": 1835.6,
+    "live_margin": 1847.0,
+    "class": "near_copy_sync_past_day9",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 313,
+    "matched_turns": 513
+   },
+   {
+    "episode": 113629658,
+    "opponent": "We Forgot To Water",
+    "rating": 1770.4,
+    "live_margin": 215.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 53,
+    "matched_turns": 369
+   },
+   {
+    "episode": 113630851,
+    "opponent": "zhudong1949",
+    "rating": 1934.8,
+    "live_margin": 1601.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_tschinkel_metav4_v13",
+    "first_miss": 1,
+    "matched_turns": 524
+   },
+   {
+    "episode": 113632036,
+    "opponent": "Wills Cui",
+    "rating": 1804.0,
+    "live_margin": 1004.0,
+    "class": "near_copy_sync_past_day9",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 264,
+    "matched_turns": 494
+   },
+   {
+    "episode": 113632374,
+    "opponent": "Максим Бортник",
+    "rating": 1942.8,
+    "live_margin": -949.0,
+    "class": "exact_other_public",
+    "exact_programs": [
+     "nb_haideptry_2965"
+    ],
+    "best": "nb_haideptry_2965",
+    "first_miss": null,
+    "matched_turns": 719
+   },
+   {
+    "episode": 113632416,
+    "opponent": "LP",
+    "rating": 1832.7,
+    "live_margin": 1201.0,
+    "class": "near_copy_sync_past_day9",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 496,
+    "matched_turns": 711
+   },
+   {
+    "episode": 113633200,
+    "opponent": "Md Arafat #2",
+    "rating": 1988.5,
+    "live_margin": -356.0,
+    "class": "exact_other_public",
+    "exact_programs": [
+     "nb_haideptry_2965"
+    ],
+    "best": "nb_haideptry_2965",
+    "first_miss": null,
+    "matched_turns": 719
+   },
+   {
+    "episode": 113634365,
+    "opponent": "Daiki Takahashi",
+    "rating": 1920.4,
+    "live_margin": 444.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 169,
+    "matched_turns": 521
+   },
+   {
+    "episode": 113635448,
+    "opponent": "Follow Me Gradient",
+    "rating": 1952.1,
+    "live_margin": 292.0,
+    "class": "near_copy_sync_past_day9",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 365,
+    "matched_turns": 699
+   },
+   {
+    "episode": 113636749,
+    "opponent": "Yash Mohan",
+    "rating": 1983.1,
+    "live_margin": 0.0,
+    "class": "exact_A",
+    "exact_programs": [
+     "A",
+     "nb_guru_master_v3",
+     "nb_tetsutani_demand",
+     "nb_tetsutani_mirror"
+    ],
+    "best": "A",
+    "first_miss": null,
+    "matched_turns": 719
+   },
+   {
+    "episode": 113637927,
+    "opponent": "taipen",
+    "rating": 1935.2,
+    "live_margin": 589.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 145,
+    "matched_turns": 464
+   },
+   {
+    "episode": 113638336,
+    "opponent": "ss",
+    "rating": 1921.2,
+    "live_margin": 130.0,
+    "class": "exact_other_public",
+    "exact_programs": [
+     "nb_dmitrii_herdsafe_2700"
+    ],
+    "best": "nb_dmitrii_herdsafe_2700",
+    "first_miss": null,
+    "matched_turns": 719
+   },
+   {
+    "episode": 113639103,
+    "opponent": "Auto Fermers",
+    "rating": 1976.8,
+    "live_margin": 2691.0,
+    "class": "exact_other_public",
+    "exact_programs": [
+     "nb_arsgorynich_herdsafe_v3",
+     "nb_leoprovorov_forecast"
+    ],
+    "best": "nb_arsgorynich_herdsafe_v3",
+    "first_miss": null,
+    "matched_turns": 719
+   },
+   {
+    "episode": 113640311,
+    "opponent": "yudai_000111",
+    "rating": 1885.8,
+    "live_margin": 732.0,
+    "class": "mostly_matching_600plus",
+    "exact_programs": [],
+    "best": "nb_dmitrii_herdsafe_2700",
+    "first_miss": 197,
+    "matched_turns": 709
+   },
+   {
+    "episode": 113641479,
+    "opponent": "neurlog",
+    "rating": 2039.2,
+    "live_margin": -308.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_arsgorynich_herdsafe_v3",
+    "first_miss": 121,
+    "matched_turns": 315
+   },
+   {
+    "episode": 113642665,
+    "opponent": "Eugen Nekhai",
+    "rating": 2036.9,
+    "live_margin": -100.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_haideptry_2965",
+    "first_miss": 150,
+    "matched_turns": 443
+   },
+   {
+    "episode": 113643983,
+    "opponent": "先过我的Gemini",
+    "rating": 1966.1,
+    "live_margin": 80.0,
+    "class": "exact_other_public",
+    "exact_programs": [
+     "nb_haideptry_2965"
+    ],
+    "best": "nb_haideptry_2965",
+    "first_miss": null,
+    "matched_turns": 719
+   },
+   {
+    "episode": 113644990,
+    "opponent": "mocatti",
+    "rating": 1995.1,
+    "live_margin": 230.0,
+    "class": "mostly_matching_600plus",
+    "exact_programs": [],
+    "best": "nb_dmitrii_herdsafe_2700",
+    "first_miss": 151,
+    "matched_turns": 717
+   },
+   {
+    "episode": 113646068,
+    "opponent": "evolve faster!",
+    "rating": 2012.0,
+    "live_margin": 445.0,
+    "class": "near_copy_sync_past_day9",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 433,
+    "matched_turns": 462
+   },
+   {
+    "episode": 113647403,
+    "opponent": "csly666",
+    "rating": 1955.0,
+    "live_margin": 963.0,
+    "class": "near_copy_sync_past_day9",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 290,
+    "matched_turns": 692
+   },
+   {
+    "episode": 113648598,
+    "opponent": "Gio",
+    "rating": 1887.2,
+    "live_margin": 954.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_leoprovorov_godmode",
+    "first_miss": 1,
+    "matched_turns": 410
+   },
+   {
+    "episode": 113649501,
+    "opponent": "ほのぼの牧場",
+    "rating": 1946.4,
+    "live_margin": 396.0,
+    "class": "near_copy_sync_past_day9",
+    "exact_programs": [],
+    "best": "nb_haideptry_2965",
+    "first_miss": 553,
+    "matched_turns": 712
+   },
+   {
+    "episode": 113650944,
+    "opponent": "ZiYiMing",
+    "rating": 1974.3,
+    "live_margin": 438.0,
+    "class": "exact_other_public",
+    "exact_programs": [
+     "nb_arsgorynich_herdsafe_v3",
+     "nb_leoprovorov_forecast"
+    ],
+    "best": "nb_arsgorynich_herdsafe_v3",
+    "first_miss": null,
+    "matched_turns": 719
+   },
+   {
+    "episode": 113651846,
+    "opponent": "Maman Salto",
+    "rating": 1968.2,
+    "live_margin": 1685.0,
+    "class": "near_copy_sync_past_day9",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 272,
+    "matched_turns": 548
+   },
+   {
+    "episode": 113653535,
+    "opponent": "sunil kumar",
+    "rating": 2055.7,
+    "live_margin": 6889.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_arsgorynich_herdsafe_v3",
+    "first_miss": 121,
+    "matched_turns": 144
+   },
+   {
+    "episode": 113654388,
+    "opponent": "Weixuan Liu",
+    "rating": 1905.0,
+    "live_margin": 899.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_dmitrii_herdsafe_2700",
+    "first_miss": 121,
+    "matched_turns": 539
+   },
+   {
+    "episode": 113655665,
+    "opponent": "Carson Zhang",
+    "rating": 1924.6,
+    "live_margin": 1542.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 150,
+    "matched_turns": 473
+   },
+   {
+    "episode": 113656869,
+    "opponent": "yucho147",
+    "rating": 2023.6,
+    "live_margin": -2075.0,
+    "class": "mostly_matching_600plus",
+    "exact_programs": [],
+    "best": "nb_guru_master_v4",
+    "first_miss": 150,
+    "matched_turns": 700
+   },
+   {
+    "episode": 113658030,
+    "opponent": "Filip Strzałka",
+    "rating": 2040.9,
+    "live_margin": 1921.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_guru_master_v4",
+    "first_miss": 1,
+    "matched_turns": 552
+   },
+   {
+    "episode": 113659204,
+    "opponent": "@Suzumaru_1666",
+    "rating": 1996.3,
+    "live_margin": 626.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_guru_master_v4",
+    "first_miss": 1,
+    "matched_turns": 466
+   },
+   {
+    "episode": 113660397,
+    "opponent": "Xu Suyi",
+    "rating": 1982.0,
+    "live_margin": 856.0,
+    "class": "exact_other_public",
+    "exact_programs": [
+     "nb_arsgorynich_herdsafe_v3",
+     "nb_leoprovorov_forecast"
+    ],
+    "best": "nb_arsgorynich_herdsafe_v3",
+    "first_miss": null,
+    "matched_turns": 719
+   },
+   {
+    "episode": 113661544,
+    "opponent": "qinsuikang",
+    "rating": 1993.2,
+    "live_margin": 7171.0,
+    "class": "exact_other_public",
+    "exact_programs": [
+     "nb_guru_master_v4"
+    ],
+    "best": "nb_guru_master_v4",
+    "first_miss": null,
+    "matched_turns": 719
+   },
+   {
+    "episode": 113662755,
+    "opponent": "One-For-All",
+    "rating": 1982.1,
+    "live_margin": 1780.0,
+    "class": "mostly_matching_600plus",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 91,
+    "matched_turns": 707
+   },
+   {
+    "episode": 113664678,
+    "opponent": "john",
+    "rating": 1937.2,
+    "live_margin": -2262.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "A",
+    "first_miss": 152,
+    "matched_turns": 232
+   },
+   {
+    "episode": 113669407,
+    "opponent": "jasonstillchasin",
+    "rating": 1927.6,
+    "live_margin": 992.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_haideptry_2965",
+    "first_miss": 150,
+    "matched_turns": 506
+   },
+   {
+    "episode": 113670627,
+    "opponent": "olHwHlo",
+    "rating": 1973.4,
+    "live_margin": 232.0,
+    "class": "near_copy_sync_past_day9",
+    "exact_programs": [],
+    "best": "nb_guru_master_v4",
+    "first_miss": 337,
+    "matched_turns": 712
+   },
+   {
+    "episode": 113671996,
+    "opponent": "takemo",
+    "rating": 2015.2,
+    "live_margin": 0.0,
+    "class": "exact_A",
+    "exact_programs": [
+     "A",
+     "nb_guru_master_v3",
+     "nb_tetsutani_demand",
+     "nb_tetsutani_mirror"
+    ],
+    "best": "A",
+    "first_miss": null,
+    "matched_turns": 719
+   },
+   {
+    "episode": 113679240,
+    "opponent": "a14iiiii",
+    "rating": 2021.9,
+    "live_margin": 63.0,
+    "class": "near_copy_sync_past_day9",
+    "exact_programs": [],
+    "best": "nb_guru_master_v4",
+    "first_miss": 365,
+    "matched_turns": 682
+   },
+   {
+    "episode": 113686336,
+    "opponent": "Illia Dolenko",
+    "rating": 2124.7,
+    "live_margin": 972.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_leoprovorov_godmode",
+    "first_miss": 1,
+    "matched_turns": 333
+   },
+   {
+    "episode": 113686477,
+    "opponent": "Ahmed Mostafa #2",
+    "rating": 2053.7,
+    "live_margin": 744.0,
+    "class": "exact_other_public",
+    "exact_programs": [
+     "nb_arsgorynich_herdsafe_v3",
+     "nb_leoprovorov_forecast"
+    ],
+    "best": "nb_arsgorynich_herdsafe_v3",
+    "first_miss": null,
+    "matched_turns": 719
+   },
+   {
+    "episode": 113694511,
+    "opponent": "Akhilesh godugu",
+    "rating": 2022.7,
+    "live_margin": 686.0,
+    "class": "exact_other_public",
+    "exact_programs": [
+     "nb_guru_master_v4"
+    ],
+    "best": "nb_guru_master_v4",
+    "first_miss": null,
+    "matched_turns": 719
+   },
+   {
+    "episode": 113697856,
+    "opponent": "jasonstillchasin",
+    "rating": 1936.4,
+    "live_margin": 7565.0,
+    "class": "near_copy_sync_past_day9",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 264,
+    "matched_turns": 591
+   },
+   {
+    "episode": 113705222,
+    "opponent": "winstonton",
+    "rating": 1929.1,
+    "live_margin": 885.0,
+    "class": "near_copy_sync_past_day9",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 387,
+    "matched_turns": 504
+   },
+   {
+    "episode": 113713381,
+    "opponent": "ゴロ・イ",
+    "rating": 1982.7,
+    "live_margin": 338.0,
+    "class": "near_copy_sync_past_day9",
+    "exact_programs": [],
+    "best": "nb_arsgorynich_herdsafe_v3",
+    "first_miss": 292,
+    "matched_turns": 707
+   },
+   {
+    "episode": 113717527,
+    "opponent": "cs duals",
+    "rating": 2012.7,
+    "live_margin": -63.0,
+    "class": "mostly_matching_600plus",
+    "exact_programs": [],
+    "best": "A",
+    "first_miss": 91,
+    "matched_turns": 640
+   },
+   {
+    "episode": 113721196,
+    "opponent": "Ayodeji",
+    "rating": 1980.9,
+    "live_margin": -22.0,
+    "class": "near_copy_sync_past_day9",
+    "exact_programs": [],
+    "best": "A",
+    "first_miss": 290,
+    "matched_turns": 716
+   },
+   {
+    "episode": 113722929,
+    "opponent": "Raagav & Pieter",
+    "rating": 2055.8,
+    "live_margin": 169.0,
+    "class": "exact_other_public",
+    "exact_programs": [
+     "nb_haideptry_2965"
+    ],
+    "best": "nb_haideptry_2965",
+    "first_miss": null,
+    "matched_turns": 719
+   },
+   {
+    "episode": 113724617,
+    "opponent": "KKY",
+    "rating": 2067.4,
+    "live_margin": -56.0,
+    "class": "near_copy_sync_past_day9",
+    "exact_programs": [],
+    "best": "nb_arsgorynich_herdsafe_v3",
+    "first_miss": 336,
+    "matched_turns": 424
+   },
+   {
+    "episode": 113732328,
+    "opponent": "Ali Alghaithi",
+    "rating": 2031.7,
+    "live_margin": 1669.0,
+    "class": "near_copy_sync_past_day9",
+    "exact_programs": [],
+    "best": "nb_arsgorynich_herdsafe_v3",
+    "first_miss": 457,
+    "matched_turns": 717
+   },
+   {
+    "episode": 113734186,
+    "opponent": "tryagain123",
+    "rating": 2031.7,
+    "live_margin": 613.0,
+    "class": "exact_other_public",
+    "exact_programs": [
+     "nb_haideptry_2965"
+    ],
+    "best": "nb_haideptry_2965",
+    "first_miss": null,
+    "matched_turns": 719
+   },
+   {
+    "episode": 113742699,
+    "opponent": "史永刚",
+    "rating": 2046.4,
+    "live_margin": 6614.0,
+    "class": "exact_other_public",
+    "exact_programs": [
+     "nb_arsgorynich_herdsafe_v3",
+     "nb_leoprovorov_forecast"
+    ],
+    "best": "nb_arsgorynich_herdsafe_v3",
+    "first_miss": null,
+    "matched_turns": 719
+   },
+   {
+    "episode": 113750463,
+    "opponent": "Monruho",
+    "rating": 1964.0,
+    "live_margin": 414.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_arsgorynich_herdsafe_v3",
+    "first_miss": 121,
+    "matched_turns": 394
+   },
+   {
+    "episode": 113751067,
+    "opponent": "erica",
+    "rating": 2082.9,
+    "live_margin": -7619.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "A",
+    "first_miss": 0,
+    "matched_turns": 0
+   },
+   {
+    "episode": 113751927,
+    "opponent": "yuki #2",
+    "rating": 2042.4,
+    "live_margin": 0.0,
+    "class": "exact_A",
+    "exact_programs": [
+     "A",
+     "nb_guru_master_v3",
+     "nb_tetsutani_demand",
+     "nb_tetsutani_mirror"
+    ],
+    "best": "A",
+    "first_miss": null,
+    "matched_turns": 719
+   },
+   {
+    "episode": 113757428,
+    "opponent": "east",
+    "rating": 2089.6,
+    "live_margin": -763.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "A",
+    "first_miss": 91,
+    "matched_turns": 587
+   },
+   {
+    "episode": 113759427,
+    "opponent": "jiang luo1021",
+    "rating": 2011.2,
+    "live_margin": -339.0,
+    "class": "mostly_matching_600plus",
+    "exact_programs": [],
+    "best": "nb_guru_master_v4",
+    "first_miss": 150,
+    "matched_turns": 705
+   },
+   {
+    "episode": 113768733,
+    "opponent": "qiuqiu",
+    "rating": 2095.2,
+    "live_margin": 0.0,
+    "class": "exact_A",
+    "exact_programs": [
+     "A",
+     "nb_guru_master_v3",
+     "nb_tetsutani_demand",
+     "nb_tetsutani_mirror"
+    ],
+    "best": "A",
+    "first_miss": null,
+    "matched_turns": 719
+   },
+   {
+    "episode": 113772802,
+    "opponent": "デワンシュ",
+    "rating": 2001.9,
+    "live_margin": -2081.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_arsgorynich_herdsafe_v3",
+    "first_miss": 1,
+    "matched_turns": 385
+   },
+   {
+    "episode": 113773406,
+    "opponent": "ZechHuang",
+    "rating": 2128.6,
+    "live_margin": 0.0,
+    "class": "exact_A",
+    "exact_programs": [
+     "A",
+     "nb_guru_master_v3",
+     "nb_tetsutani_demand",
+     "nb_tetsutani_mirror"
+    ],
+    "best": "A",
+    "first_miss": null,
+    "matched_turns": 719
+   },
+   {
+    "episode": 113773538,
+    "opponent": "KouFu",
+    "rating": 2105.6,
+    "live_margin": -4223.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 0,
+    "matched_turns": 242
+   },
+   {
+    "episode": 113780559,
+    "opponent": "Yunioshi",
+    "rating": 2036.1,
+    "live_margin": 3927.0,
+    "class": "near_copy_sync_past_day9",
+    "exact_programs": [],
+    "best": "nb_haideptry_2965",
+    "first_miss": 697,
+    "matched_turns": 718
+   },
+   {
+    "episode": 113789795,
+    "opponent": "shin0000",
+    "rating": 1952.3,
+    "live_margin": 1627.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_dmitrii_herdsafe_2700",
+    "first_miss": 91,
+    "matched_turns": 390
+   },
+   {
+    "episode": 113792659,
+    "opponent": "mraz1006",
+    "rating": 2023.1,
+    "live_margin": 0.0,
+    "class": "near_copy_sync_past_day9",
+    "exact_programs": [],
+    "best": "A",
+    "first_miss": 697,
+    "matched_turns": 718
+   },
+   {
+    "episode": 113797982,
+    "opponent": "Sai Syam",
+    "rating": 2022.2,
+    "live_margin": 1673.0,
+    "class": "exact_other_public",
+    "exact_programs": [
+     "nb_arsgorynich_herdsafe_v3",
+     "nb_leoprovorov_forecast"
+    ],
+    "best": "nb_arsgorynich_herdsafe_v3",
+    "first_miss": null,
+    "matched_turns": 719
+   },
+   {
+    "episode": 113799880,
+    "opponent": "ctree4113",
+    "rating": 1964.9,
+    "live_margin": -246.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "A",
+    "first_miss": 80,
+    "matched_turns": 370
+   }
+  ]
+ },
+ "L_live_45": {
+  "games": 45,
+  "classes": {
+   "other": 26,
+   "near_copy_sync_past_day9": 7,
+   "mostly_matching_600plus": 9,
+   "exact_other_public": 3
+  },
+  "rating_2000_plus": {
+   "games": 0,
+   "classes": {}
+  },
+  "exact_program_counts": {
+   "nb_nihilistic_robust": 1,
+   "nb_tschinkel_metav4_v13": 1,
+   "nb_ahmed_v55": 1
+  },
+  "per_game": [
+   {
+    "episode": 113752646,
+    "opponent": "tcvieira",
+    "rating": 579.3,
+    "live_margin": 132204.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "A",
+    "first_miss": 0,
+    "matched_turns": 1
+   },
+   {
+    "episode": 113753785,
+    "opponent": "Mr.S hanakosan",
+    "rating": 576.6,
+    "live_margin": 92826.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "A",
+    "first_miss": 0,
+    "matched_turns": 0
+   },
+   {
+    "episode": 113754905,
+    "opponent": "Ronald K Wilson ",
+    "rating": 779.9,
+    "live_margin": 54136.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "A",
+    "first_miss": 0,
+    "matched_turns": 0
+   },
+   {
+    "episode": 113756099,
+    "opponent": "Saravana Rajan B",
+    "rating": 988.0,
+    "live_margin": -1754.0,
+    "class": "near_copy_sync_past_day9",
+    "exact_programs": [],
+    "best": "A",
+    "first_miss": 278,
+    "matched_turns": 414
+   },
+   {
+    "episode": 113757272,
+    "opponent": "Ali Esam",
+    "rating": 871.2,
+    "live_margin": 21510.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_flexonafft_multiroute",
+    "first_miss": 72,
+    "matched_turns": 126
+   },
+   {
+    "episode": 113758502,
+    "opponent": "YoungCheol Son",
+    "rating": 988.9,
+    "live_margin": 9501.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "A",
+    "first_miss": 0,
+    "matched_turns": 0
+   },
+   {
+    "episode": 113759748,
+    "opponent": "Zikai Chen",
+    "rating": 1186.5,
+    "live_margin": 14004.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_ahmed_v48",
+    "first_miss": 0,
+    "matched_turns": 122
+   },
+   {
+    "episode": 113760765,
+    "opponent": "unhappy",
+    "rating": 1129.7,
+    "live_margin": 998.0,
+    "class": "mostly_matching_600plus",
+    "exact_programs": [],
+    "best": "nb_dmitrii_herdsafe_2700",
+    "first_miss": 0,
+    "matched_turns": 694
+   },
+   {
+    "episode": 113760891,
+    "opponent": "Shoma Arakawa",
+    "rating": 1166.6,
+    "live_margin": 11230.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "A",
+    "first_miss": 0,
+    "matched_turns": 1
+   },
+   {
+    "episode": 113762087,
+    "opponent": "Kevin Gemilang",
+    "rating": 1261.7,
+    "live_margin": 3363.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_ahmed_v48",
+    "first_miss": 0,
+    "matched_turns": 210
+   },
+   {
+    "episode": 113763293,
+    "opponent": "Ender",
+    "rating": 1286.3,
+    "live_margin": 8008.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_ahmed_v48",
+    "first_miss": 0,
+    "matched_turns": 194
+   },
+   {
+    "episode": 113764451,
+    "opponent": "S. B.",
+    "rating": 1370.3,
+    "live_margin": 6571.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "A",
+    "first_miss": 0,
+    "matched_turns": 0
+   },
+   {
+    "episode": 113765799,
+    "opponent": "NoahRyan",
+    "rating": 1346.0,
+    "live_margin": 7263.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_ahmed_v48",
+    "first_miss": 0,
+    "matched_turns": 247
+   },
+   {
+    "episode": 113766842,
+    "opponent": "yuikag",
+    "rating": 1400.8,
+    "live_margin": 9286.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_ahmed_v48",
+    "first_miss": 0,
+    "matched_turns": 375
+   },
+   {
+    "episode": 113768043,
+    "opponent": "Isabe11aM00re",
+    "rating": 1396.2,
+    "live_margin": 2018.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_ahmed_v48",
+    "first_miss": 0,
+    "matched_turns": 230
+   },
+   {
+    "episode": 113769200,
+    "opponent": "Restart:)",
+    "rating": 1566.2,
+    "live_margin": 7960.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_ahmed_v48",
+    "first_miss": 0,
+    "matched_turns": 379
+   },
+   {
+    "episode": 113770411,
+    "opponent": "beijijun",
+    "rating": 1439.4,
+    "live_margin": 2982.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_ahmed_v48",
+    "first_miss": 0,
+    "matched_turns": 210
+   },
+   {
+    "episode": 113771597,
+    "opponent": "dk2lone",
+    "rating": 1539.2,
+    "live_margin": 3202.0,
+    "class": "near_copy_sync_past_day9",
+    "exact_programs": [],
+    "best": "nb_ahmed_v48",
+    "first_miss": 223,
+    "matched_turns": 592
+   },
+   {
+    "episode": 113772781,
+    "opponent": "mou mou",
+    "rating": 1557.8,
+    "live_margin": 2782.0,
+    "class": "near_copy_sync_past_day9",
+    "exact_programs": [],
+    "best": "nb_ahmed_v48",
+    "first_miss": 253,
+    "matched_turns": 648
+   },
+   {
+    "episode": 113773955,
+    "opponent": "Liquidus",
+    "rating": 1534.0,
+    "live_margin": 4365.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_ahmed_v48",
+    "first_miss": 0,
+    "matched_turns": 327
+   },
+   {
+    "episode": 113774961,
+    "opponent": "Kashyapsinh gohil",
+    "rating": 1519.0,
+    "live_margin": 850.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 169,
+    "matched_turns": 590
+   },
+   {
+    "episode": 113775134,
+    "opponent": "morality0707",
+    "rating": 1471.6,
+    "live_margin": 314.0,
+    "class": "mostly_matching_600plus",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 91,
+    "matched_turns": 705
+   },
+   {
+    "episode": 113776152,
+    "opponent": "Ayush Gupta #2",
+    "rating": 1503.8,
+    "live_margin": 3465.0,
+    "class": "mostly_matching_600plus",
+    "exact_programs": [],
+    "best": "nb_ahmed_v48",
+    "first_miss": 0,
+    "matched_turns": 648
+   },
+   {
+    "episode": 113777522,
+    "opponent": "DLTLM",
+    "rating": 1611.5,
+    "live_margin": 1667.0,
+    "class": "exact_other_public",
+    "exact_programs": [
+     "nb_nihilistic_robust",
+     "nb_tschinkel_2945"
+    ],
+    "best": "nb_nihilistic_robust",
+    "first_miss": null,
+    "matched_turns": 719
+   },
+   {
+    "episode": 113778705,
+    "opponent": "樱花冷月",
+    "rating": 1586.2,
+    "live_margin": 1564.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_ahmed_v48",
+    "first_miss": 169,
+    "matched_turns": 504
+   },
+   {
+    "episode": 113779855,
+    "opponent": "Claudex - An",
+    "rating": 1585.3,
+    "live_margin": 3427.0,
+    "class": "mostly_matching_600plus",
+    "exact_programs": [],
+    "best": "nb_ahmed_v48",
+    "first_miss": 157,
+    "matched_turns": 611
+   },
+   {
+    "episode": 113781086,
+    "opponent": "Laxmi Khilnani",
+    "rating": 1643.9,
+    "live_margin": -553.0,
+    "class": "near_copy_sync_past_day9",
+    "exact_programs": [],
+    "best": "nb_guru_master_v4",
+    "first_miss": 264,
+    "matched_turns": 630
+   },
+   {
+    "episode": 113782475,
+    "opponent": "Kashyapsinh gohil",
+    "rating": 1634.8,
+    "live_margin": 1041.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 169,
+    "matched_turns": 498
+   },
+   {
+    "episode": 113783430,
+    "opponent": "mitsuki",
+    "rating": 1668.7,
+    "live_margin": 738.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "A",
+    "first_miss": 49,
+    "matched_turns": 133
+   },
+   {
+    "episode": 113784596,
+    "opponent": "manyuA",
+    "rating": 1555.7,
+    "live_margin": 8987.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_tschinkel_metav4_v13",
+    "first_miss": 0,
+    "matched_turns": 245
+   },
+   {
+    "episode": 113785781,
+    "opponent": "Hamachi",
+    "rating": 1644.8,
+    "live_margin": 3217.0,
+    "class": "near_copy_sync_past_day9",
+    "exact_programs": [],
+    "best": "nb_nihilistic_robust",
+    "first_miss": 337,
+    "matched_turns": 705
+   },
+   {
+    "episode": 113786922,
+    "opponent": "abraxas417",
+    "rating": 1673.1,
+    "live_margin": 2963.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_tschinkel_metav4_v13",
+    "first_miss": 91,
+    "matched_turns": 343
+   },
+   {
+    "episode": 113788110,
+    "opponent": "JKong",
+    "rating": 1663.3,
+    "live_margin": 2274.0,
+    "class": "exact_other_public",
+    "exact_programs": [
+     "nb_tschinkel_metav4_v13"
+    ],
+    "best": "nb_tschinkel_metav4_v13",
+    "first_miss": null,
+    "matched_turns": 719
+   },
+   {
+    "episode": 113789410,
+    "opponent": "pi-500.phys",
+    "rating": 1642.2,
+    "live_margin": 5979.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_ahmed_v48",
+    "first_miss": 96,
+    "matched_turns": 381
+   },
+   {
+    "episode": 113790469,
+    "opponent": "autowin",
+    "rating": 1627.0,
+    "live_margin": 3421.0,
+    "class": "mostly_matching_600plus",
+    "exact_programs": [],
+    "best": "nb_nihilistic_robust",
+    "first_miss": 94,
+    "matched_turns": 666
+   },
+   {
+    "episode": 113791648,
+    "opponent": "David Pedersen",
+    "rating": 1703.0,
+    "live_margin": 2767.0,
+    "class": "mostly_matching_600plus",
+    "exact_programs": [],
+    "best": "nb_nihilistic_robust",
+    "first_miss": 156,
+    "matched_turns": 697
+   },
+   {
+    "episode": 113792823,
+    "opponent": "alessandrozonta",
+    "rating": 1797.3,
+    "live_margin": 3252.0,
+    "class": "mostly_matching_600plus",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 169,
+    "matched_turns": 643
+   },
+   {
+    "episode": 113793997,
+    "opponent": "Nathael",
+    "rating": 1707.9,
+    "live_margin": -85.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 53,
+    "matched_turns": 418
+   },
+   {
+    "episode": 113795126,
+    "opponent": "waticson",
+    "rating": 1703.8,
+    "live_margin": 3296.0,
+    "class": "mostly_matching_600plus",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 91,
+    "matched_turns": 718
+   },
+   {
+    "episode": 113796641,
+    "opponent": "momohuhu_kkkkkarrot",
+    "rating": 1650.5,
+    "live_margin": 2074.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "nb_haideptry_2965",
+    "first_miss": 53,
+    "matched_turns": 385
+   },
+   {
+    "episode": 113797534,
+    "opponent": "neibyr",
+    "rating": 1768.1,
+    "live_margin": 2903.0,
+    "class": "other",
+    "exact_programs": [],
+    "best": "A",
+    "first_miss": 91,
+    "matched_turns": 280
+   },
+   {
+    "episode": 113798721,
+    "opponent": "Rlug mb",
+    "rating": 1724.9,
+    "live_margin": 1462.0,
+    "class": "exact_other_public",
+    "exact_programs": [
+     "nb_ahmed_v55"
+    ],
+    "best": "nb_ahmed_v55",
+    "first_miss": null,
+    "matched_turns": 719
+   },
+   {
+    "episode": 113799911,
+    "opponent": "Aphrodite",
+    "rating": 1727.4,
+    "live_margin": 1450.0,
+    "class": "mostly_matching_600plus",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 169,
+    "matched_turns": 707
+   },
+   {
+    "episode": 113801262,
+    "opponent": "Michael Chen",
+    "rating": 1784.7,
+    "live_margin": -67.0,
+    "class": "near_copy_sync_past_day9",
+    "exact_programs": [],
+    "best": "nb_ahmed_v55",
+    "first_miss": 496,
+    "matched_turns": 700
+   },
+   {
+    "episode": 113802345,
+    "opponent": "大山",
+    "rating": 1712.3,
+    "live_margin": -36.0,
+    "class": "near_copy_sync_past_day9",
+    "exact_programs": [],
+    "best": "nb_tschinkel_metav4_v13",
+    "first_miss": 575,
+    "matched_turns": 715
+   }
+  ]
+ }
+}
