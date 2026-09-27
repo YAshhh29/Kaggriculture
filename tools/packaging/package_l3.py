@@ -97,7 +97,7 @@ _L2 = {{}}
 {loads}
 _l2_agent = kaggle_agent                  # Agent A's entry point (ig_agent), gate 120
 _l2_agent = _L2["animals"]["an_wrap"](_l2_agent, _L2_ENV, {{}})
-_l2_agent = _L2["wheat_rt"]["rt_inner"](_l2_agent, _L2_ENV)
+_l2_agent = _L2["wheat_rt"]["rt_inner"](_l2_agent, _L2_ENV{rt})
 {lot_line}_l2_agent = _L2["market_front"]["mf_wrap"](_l2_agent)
 _l2_agent = _L2["labour"]["lb_wrap"](_l2_agent)
 _l2_agent = _L2["shadow"]["shadow_wrap"](_l2_agent, programs=_L3_LIBRARY,
@@ -111,7 +111,9 @@ def _blob(text: str) -> str:
     return base64.b64encode(zlib.compress(text.encode("utf-8"), 9)).decode()
 
 
-def build(deficit: int, library=SH_LIBRARY, name="L3", lot=True, agree=False) -> str:
+def build(deficit: int, library=SH_LIBRARY, name="L3", lot=True, agree=False,
+          rt=None) -> str:
+    """rt: keyword settings for the round trip (e.g. flow_window=8, flow_stat="median")."""
     src = PARENT_FILE.read_text(encoding="utf-8")
     assert src.count(_SHOPS3) == 1, "V219 gate text changed or repeated"
     relaxed = (
@@ -152,6 +154,7 @@ def build(deficit: int, library=SH_LIBRARY, name="L3", lot=True, agree=False) ->
     return header + parent + ENTRY.format(src_table=src_table, library=tuple(library),
                                           lot_line=lot_line, agent_name=name,
                                           agree=(', early_when_agree=True' if agree else ''),
+                                          rt="".join(f", {k}={v!r}" for k, v in (rt or {}).items()),
                                           lib_table=lib_table, loads="\n".join(loads))
 
 
@@ -167,14 +170,20 @@ def main() -> None:
     ap.add_argument("--agree", action="store_true",
                     help="early sales also while several in-sync programs agree (L4b)")
     ap.add_argument("--name", default="L3")
+    ap.add_argument("--rt", nargs="*", default=[], metavar="KEY=VALUE",
+                    help="round-trip settings, e.g. flow_window=8 flow_stat=median (L4e)")
     ap.add_argument("--library", nargs="+", default=list(SH_LIBRARY),
                     help="programs the shadow models (A = the verbatim base)")
     args = ap.parse_args()
     out = ROOT / args.out
     out.parent.mkdir(parents=True, exist_ok=True)
     t0 = time.perf_counter()
+    rt = {}
+    for item in args.rt:
+        key, _, raw = item.partition("=")
+        rt[key] = int(raw) if raw.lstrip("-").isdigit() else raw
     out.write_text(build(args.deficit, tuple(args.library), args.name, lot=not args.no_lot,
-                         agree=args.agree), encoding="utf-8")
+                         agree=args.agree, rt=rt), encoding="utf-8")
     data = out.read_bytes()
     print(f"wrote {out} ({len(data):,} bytes, sha256 {hashlib.sha256(data).hexdigest()[:12]}) "
           f"in {time.perf_counter() - t0:.1f} s")
