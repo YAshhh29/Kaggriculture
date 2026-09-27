@@ -1196,6 +1196,17 @@ _SH_DEFAULTS = {
     # while every in-sync program predicts the same move (L4); when False,
     # only with exactly one in sync (L2/L3 as tested).
     "early_when_agree": False,
+    # M: also race the opponent's CURRENT-turn sale. The next-turn rule acts one
+    # turn before their dump, but A fills all ten order slots at hour 0 (the
+    # day's hires), so against a harvest-ledger copy that dumps its strawberry
+    # lot at hour 1 nothing could be added and we sold at hour 12 into its
+    # supply (Farmers From Punjab: 12 -> 1 twice). Their exact queue is known,
+    # so our sale can go in an earlier slot this turn. Holding is valued as a
+    # sale `early_now_hold` steps later, after their dump and the town's buying.
+    "early_now": False,
+    "early_now_min_lot": 5,
+    "early_now_frac": 0.5,
+    "early_now_hold": 8,
 }
 
 
@@ -1262,6 +1273,37 @@ def shadow_wrap(inner, programs=("A",), factories=None, **settings):
         shops = list(observation["town"]["unlocked_shops"])
         inv0 = observation["market"]["inventory"]
         budget_end = _sh_time.perf_counter() + cfg_layer["early_budget_ms"] / 1000.0
+        if cfg_layer["early_now"]:
+            for item, h in sorted(free.items(), key=lambda kv: -sh_price(kv[0], int(inv0[kv[0]])) * kv[1]):
+                theirs_now = sh_item_orders(live.pred.get("market"), item, theirs.get(item, 0))
+                q_now = sum(n for _, op, n in theirs_now if op == "SELL")
+                if q_now < max(cfg_layer["early_now_min_lot"], cfg_layer["early_now_frac"] * h):
+                    continue
+                ours_now = sh_item_orders(market, item, ours.get(item, 0))
+                if any(op == "SELL" for _, op, _ in ours_now):
+                    continue
+                new_market = _sh_add_sell(market, item, h)
+                if new_market is None:
+                    continue
+                cand = dict(action, market=new_market)
+                if cfg_layer["reorder"]:
+                    cm, _, _, _ = reorder(observation, cand, live, day)
+                    cand = dict(cand, market=cm)
+                ours_early = sh_item_orders(cand["market"], item, ours.get(item, 0))
+                recovery = sum(sh_consumption(shops, s, item)
+                               for s in range(step, step + cfg_layer["early_now_hold"]))
+                early_rev = sh_item_path(item, inv0[item], [(ours_early, theirs_now, recovery)])
+                hold = sh_item_path(item, inv0[item], [(ours_now, theirs_now, recovery),
+                                                         ([(0, "SELL", h)], [], 0)])
+                gain = (early_rev[0] - early_rev[1]) - (hold[0] - hold[1])
+                if gain >= cfg_layer["early_min_gain"]:
+                    if len(events) < 400:
+                        events.append({"t": step, "item": item, "units": h, "now": True,
+                                       "their_now": q_now, "pred_gain": round(gain, 1)})
+                    report["early_now_sales"] = report.get("early_now_sales", 0) + 1
+                    report["early_units"] += h
+                    report["early_pred_gain"] += gain
+                    return cand
         tried = 0
         for item, h in sorted(free.items(), key=lambda kv: -sh_price(kv[0], int(inv0[kv[0]])) * kv[1]):
             if _sh_time.perf_counter() > budget_end or tried >= cfg_layer["early_max_items"]:

@@ -20,11 +20,12 @@ finished L like they did when tested alone.
 
 from rl.candidate_l import l_stack
 
-ALL = ("fert", "feed", "rt", "lot", "dump", "labour", "shadow", "msell", "race", "safety")
+ALL = ("fert", "feed", "crop", "rt", "lot", "dump", "labour", "shadow", "msell", "race", "safety")
 
 
 def combo(*names, shadow_mode="both", shadow_programs=("A",), lot_opts=None,
-          shadow_opts=None, gate=120, rt_opts=None, race_opts=None, msell_opts=None):
+          shadow_opts=None, gate=120, rt_opts=None, race_opts=None, msell_opts=None,
+          crop_opts=None):
     names = set(names)
     unknown = names - set(ALL)
     if unknown:
@@ -37,6 +38,9 @@ def combo(*names, shadow_mode="both", shadow_programs=("A",), lot_opts=None,
         if "feed" in names:
             from rl.l2_animals import an_wrap
             agent = an_wrap(agent, env, {})
+        if "crop" in names:
+            from rl.n_crops import n_crops_inner
+            agent = n_crops_inner(agent, env, **(crop_opts or {}))
         if "rt" in names:
             from rl.l2_wheat_rt import rt_inner
             agent = rt_inner(agent, env, **(rt_opts or {}))
@@ -322,5 +326,29 @@ def m10():
     from rl.l2_shadow import SH_LIBRARY
     return combo(*SHIP, "msell", shadow_programs=tuple(SH_LIBRARY) + NEW_LIBRARY + LIBRARY_0928,
                  shadow_opts={"early_when_agree": True},
+                 rt_opts={"flow_window": 8, "flow_stat": "median"},
+                 msell_opts={"after_beaten": True, "beaten_any": True})
+
+
+# ---- Agent N: our own crop decisions on M's stack ----------------------------
+def n1(**crop):
+    """N part 1 = M (M8) + the gated late strawberry batch (rl/n_crops.py)."""
+    from rl.l2_shadow import SH_LIBRARY
+    return combo(*SHIP, "msell", "crop", shadow_programs=tuple(SH_LIBRARY) + NEW_LIBRARY + M_LIBRARY_EXTRA,
+                 shadow_opts={"early_when_agree": True},
+                 rt_opts={"flow_window": 8, "flow_stat": "median"},
+                 msell_opts={"after_beaten": True, "beaten_any": True}, crop_opts=crop)
+
+
+def n1_all():
+    """N1 with the gate open in every town (to measure the swap itself)."""
+    return n1(min_price=0, min_shops=0)
+
+
+def m11():
+    """M8 + the shadow's same-turn early sale against programs it knows (early_now)."""
+    from rl.l2_shadow import SH_LIBRARY
+    return combo(*SHIP, "msell", shadow_programs=tuple(SH_LIBRARY) + NEW_LIBRARY + M_LIBRARY_EXTRA,
+                 shadow_opts={"early_when_agree": True, "early_now": True},
                  rt_opts={"flow_window": 8, "flow_stat": "median"},
                  msell_opts={"after_beaten": True, "beaten_any": True})

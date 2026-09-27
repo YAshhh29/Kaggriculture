@@ -80,6 +80,8 @@ ALIASES = {
     "M9": "rl.l2_combo:m9",
     "L6": "rl.l2_combo:l6",
     "M10": "rl.l2_combo:m10",
+    "N1": "rl.l2_combo:n1",
+    "M11": "rl.l2_combo:m11",
     "L_se": "rl.candidate_l:agent",
     "A_noV219": "rl.candidate_l:no_v219",
     "L_gate140": "rl.candidate_l:gate140",
