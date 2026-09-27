@@ -1,0 +1,21 @@
+  library A: 494,062 bytes of source
+  library nb_arsgorynich_herdsafe_v3: 1,040,570 bytes of source
+  library nb_haideptry_2965: 1,046,820 bytes of source
+  library nb_guru_master_v4: 1,048,657 bytes of source
+  library nb_dmitrii_herdsafe_2700: 1,035,355 bytes of source
+  library nb_nihilistic_robust: 815,321 bytes of source
+  library nb_tschinkel_metav4_v13: 1,005,419 bytes of source
+  library nb_ahmed_v55: 783,529 bytes of source
+wrote C:\Users\Oyash\Desktop\Kaggriculture\submissions\candidate-l3\main.py (6,506,399 bytes, sha256 d293b64b3324) in 4.2 s
+  load time (as Kaggle loads it): 3.3 s
+  imports: stdlib only; entry Kaggle picks: safe_agent
+  seed 11 seat 0: package 82,239 vs A 81,087 | factory 82,239 | identical | slowest turn 275 ms, total 22.4 s | guard errors 0, repaired 0
+  seed 11 seat 1: package 83,159 vs A 80,629 | factory 83,159 | identical | slowest turn 311 ms, total 17.8 s | guard errors 0, repaired 0
+  seed 105 seat 0: package 92,143 vs A 89,115 | factory 92,143 | identical | slowest turn 261 ms, total 19.9 s | guard errors 0, repaired 0
+  seed 105 seat 1: package 92,143 vs A 89,115 | factory 92,143 | identical | slowest turn 315 ms, total 22.6 s | guard errors 0, repaired 0
+  imports: stdlib only; entry Kaggle picks: safe_agent
+  seed 11 seat 0: package 82,107 vs nb_ahmed_v55 80,918 | factory 82,107 | identical | slowest turn 845 ms, total 23.6 s | guard errors 0, repaired 0
+  seed 11 seat 1: package 83,000 vs nb_ahmed_v55 80,357 | factory 83,000 | identical | slowest turn 757 ms, total 20.9 s | guard errors 0, repaired 0
+  seed 105 seat 0: package 92,563 vs nb_ahmed_v55 89,477 | factory 92,563 | identical | slowest turn 807 ms, total 28.6 s | guard errors 0, repaired 0
+  seed 105 seat 1: package 92,563 vs nb_ahmed_v55 89,477 | factory 92,563 | identical | slowest turn 866 ms, total 24.7 s | guard errors 0, repaired 0
+verified
