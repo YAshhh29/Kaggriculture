@@ -1,0 +1,6 @@
+saved rl\data\l2\paired\fert-build.json
+  fert-build vs L                          6/60  won (0 tied)  mean      -68  median      -63  worst     -330  errors 0  crashes 0
+  telemetry (mean per game): errors 0.0, reordered_turns 69.6
+saved rl\data\l2\paired\fert-build_d6.json
+  fert-build_d6 vs L                         19/60  won (8 tied)  mean      -12  median       -8  worst     -303  errors 0  crashes 0
+  telemetry (mean per game): errors 0.0, reordered_turns 70.1
