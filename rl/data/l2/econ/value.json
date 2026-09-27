@@ -1,0 +1,1112 @@
+{
+ "group": "A+L",
+ "prices": {
+  "base": {
+   "WHEAT": 25,
+   "CARROT": 35,
+   "TOMATO": 60,
+   "STRAWBERRY": 120,
+   "MELON": 250,
+   "EGG": 50,
+   "MILK": 160,
+   "WOOL": 200,
+   "FERTILIZER": 100
+  },
+  "mid": {
+   "WHEAT": 42.263995485327314,
+   "CARROT": 55.75336322869955,
+   "TOMATO": 66.4,
+   "STRAWBERRY": 179.62037538350478,
+   "MELON": 201.12424924924926,
+   "EGG": 52.1438127090301,
+   "MILK": 115.17570038768196,
+   "WOOL": 137.9102643535729,
+   "FERTILIZER": 55.21720326765978
+  },
+  "late": {
+   "WHEAT": 40.72095682195221,
+   "CARROT": 52.83325927023157,
+   "TOMATO": 169.4070588235294,
+   "STRAWBERRY": 81.34029932827906,
+   "MELON": 107.1,
+   "EGG": 50.07917139614075,
+   "MILK": 83.00154711673699,
+   "WOOL": 82.00335241210139,
+   "FERTILIZER": 17.177913533834587
+  },
+  "buy_wheat": 40.05380231088244,
+  "vwap": {
+   "WHEAT": {
+    "d0-9": 31.7359575409111,
+    "d10-19": 42.263995485327314,
+    "d20-29": 40.72095682195221
+   },
+   "CARROT": {
+    "d0-9": null,
+    "d10-19": 55.75336322869955,
+    "d20-29": 52.83325927023157
+   },
+   "TOMATO": {
+    "d0-9": null,
+    "d10-19": null,
+    "d20-29": 169.4070588235294
+   },
+   "STRAWBERRY": {
+    "d0-9": null,
+    "d10-19": 179.62037538350478,
+    "d20-29": 81.34029932827906
+   },
+   "MELON": {
+    "d0-9": null,
+    "d10-19": 201.12424924924926,
+    "d20-29": null
+   },
+   "EGG": {
+    "d0-9": null,
+    "d10-19": 52.1438127090301,
+    "d20-29": 50.07917139614075
+   },
+   "MILK": {
+    "d0-9": 185.55236486486487,
+    "d10-19": 115.17570038768196,
+    "d20-29": 83.00154711673699
+   },
+   "WOOL": {
+    "d0-9": 198.8668918918919,
+    "d10-19": 137.9102643535729,
+    "d20-29": 82.00335241210139
+   },
+   "FERTILIZER": {
+    "d0-9": 88.1813339015555,
+    "d10-19": 55.21720326765978,
+    "d20-29": 17.177913533834587
+   }
+  },
+  "morning_mid": {
+   "WHEAT": 40.2,
+   "CARROT": 41.3,
+   "TOMATO": 66.4,
+   "STRAWBERRY": 191.45,
+   "MELON": 108.1,
+   "EGG": 52.0,
+   "MILK": 104.55,
+   "WOOL": 80.5,
+   "FERTILIZER": 56.2
+  },
+  "morning_late": {
+   "WHEAT": 41.0,
+   "CARROT": 52.3,
+   "TOMATO": 79.0,
+   "STRAWBERRY": 50.9,
+   "MELON": 107.1,
+   "EGG": 53.7,
+   "MILK": 38.85,
+   "WOOL": 45.35,
+   "FERTILIZER": 19.9
+  },
+  "source": {
+   "('WHEAT', 'mid')": "our realised VWAP",
+   "('WHEAT', 'late')": "our realised VWAP",
+   "('CARROT', 'mid')": "our realised VWAP",
+   "('CARROT', 'late')": "our realised VWAP",
+   "('TOMATO', 'mid')": "median morning price",
+   "('TOMATO', 'late')": "our realised VWAP",
+   "('STRAWBERRY', 'mid')": "our realised VWAP",
+   "('STRAWBERRY', 'late')": "our realised VWAP",
+   "('MELON', 'mid')": "our realised VWAP",
+   "('MELON', 'late')": "median morning price",
+   "('EGG', 'mid')": "our realised VWAP",
+   "('EGG', 'late')": "our realised VWAP",
+   "('MILK', 'mid')": "our realised VWAP",
+   "('MILK', 'late')": "our realised VWAP",
+   "('WOOL', 'mid')": "our realised VWAP",
+   "('WOOL', 'late')": "our realised VWAP",
+   "('FERTILIZER', 'mid')": "our realised VWAP",
+   "('FERTILIZER', 'late')": "our realised VWAP"
+  }
+ },
+ "crops": [
+  {
+   "name": "wheat, harvest age 2",
+   "crop": "WHEAT",
+   "units": 2,
+   "days": 2,
+   "actions": 4,
+   "fert": 0,
+   "base": {
+    "net": 40,
+    "per_tile_day": 20.0,
+    "per_action": 10.0
+   },
+   "mid": {
+    "net": 74.52799097065463,
+    "per_tile_day": 37.263995485327314,
+    "per_action": 18.631997742663657
+   },
+   "late": {
+    "net": 71.44191364390441,
+    "per_tile_day": 35.72095682195221,
+    "per_action": 17.860478410976103
+   }
+  },
+  {
+   "name": "wheat, harvest age 3",
+   "crop": "WHEAT",
+   "units": 3,
+   "days": 3,
+   "actions": 5,
+   "fert": 0,
+   "base": {
+    "net": 65,
+    "per_tile_day": 21.666666666666668,
+    "per_action": 13.0
+   },
+   "mid": {
+    "net": 116.79198645598194,
+    "per_tile_day": 38.93066215199398,
+    "per_action": 23.35839729119639
+   },
+   "late": {
+    "net": 112.16287046585663,
+    "per_tile_day": 37.38762348861888,
+    "per_action": 22.432574093171326
+   }
+  },
+  {
+   "name": "wheat, harvest age 4",
+   "crop": "WHEAT",
+   "units": 4,
+   "days": 4,
+   "actions": 6,
+   "fert": 0,
+   "base": {
+    "net": 90,
+    "per_tile_day": 22.5,
+    "per_action": 15.0
+   },
+   "mid": {
+    "net": 159.05598194130926,
+    "per_tile_day": 39.763995485327314,
+    "per_action": 26.50933032355154
+   },
+   "late": {
+    "net": 152.88382728780883,
+    "per_tile_day": 38.22095682195221,
+    "per_action": 25.480637881301472
+   }
+  },
+  {
+   "name": "wheat, age 2 + fert",
+   "crop": "WHEAT",
+   "units": 3,
+   "days": 2,
+   "actions": 5,
+   "fert": 1,
+   "base": {
+    "net": -35,
+    "per_tile_day": -17.5,
+    "per_action": -7.0
+   },
+   "mid": {
+    "net": 61.574783188322165,
+    "per_tile_day": 30.787391594161083,
+    "per_action": 12.314956637664434
+   },
+   "late": {
+    "net": 94.98495693202204,
+    "per_tile_day": 47.49247846601102,
+    "per_action": 18.99699138640441
+   }
+  },
+  {
+   "name": "wheat, age 3 + fert",
+   "crop": "WHEAT",
+   "units": 5,
+   "days": 3,
+   "actions": 6,
+   "fert": 1,
+   "base": {
+    "net": 15,
+    "per_tile_day": 5.0,
+    "per_action": 2.5
+   },
+   "mid": {
+    "net": 146.10277415897679,
+    "per_tile_day": 48.70092471965893,
+    "per_action": 24.350462359829464
+   },
+   "late": {
+    "net": 176.42687057592644,
+    "per_tile_day": 58.80895685864215,
+    "per_action": 29.404478429321074
+   }
+  },
+  {
+   "name": "wheat, age 4 + fert",
+   "crop": "WHEAT",
+   "units": 6,
+   "days": 4,
+   "actions": 7,
+   "fert": 1,
+   "base": {
+    "net": 40,
+    "per_tile_day": 10.0,
+    "per_action": 5.714285714285714
+   },
+   "mid": {
+    "net": 188.3667696443041,
+    "per_tile_day": 47.091692411076025,
+    "per_action": 26.90953852061487
+   },
+   "late": {
+    "net": 217.14782739787867,
+    "per_tile_day": 54.28695684946967,
+    "per_action": 31.021118199696954
+   }
+  },
+  {
+   "name": "carrot, harvest age 2",
+   "crop": "CARROT",
+   "units": 2,
+   "days": 2,
+   "actions": 4,
+   "fert": 0,
+   "base": {
+    "net": 50,
+    "per_tile_day": 25.0,
+    "per_action": 12.5
+   },
+   "mid": {
+    "net": 91.5067264573991,
+    "per_tile_day": 45.75336322869955,
+    "per_action": 22.876681614349774
+   },
+   "late": {
+    "net": 85.66651854046314,
+    "per_tile_day": 42.83325927023157,
+    "per_action": 21.416629635115786
+   }
+  },
+  {
+   "name": "carrot, harvest age 3",
+   "crop": "CARROT",
+   "units": 3,
+   "days": 3,
+   "actions": 5,
+   "fert": 0,
+   "base": {
+    "net": 85,
+    "per_tile_day": 28.333333333333332,
+    "per_action": 17.0
+   },
+   "mid": {
+    "net": 147.26008968609864,
+    "per_tile_day": 49.08669656203288,
+    "per_action": 29.45201793721973
+   },
+   "late": {
+    "net": 138.49977781069472,
+    "per_tile_day": 46.16659260356491,
+    "per_action": 27.699955562138946
+   }
+  },
+  {
+   "name": "carrot, age 2 + fert",
+   "crop": "CARROT",
+   "units": 3,
+   "days": 2,
+   "actions": 5,
+   "fert": 1,
+   "base": {
+    "net": -15,
+    "per_tile_day": -7.5,
+    "per_action": -3.0
+   },
+   "mid": {
+    "net": 92.04288641843885,
+    "per_tile_day": 46.02144320921943,
+    "per_action": 18.40857728368777
+   },
+   "late": {
+    "net": 121.32186427686014,
+    "per_tile_day": 60.66093213843007,
+    "per_action": 24.264372855372027
+   }
+  },
+  {
+   "name": "carrot, age 3 + fert",
+   "crop": "CARROT",
+   "units": 4,
+   "days": 3,
+   "actions": 6,
+   "fert": 1,
+   "base": {
+    "net": 20,
+    "per_tile_day": 6.666666666666667,
+    "per_action": 3.3333333333333335
+   },
+   "mid": {
+    "net": 147.7962496471384,
+    "per_tile_day": 49.26541654904614,
+    "per_action": 24.63270827452307
+   },
+   "late": {
+    "net": 174.1551235470917,
+    "per_tile_day": 58.05170784903057,
+    "per_action": 29.025853924515285
+   }
+  },
+  {
+   "name": "melon, harvest age 10",
+   "crop": "MELON",
+   "units": 6,
+   "days": 10,
+   "actions": 10,
+   "fert": 0,
+   "base": {
+    "net": 1420,
+    "per_tile_day": 142.0,
+    "per_action": 142.0
+   },
+   "mid": {
+    "net": 1126.7454954954956,
+    "per_tile_day": 112.67454954954955,
+    "per_action": 112.67454954954955
+   },
+   "late": {
+    "net": 562.5999999999999,
+    "per_tile_day": 56.25999999999999,
+    "per_action": 56.25999999999999
+   }
+  },
+  {
+   "name": "melon, age 10 + fert at 6",
+   "crop": "MELON",
+   "units": 6,
+   "days": 10,
+   "actions": 9,
+   "fert": 1,
+   "base": {
+    "net": 1320,
+    "per_tile_day": 132.0,
+    "per_action": 146.66666666666666
+   },
+   "mid": {
+    "net": 1071.528292227836,
+    "per_tile_day": 107.1528292227836,
+    "per_action": 119.05869913642621
+   },
+   "late": {
+    "net": 545.4220864661653,
+    "per_tile_day": 54.54220864661653,
+    "per_action": 60.602454051796144
+   }
+  },
+  {
+   "name": "tomato, survival water",
+   "crop": "TOMATO",
+   "units": 4,
+   "days": 11,
+   "actions": 9,
+   "fert": 0,
+   "base": {
+    "net": 190,
+    "per_tile_day": 17.272727272727273,
+    "per_action": 21.11111111111111
+   },
+   "mid": {
+    "net": 215.60000000000002,
+    "per_tile_day": 19.6,
+    "per_action": 23.95555555555556
+   },
+   "late": {
+    "net": 627.6282352941176,
+    "per_tile_day": 57.05711229946524,
+    "per_action": 69.73647058823529
+   }
+  },
+  {
+   "name": "tomato + 1 fert (d7)",
+   "crop": "TOMATO",
+   "units": 7,
+   "days": 11,
+   "actions": 12,
+   "fert": 1,
+   "base": {
+    "net": 270,
+    "per_tile_day": 24.545454545454547,
+    "per_action": 22.5
+   },
+   "mid": {
+    "net": 359.5827967323403,
+    "per_tile_day": 32.689345157485484,
+    "per_action": 29.965233061028357
+   },
+   "late": {
+    "net": 1118.6714982308713,
+    "per_tile_day": 101.6974089300792,
+    "per_action": 93.22262485257261
+   }
+  },
+  {
+   "name": "tomato + 2 fert (d7,d10)",
+   "crop": "TOMATO",
+   "units": 8,
+   "days": 11,
+   "actions": 14,
+   "fert": 2,
+   "base": {
+    "net": 230,
+    "per_tile_day": 20.90909090909091,
+    "per_action": 16.428571428571427
+   },
+   "mid": {
+    "net": 370.7655934646805,
+    "per_tile_day": 33.70596304224368,
+    "per_action": 26.483256676048605
+   },
+   "late": {
+    "net": 1270.900643520566,
+    "per_tile_day": 115.53642213823328,
+    "per_action": 90.77861739432615
+   }
+  },
+  {
+   "name": "strawberry, survival water",
+   "crop": "STRAWBERRY",
+   "units": 4,
+   "days": 16,
+   "actions": 11,
+   "fert": 0,
+   "base": {
+    "net": 380,
+    "per_tile_day": 23.75,
+    "per_action": 34.54545454545455
+   },
+   "mid": {
+    "net": 618.4815015340191,
+    "per_tile_day": 38.655093845876195,
+    "per_action": 56.225591048547194
+   },
+   "late": {
+    "net": 225.36119731311624,
+    "per_tile_day": 14.085074832069765,
+    "per_action": 20.48738157391966
+   }
+  },
+  {
+   "name": "strawberry + 2 fert (d9,d13)",
+   "crop": "STRAWBERRY",
+   "units": 8,
+   "days": 16,
+   "actions": 15,
+   "fert": 2,
+   "base": {
+    "net": 660,
+    "per_tile_day": 41.25,
+    "per_action": 44.0
+   },
+   "mid": {
+    "net": 1226.5285965327187,
+    "per_tile_day": 76.65803728329492,
+    "per_action": 81.76857310218125
+   },
+   "late": {
+    "net": 516.3665675585632,
+    "per_tile_day": 32.2729104724102,
+    "per_action": 34.42443783723755
+   }
+  }
+ ],
+ "animals": [
+  {
+   "animal": "GOOSE",
+   "mode": "fed + cared daily",
+   "units_per_day": 2.0,
+   "fert_per_day": 1.0,
+   "wheat_per_day": 1.0,
+   "actions_per_day": 3.5,
+   "acts": {
+    "FEED": 1.0,
+    "CARE": 1.0,
+    "COLLECT_FERTILIZER": 1.0,
+    "HARVEST": 0.5
+   },
+   "first_harvest_day": 4,
+   "base": {
+    "net_per_day": 175.0,
+    "per_action": 50.0
+   },
+   "mid": {
+    "net_per_day": 119.45102637483754,
+    "per_action": 34.12886467852501
+   },
+   "late": {
+    "net_per_day": 77.28245401523364,
+    "per_action": 22.080701147209613
+   }
+  },
+  {
+   "animal": "GOOSE",
+   "mode": "fed daily, no care",
+   "units_per_day": 1.0,
+   "fert_per_day": 1.0,
+   "wheat_per_day": 1.0,
+   "actions_per_day": 2.5,
+   "acts": {
+    "FEED": 1.0,
+    "CARE": 0.0,
+    "COLLECT_FERTILIZER": 1.0,
+    "HARVEST": 0.5
+   },
+   "first_harvest_day": 4,
+   "base": {
+    "net_per_day": 125.0,
+    "per_action": 50.0
+   },
+   "mid": {
+    "net_per_day": 67.30721366580744,
+    "per_action": 26.922885466322974
+   },
+   "late": {
+    "net_per_day": 27.203282619092896,
+    "per_action": 10.881313047637159
+   }
+  },
+  {
+   "animal": "GOOSE",
+   "mode": "fed every other day, no care",
+   "units_per_day": 1.0,
+   "fert_per_day": 1.0,
+   "wheat_per_day": 0.5,
+   "actions_per_day": 2.0,
+   "acts": {
+    "FEED": 0.5,
+    "CARE": 0.0,
+    "COLLECT_FERTILIZER": 1.0,
+    "HARVEST": 0.5
+   },
+   "first_harvest_day": 4,
+   "base": {
+    "net_per_day": 137.5,
+    "per_action": 68.75
+   },
+   "mid": {
+    "net_per_day": 87.33411482124866,
+    "per_action": 43.66705741062433
+   },
+   "late": {
+    "net_per_day": 47.23018377453411,
+    "per_action": 23.615091887267056
+   }
+  },
+  {
+   "animal": "COW",
+   "mode": "fed + cared daily",
+   "units_per_day": 1.5,
+   "fert_per_day": 1.0,
+   "wheat_per_day": 1.0,
+   "actions_per_day": 3.25,
+   "acts": {
+    "FEED": 1.0,
+    "CARE": 1.0,
+    "COLLECT_FERTILIZER": 1.0,
+    "HARVEST": 0.25
+   },
+   "first_harvest_day": 8,
+   "base": {
+    "net_per_day": 315.0,
+    "per_action": 96.92307692307692
+   },
+   "mid": {
+    "net_per_day": 187.92695153830027,
+    "per_action": 57.823677396400086
+   },
+   "late": {
+    "net_per_day": 101.62643189805763,
+    "per_action": 31.2696713532485
+   }
+  },
+  {
+   "animal": "COW",
+   "mode": "fed daily, no care",
+   "units_per_day": 0.5,
+   "fert_per_day": 1.0,
+   "wheat_per_day": 1.0,
+   "actions_per_day": 2.25,
+   "acts": {
+    "FEED": 1.0,
+    "CARE": 0.0,
+    "COLLECT_FERTILIZER": 1.0,
+    "HARVEST": 0.25
+   },
+   "first_harvest_day": 8,
+   "base": {
+    "net_per_day": 155.0,
+    "per_action": 68.88888888888889
+   },
+   "mid": {
+    "net_per_day": 72.75125115061832,
+    "per_action": 32.333889400274806
+   },
+   "late": {
+    "net_per_day": 18.624884781320638,
+    "per_action": 8.277726569475838
+   }
+  },
+  {
+   "animal": "COW",
+   "mode": "fed every other day, no care",
+   "units_per_day": 0.5,
+   "fert_per_day": 1.0,
+   "wheat_per_day": 0.5,
+   "actions_per_day": 1.75,
+   "acts": {
+    "FEED": 0.5,
+    "CARE": 0.0,
+    "COLLECT_FERTILIZER": 1.0,
+    "HARVEST": 0.25
+   },
+   "first_harvest_day": 8,
+   "base": {
+    "net_per_day": 167.5,
+    "per_action": 95.71428571428571
+   },
+   "mid": {
+    "net_per_day": 92.77815230605954,
+    "per_action": 53.01608703203402
+   },
+   "late": {
+    "net_per_day": 38.651785936761854,
+    "per_action": 22.086734821006775
+   }
+  },
+  {
+   "animal": "SHEEP",
+   "mode": "fed + cared daily",
+   "units_per_day": 1.3333333333333333,
+   "fert_per_day": 1.0,
+   "wheat_per_day": 1.0,
+   "actions_per_day": 3.3333333333333335,
+   "acts": {
+    "FEED": 1.0,
+    "CARE": 1.0,
+    "COLLECT_FERTILIZER": 1.0,
+    "HARVEST": 0.3333333333333333
+   },
+   "first_harvest_day": 6,
+   "base": {
+    "net_per_day": 341.66666666666663,
+    "per_action": 102.49999999999999
+   },
+   "mid": {
+    "net_per_day": 199.04375342820785,
+    "per_action": 59.713126028462355
+   },
+   "late": {
+    "net_per_day": 86.46191443908734,
+    "per_action": 25.9385743317262
+   }
+  },
+  {
+   "animal": "SHEEP",
+   "mode": "fed daily, no care",
+   "units_per_day": 0.3333333333333333,
+   "fert_per_day": 1.0,
+   "wheat_per_day": 1.0,
+   "actions_per_day": 2.3333333333333335,
+   "acts": {
+    "FEED": 1.0,
+    "CARE": 0.0,
+    "COLLECT_FERTILIZER": 1.0,
+    "HARVEST": 0.3333333333333333
+   },
+   "first_harvest_day": 6,
+   "base": {
+    "net_per_day": 141.66666666666666,
+    "per_action": 60.71428571428571
+   },
+   "mid": {
+    "net_per_day": 61.13348907463496,
+    "per_action": 26.200066746272125
+   },
+   "late": {
+    "net_per_day": 4.458562026985945,
+    "per_action": 1.9108122972796904
+   }
+  },
+  {
+   "animal": "SHEEP",
+   "mode": "fed every other day, no care",
+   "units_per_day": 0.3333333333333333,
+   "fert_per_day": 1.0,
+   "wheat_per_day": 0.5,
+   "actions_per_day": 1.8333333333333333,
+   "acts": {
+    "FEED": 0.5,
+    "CARE": 0.0,
+    "COLLECT_FERTILIZER": 1.0,
+    "HARVEST": 0.3333333333333333
+   },
+   "first_harvest_day": 6,
+   "base": {
+    "net_per_day": 154.16666666666666,
+    "per_action": 84.0909090909091
+   },
+   "mid": {
+    "net_per_day": 81.16039023007617,
+    "per_action": 44.26930376185973
+   },
+   "late": {
+    "net_per_day": 24.485463182427164,
+    "per_action": 13.355707190414817
+   }
+  }
+ ],
+ "turns_per_useful": 2.0279593311697086,
+ "payback": {
+  "GOOSE": {
+   "prod_by_night": [
+    0,
+    0,
+    0,
+    4,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+   ],
+   "last_paying_day": {
+    "base": 25,
+    "mid": 24,
+    "late": 22
+   }
+  },
+  "COW": {
+   "prod_by_night": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    6,
+    0,
+    3,
+    0,
+    3,
+    0,
+    3,
+    0,
+    3,
+    0,
+    3,
+    0,
+    3,
+    0,
+    3,
+    0,
+    3,
+    0,
+    3,
+    0,
+    3,
+    0
+   ],
+   "last_paying_day": {
+    "base": 23,
+    "mid": 21,
+    "late": 19
+   }
+  },
+  "SHEEP": {
+   "prod_by_night": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    6,
+    0,
+    0,
+    4,
+    0,
+    0,
+    4,
+    0,
+    0,
+    4,
+    0,
+    0,
+    4,
+    0,
+    0,
+    4,
+    0,
+    0,
+    4,
+    0,
+    0,
+    4,
+    0,
+    0
+   ],
+   "last_paying_day": {
+    "base": 23,
+    "mid": 23,
+    "late": 20
+   }
+  }
+ },
+ "hands": [
+  {
+   "n": 1,
+   "cost": 1,
+   "cum": 1,
+   "per_turn": 0.043478260869565216,
+   "per_useful": 0.0881721448334656
+  },
+  {
+   "n": 2,
+   "cost": 1,
+   "cum": 2,
+   "per_turn": 0.043478260869565216,
+   "per_useful": 0.0881721448334656
+  },
+  {
+   "n": 3,
+   "cost": 2,
+   "cum": 4,
+   "per_turn": 0.08695652173913043,
+   "per_useful": 0.1763442896669312
+  },
+  {
+   "n": 4,
+   "cost": 3,
+   "cum": 7,
+   "per_turn": 0.13043478260869565,
+   "per_useful": 0.26451643450039675
+  },
+  {
+   "n": 5,
+   "cost": 5,
+   "cum": 12,
+   "per_turn": 0.21739130434782608,
+   "per_useful": 0.44086072416732797
+  },
+  {
+   "n": 6,
+   "cost": 8,
+   "cum": 20,
+   "per_turn": 0.34782608695652173,
+   "per_useful": 0.7053771586677248
+  },
+  {
+   "n": 7,
+   "cost": 13,
+   "cum": 33,
+   "per_turn": 0.5652173913043478,
+   "per_useful": 1.1462378828350526
+  },
+  {
+   "n": 8,
+   "cost": 21,
+   "cum": 54,
+   "per_turn": 0.9130434782608695,
+   "per_useful": 1.8516150415027772
+  },
+  {
+   "n": 9,
+   "cost": 34,
+   "cum": 88,
+   "per_turn": 1.4782608695652173,
+   "per_useful": 2.99785292433783
+  },
+  {
+   "n": 10,
+   "cost": 55,
+   "cum": 143,
+   "per_turn": 2.391304347826087,
+   "per_useful": 4.849467965840607
+  },
+  {
+   "n": 11,
+   "cost": 89,
+   "cum": 232,
+   "per_turn": 3.869565217391304,
+   "per_useful": 7.8473208901784375
+  },
+  {
+   "n": 12,
+   "cost": 144,
+   "cum": 376,
+   "per_turn": 6.260869565217392,
+   "per_useful": 12.696788856019046
+  },
+  {
+   "n": 13,
+   "cost": 233,
+   "cum": 609,
+   "per_turn": 10.130434782608695,
+   "per_useful": 20.54410974619748
+  },
+  {
+   "n": 14,
+   "cost": 377,
+   "cum": 986,
+   "per_turn": 16.391304347826086,
+   "per_useful": 33.240898602216525
+  },
+  {
+   "n": 15,
+   "cost": 610,
+   "cum": 1596,
+   "per_turn": 26.52173913043478,
+   "per_useful": 53.78500834841401
+  },
+  {
+   "n": 16,
+   "cost": 987,
+   "cum": 2583,
+   "per_turn": 42.91304347826087,
+   "per_useful": 87.02590695063053
+  }
+ ],
+ "net_per_useful": 26.751648670193493,
+ "land": [
+  {
+   "day": 0,
+   "need": [
+    1.3793103448275863,
+    2.7586206896551726,
+    5.517241379310345
+   ]
+  },
+  {
+   "day": 2,
+   "need": [
+    1.4814814814814814,
+    2.962962962962963,
+    5.925925925925926
+   ]
+  },
+  {
+   "day": 4,
+   "need": [
+    1.6,
+    3.2,
+    6.4
+   ]
+  },
+  {
+   "day": 6,
+   "need": [
+    1.7391304347826086,
+    3.4782608695652173,
+    6.956521739130435
+   ]
+  },
+  {
+   "day": 8,
+   "need": [
+    1.9047619047619047,
+    3.8095238095238093,
+    7.619047619047619
+   ]
+  },
+  {
+   "day": 10,
+   "need": [
+    2.1052631578947367,
+    4.2105263157894735,
+    8.421052631578947
+   ]
+  },
+  {
+   "day": 12,
+   "need": [
+    2.3529411764705883,
+    4.705882352941177,
+    9.411764705882353
+   ]
+  },
+  {
+   "day": 14,
+   "need": [
+    2.6666666666666665,
+    5.333333333333333,
+    10.666666666666666
+   ]
+  },
+  {
+   "day": 16,
+   "need": [
+    3.076923076923077,
+    6.153846153846154,
+    12.307692307692308
+   ]
+  },
+  {
+   "day": 18,
+   "need": [
+    3.6363636363636362,
+    7.2727272727272725,
+    14.545454545454545
+   ]
+  },
+  {
+   "day": 20,
+   "need": [
+    4.444444444444445,
+    8.88888888888889,
+    17.77777777777778
+   ]
+  },
+  {
+   "day": 22,
+   "need": [
+    5.714285714285714,
+    11.428571428571429,
+    22.857142857142858
+   ]
+  },
+  {
+   "day": 24,
+   "need": [
+    8.0,
+    16.0,
+    32.0
+   ]
+  },
+  {
+   "day": 26,
+   "need": [
+    13.333333333333334,
+    26.666666666666668,
+    53.333333333333336
+   ]
+  }
+ ]
+}
