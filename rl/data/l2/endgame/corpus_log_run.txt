@@ -1,0 +1,2 @@
+1312 corpus games to log
+logged 1312: exact 1312, not exact 0, errors 0
