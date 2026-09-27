@@ -112,7 +112,7 @@ def _blob(text: str) -> str:
     return base64.b64encode(zlib.compress(text.encode("utf-8"), 9)).decode()
 
 
-def build(deficit: int) -> str:
+def build(deficit: int, library=SH_LIBRARY, name="L3") -> str:
     src = PARENT_FILE.read_text(encoding="utf-8")
     assert src.count(_SHOPS3) == 1, "V219 gate text changed or repeated"
     relaxed = (
@@ -131,13 +131,13 @@ def build(deficit: int) -> str:
         inj = "{" + ", ".join(f'"{n}": _L2["{s}"]["{n}"]' for n, s in inject) + "}"
         loads.append(f'_L2["{name}"] = _l2_ns("{name}", {inj})')
     lib = {}
-    for name in SH_LIBRARY:
-        path = PARENT_FILE if name == "A" else ROOT / "rl" / "public" / f"{name}.py"
+    for lib_name in library:
+        path = PARENT_FILE if lib_name == "A" else ROOT / "rl" / "public" / f"{lib_name}.py"
         text = path.read_text(encoding="utf-8")
         bad = non_stdlib(text)
-        assert not bad, f"{name}: non-stdlib imports {bad}"
-        lib[name] = _blob(text)
-        print(f"  library {name}: {len(text):,} bytes of source")
+        assert not bad, f"{lib_name}: non-stdlib imports {bad}"
+        lib[lib_name] = _blob(text)
+        print(f"  library {lib_name}: {len(text):,} bytes of source")
     src_table = "{\n" + "".join(f'    "{k}": "{v}",\n' for k, v in table.items()) + "}"
     lib_table = "{\n" + "".join(f'    "{k}": "{v}",\n' for k, v in lib.items()) + "}"
     header = (f"# Agent L3 (Kaggriculture), Yash Jain, {time.strftime('%Y-%m-%d')}.\n"
@@ -146,7 +146,7 @@ def build(deficit: int) -> str:
               "# \"Agent L\"). Our layers are embedded at the end, each run in its own\n"
               "# namespace. The opponent shadow's library -- verbatim copies of public\n"
               "# Apache-2.0 programs, notices retained inside each -- is embedded too.\n")
-    return header + parent + ENTRY.format(src_table=src_table, library=tuple(SH_LIBRARY),
+    return header + parent + ENTRY.format(src_table=src_table, library=tuple(library),
                                           lib_table=lib_table, loads="\n".join(loads))
 
 
@@ -158,11 +158,13 @@ def main() -> None:
     ap.add_argument("--deficit", type=int, default=120)
     ap.add_argument("--seeds", type=int, nargs="+", default=[11, 105])
     ap.add_argument("--opponents", nargs="+", default=["A", "nb_ahmed_v55"])
+    ap.add_argument("--library", nargs="+", default=list(SH_LIBRARY),
+                    help="programs the shadow models (A = the verbatim base)")
     args = ap.parse_args()
     out = ROOT / args.out
     out.parent.mkdir(parents=True, exist_ok=True)
     t0 = time.perf_counter()
-    out.write_text(build(args.deficit), encoding="utf-8")
+    out.write_text(build(args.deficit, tuple(args.library)), encoding="utf-8")
     data = out.read_bytes()
     print(f"wrote {out} ({len(data):,} bytes, sha256 {hashlib.sha256(data).hexdigest()[:12]}) "
           f"in {time.perf_counter() - t0:.1f} s")

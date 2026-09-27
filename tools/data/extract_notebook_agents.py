@@ -209,8 +209,13 @@ def main() -> None:
                   f"# Kaggle's loader (get_last_callable) selects `{entry}`; the alias after END\n"
                   f"# makes it `agent` for local loaders. Licence notices are inside main.py.\n")
         out = PUBLIC / f"{name}.py"
-        out.write_text(header + BEGIN + "\n" + found["text"] + ("" if found["text"].endswith("\n") else "\n")
-                       + END + "\n" + f"agent = {entry}\n", encoding="utf-8")
+        # newline="": write the decoded source's characters exactly. Text mode on
+        # Windows would turn a source's own "\r\n" into "\r\r\n", which breaks
+        # backslash line continuations (cha22 and farmer-john ship "\r\n").
+        with open(out, "w", encoding="utf-8", newline="") as fh:
+            fh.write(header + BEGIN + "\n" + found["text"]
+                     + ("" if found["text"].endswith("\n") else "\n")
+                     + END + "\n" + f"agent = {entry}\n")
         known[found["sha"]] = name
         if found["others"]:
             print(f"      archive also holds {sorted(found['others'])[:8]} -- the agent may read them")

@@ -114,3 +114,18 @@ def l3_lot_rival():
 def l3_lot_similar():
     from rl.l2_shadow import SH_LIBRARY
     return combo(*SHIP, shadow_programs=SH_LIBRARY, lot_opts={"similar": 0.5})
+
+
+# L4 candidate: L3's stack with the library extended by the newer public programs
+# that real ladder opponents were measured to run (tools/analysis/l2_shadow_sync.py
+# on A's 158 live games: whole-game or past-day-16 syncs).
+NEW_LIBRARY = ("nb_statma_herd_safe_sale_window_submit", "nb_statma_herd_safe_sale_window_race_ca20",
+               "nb_ahmedberatoz_v56_smarter_seeds_and_fertilizer",
+               "nb_arsgorynich_order_book_v3_response_improvement",
+               "nb_ahmedberatoz_v57_funding_order_invariant",
+               "nb_ahmedberatoz_v54_productive_wheat_and_patient")
+
+
+def ship_lib4():
+    from rl.l2_shadow import SH_LIBRARY
+    return combo(*SHIP, shadow_programs=tuple(SH_LIBRARY) + NEW_LIBRARY)
