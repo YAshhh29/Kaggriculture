@@ -148,7 +148,8 @@ def run(args) -> None:
     for item in args.set:
         key, _, raw = item.partition("=")
         settings[key] = _parse(raw)
-    paths = sorted(str(p) for p in TAPES.glob("ep*.json"))
+    tapes = Path(args.tapes) if getattr(args, "tapes", None) else TAPES
+    paths = sorted(str(p) for p in tapes.glob("ep*.json"))
     if args.submission:
         # The tape folder holds every agent's games; judge a change on the
         # games the agent under test actually played.
@@ -275,6 +276,8 @@ def main() -> None:
                        help="H main.py to load instead of the submitted "
                             "submissions/candidate-h/main.py")
     p_run.add_argument("--limit", type=int, default=0)
+    p_run.add_argument("--tapes", default=None,
+                       help="folder of tape records (default rl/data/our_live_tapes)")
     p_run.add_argument("--episodes", type=int, nargs="*", default=None,
                        help="only these episode ids")
     p_run.add_argument("--submission", type=int, default=0,
