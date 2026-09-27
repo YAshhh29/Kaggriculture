@@ -1,0 +1,9 @@
+20 V219 games among L's live games; 4 tomatoes per extra tile; extra hands on days [18, 20, 22, 24, 26, 27, 28, 29] (one per 5 tiles)
+
+  +5 tiles: our revenue change median +1,900 (extra units 20, net of the price hit on our own 80: 95/unit); costs: labour 2,961, fertilizer 0, seed 250
+    own net per V219 game: median -1,383, mean -1,042, positive in 2/20; opponent's tomato revenue change median -140; margin net mean -577
+    per game (own net): -1,936, -1,686, -1,685, -1,658, -1,650, -1,620, -1,620, -1,611, -1,559, -1,484, -1,282, -1,165, -963, -961, -961, -246, -121, -21, +641, +745
+
+  +10 tiles: our revenue change median +3,607 (extra units 40, net of the price hit on our own 80: 90/unit); costs: labour 7,752, fertilizer 0, seed 500
+    own net per V219 game: median -4,811, mean -4,155, positive in 0/20; opponent's tomato revenue change median -256; margin net mean -3,258
+    per game (own net): -5,902, -5,444, -5,257, -5,193, -5,193, -5,167, -5,154, -5,130, -5,009, -4,964, -4,658, -4,334, -4,334, -4,320, -3,950, -2,706, -2,374, -2,315, -909, -782

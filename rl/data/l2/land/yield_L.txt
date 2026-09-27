@@ -1,0 +1,11 @@
+[L] 45 games, per game means. revenue/tile-day = sales of the product / tile-days the crop or animal occupied (wheat sales exclude feed use; animals exclude wheat eaten)
+  crop        tile-days  sold   revenue  avg$   seed$  rev/tile-day | days 18-29: tile-days sold avg$ rev/tile-day
+  WHEAT             492   403    16,291    40   1,533     30.0     |       250   278    41     45.4
+  CARROT            124   131     6,806    52     878     47.7     |       122   130    52     55.6
+  TOMATO             53    35     5,501   159     222     99.0     |        53    35   159    103.1
+  STRAWBERRY        543   247    30,663   124   3,300     50.4     |       221   208   109    102.5
+  MELON             120    72    14,566   202     960    113.4     |         0     0     0      0.0
+  GOOSE              43    66     3,436    52       0     80.7     |        25    50    52    103.2
+  COW               201   212    24,282   115       0    120.8     |        93   126    95    128.5
+  SHEEP             172   158    17,781   112       0    103.2     |        88    88    83     82.6
+  fertilizer sold 333 units for 15,269 (avg 46)

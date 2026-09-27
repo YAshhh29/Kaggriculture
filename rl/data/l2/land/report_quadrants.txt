@@ -1,0 +1,18 @@
+
+[L] 45 games
+  NE: bought in 45/45 games, unlock day median 6.29 (days [(6, 45)]); tile-days before first use: median 16.1, mean 16.6; tiles never used: mean 0.0; idle between uses 13.8, after last use 19.5 tile-days
+  SW: bought in 45/45 games, unlock day median 11.08 (days [(11, 45)]); tile-days before first use: median 15.1, mean 14.6; tiles never used: mean 0.0; idle between uses 3.6, after last use 32.0 tile-days
+  SE: bought in 22/45 games, unlock day median 18.08 (days [(18, 20), (11, 1), (12, 1)]); tile-days before first use: median 182.5, mean 197.8; tiles never used: mean 15.4; idle between uses 0.0, after last use 0.0 tile-days
+    most SE ground idle before use (tile-days, episode, unlock day, never used): 361 ep113766842 d11.1 19; 343 ep113789410 d12.1 19; 182 ep113802345 d18.1 15; 182 ep113801262 d18.1 15; 182 ep113797534 d18.1 15; 182 ep113795126 d18.1 15; 182 ep113793997 d18.1 15; 182 ep113790469 d18.1 15
+
+[A] 103 games
+  NE: bought in 103/103 games, unlock day median 6.29 (days [(6, 103)]); tile-days before first use: median 16.1, mean 16.4; tiles never used: mean 0.0; idle between uses 13.8, after last use 19.7 tile-days
+  SW: bought in 103/103 games, unlock day median 11.08 (days [(11, 103)]); tile-days before first use: median 15.1, mean 14.5; tiles never used: mean 0.0; idle between uses 3.9, after last use 32.2 tile-days
+  SE: bought in 31/103 games, unlock day median 18.08 (days [(18, 23), (12, 5), (11, 3)]); tile-days before first use: median 182.5, mean 225.5; tiles never used: mean 16.0; idle between uses 0.0, after last use 0.0 tile-days
+    most SE ground idle before use (tile-days, episode, unlock day, never used): 361 ep113742699 d11.1 19; 361 ep113648598 d11.1 19; 361 ep113621248 d11.1 19; 343 ep113780559 d12.1 19; 343 ep113697856 d12.1 19; 343 ep113661544 d12.1 19; 343 ep113653535 d12.1 19; 343 ep113602016 d12.1 19
+
+[top30] 204 games
+  NE: bought in 203/204 games, unlock day median 6.25 (days [(6, 189), (5, 9), (7, 3), (9, 1), (3, 1)]); tile-days before first use: median 17.5, mean 22.0; tiles never used: mean 0.1; idle between uses 11.2, after last use 28.2 tile-days
+  SW: bought in 202/204 games, unlock day median 9.17 (days [(9, 137), (8, 63), (11, 1), (7, 1)]); tile-days before first use: median 18.5, mean 20.9; tiles never used: mean 0.0; idle between uses 9.6, after last use 29.1 tile-days
+  SE: bought in 91/204 games, unlock day median 10.58 (days [(10, 88), (11, 2), (12, 1)]); tile-days before first use: median 77.9, mean 85.8; tiles never used: mean 2.5; idle between uses 12.5, after last use 48.5 tile-days
+    most SE ground idle before use (tile-days, episode, unlock day, never used): 249 ep113415939 d10.6 10; 224 ep113412670 d11.0 10; 205 ep113436740 d10.8 7; 194 ep113434841 d10.6 9; 187 ep113422294 d10.6 5; 179 ep113424365 d10.7 7; 179 ep113408167 d10.7 7; 173 ep113417044 d10.6 5

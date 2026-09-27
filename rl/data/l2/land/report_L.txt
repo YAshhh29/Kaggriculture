@@ -1,0 +1,31 @@
+
+[L] farm at dusk, medians over 45 games
+  day owned empty weed plants  w  c  t  s  m animals structs | idle NW NE SW SE | used NW NE SW SE
+    2    25     0    0     20  8  0  0  0 12       5       0 |       0  0  0  0 |      25  0  0  0
+    5    25     0    0     19  3  0  0  4 12       6       0 |       0  0  0  0 |      25  0  0  0
+    8    50     0    0     37  5  0  0 20 12      12       1 |       0  0  0  0 |      25 25  0  0
+   11    75     3    0     54 21  0  0 33  0      17       1 |       0  2  1  0 |      25 23 24  0
+   14    75     0    0     57 24  0  0 33  0      17       1 |       0  0  0  0 |      25 25 25  0
+   17    75     0    0     58 25  0  0 33  0      17       0 |       0  0  0  0 |      25 25 25  0
+   20    75     1    0     58 25  0  0 33  0      17       0 |       0  0  0  0 |      25 25 25  0
+   23    75     1    0     58 38  0  0 20  0      17       0 |       0  0  0  0 |      25 25 25  0
+   26    75     0    0     58 15 30  0 13  0      17       0 |       0  0  0  0 |      25 25 25  0
+   29    75    57    0      0  0  0  0  0  0      17       1 |      15 18 24  0 |      10  7  1  0
+
+[L] tile-days at dusk per game (median;mean)
+  owned 1825;1979  plant 1281;1333  animal 412;416  struct 19;20  idle 131;210  empty 130;207  weed 0;3  idle_NW 34;34  idle_NE 36;37  idle_SW 44;44  idle_SE 0;96
+
+[L] after a crop leaves a tile: 237.4 events/game, reused 180.4, never reused 57.0
+  gap before reuse: <6h 145.6/game (6.4 tile-days), <1d 31.8/game (19.8 tile-days), 1-2d 3.0/game (3.2 tile-days), 2-3d 0.0/game (0.0 tile-days), 3-5d 0.0/game (0.1 tile-days), 5d+ 0.0/game (0.0 tile-days)
+  never reused: 72.8 tile-days/game; by start day: d0-4 0.0, d5-9 0.0, d10-14 0.0, d15-19 0.0, d20-24 0.0, d25-29 57.0
+  crop -> next use (per game): w->w 96.7, w->c 28.4, s->w 14.9, s->c 10.1, w->s 9.0, m->w 6.9, c->c 5.0, m->O 2.8, c->w 2.2, m->P 2.2
+
+[L] labour per game: 7024 unit-turns; move 2966 (42.2%), work 3467 (49.4%), pass 547 (7.8%), noop 44 (0.6%), move_fail 0 (0.0%)
+  no-ops by verb/game: CARE 12.1, WATER 9.8, HARVEST 7.7, COLLECT_FERTILIZER 6.8, DIG 3.3, PLACE 2.1, FERTILIZE 1.0, FEED 0.6, DROP 0.3
+  idle (pass+noop) standing on/game: animal 280.0, plant 241.2, empty 37.5, shed-side 21.1, structure 11.4, weed 0.0
+  idle unit-turns per day (median): 0:35 2:28 4:26 6:15 8:27 10:26 12:29 14:12 16:7 18:16 20:13 22:10 24:14 26:13 28:26
+
+[L] infill with perfect foresight (base prices, seed paid): median 0/game, mean 3
+  carrot crops 0.0 (0.0 units), wheat crops 0.0 (0.2 units), converted turns 0.2, tiles 0.0
+  value by quadrant/game: NE 3
+  value by planting day/game: 16:3
