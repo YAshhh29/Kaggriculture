@@ -52,6 +52,8 @@ DEFAULTS = {
     "value_check": False, # M2: race only if their lot outweighs what the town eats
                           # before the hour we usually sell (else waiting is better)
     "own_default": 12,    # steps ahead assumed for our sale before we have sold one
+    "beaten_any": False,  # M8: being beaten on one good makes us race every good (an
+                          # early seller is a kind of player, not a kind of good)
     "before_us": False,   # M7: race only if their most recent comparable lot came at an
                           # earlier hour than the one our own stack sells such lots at
     "after_beaten": False,  # M5: race a good only after the opponent has sold a lot of
@@ -169,7 +171,8 @@ def m_sell_wrap(agent, **overrides):
                 if mine is None or not recent or recent[-1] % 24 >= mine:
                     report["m_sell_later_skips"] += 1
                     continue
-            if cfg["after_beaten"] and not st["beaten"].get(item):
+            if cfg["after_beaten"] and not (st["beaten"].get(item) or
+                                            (cfg["beaten_any"] and any(st["beaten"].values()))):
                 report["m_sell_unbeaten_skips"] += 1
                 continue
             if cfg["pace_check"] > 0:

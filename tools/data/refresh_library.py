@@ -37,21 +37,39 @@ NOTEBOOKS = ROOT / "kaggle_cache" / "notebooks"
 LIST = "https://www.kaggle.com/api/v1/kernels/list"
 
 
+def _rerun_since_cached(kernel: dict, cached: Path) -> bool:
+    from datetime import datetime, timezone
+    when = kernel.get("lastRunTime") or ""
+    try:
+        run_at = datetime.fromisoformat(when.replace("Z", "+00:00")).timestamp()
+    except ValueError:
+        return False
+    return cached.exists() and run_at > cached.stat().st_mtime + 60
+
+
 def new_notebooks(token: str, min_votes: int, pages: int = 3) -> list[str]:
+    """Notebooks not held yet, newest first by creation AND by last run (a popular
+    notebook re-run with a new version shows up only by run date)."""
     have = {p.stem for p in NOTEBOOKS.glob("*.py")}
     out = []
-    for page in range(1, pages + 1):
-        r = requests.get(LIST, params={"competition": "kaggriculture", "sortBy": "dateCreated",
-                                       "pageSize": 100, "page": page},
-                         headers={"Authorization": f"Bearer {token}"}, timeout=60)
-        r.raise_for_status()
-        batch = r.json()
-        if not batch:
-            break
-        for k in batch:
-            ref = k.get("ref", "")
-            if ref and int(k.get("totalVotes") or 0) >= min_votes and ref.replace("/", "__") not in have:
-                out.append(ref)
+    for sort in ("dateRun", "dateCreated"):
+        for page in range(1, pages + 1):
+            r = requests.get(LIST, params={"competition": "kaggriculture", "sortBy": sort,
+                                           "pageSize": 100, "page": page},
+                             headers={"Authorization": f"Bearer {token}"}, timeout=60)
+            r.raise_for_status()
+            batch = r.json()
+            if not batch:
+                break
+            for k in batch:
+                ref = k.get("ref", "")
+                if not ref or int(k.get("totalVotes") or 0) < min_votes or ref in out:
+                    continue
+                stem = ref.replace("/", "__")
+                if stem not in have:
+                    out.append(ref)
+                elif _rerun_since_cached(k, NOTEBOOKS / f"{stem}.py"):
+                    out.append(ref)     # same notebook, new version: its code may differ
     return out
 
 
@@ -70,12 +88,20 @@ def main() -> None:
                     help="our live submissions whose games to scan")
     ap.add_argument("--min-votes", type=int, default=5)
     ap.add_argument("--workers", type=int, default=6)
+    ap.add_argument("--refetch-notebooks", nargs="*", default=[],
+                    help="refs to pull again although held (a notebook re-run with new code)")
+    ap.add_argument("--fetch-games", action="store_true",
+                    help="first refresh our live games for --submissions (fetch_our_games + extract_live_tapes)")
     args = ap.parse_args()
     token = os.environ.get("KAGGLE_API_TOKEN")
     if not token:
         raise SystemExit("set KAGGLE_API_TOKEN inline")
 
-    refs = new_notebooks(token, args.min_votes)
+    if args.fetch_games:
+        for sub in args.submissions:
+            print(run(["tools.data.fetch_our_games", "--submission", str(sub), "--games", "400"])[-300:])
+            print(run(["tools.data.extract_live_tapes", "--submission", str(sub)])[-200:])
+    refs = new_notebooks(token, args.min_votes) + list(args.refetch_notebooks)
     print(f"{len(refs)} public notebooks with >= {args.min_votes} votes not held yet")
     if refs:
         print(run(["tools.data.fetch_public_notebook", *refs, "--pause", "1.0"]))

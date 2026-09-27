@@ -32,7 +32,8 @@ ITEMS = ("CARROT", "TOMATO", "STRAWBERRY", "MELON", "EGG", "MILK", "WOOL")
 
 
 def one(job):
-    ep, from_day = job
+    ep, from_day = job[:2]
+    factory = job[2] if len(job) > 2 else None
     import kaggle_environments.envs.kaggriculture.kaggriculture as K
     from kaggle_environments import make
 
@@ -59,7 +60,12 @@ def one(job):
 
     K._process_market, K._commit_unit = pm, cu
     try:
-        us = build_replay_agent(tuple(unpack(rec["our_actions_zlib_b64"])))
+        if factory:               # a candidate in our seat instead of our live moves
+            import importlib
+            mod, fn = factory.split(":")
+            us = getattr(importlib.import_module(mod), fn)()
+        else:
+            us = build_replay_agent(tuple(unpack(rec["our_actions_zlib_b64"])))
         them = build_replay_agent(tuple(unpack(rec["opp_actions_zlib_b64"])))
         env = make("kaggriculture", configuration={"episodeSteps": 720, "seed": rec["seed"],
                                                    "runTimeout": 36000, "actTimeout": 60}, debug=False)
@@ -92,29 +98,34 @@ def one(job):
         ref = our_avg.get(item, price)
         bins[item][b] += price - ref
         units[item][b] += 1
-    return {"ep": ep, "won": rec["rewards"]["us"] > rec["rewards"]["them"],
-            "margin": rec["rewards"]["us"] - rec["rewards"]["them"],
+    us_r, them_r = env.state[side].reward or 0.0, env.state[1 - side].reward or 0.0
+    return {"ep": ep, "won": us_r > them_r, "margin": us_r - them_r,
             "bins": {i: dict(v) for i, v in bins.items()},
             "units": {i: dict(v) for i, v in units.items()}}
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--submissions", type=int, nargs="+", required=True)
+    ap.add_argument("--submissions", type=int, nargs="*", default=[])
     ap.add_argument("--close", type=float, default=3000)
     ap.add_argument("--from-day", type=int, default=24)
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--out", default=str(ROOT / "rl" / "data" / "l2" / "eval" / "endgame_causes.json"))
+    ap.add_argument("--factory", default=None, help="module:function in our seat (default: our live moves)")
+    ap.add_argument("--episodes", type=int, nargs="*", default=None, help="only these games")
     args = ap.parse_args()
     eps = []
     for p in sorted(TAPES.glob("ep*.json")):
         r = json.loads(p.read_text(encoding="utf-8"))
-        if (r.get("submission") in args.submissions
+        if args.episodes is not None:
+            if r["episode_id"] in args.episodes:
+                eps.append(r["episode_id"])
+        elif (r.get("submission") in args.submissions
                 and abs(r["rewards"]["us"] - r["rewards"]["them"]) < args.close):
             eps.append(r["episode_id"])
     print(f"{len(eps)} close games", flush=True)
     with Pool(args.workers) as pool:
-        rows = pool.map(one, [(e, args.from_day) for e in eps])
+        rows = pool.map(one, [(e, args.from_day, args.factory) for e in eps])
     Path(args.out).write_text(json.dumps(rows), encoding="utf-8")
     rows = [r for r in rows if "error" not in r]
     for lab, sel in (("LOST", [r for r in rows if not r["won"]]), ("WON", [r for r in rows if r["won"]])):

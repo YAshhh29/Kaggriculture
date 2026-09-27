@@ -19,6 +19,7 @@ decoded main.py itself, once, in a fresh namespace, to find its entry point.
 from __future__ import annotations
 
 import argparse
+import time
 import base64
 import hashlib
 import re
@@ -236,6 +237,12 @@ def main() -> None:
                   f"# Kaggle's loader (get_last_callable) selects `{entry}`; the alias after END\n"
                   f"# makes it `agent` for local loaders. Licence notices are inside main.py.\n")
         out = PUBLIC / f"{name}.py"
+        if out.exists():
+            # a re-run notebook with new code: keep the old program (it may be in a
+            # shadow library already built) and save the new one beside it
+            day = time.strftime("%m%d")
+            name = f"{name}_r{day}"
+            out = PUBLIC / f"{name}.py"
         # newline="": write the decoded source's characters exactly. Text mode on
         # Windows would turn a source's own "\r\n" into "\r\r\n", which breaks
         # backslash line continuations (cha22 and farmer-john ship "\r\n").

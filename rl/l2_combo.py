@@ -289,3 +289,8 @@ def m5():
 def m7():
     """M1, racing only when the opponent's recent lot came before our own usual hour."""
     return m1(before_us=True)
+
+
+def m8():
+    """M5, where being beaten on one good starts races on every good."""
+    return m1(after_beaten=True, beaten_any=True)

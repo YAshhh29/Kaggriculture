@@ -76,6 +76,7 @@ ALIASES = {
     "M4": "rl.l2_combo:m4",
     "M5": "rl.l2_combo:m5",
     "M7": "rl.l2_combo:m7",
+    "M8": "rl.l2_combo:m8",
     "L_se": "rl.candidate_l:agent",
     "A_noV219": "rl.candidate_l:no_v219",
     "L_gate140": "rl.candidate_l:gate140",
