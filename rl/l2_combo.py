@@ -269,3 +269,18 @@ def m2():
     """M part 1 with the value check: race only when their lot outweighs what the
     town eats before the hour we usually sell."""
     return m1(value_check=True)
+
+
+def m3():
+    """M1, racing only goods our own stack sells as whole lots."""
+    return m1(require_own_lot=True)
+
+
+def m4():
+    """M1, racing only goods the opponent recently sold mostly in whole lots."""
+    return m1(pace_check=0.5)
+
+
+def m5():
+    """M1, racing a good only after the opponent has sold a lot of it while we held one."""
+    return m1(after_beaten=True)

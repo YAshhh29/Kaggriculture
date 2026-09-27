@@ -52,6 +52,14 @@ DEFAULTS = {
     "value_check": False, # M2: race only if their lot outweighs what the town eats
                           # before the hour we usually sell (else waiting is better)
     "own_default": 12,    # steps ahead assumed for our sale before we have sold one
+    "after_beaten": False,  # M5: race a good only after the opponent has sold a lot of
+                            # it while we held one (the loss mechanism, seen in this game)
+    "pace_check": 0.0,    # M4: race only if at least this share of their units of the
+                          # good in the last `pace_steps` came in comparable lots
+    "pace_steps": 48,
+    "require_own_lot": False,  # M3: race only goods our own stack sells as whole lots
+                               # (a stack that sells a few units an hour keeps the
+                               # price up; dumping the lot first crashes it)
     "recent_days": 3,
     "items": ITEMS,
 }
@@ -120,7 +128,7 @@ def m_sell_wrap(agent, **overrides):
     items = tuple(cfg["items"])
     states: dict = {}
     report = {"m_sell_orders": 0, "m_sell_units": 0, "m_sell_no_slot": 0, "m_sell_shadow_skips": 0,
-              "m_sell_value_skips": 0, "m_sell_errors": 0, "m_sell_log": []}
+              "m_sell_value_skips": 0, "m_sell_own_skips": 0, "m_sell_pace_skips": 0, "m_sell_unbeaten_skips": 0, "m_sell_errors": 0, "m_sell_log": []}
 
     def watch(obs, st, step):
         prev, st["prev"] = st["prev"], None
@@ -129,8 +137,12 @@ def m_sell_wrap(agent, **overrides):
         inv = obs["market"]["inventory"]
         for item in items:
             sold = int(inv[item]) - prev[1][item] + prev[2][item] - prev[3][item]
+            if sold > 0:
+                st["flows"].setdefault(item, []).append((step - 1, sold))
             if sold >= cfg["min_lot"]:
                 st["lots"].setdefault(item, []).append((step - 1, sold))
+                if prev[4].get(item, 0) >= max(cfg["min_stock"], sold * cfg["size_frac"])                         and prev[3][item] == 0:
+                    st["beaten"][item] = st["beaten"].get(item, 0) + 1
 
     def pre_empt(obs, action, st, step):
         day, hour = step // 24, step % 24
@@ -147,6 +159,19 @@ def m_sell_wrap(agent, **overrides):
                 continue          # they have sold a lot of it today: the race is over
             hour_o = their_hour(lots, stock, step, cfg)
             if hour_o is None or not hour_o - cfg["lead"] <= hour <= hour_o + cfg["late"]:
+                continue
+            if cfg["after_beaten"] and not st["beaten"].get(item):
+                report["m_sell_unbeaten_skips"] += 1
+                continue
+            if cfg["pace_check"] > 0:
+                size = max(cfg["min_lot"], stock * cfg["size_frac"])
+                recent = [u for s_, u in st["flows"].get(item, []) if s_ >= step - cfg["pace_steps"]]
+                in_lots = sum(u for u in recent if u >= size)
+                if not recent or in_lots < cfg["pace_check"] * sum(recent):
+                    report["m_sell_pace_skips"] += 1
+                    continue
+            if cfg["require_own_lot"] and our_hour(st["sales"].get(item, []), stock, cfg) is None:
+                report["m_sell_own_skips"] += 1
                 continue
             if cfg["value_check"]:
                 mine = our_hour(st["sales"].get(item, []), stock, cfg)
@@ -182,7 +207,8 @@ def m_sell_wrap(agent, **overrides):
         player = int(observation["player"])
         st = states.get(player)
         if st is None or step <= st["step"]:
-            st = states[player] = {"step": -1, "prev": None, "lots": {}, "sales": {}}
+            st = states[player] = {"step": -1, "prev": None, "lots": {}, "sales": {}, "flows": {},
+                                   "beaten": {}}
         st["step"] = step
         action = agent(observation, configuration)
         try:
@@ -207,9 +233,11 @@ def m_sell_wrap(agent, **overrides):
         try:
             inv = observation["market"]["inventory"]
             shops = observation["town"]["unlocked_shops"]
+            shed = observation["private"].get("shed") or {}
             st["prev"] = (step, {i: int(inv[i]) for i in items},
                           {i: eaten(shops, step, i) for i in items},
-                          {i: our_sold(observation, action, i) for i in items})
+                          {i: our_sold(observation, action, i) for i in items},
+                          {i: int(shed.get(i, 0)) for i in items})
         except Exception:
             report["m_sell_errors"] += 1
             st["prev"] = None
