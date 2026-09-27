@@ -52,6 +52,8 @@ DEFAULTS = {
     "value_check": False, # M2: race only if their lot outweighs what the town eats
                           # before the hour we usually sell (else waiting is better)
     "own_default": 12,    # steps ahead assumed for our sale before we have sold one
+    "before_us": False,   # M7: race only if their most recent comparable lot came at an
+                          # earlier hour than the one our own stack sells such lots at
     "after_beaten": False,  # M5: race a good only after the opponent has sold a lot of
                             # it while we held one (the loss mechanism, seen in this game)
     "pace_check": 0.0,    # M4: race only if at least this share of their units of the
@@ -128,7 +130,7 @@ def m_sell_wrap(agent, **overrides):
     items = tuple(cfg["items"])
     states: dict = {}
     report = {"m_sell_orders": 0, "m_sell_units": 0, "m_sell_no_slot": 0, "m_sell_shadow_skips": 0,
-              "m_sell_value_skips": 0, "m_sell_own_skips": 0, "m_sell_pace_skips": 0, "m_sell_unbeaten_skips": 0, "m_sell_errors": 0, "m_sell_log": []}
+              "m_sell_value_skips": 0, "m_sell_own_skips": 0, "m_sell_pace_skips": 0, "m_sell_unbeaten_skips": 0, "m_sell_later_skips": 0, "m_sell_errors": 0, "m_sell_log": []}
 
     def watch(obs, st, step):
         prev, st["prev"] = st["prev"], None
@@ -160,6 +162,13 @@ def m_sell_wrap(agent, **overrides):
             hour_o = their_hour(lots, stock, step, cfg)
             if hour_o is None or not hour_o - cfg["lead"] <= hour <= hour_o + cfg["late"]:
                 continue
+            if cfg["before_us"]:
+                mine = our_hour(st["sales"].get(item, []), stock, cfg)
+                size = max(cfg["min_lot"], stock * cfg["size_frac"])
+                recent = [s_ for s_, u in lots if u >= size and s_ >= step - 24 * cfg["recent_days"]]
+                if mine is None or not recent or recent[-1] % 24 >= mine:
+                    report["m_sell_later_skips"] += 1
+                    continue
             if cfg["after_beaten"] and not st["beaten"].get(item):
                 report["m_sell_unbeaten_skips"] += 1
                 continue

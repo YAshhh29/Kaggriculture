@@ -284,3 +284,8 @@ def m4():
 def m5():
     """M1, racing a good only after the opponent has sold a lot of it while we held one."""
     return m1(after_beaten=True)
+
+
+def m7():
+    """M1, racing only when the opponent's recent lot came before our own usual hour."""
+    return m1(before_us=True)
