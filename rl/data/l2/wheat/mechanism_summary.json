@@ -1,0 +1,217 @@
+{
+ "games": 70,
+ "fert_timing_per_game": {
+  "age 0: after that day's watering": [
+   0.08571428571428572,
+   0.0
+  ],
+  "age 1: F->W same unit": [
+   0.21428571428571427,
+   0.02857142857142857
+  ],
+  "age 1: after that day's watering": [
+   0.32857142857142857,
+   0.22857142857142856
+  ],
+  "age 1: no watering that day": [
+   17.5,
+   18.428571428571427
+  ],
+  "age 1: watered later by another unit": [
+   1.2,
+   0.8571428571428571
+  ],
+  "age 2: F->W same unit": [
+   12.014285714285714,
+   0.3
+  ],
+  "age 2: after that day's watering": [
+   2.5428571428571427,
+   2.085714285714286
+  ],
+  "age 2: no watering that day": [
+   0.2857142857142857,
+   0.08571428571428572
+  ],
+  "age 2: watered later by another unit": [
+   4.585714285714285,
+   4.942857142857143
+  ],
+  "age 3: F->W same unit": [
+   2.5285714285714285,
+   1.3714285714285714
+  ],
+  "age 3: after that day's watering": [
+   0.14285714285714285,
+   0.1
+  ],
+  "age 3: no watering that day": [
+   0.014285714285714285,
+   0.0
+  ],
+  "age 3: watered later by another unit": [
+   3.4285714285714284,
+   3.914285714285714
+  ],
+  "age 4: F->W same unit": [
+   0.014285714285714285,
+   0.0
+  ]
+ },
+ "families": {
+  "lineage near-copies": {
+   "wheat units": [
+    4.1063829787234045,
+    0
+   ],
+   "wheat fertilizations": [
+    6.0638297872340425,
+    0
+   ],
+   "fertilizer collected": [
+    2.9361702127659575,
+    0
+   ],
+   "hires": [
+    -0.0851063829787234,
+    0
+   ],
+   "fertilizer bought": [
+    79.46808510638297,
+    0
+   ],
+   "final money": [
+    1204.127659574468,
+    440.0
+   ],
+   "games": 47
+  },
+  "other programmes": {
+   "wheat units": [
+    22.47826086956522,
+    13
+   ],
+   "wheat fertilizations": [
+    25.782608695652176,
+    16
+   ],
+   "fertilizer collected": [
+    8.782608695652174,
+    3
+   ],
+   "hires": [
+    2.6956521739130435,
+    0
+   ],
+   "fertilizer bought": [
+    28.217391304347824,
+    0
+   ],
+   "final money": [
+    845.0434782608696,
+    1535.0
+   ],
+   "games": 23
+  }
+ },
+ "ledger_edge": {
+  "animals": [
+   -32.857142857142854,
+   0.0
+  ],
+  "buy FERTILIZER": [
+   -2463.4714285714285,
+   0.0
+  ],
+  "buy WHEAT": [
+   -39011.57142857143,
+   -331.0
+  ],
+  "hires": [
+   -181.15714285714284,
+   0.0
+  ],
+  "land (residual)": [
+   -114.28571428571429,
+   0.0
+  ],
+  "seeds": [
+   -125.71428571428571,
+   0.0
+  ],
+  "sell CARROT": [
+   279.5,
+   0.0
+  ],
+  "sell EGG": [
+   205.92857142857142,
+   0.0
+  ],
+  "sell FERTILIZER": [
+   2107.6857142857143,
+   -17.5
+  ],
+  "sell MELON": [
+   -135.2,
+   0.0
+  ],
+  "sell MILK": [
+   746.4428571428572,
+   59.0
+  ],
+  "sell STRAWBERRY": [
+   -486.7857142857143,
+   27.0
+  ],
+  "sell TOMATO": [
+   1485.1714285714286,
+   0.0
+  ],
+  "sell WHEAT": [
+   39360.12857142857,
+   1597.5
+  ],
+  "sell WOOL": [
+   -547.6714285714286,
+   0.0
+  ],
+  "final money": [
+   1086.142857142857,
+   714.0
+  ]
+ },
+ "round_trips_team": {
+  "units_mean": 1117.057142857143,
+  "pnl_mean": 215.15817635927655,
+  "heavy_games": 30,
+  "per100": 19.403068786637867,
+  "buy_step_mod4": {
+   "1": 2364,
+   "2": 2925,
+   "3": 11609,
+   "0": 61296
+  }
+ },
+ "round_trips_A": {
+  "units_mean": 161.87142857142857,
+  "pnl_mean": 22.76000886095965,
+  "heavy_games": 7,
+  "per100": 15.524278140517692,
+  "buy_step_mod4": {
+   "2": 455,
+   "3": 1877,
+   "1": 245,
+   "0": 8754
+  }
+ },
+ "free_turns_per_game": {
+  "idle on young wheat": 11.385714285714286,
+  "idle on young wheat, fertilizer in hand": 0.6714285714285714,
+  "age-1 watering": 28.514285714285716,
+  "age-1 watering, fertilizer in hand": 5.885714285714286,
+  "collector waters unfertilized age-2 wheat": 19.614285714285714,
+  "  ... an idle turn later the same day (insert after)": 1.2714285714285714,
+  "  ... a skippable command earlier: COLLECT while carrying >= 2": 10.2,
+  "  ... a skippable command earlier: idle or no-op": 4.642857142857143
+ }
+}

@@ -1,0 +1,30 @@
+
+A A LOST: 50 band games, us minus team (median / mean per game)
+   wheat harvest          +0.0      -11.2
+   wheat sold            -44.0   -1,086.2
+   wheat sold_$       -2,373.0  -43,280.4
+   wheat bought          -10.5   -1,076.8
+   wheat bought_$       -282.0  -42,914.2
+   wheat net units          -1.5       -9.4
+   wheat net $            -115.0     -366.2
+   final margin         -1,611.5   -2,725.0
+
+A A WON: 20 band games, us minus team (median / mean per game)
+   wheat harvest          +1.0       +3.8
+   wheat sold            -61.0     -626.5
+   wheat sold_$       -2,111.0  -24,396.3
+   wheat bought          -18.5     -613.4
+   wheat bought_$       -516.0  -24,101.5
+   wheat net units          -8.0      -13.1
+   wheat net $             +44.0     -294.9
+   final margin         +1,821.0   +5,368.3
+
+A ALL: 70 band games, us minus team (median / mean per game)
+   wheat harvest          +0.0       -6.9
+   wheat sold            -49.5     -954.9
+   wheat sold_$       -2,332.0  -37,885.0
+   wheat bought          -11.5     -944.4
+   wheat bought_$       -325.0  -37,539.1
+   wheat net units          -3.5      -10.5
+   wheat net $             -99.0     -345.9
+   final margin         -1,132.5     -412.6

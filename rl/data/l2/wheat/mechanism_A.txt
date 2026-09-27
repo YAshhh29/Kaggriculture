@@ -1,0 +1,55 @@
+70 faithful 2600-2700 games; team = the team's real game, A = Agent A in its seat
+
+1. wheat FERTILIZE timing, per game (team / A)
+   age 0: after that day's watering               0.1 /   0.0
+   age 1: F->W same unit                          0.2 /   0.0
+   age 1: after that day's watering               0.3 /   0.2
+   age 1: no watering that day                   17.5 /  18.4
+   age 1: watered later by another unit           1.2 /   0.9
+   age 2: F->W same unit                         12.0 /   0.3
+   age 2: after that day's watering               2.5 /   2.1
+   age 2: no watering that day                    0.3 /   0.1
+   age 2: watered later by another unit           4.6 /   4.9
+   age 3: F->W same unit                          2.5 /   1.4
+   age 3: after that day's watering               0.1 /   0.1
+   age 3: no watering that day                    0.0 /   0.0
+   age 3: watered later by another unit           3.4 /   3.9
+   age 4: F->W same unit                          0.0 /   0.0
+
+2. families (team minus A in the same seat; mean / median)
+   lineage near-copies (47 games): wheat units +4.1/+0.0; wheat fertilizations +6.1/+0.0; fertilizer collected +2.9/+0.0; hires -0.1/+0.0; fertilizer bought +79.5/+0.0; final money +1204.1/+440.0
+   other programmes (23 games): wheat units +22.5/+13.0; wheat fertilizations +25.8/+16.0; fertilizer collected +8.8/+3.0; hires +2.7/+0.0; fertilizer bought +28.2/+0.0; final money +845.0/+1535.0
+
+3. money edge of the team over A in the same seat, by ledger line (mean / median)
+   sell WHEAT               +39,360    +1,598
+   buy WHEAT                -39,012      -331
+   buy FERTILIZER            -2,463        +0
+   sell FERTILIZER           +2,108       -18
+   sell TOMATO               +1,485        +0
+   final money               +1,086      +714
+   sell MILK                   +746       +59
+   sell WOOL                   -548        +0
+   sell STRAWBERRY             -487       +27
+   sell CARROT                 +280        +0
+   sell EGG                    +206        +0
+   hires                       -181        +0
+   sell MELON                  -135        +0
+   seeds                       -126        +0
+   land (residual)             -114        +0
+   animals                      -33        +0
+
+4. wheat round trips (bought and sold within one step, after day 0)
+   team: units/game mean 1117 median 28; P&L/game mean +215; 30 games > 100 units earning $19.4 per 100 units; buy step % 4: {0: 61296, 1: 2364, 2: 2925, 3: 11609}
+   A: units/game mean 162 median 7; P&L/game mean +23; 7 games > 100 units earning $15.5 per 100 units; buy step % 4: {0: 8754, 1: 245, 2: 455, 3: 1877}
+
+5. free or cheap turns on A's own schedule (days 10-28), per game
+   idle on young wheat                                             11.4
+   idle on young wheat, fertilizer in hand                          0.7
+   age-1 watering                                                  28.5
+   age-1 watering, fertilizer in hand                               5.9
+   collector waters unfertilized age-2 wheat                       19.6
+     ... an idle turn later the same day (insert after)             1.3
+     ... a skippable command earlier: COLLECT while carrying >= 2  10.2
+     ... a skippable command earlier: idle or no-op                 4.6
+
+saved rl\data\l2\wheat\mechanism_summary.json
