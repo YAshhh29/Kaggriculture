@@ -20,11 +20,11 @@ finished L like they did when tested alone.
 
 from rl.candidate_l import l_stack
 
-ALL = ("fert", "feed", "rt", "lot", "dump", "labour", "shadow", "race", "safety")
+ALL = ("fert", "feed", "rt", "lot", "dump", "labour", "shadow", "msell", "race", "safety")
 
 
 def combo(*names, shadow_mode="both", shadow_programs=("A",), lot_opts=None,
-          shadow_opts=None, gate=120, rt_opts=None, race_opts=None):
+          shadow_opts=None, gate=120, rt_opts=None, race_opts=None, msell_opts=None):
     names = set(names)
     unknown = names - set(ALL)
     if unknown:
@@ -58,6 +58,9 @@ def combo(*names, shadow_mode="both", shadow_programs=("A",), lot_opts=None,
                                 reorder=shadow_mode in ("both", "reorder"),
                                 early=shadow_mode in ("both", "early"),
                                 **(shadow_opts or {}))
+        if "msell" in names:
+            from rl.m_sell import m_sell_wrap
+            agent = m_sell_wrap(agent, **(msell_opts or {}))
         if "race" in names:
             from rl.l2_race import race_wrap
             agent = race_wrap(agent, **(race_opts or {}))
@@ -244,3 +247,19 @@ def l5h():
     return combo(*SHIP, shadow_programs=tuple(SH_LIBRARY) + NEW_LIBRARY + ("nb_haodou092_harvest_ledger",),
                  shadow_opts={"early_when_agree": True},
                  rt_opts={"flow_window": 8, "flow_stat": "median"})
+
+
+# ---- Agent M: our own decision layers, starting on L5's body ----------------
+M_LIBRARY_EXTRA = ("nb_haodou092_harvest_ledger",)
+
+
+def m1(**msell):
+    """M part 1 = L5 + the in-game opponent-clock seller (rl/m_sell.py)."""
+    from rl.l2_shadow import SH_LIBRARY
+    return combo(*SHIP, "msell", shadow_programs=tuple(SH_LIBRARY) + NEW_LIBRARY + M_LIBRARY_EXTRA,
+                 shadow_opts={"early_when_agree": True},
+                 rt_opts={"flow_window": 8, "flow_stat": "median"}, msell_opts=msell)
+
+
+def m1_lead0():
+    return m1(lead=0)
