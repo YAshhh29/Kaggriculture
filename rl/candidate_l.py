@@ -67,7 +67,8 @@ def l_stack(inner=None, outer=None, gate=120):
     """
     from rl.market_front import mf_wrap
     env, entry = parent_namespace()
-    _v219_gate(env, gate)
+    if gate is not None:          # None keeps A's original three-shop V219 gate
+        _v219_gate(env, gate)
     agent = entry
     if inner is not None:
         agent = inner(agent, env)

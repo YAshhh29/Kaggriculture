@@ -65,6 +65,7 @@ ALIASES = {
     "L3": "rl.l2_combo:ship_lib",              # submissions/candidate-l3
     "L4": "rl.l2_combo:l4",
     "L4b": "rl.l2_combo:l4b",
+    "L4c": "rl.l2_combo:l4c",
     "L_se": "rl.candidate_l:agent",
     "A_noV219": "rl.candidate_l:no_v219",
     "L_gate140": "rl.candidate_l:gate140",

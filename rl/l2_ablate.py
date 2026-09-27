@@ -25,3 +25,8 @@ def l3_no_lot(): return _lib_without("lot")
 def l3_no_feed(): return _lib_without("feed")
 def l3_no_labour(): return _lib_without("labour")
 def l3_no_shadow(): return _lib_without("shadow")
+
+
+def l3_orig_gate():
+    from rl.l2_shadow import SH_LIBRARY
+    return combo(*SHIP, shadow_programs=SH_LIBRARY, gate=None)
