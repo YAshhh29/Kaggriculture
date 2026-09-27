@@ -155,6 +155,9 @@ def run(args) -> None:
         paths = [p for p in paths
                  if json.loads(Path(p).read_text(encoding="utf-8")).get(
                      "submission") == args.submission]
+    if args.episodes:
+        wanted = {f"ep{e}.json" for e in args.episodes}
+        paths = [p for p in paths if Path(p).name in wanted]
     if args.limit:
         paths = paths[: args.limit]
     started = time.time()
@@ -272,6 +275,8 @@ def main() -> None:
                        help="H main.py to load instead of the submitted "
                             "submissions/candidate-h/main.py")
     p_run.add_argument("--limit", type=int, default=0)
+    p_run.add_argument("--episodes", type=int, nargs="*", default=None,
+                       help="only these episode ids")
     p_run.add_argument("--submission", type=int, default=0,
                        help="only replay the games of this submission")
     p_cmp = sub.add_parser("compare")

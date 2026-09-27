@@ -67,7 +67,9 @@ ALIASES = {
     "L4b": "rl.l2_combo:l4b",
     "L4c": "rl.l2_combo:l4c",
     "L4e": "rl.l2_combo:l4e",                # submissions/candidate-l4e
-    "L5": "rl.l2_combo:l5e",
+    "L5": "rl.l2_combo:l5h",                 # submissions/candidate-l5
+    "L5race": "rl.l2_combo:l5e",
+    "L5lib": "rl.l2_combo:l5lib",
     "L_se": "rl.candidate_l:agent",
     "A_noV219": "rl.candidate_l:no_v219",
     "L_gate140": "rl.candidate_l:gate140",

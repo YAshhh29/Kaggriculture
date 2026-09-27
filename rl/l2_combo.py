@@ -220,3 +220,27 @@ def l5_d24():
 
 def l5e():
     return l5(rt={"flow_window": 8, "flow_stat": "median"})
+
+
+# Public programs posted 2026-09-26/27 that L4e loses to in seat 0 (by ~250):
+# near-copies of the herd-safe lineage. In the library, the shadow models them.
+NEW_LIBRARY_0927 = ("nb_haodou092_harvest_ledger", "nb_dmitriigluzd_7_turn_rescue_historical_lb_2800",
+                    "nb_leoprovorov_lucky_boy_best_version_score_2552_1", "nb_arsgorynich_v40_challenger",
+                    "nb_haideptry_2950_peak_farm")
+
+
+def l5lib():
+    """L4e with the 2026-09-27 programs added to the shadow library (19 programs)."""
+    from rl.l2_shadow import SH_LIBRARY
+    return combo(*SHIP, shadow_programs=tuple(SH_LIBRARY) + NEW_LIBRARY + NEW_LIBRARY_0927,
+                 shadow_opts={"early_when_agree": True},
+                 rt_opts={"flow_window": 8, "flow_stat": "median"})
+
+
+def l5h():
+    """L4e + harvest-ledger only: the one 2026-09-27 program our ladder opponents run
+    (whole-game sync in 16 of 163 recent L2/L3 games)."""
+    from rl.l2_shadow import SH_LIBRARY
+    return combo(*SHIP, shadow_programs=tuple(SH_LIBRARY) + NEW_LIBRARY + ("nb_haodou092_harvest_ledger",),
+                 shadow_opts={"early_when_agree": True},
+                 rt_opts={"flow_window": 8, "flow_stat": "median"})
