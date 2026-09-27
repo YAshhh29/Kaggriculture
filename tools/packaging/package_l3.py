@@ -162,8 +162,7 @@ def build(deficit: int, library=SH_LIBRARY, name="L3", lot=True, agree=False,
                                           msell_line=("" if msell is None else
                                                       '_l2_agent = _L2["m_sell"]["m_sell_wrap"](_l2_agent'
                                                       + "".join(f", {k}={v!r}" for k, v in msell.items())
-                                                      + ")
-"),
+                                                      + ")" + chr(10)),
                                           lib_table=lib_table, loads="\n".join(loads))
 
 
