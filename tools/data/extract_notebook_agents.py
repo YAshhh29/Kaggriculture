@@ -64,6 +64,27 @@ def _from_archive(data: bytes):
     return files[main].decode("utf-8"), {k: v for k, v in files.items() if k != main}
 
 
+def _lzma(data: bytes) -> bytes:
+    import lzma
+    return lzma.decompress(data)
+
+
+def _writefile_cells(src: str):
+    """Bodies of `%%writefile .../main.py` cells: the notebook's main.py as written
+    (in kaggle_cache exports cells are separated by '# ---- cell ----')."""
+    out = []
+    lines = src.splitlines(keepends=True)
+    for i, ln in enumerate(lines):
+        if ln.startswith("%%writefile") and ln.split()[-1].endswith("main.py") and "-a" not in ln.split():
+            body = []
+            for nxt in lines[i + 1:]:
+                if nxt.startswith("# ---- cell ----"):
+                    break
+                body.append(nxt)
+            out.append("".join(body))
+    return out
+
+
 def _decodings(blob):
     if isinstance(blob, bytes):
         blob = blob.decode("latin-1")
@@ -74,7 +95,8 @@ def _decodings(blob):
         except Exception:
             continue
         # zlib.decompress(wbits=47) accepts both zlib and gzip streams
-        for zname, z in (("zlib", lambda b: zlib.decompress(b, 47)), ("raw", lambda b: b)):
+        for zname, z in (("zlib", lambda b: zlib.decompress(b, 47)), ("lzma", _lzma),
+                         ("raw", lambda b: b)):
             try:
                 data = z(raw)
             except Exception:
@@ -148,9 +170,14 @@ def extract(notebook: Path):
     for m in TRIPLE.finditer(src):          # plain source in a triple-quoted string
         if _agent_like(m.group(2)):
             candidates.append((len(m.group(2)), "plain", m.group(2)))
-    if not candidates:
+    cells = [c for c in _writefile_cells(src) if _agent_like(c)]
+    if cells:                               # the file the notebook writes is main.py itself;
+        text = cells[-1]                    # strings inside it are only its parts
+        how = "writefile"
+    elif not candidates:
         return None
-    _, how, text = max(candidates)
+    else:
+        _, how, text = max(candidates)
     digests = set(HEX64.findall(src))
     sha = hashlib.sha256(text.encode("utf-8")).hexdigest()
     return {"text": text, "how": how, "sha": sha, "sha_confirmed": sha in digests,
