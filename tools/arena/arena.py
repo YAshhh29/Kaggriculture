@@ -61,6 +61,9 @@ ALIASES = {
     # file plus our own layers. Agent M: bespoke.
     "A": "file:submissions/agent-a/main.py",
     "L": "rl.candidate_l:front_gate120",       # the live Agent L
+    "L2": "rl.l2_combo:ship",                  # submissions/candidate-l2
+    "L3": "rl.l2_combo:ship_lib",              # submissions/candidate-l3
+    "L4": "rl.l2_combo:l4",
     "L_se": "rl.candidate_l:agent",
     "A_noV219": "rl.candidate_l:no_v219",
     "L_gate140": "rl.candidate_l:gate140",

@@ -23,7 +23,8 @@ from rl.candidate_l import l_stack
 ALL = ("fert", "feed", "rt", "lot", "dump", "labour", "shadow", "safety")
 
 
-def combo(*names, shadow_mode="both", shadow_programs=("A",), lot_opts=None):
+def combo(*names, shadow_mode="both", shadow_programs=("A",), lot_opts=None,
+          shadow_opts=None):
     names = set(names)
     unknown = names - set(ALL)
     if unknown:
@@ -55,7 +56,8 @@ def combo(*names, shadow_mode="both", shadow_programs=("A",), lot_opts=None):
             from rl.l2_shadow import shadow_wrap
             agent = shadow_wrap(agent, programs=tuple(shadow_programs),
                                 reorder=shadow_mode in ("both", "reorder"),
-                                early=shadow_mode in ("both", "early"))
+                                early=shadow_mode in ("both", "early"),
+                                **(shadow_opts or {}))
         if "safety" in names:
             from rl.safety import sf_wrap
             agent = sf_wrap(agent, name="L2")
@@ -141,4 +143,5 @@ SHIP4 = ("feed", "rt", "labour", "shadow", "safety")
 
 def l4():
     from rl.l2_shadow import SH_LIBRARY
-    return combo(*SHIP4, shadow_programs=tuple(SH_LIBRARY) + NEW_LIBRARY)
+    return combo(*SHIP4, shadow_programs=tuple(SH_LIBRARY) + NEW_LIBRARY,
+                 shadow_opts={"early_when_agree": True})

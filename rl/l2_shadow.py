@@ -880,6 +880,8 @@ def _sh_plain(x):
 
 
 _SH_PLAIN_CACHE = {"key": None, "val": None}
+_SH_VERIFY_CACHE = {}   # one turn's shared engine steps (see OpponentShadow._verify)
+_SH_PREV_CACHE = {}     # one turn's shared decoded public state (see observe)
 
 
 def _sh_plain_public(obs):
@@ -969,8 +971,23 @@ class OpponentShadow:
         privates[me], privates[opp] = own_priv, opp_priv
         actions = [None, None]
         actions[me], actions[opp] = self.own_action or {}, self.pred or {}
-        farms, privs, inv = sh_transition(pub["farms"], privates, pub["market"]["inventory"],
-                                          pub["town"]["unlocked_shops"], actions, step)
+        # Shadows that tracked the same opponent state and predicted the same
+        # move run the identical engine step (in the opening every lineage
+        # program does): simulate it once per turn and share the result
+        # read-only (sh_transition copies its inputs; the tracked private
+        # state below is copied per shadow).
+        key = (step, me, _sh_json.dumps(opp_priv, sort_keys=True),
+               _sh_json.dumps(self.pred or {}, sort_keys=True),
+               _sh_json.dumps(self.own_action or {}, sort_keys=True))
+        if _SH_VERIFY_CACHE.get("step") != step:
+            _SH_VERIFY_CACHE.clear()
+            _SH_VERIFY_CACHE["step"] = step
+        hit = _SH_VERIFY_CACHE.get(key)
+        if hit is None:
+            hit = sh_transition(pub["farms"], privates, pub["market"]["inventory"],
+                                pub["town"]["unlocked_shops"], actions, step)
+            _SH_VERIFY_CACHE[key] = hit
+        farms, privs, inv = hit
         night = (step + 1) % _SH_TPD == 0
         seen = obs["farms"]
         own_bad = sh_farm_match(farms[me], seen[me], night)
@@ -984,7 +1001,7 @@ class OpponentShadow:
             return bad
         if {k: int(v) for k, v in inv.items()} != {k: int(v) for k, v in obs["market"]["inventory"].items()}:
             return "market"
-        self.opp_private = privs[opp]
+        self.opp_private = _sh_plain(privs[opp])     # own copy: the result may be shared
         return None
 
     def view_for(self, obs):
@@ -1016,10 +1033,16 @@ class OpponentShadow:
             if self.in_sync:
                 self.pred = _sh_norm(self.agent(self.view_for(obs), cfg))
                 self.stats["sync_turns"] += 1
-                pub = _sh_plain_public(obs)
-                self.prev = ({"farms": _sh_json.loads(pub["farms"]), "market": _sh_json.loads(pub["market"]),
-                              "town": _sh_json.loads(pub["town"])},
-                             _sh_json.loads(pub["private"]), _sh_copy.deepcopy(self.opp_private), step)
+                # The public part and our own private state are the same for
+                # every shadow this turn and only ever read (sh_transition
+                # copies them), so they are decoded once per turn and shared.
+                if _SH_PREV_CACHE.get("step") != step or _SH_PREV_CACHE.get("id") != id(obs):
+                    pub = _sh_plain_public(obs)
+                    _SH_PREV_CACHE.update(step=step, id=id(obs), val=(
+                        {"farms": _sh_json.loads(pub["farms"]), "market": _sh_json.loads(pub["market"]),
+                         "town": _sh_json.loads(pub["town"])}, _sh_json.loads(pub["private"])))
+                shared_pub, shared_own = _SH_PREV_CACHE["val"]
+                self.prev = (shared_pub, shared_own, _sh_copy.deepcopy(self.opp_private), step)
             else:
                 self.pred = None
         except Exception as error:  # a shadow must never break the real agent
@@ -1167,6 +1190,11 @@ _SH_DEFAULTS = {
     "early_from": 96,       # never touch the scripted opening
     "early_budget_ms": 150,  # stop evaluating further items past this
     "early_max_items": 2,    # items evaluated per turn (each costs 1-2 lookaheads)
+    # Several library programs can be in sync at once (near-twins such as
+    # statma's submit and race variants). When True, early sales also run
+    # while every in-sync program predicts the same move (L4); when False,
+    # only with exactly one in sync (L2/L3 as tested).
+    "early_when_agree": False,
 }
 
 
@@ -1325,7 +1353,7 @@ def shadow_wrap(inner, programs=("A",), factories=None, **settings):
                         report["shadow_reorders"] += 1
                         report["shadow_reorder_gain"] += gain
                 if cfg_layer["early"] and step >= cfg_layer["early_from"]:
-                    if len(insync) == 1:
+                    if len(insync) == 1 or (cfg_layer["early_when_agree"] and live is not None):
                         action = early(observation, configuration, action, live, step, ours, theirs)
                     else:
                         report["early_multi_skips"] += 1
