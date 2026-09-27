@@ -49,6 +49,9 @@ DEFAULTS = {
     "late": 2,            # keep trying this long after it (a full order list at hour 0:
                           # A hires the day's crew then)
     "size_frac": 0.5,     # their lot must be at least half our stock
+    "value_check": False, # M2: race only if their lot outweighs what the town eats
+                          # before the hour we usually sell (else waiting is better)
+    "own_default": 12,    # steps ahead assumed for our sale before we have sold one
     "recent_days": 3,
     "items": ITEMS,
 }
@@ -97,13 +100,27 @@ def their_hour(lots, stock: int, step: int, cfg) -> int | None:
     return min(s % 24 for s in big[-3:])
 
 
+def their_lot(lots, stock: int, step: int, cfg) -> int:
+    """Units in their most recent lot comparable to ours (0 if none)."""
+    size = max(cfg["min_lot"], stock * cfg["size_frac"])
+    big = [u for s, u in lots if u >= size and s >= step - 24 * cfg["recent_days"]]
+    return big[-1] if big else 0
+
+
+def our_hour(sales, stock: int, cfg):
+    """The hour of day at which our own stack sold its last comparable lot."""
+    size = max(cfg["min_lot"], stock * cfg["size_frac"])
+    big = [s for s, u in sales if u >= size]
+    return big[-1] % 24 if big else None
+
+
 def m_sell_wrap(agent, **overrides):
     cfg = dict(DEFAULTS)
     cfg.update(overrides)
     items = tuple(cfg["items"])
     states: dict = {}
     report = {"m_sell_orders": 0, "m_sell_units": 0, "m_sell_no_slot": 0, "m_sell_shadow_skips": 0,
-              "m_sell_errors": 0, "m_sell_log": []}
+              "m_sell_value_skips": 0, "m_sell_errors": 0, "m_sell_log": []}
 
     def watch(obs, st, step):
         prev, st["prev"] = st["prev"], None
@@ -131,6 +148,15 @@ def m_sell_wrap(agent, **overrides):
             hour_o = their_hour(lots, stock, step, cfg)
             if hour_o is None or not hour_o - cfg["lead"] <= hour <= hour_o + cfg["late"]:
                 continue
+            if cfg["value_check"]:
+                mine = our_hour(st["sales"].get(item, []), stock, cfg)
+                wait = cfg["own_default"] if mine is None else (mine - hour) % 24
+                if mine is not None and wait == 0:
+                    continue      # we sell at this hour anyway
+                town = sum(eaten(obs["town"]["unlocked_shops"], s, item) for s in range(step, step + wait))
+                if their_lot(lots, stock, step, cfg) <= town:
+                    report["m_sell_value_skips"] += 1
+                    continue
             planned = sum(int(o[2]) for o in market if len(o) >= 3 and o[0] == "SELL" and o[1] == item)
             extra = stock - planned
             if extra <= 0:
@@ -156,9 +182,18 @@ def m_sell_wrap(agent, **overrides):
         player = int(observation["player"])
         st = states.get(player)
         if st is None or step <= st["step"]:
-            st = states[player] = {"step": -1, "prev": None, "lots": {}}
+            st = states[player] = {"step": -1, "prev": None, "lots": {}, "sales": {}}
         st["step"] = step
         action = agent(observation, configuration)
+        try:
+            # our own clock is learned from what the stack below would sell, never
+            # from M's races (else one race makes "our hour" the race hour)
+            for i in items:
+                n = our_sold(observation, action, i)
+                if n >= cfg["min_lot"]:
+                    st["sales"].setdefault(i, []).append((step, n))
+        except Exception:
+            report["m_sell_errors"] += 1
         try:
             watch(observation, st, step)
             if cfg["first_step"] <= step < LAST_STEP and isinstance(action, dict):

@@ -103,7 +103,7 @@ _l2_agent = _L2["labour"]["lb_wrap"](_l2_agent)
 _l2_agent = _L2["shadow"]["shadow_wrap"](_l2_agent, programs=_L3_LIBRARY,
                                          reorder=True, early=True,
                                          factories=_L3_FACTORIES{agree})
-agent_l3 = _L2["safety"]["sf_wrap"](_l2_agent, name="{agent_name}")
+{msell_line}agent_l3 = _L2["safety"]["sf_wrap"](_l2_agent, name="{agent_name}")
 '''
 
 
@@ -112,7 +112,7 @@ def _blob(text: str) -> str:
 
 
 def build(deficit: int, library=SH_LIBRARY, name="L3", lot=True, agree=False,
-          rt=None) -> str:
+          rt=None, msell=None) -> str:
     """rt: keyword settings for the round trip (e.g. flow_window=8, flow_stat="median")."""
     src = PARENT_FILE.read_text(encoding="utf-8")
     assert src.count(_SHOPS3) == 1, "V219 gate text changed or repeated"
@@ -125,7 +125,11 @@ def build(deficit: int, library=SH_LIBRARY, name="L3", lot=True, agree=False,
         "        return False\n")
     parent = src.replace(_SHOPS3, relaxed)
     table, loads = {}, []
-    for layer, rel, inject in LAYERS:
+    layers = list(LAYERS)
+    if msell is not None:     # Agent M: the in-game opponent-clock seller, outside the shadow
+        layers.insert(layers.index(next(x for x in layers if x[0] == "safety")),
+                      ("m_sell", "rl/m_sell.py", []))
+    for layer, rel, inject in layers:
         if layer == "outfarm" and not lot:
             continue
         code, _ = layer_source(ROOT / rel)
@@ -155,6 +159,11 @@ def build(deficit: int, library=SH_LIBRARY, name="L3", lot=True, agree=False,
                                           lot_line=lot_line, agent_name=name,
                                           agree=(', early_when_agree=True' if agree else ''),
                                           rt="".join(f", {k}={v!r}" for k, v in (rt or {}).items()),
+                                          msell_line=("" if msell is None else
+                                                      '_l2_agent = _L2["m_sell"]["m_sell_wrap"](_l2_agent'
+                                                      + "".join(f", {k}={v!r}" for k, v in msell.items())
+                                                      + ")
+"),
                                           lib_table=lib_table, loads="\n".join(loads))
 
 
@@ -170,6 +179,8 @@ def main() -> None:
     ap.add_argument("--agree", action="store_true",
                     help="early sales also while several in-sync programs agree (L4b)")
     ap.add_argument("--name", default="L3")
+    ap.add_argument("--msell", nargs="*", default=None, metavar="KEY=VALUE",
+                    help="add Agent M's seller, e.g. --msell value_check=True (M2)")
     ap.add_argument("--rt", nargs="*", default=[], metavar="KEY=VALUE",
                     help="round-trip settings, e.g. flow_window=8 flow_stat=median (L4e)")
     ap.add_argument("--library", nargs="+", default=list(SH_LIBRARY),
@@ -182,8 +193,14 @@ def main() -> None:
     for item in args.rt:
         key, _, raw = item.partition("=")
         rt[key] = int(raw) if raw.lstrip("-").isdigit() else raw
+    msell = None
+    if args.msell is not None:
+        msell = {}
+        for item in args.msell:
+            key, _, raw = item.partition("=")
+            msell[key] = {"True": True, "False": False}.get(raw, int(raw) if raw.lstrip("-").isdigit() else raw)
     out.write_text(build(args.deficit, tuple(args.library), args.name, lot=not args.no_lot,
-                         agree=args.agree, rt=rt), encoding="utf-8")
+                         agree=args.agree, rt=rt, msell=msell), encoding="utf-8")
     data = out.read_bytes()
     print(f"wrote {out} ({len(data):,} bytes, sha256 {hashlib.sha256(data).hexdigest()[:12]}) "
           f"in {time.perf_counter() - t0:.1f} s")

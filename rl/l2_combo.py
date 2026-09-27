@@ -263,3 +263,9 @@ def m1(**msell):
 
 def m1_lead0():
     return m1(lead=0)
+
+
+def m2():
+    """M part 1 with the value check: race only when their lot outweighs what the
+    town eats before the hour we usually sell."""
+    return m1(value_check=True)
