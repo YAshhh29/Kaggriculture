@@ -129,3 +129,16 @@ NEW_LIBRARY = ("nb_statma_herd_safe_sale_window_submit", "nb_statma_herd_safe_sa
 def ship_lib4():
     from rl.l2_shadow import SH_LIBRARY
     return combo(*SHIP, shadow_programs=tuple(SH_LIBRARY) + NEW_LIBRARY)
+
+
+# L4: no lot layer. With the library shadow locked on an exact copy, the lot
+# layer's whole-lot dumps get in the way of the shadow's own ahead-of-the-rival
+# sales (vs every library program, higher mean and worst game without it), and
+# on real ladder games it is at best neutral (A's 158: 144 wins without vs 142
+# with; L's 116: same wins, +317 a game without).
+SHIP4 = ("feed", "rt", "labour", "shadow", "safety")
+
+
+def l4():
+    from rl.l2_shadow import SH_LIBRARY
+    return combo(*SHIP4, shadow_programs=tuple(SH_LIBRARY) + NEW_LIBRARY)
