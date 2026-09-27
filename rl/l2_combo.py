@@ -23,7 +23,7 @@ from rl.candidate_l import l_stack
 ALL = ("fert", "feed", "rt", "lot", "dump", "labour", "shadow", "safety")
 
 
-def combo(*names, shadow_mode="both"):
+def combo(*names, shadow_mode="both", shadow_programs=("A",)):
     names = set(names)
     unknown = names - set(ALL)
     if unknown:
@@ -53,7 +53,8 @@ def combo(*names, shadow_mode="both"):
             agent = lb_wrap(agent)
         if "shadow" in names:
             from rl.l2_shadow import shadow_wrap
-            agent = shadow_wrap(agent, reorder=shadow_mode in ("both", "reorder"),
+            agent = shadow_wrap(agent, programs=tuple(shadow_programs),
+                                reorder=shadow_mode in ("both", "reorder"),
                                 early=shadow_mode in ("both", "early"))
         if "safety" in names:
             from rl.safety import sf_wrap
@@ -97,3 +98,9 @@ SHIP = ("feed", "rt", "lot", "labour", "shadow", "safety")
 
 def ship():
     return combo(*SHIP)
+
+
+def ship_lib():
+    """L2 with the shadow modelling the whole public library, not only A."""
+    from rl.l2_shadow import SH_LIBRARY
+    return combo(*SHIP, shadow_programs=SH_LIBRARY)
