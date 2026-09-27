@@ -102,7 +102,7 @@ _l2_agent = _L2["wheat_rt"]["rt_inner"](_l2_agent, _L2_ENV)
 _l2_agent = _L2["labour"]["lb_wrap"](_l2_agent)
 _l2_agent = _L2["shadow"]["shadow_wrap"](_l2_agent, programs=_L3_LIBRARY,
                                          reorder=True, early=True,
-                                         factories=_L3_FACTORIES)
+                                         factories=_L3_FACTORIES{agree})
 agent_l3 = _L2["safety"]["sf_wrap"](_l2_agent, name="{agent_name}")
 '''
 
@@ -111,7 +111,7 @@ def _blob(text: str) -> str:
     return base64.b64encode(zlib.compress(text.encode("utf-8"), 9)).decode()
 
 
-def build(deficit: int, library=SH_LIBRARY, name="L3", lot=True) -> str:
+def build(deficit: int, library=SH_LIBRARY, name="L3", lot=True, agree=False) -> str:
     src = PARENT_FILE.read_text(encoding="utf-8")
     assert src.count(_SHOPS3) == 1, "V219 gate text changed or repeated"
     relaxed = (
@@ -151,6 +151,7 @@ def build(deficit: int, library=SH_LIBRARY, name="L3", lot=True) -> str:
                 if lot else '')
     return header + parent + ENTRY.format(src_table=src_table, library=tuple(library),
                                           lot_line=lot_line, agent_name=name,
+                                          agree=(', early_when_agree=True' if agree else ''),
                                           lib_table=lib_table, loads="\n".join(loads))
 
 
@@ -163,6 +164,8 @@ def main() -> None:
     ap.add_argument("--seeds", type=int, nargs="+", default=[11, 105])
     ap.add_argument("--opponents", nargs="+", default=["A", "nb_ahmed_v55"])
     ap.add_argument("--no-lot", action="store_true", help="omit the lot layer (L4)")
+    ap.add_argument("--agree", action="store_true",
+                    help="early sales also while several in-sync programs agree (L4b)")
     ap.add_argument("--name", default="L3")
     ap.add_argument("--library", nargs="+", default=list(SH_LIBRARY),
                     help="programs the shadow models (A = the verbatim base)")
@@ -170,7 +173,8 @@ def main() -> None:
     out = ROOT / args.out
     out.parent.mkdir(parents=True, exist_ok=True)
     t0 = time.perf_counter()
-    out.write_text(build(args.deficit, tuple(args.library), args.name, lot=not args.no_lot), encoding="utf-8")
+    out.write_text(build(args.deficit, tuple(args.library), args.name, lot=not args.no_lot,
+                         agree=args.agree), encoding="utf-8")
     data = out.read_bytes()
     print(f"wrote {out} ({len(data):,} bytes, sha256 {hashlib.sha256(data).hexdigest()[:12]}) "
           f"in {time.perf_counter() - t0:.1f} s")

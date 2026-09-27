@@ -1,0 +1,16 @@
+saved rl\data\live_replays\l4b-on-l-live-116.json
+
+L4b on L live 116 (factory, settings {}, commit 05d4593): 116 games, 0 errors
+  wins 107 (92%), median margin +1,892; live record 96 wins; identical to live 0; opponent drifted in 1
+  opponents <2400    : 116 games, won 107, median margin +1,892
+  day | money us/them | herd | planted | tiles | hands (medians)
+    2 | 101/101 | 4/4 | 20/20 | 25/25 | 4/4
+    5 | 764/676 | 6/6 | 19/19 | 25/25 | 4/4
+    8 | 626/529 | 10/10 | 37/37 | 50/50 | 8/8
+   11 | 16,080/15,706 | 16/16 | 32/32 | 50/50 | 10/10
+   14 | 20,968/19,953 | 17/17 | 57/57 | 75/75 | 9/9
+   17 | 34,774/33,330 | 17/17 | 58/58 | 75/75 | 11/11
+   20 | 50,002/48,166 | 17/17 | 58/58 | 75/75 | 12/11
+   23 | 64,678/63,926 | 17/17 | 58/58 | 75/75 | 11/11
+   26 | 74,956/73,988 | 17/17 | 58/58 | 75/75 | 12/11
+   29 | 91,756/88,345 | 17/17 | 21/21 | 75/75 | 11/11
