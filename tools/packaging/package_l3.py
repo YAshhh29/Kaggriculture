@@ -34,6 +34,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 from rl.candidate_l import _SHOPS3, PARENT_FILE  # noqa: E402
+from rl.l2_combo import WOOL_FIRST  # noqa: E402
 from rl.l2_shadow import SH_LIBRARY  # noqa: E402
 from tools.packaging.package_l2_full import (LAYERS, layer_source,  # noqa: E402
                                              non_stdlib, verify)
@@ -98,12 +99,12 @@ _L2 = {{}}
 _l2_agent = {parent_entry}                  # the parent's entry point (Kaggle's last callable)
 _l2_agent = _L2["animals"]["an_wrap"](_l2_agent, _L2_ENV, {{}})
 _l2_agent = _L2["wheat_rt"]["rt_inner"](_l2_agent, _L2_ENV{rt})
-{lot_line}_l2_agent = _L2["market_front"]["mf_wrap"](_l2_agent)
+{lot_line}_l2_agent = _L2["market_front"]["mf_wrap"](_l2_agent{mf_args})
 _l2_agent = _L2["labour"]["lb_wrap"](_l2_agent)
 _l2_agent = _L2["shadow"]["shadow_wrap"](_l2_agent, programs=_L3_LIBRARY,
                                          reorder=True, early=True,
                                          factories=_L3_FACTORIES{agree})
-{msell_line}agent_l3 = _L2["safety"]["sf_wrap"](_l2_agent, name="{agent_name}")
+{msell_line}{annex_line}agent_l3 = _L2["safety"]["sf_wrap"](_l2_agent, name="{agent_name}")
 '''
 
 
@@ -128,8 +129,10 @@ def entry_name(text: str) -> str:
 
 
 def build(deficit: int, library=SH_LIBRARY, name="L3", lot=True, agree=False,
-          rt=None, msell=None, early_now=False, parent_path=None, gate=True) -> str:
-    """rt: keyword settings for the round trip (e.g. flow_window=8, flow_stat="median")."""
+          rt=None, msell=None, early_now=False, parent_path=None, gate=True, annex=None,
+          parent_patches=(), sell_first=()) -> str:
+    """rt: keyword settings for the round trip (e.g. flow_window=8, flow_stat="median");
+    annex: settings for the tomato annex (N3ta), None to leave it out."""
     src = parent_source(Path(parent_path)) if parent_path else PARENT_FILE.read_text(encoding="utf-8")
     parent_entry = entry_name(src)
     assert not gate or src.count(_SHOPS3) == 1, "V219 gate text changed or repeated"
@@ -141,11 +144,17 @@ def build(deficit: int, library=SH_LIBRARY, name="L3", lot=True, agree=False,
         f"    if _shops < 2 or (_shops < 3 and _short < {deficit}):\n"
         "        return False\n")
     parent = src.replace(_SHOPS3, relaxed) if gate else src
+    for old, new in parent_patches:     # exact text patches of the parent (N3: wool-first crew)
+        assert parent.count(old) == 1, f"parent patch target not unique: {old[:60]!r}"
+        parent = parent.replace(old, new)
     table, loads = {}, []
     layers = list(LAYERS)
     if msell is not None:     # Agent M: the in-game opponent-clock seller, outside the shadow
         layers.insert(layers.index(next(x for x in layers if x[0] == "safety")),
                       ("m_sell", "rl/m_sell.py", []))
+    if annex is not None:     # N3ta: the tomato annex, outermost inside the safety guard
+        layers.insert(layers.index(next(x for x in layers if x[0] == "safety")),
+                      ("tomato_annex", "rl/tomato_annex.py", []))
     for layer, rel, inject in layers:
         if layer == "outfarm" and not lot:
             continue
@@ -187,6 +196,11 @@ def build(deficit: int, library=SH_LIBRARY, name="L3", lot=True, agree=False,
                                                       '_l2_agent = _L2["m_sell"]["m_sell_wrap"](_l2_agent'
                                                       + "".join(f", {k}={v!r}" for k, v in msell.items())
                                                       + ")" + chr(10)),
+                                          annex_line=("" if annex is None else
+                                                      '_l2_agent = _L2["tomato_annex"]["ta_wrap"](_l2_agent'
+                                                      + "".join(f", {k}={v!r}" for k, v in annex.items())
+                                                      + ")" + chr(10)),
+                                          mf_args=(f", sell_first={tuple(sell_first)!r}" if sell_first else ""),
                                           lib_table=lib_table, loads="\n".join(loads))
 
 
@@ -212,6 +226,12 @@ def main() -> None:
                     help="add Agent M's seller, e.g. --msell value_check=True (M2)")
     ap.add_argument("--rt", nargs="*", default=[], metavar="KEY=VALUE",
                     help="round-trip settings, e.g. flow_window=8 flow_stat=median (L4e)")
+    ap.add_argument("--wool-first", action="store_true",
+                    help="patch the parent's V233 crew to deliver wool first (rl.l2_combo.WOOL_FIRST)")
+    ap.add_argument("--sell-first", nargs="*", default=[],
+                    help="market_front keeps these items' SELL ahead of their BUY (N3: FERTILIZER)")
+    ap.add_argument("--annex", nargs="*", default=None, metavar="KEY=VALUE",
+                    help="add the tomato annex, e.g. --annex rows=7,8 (N3ta)")
     ap.add_argument("--library", nargs="+", default=list(SH_LIBRARY),
                     help="programs the shadow models (A = the verbatim base)")
     args = ap.parse_args()
@@ -228,9 +248,18 @@ def main() -> None:
         for item in args.msell:
             key, _, raw = item.partition("=")
             msell[key] = {"True": True, "False": False}.get(raw, int(raw) if raw.lstrip("-").isdigit() else raw)
+    annex = None
+    if args.annex is not None:
+        annex = {}
+        for item in args.annex:
+            key, _, raw = item.partition("=")
+            annex[key] = (tuple(int(v) for v in raw.split(",")) if key in ("rows", "fert_days", "harvest_days")
+                          else int(raw) if raw.lstrip("-").isdigit() else raw)
     out.write_text(build(args.deficit, tuple(args.library), args.name, lot=not args.no_lot,
                          agree=args.agree, rt=rt, msell=msell, early_now=args.early_now,
-                         parent_path=args.parent, gate=not args.no_gate),
+                         parent_path=args.parent, gate=not args.no_gate, annex=annex,
+                         parent_patches=(WOOL_FIRST if args.wool_first else ()),
+                         sell_first=tuple(args.sell_first)),
                    encoding="utf-8")
     data = out.read_bytes()
     print(f"wrote {out} ({len(data):,} bytes, sha256 {hashlib.sha256(data).hexdigest()[:12]}) "
