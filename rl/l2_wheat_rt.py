@@ -50,7 +50,10 @@ DEFAULTS = {
     # the public inventory, the town draw and our own orders; a trip is priced
     # against each of the last `flow_window` windows (see _flow_gain).
     "flow_window": 0,
-    "flow_stat": "mean",  # or "median": ignore one-off sales (a harvest sold once)
+    "flow_stat": "mean",
+    "q_quiet": 0,         # N3: trip size while the opponent's last windows are all quiet
+    "quiet_windows": 8,
+    "quiet_units": 2,     # gross opponent units a window still counted as quiet  # or "median": ignore one-off sales (a harvest sold once)
 }
 
 
@@ -209,7 +212,7 @@ def rt_inner(parent, env, **overrides):
     if window > 0:
         report.update({"rt_skip_flow": 0, "rt_windows": [], "rt_flow_errors": 0})
 
-    def buy_order(obs, action, step, windows=()):
+    def buy_order(obs, action, step, windows=(), gross=()):
         market = [list(o) for o in action.get("market") or []]
         if len(market) >= MAX_ORDERS:
             report["rt_skip_slots"] += 1
@@ -226,6 +229,11 @@ def rt_inner(parent, env, **overrides):
                 net_parent += n if o[0] == "BUY_PRODUCT" else (-n if o[0] == "SELL" else 0)
         base = inv - net_parent
         q = int(cfg["q_max"])
+        # N3: size up only while the opponent trades no wheat around the draw --
+        # gross units, since a rival's own round trip nets to zero in a window
+        # (bigger trips lost against rivals that trade: BorisV, Zenith Ye)
+        if cfg["q_quiet"] and len(gross) >= cfg["quiet_windows"] and                 all(g <= cfg["quiet_units"] for g in list(gross)[-cfg["quiet_windows"]:]):
+            q = int(cfg["q_quiet"])
         free = float(farm["money"]) - purchase_cost(obs, market) - float(cfg["reserve"])
         while q >= cfg["q_min"] and q * (_mf_price("WHEAT", base - q) + 1) > free:
             q -= 5
@@ -273,7 +281,7 @@ def rt_inner(parent, env, **overrides):
         st = states.get(player)
         if st is None or step <= st["step"]:
             st = states[player] = {"step": -1, "pending": 0, "pend_step": -1,
-                                   "prev": None, "flow": {}, "windows": []}
+                                   "prev": None, "flow": {}, "windows": [], "gross": []}
         st["step"] = step
         if window > 0:
             watch(observation, st, step)
@@ -291,7 +299,9 @@ def rt_inner(parent, env, **overrides):
             if pending > 0:
                 action = sell_order(action, pending)
             elif cfg["first_step"] <= step <= cfg["last_step"] and step % 4 == 0:
-                action, q = buy_order(observation, action, step, st["windows"][-window:] if window > 0 else ())
+                action, q = buy_order(observation, action, step,
+                                      st["windows"][-window:] if window > 0 else (),
+                                      st["gross"][-window:] if window > 0 else ())
                 if q:
                     st["pending"], st["pend_step"] = q, step
         except Exception:
@@ -320,8 +330,10 @@ def rt_inner(parent, env, **overrides):
         st["flow"][step - 1] = inv - prev[1] + prev[2] + prev[3]
         s = step - 2
         if s % 4 == 0 and s in st["flow"] and s + 1 in st["flow"]:
-            w = st["flow"].pop(s) + st["flow"].pop(s + 1)
+            a, b = st["flow"].pop(s), st["flow"].pop(s + 1)
+            w = a + b
             st["windows"].append(w)
+            st["gross"].append(abs(a) + abs(b))
             report["rt_windows"].append((s, w))
         st["flow"] = {k: v for k, v in st["flow"].items() if k >= step - 2}
 

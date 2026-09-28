@@ -454,7 +454,7 @@ def n3r5():
 
 # N3: N with the shadow library extended by the programs N's own live
 # opponents play (filled in from tools/analysis/sync_presence on N/N2's games).
-N3_EXTRA = ()
+N3_EXTRA = ("nb_haideptry_the_2965_master_hybrid_engine",)
 
 
 def n3(extra=None):
@@ -463,5 +463,38 @@ def n3(extra=None):
     return combo(*SHIP, "msell", shadow_programs=lib,
                  shadow_opts={"early_when_agree": True, "early_now": True},
                  rt_opts={"flow_window": 8, "flow_stat": "median"},
+                 msell_opts={"after_beaten": True, "beaten_any": True},
+                 gate=None, parent_file=str(ROOT_DIR / MASTER_2965))
+
+
+# N3 round-trip size: 2400+ rivals trade more wheat around the town's draw
+# (BorisV bought 3,832 units from day 14 to our 2,991; Knight of Favonius
+# netted +14,833 on wheat to our +11,076). Our trip is capped at 60 units.
+def _n3_rt(q_max, margin=10):
+    from rl.l2_shadow import SH_LIBRARY
+    lib = tuple(SH_LIBRARY) + NEW_LIBRARY + M_LIBRARY_EXTRA + tuple(N3_EXTRA)
+    return combo(*SHIP, "msell", shadow_programs=lib,
+                 shadow_opts={"early_when_agree": True, "early_now": True},
+                 rt_opts={"flow_window": 8, "flow_stat": "median", "q_max": q_max, "room_margin": margin},
+                 msell_opts={"after_beaten": True, "beaten_any": True},
+                 gate=None, parent_file=str(ROOT_DIR / MASTER_2965))
+
+
+def n3q90():
+    return _n3_rt(90)
+
+
+def n3q120():
+    return _n3_rt(120)
+
+
+def n3q():
+    """N3 with 90-unit round trips only while the opponent trades no wheat
+    around the draw (last 8 windows all quiet)."""
+    from rl.l2_shadow import SH_LIBRARY
+    lib = tuple(SH_LIBRARY) + NEW_LIBRARY + M_LIBRARY_EXTRA + tuple(N3_EXTRA)
+    return combo(*SHIP, "msell", shadow_programs=lib,
+                 shadow_opts={"early_when_agree": True, "early_now": True},
+                 rt_opts={"flow_window": 8, "flow_stat": "median", "q_quiet": 90},
                  msell_opts={"after_beaten": True, "beaten_any": True},
                  gate=None, parent_file=str(ROOT_DIR / MASTER_2965))
