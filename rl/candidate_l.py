@@ -67,7 +67,7 @@ def _v219_gate(env, deficit=140):
     exec(body.replace(_SHOPS3, relaxed), env)
 
 
-def l_stack(inner=None, outer=None, gate=120, parent_file=None, parent_patches=None):
+def l_stack(inner=None, outer=None, gate=120, parent_file=None, parent_patches=None, mf_opts=None):
     """Agent L exactly as submitted, optionally with one more layer.
 
     inner(agent, env) wraps the parent before L's queue-order layer (so the
@@ -82,7 +82,7 @@ def l_stack(inner=None, outer=None, gate=120, parent_file=None, parent_patches=N
     agent = entry
     if inner is not None:
         agent = inner(agent, env)
-    agent = mf_wrap(agent)
+    agent = mf_wrap(agent, **(mf_opts or {}))
     if outer is not None:
         agent = outer(agent)
     return agent

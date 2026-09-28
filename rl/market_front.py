@@ -82,7 +82,25 @@ def _mf_damage(order, inventory):
     return float(n * abs(move))
 
 
-def mf_reorder(market, inventory, report=None):
+def _mf_keep_sell_first(orders, new, items, report=None):
+    """Put back in front any SELL of `items` that the parent queued before a
+    BUY_PRODUCT of the same item: with the shed near full, a buy moved ahead of
+    the sale fills short (N's day-27 tomato fertilizer: one tile unfertilized)."""
+    for s in [o for o in orders if isinstance(o, list) and len(o) >= 3 and o[0] == "SELL" and o[1] in items]:
+        later = [o for o in orders[orders.index(s) + 1:] if isinstance(o, list) and len(o) >= 3
+                 and o[0] == "BUY_PRODUCT" and o[1] == s[1]]
+        if not later:
+            continue
+        first = min(new.index(b) for b in later)
+        if new.index(s) > first:
+            new.remove(s)
+            new.insert(first, s)
+            if report is not None:
+                report["sell_first_repairs"] = report.get("sell_first_repairs", 0) + 1
+    return new
+
+
+def mf_reorder(market, inventory, report=None, sell_first=()):
     orders = list(market or [])
     priced = [(i, o) for i, o in enumerate(orders)
               if isinstance(o, list) and len(o) >= 3 and o[0] in _MF_PRICED]
@@ -106,12 +124,14 @@ def mf_reorder(market, inventory, report=None):
     else:
         best = sorted(range(n), key=lambda j: -weights[j])
     new = [priced[j][1] for j in best] + other
+    if sell_first:
+        new = _mf_keep_sell_first(orders, new, sell_first, report)
     if report is not None and new != orders:
         report["reordered_turns"] = report.get("reordered_turns", 0) + 1
     return new
 
 
-def mf_wrap(parent):
+def mf_wrap(parent, sell_first=()):
     report = {"reordered_turns": 0, "errors": 0}
 
     def front_agent(observation, configuration=None):
@@ -119,7 +139,7 @@ def mf_wrap(parent):
         try:
             if isinstance(action, dict) and action.get("market"):
                 inventory = observation["market"]["inventory"]
-                new = mf_reorder(action["market"], inventory, report)
+                new = mf_reorder(action["market"], inventory, report, sell_first)
                 if new != action["market"]:
                     action = dict(action, market=new)
         except Exception:
