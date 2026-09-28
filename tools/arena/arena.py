@@ -87,6 +87,9 @@ ALIASES = {
     "N2": "rl.l2_combo:n2",
     "N2m": "rl.l2_combo:n2m",
     "HLq": "rl.l2_combo:hl_plain",
+    "N": "rl.l2_combo:n2m",                   # submissions/candidate-n
+    "N3r7": "rl.l2_combo:n3r7",
+    "N3r5": "rl.l2_combo:n3r5",
     "L_se": "rl.candidate_l:agent",
     "A_noV219": "rl.candidate_l:no_v219",
     "L_gate140": "rl.candidate_l:gate140",

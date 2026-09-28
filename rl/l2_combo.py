@@ -29,13 +29,15 @@ ALL = ("fert", "feed", "crop", "rt", "lot", "dump", "labour", "shadow", "msell",
 
 def combo(*names, shadow_mode="both", shadow_programs=("A",), lot_opts=None,
           shadow_opts=None, gate=120, rt_opts=None, race_opts=None, msell_opts=None,
-          crop_opts=None, parent_file=None):
+          crop_opts=None, parent_file=None, env_patch=None):
     names = set(names)
     unknown = names - set(ALL)
     if unknown:
         raise ValueError(f"unknown layers {unknown}")
 
     def inner(agent, env):
+        if env_patch:                 # constants of the parent read at call time (N3)
+            env.update(env_patch)
         if "fert" in names:
             from rl.l2_wheat_fert import fert_inner
             agent = fert_inner(agent, env)
@@ -396,3 +398,55 @@ def hl_plain():
 def l_stack_on(parent):
     from rl.candidate_l import l_stack
     return l_stack(gate=None, parent_file=str(ROOT_DIR / parent))
+
+
+# ---- Agent N3: N's layers re-tested on the new plan, one removed at a time ----
+def _n_without(layer, parent=MASTER_2965):
+    from rl.l2_shadow import SH_LIBRARY
+    names = [x for x in SHIP if x != layer] + ["msell"]
+    return combo(*names, shadow_programs=tuple(SH_LIBRARY) + NEW_LIBRARY + M_LIBRARY_EXTRA,
+                 shadow_opts={"early_when_agree": True, "early_now": True},
+                 rt_opts={"flow_window": 8, "flow_stat": "median"},
+                 msell_opts={"after_beaten": True, "beaten_any": True},
+                 gate=None, parent_file=str(ROOT_DIR / parent))
+
+
+def n_no_lot():
+    return _n_without("lot")
+
+
+def n_no_rt():
+    return _n_without("rt")
+
+
+def n_no_feed():
+    return _n_without("feed")
+
+
+def n_no_labour():
+    return _n_without("labour")
+
+
+def n_no_msell():
+    from rl.l2_shadow import SH_LIBRARY
+    return combo(*SHIP, shadow_programs=tuple(SH_LIBRARY) + NEW_LIBRARY + M_LIBRARY_EXTRA,
+                 shadow_opts={"early_when_agree": True, "early_now": True},
+                 rt_opts={"flow_window": 8, "flow_stat": "median"},
+                 gate=None, parent_file=str(ROOT_DIR / MASTER_2965))
+
+
+
+# N3: the 2965 master starts its day-18 tomato project (buy SE, 20 tiles of
+# tomatoes) only when its forecast of the 80 units reaches 9,000 coins. In 7 of
+# N's 21 live losses to 2400+ opponents the rival started it and we did not
+# (planted on day 20: Jun_value 78 vs 58, Utkarsh 78 vs 68, Hozuma 68 vs 58).
+def n3_rev(threshold):
+    return _n(MASTER_2965, env_patch={"_CXTB_MIN_REVENUE": threshold})
+
+
+def n3r7():
+    return n3_rev(7000)
+
+
+def n3r5():
+    return n3_rev(5000)

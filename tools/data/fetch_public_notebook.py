@@ -69,9 +69,13 @@ def main() -> None:
         if not user or not slug:
             print(f"  skip {item}: expected user/slug")
             continue
-        response = requests.get(
-            PULL, params={"user_name": user, "kernel_slug": slug},
-            headers={"Authorization": f"Bearer {token}"}, timeout=120)
+        # the API took snake_case until 2026-09-27 and answers 403 to it now
+        for params in ({"userName": user, "kernelSlug": slug},
+                       {"user_name": user, "kernel_slug": slug}):
+            response = requests.get(PULL, params=params,
+                                    headers={"Authorization": f"Bearer {token}"}, timeout=120)
+            if response.status_code == 200:
+                break
         if response.status_code != 200:
             print(f"  {ref}: HTTP {response.status_code}")
             continue
