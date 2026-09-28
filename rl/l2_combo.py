@@ -450,3 +450,18 @@ def n3r7():
 
 def n3r5():
     return n3_rev(5000)
+
+
+# N3: N with the shadow library extended by the programs N's own live
+# opponents play (filled in from tools/analysis/sync_presence on N/N2's games).
+N3_EXTRA = ()
+
+
+def n3(extra=None):
+    from rl.l2_shadow import SH_LIBRARY
+    lib = tuple(SH_LIBRARY) + NEW_LIBRARY + M_LIBRARY_EXTRA + tuple(extra if extra is not None else N3_EXTRA)
+    return combo(*SHIP, "msell", shadow_programs=lib,
+                 shadow_opts={"early_when_agree": True, "early_now": True},
+                 rt_opts={"flow_window": 8, "flow_stat": "median"},
+                 msell_opts={"after_beaten": True, "beaten_any": True},
+                 gate=None, parent_file=str(ROOT_DIR / MASTER_2965))
