@@ -53,7 +53,17 @@ DEFAULTS = {
     "flow_stat": "mean",
     "q_quiet": 0,         # N3: trip size while the opponent's last windows are all quiet
     "quiet_windows": 8,
-    "quiet_units": 2,     # gross opponent units a window still counted as quiet  # or "median": ignore one-off sales (a harvest sold once)
+    "quiet_units": 2,     # gross opponent units a window still counted as quiet
+    # N3: the pre-draw trap. Some 2400+ forks buy X wheat at step % 4 == 3 and
+    # sell X in their last queue slot at the draw step, after our (and the base
+    # plan's own) draw-step round-trip purchase has walked the price up; the trip
+    # then sells after the draw into X extra units. 185 such events in N's 29
+    # games against 2400+ rivals; our 91 bitten trips lost 9,586. The rival's net
+    # purchase at s-1 is exact from public data (no draw on a %3 step). When it is
+    # at least `trap_guard` units: skip our trip, strip the parent's draw-step
+    # wheat purchases of at least `trap_min_order`, and cut its next sale by as much.
+    "trap_guard": 0,
+    "trap_min_order": 10,  # or "median": ignore one-off sales (a harvest sold once)
 }
 
 
@@ -181,6 +191,40 @@ def _flow_gain(base: int, q: int, d: int, windows, stat: str = "mean") -> float:
     return sum(trip_profit(base, q, d - max(0, w)) for w in windows) / len(windows)
 
 
+def _strip_wheat_buys(action, min_order: int):
+    """Drop the queue's wheat purchases of at least min_order units; (action, units)."""
+    market, stripped = [], 0
+    for o in action.get("market") or []:
+        if isinstance(o, list) and len(o) >= 3 and o[0] == "BUY_PRODUCT" and o[1] == "WHEAT":
+            try:
+                n = int(o[2])
+            except (TypeError, ValueError):
+                n = 0
+            if n >= min_order:
+                stripped += n
+                continue
+        market.append(o)
+    return (dict(action, market=market), stripped) if stripped else (action, 0)
+
+
+def _cut_wheat_sale(action, n: int):
+    """Reduce the queue's wheat sales by n units (the purchase we stripped)."""
+    market = []
+    for o in action.get("market") or []:
+        if n > 0 and isinstance(o, list) and len(o) >= 3 and o[0] == "SELL" and o[1] == "WHEAT":
+            try:
+                q = int(o[2])
+            except (TypeError, ValueError):
+                q = 0
+            cut = min(q, n)
+            n -= cut
+            if q - cut > 0:
+                market.append(["SELL", "WHEAT", q - cut])
+            continue
+        market.append(o)
+    return dict(action, market=market)
+
+
 def _masked(obs, q: int):
     """The observation without our round-trip wheat (shed) and purchase (market)."""
     obs2 = dict(obs)
@@ -210,7 +254,8 @@ def rt_inner(parent, env, **overrides):
               "rt_skip_slots": 0, "rt_skip_profit": 0, "rt_errors": 0}
     window = int(cfg["flow_window"])
     if window > 0:
-        report.update({"rt_skip_flow": 0, "rt_windows": [], "rt_flow_errors": 0})
+        report.update({"rt_skip_flow": 0, "rt_windows": [], "rt_flow_errors": 0,
+                       "rt_trap_skips": 0, "rt_trap_stripped": 0, "rt_trap_cut": 0})
 
     def buy_order(obs, action, step, windows=(), gross=()):
         market = [list(o) for o in action.get("market") or []]
@@ -296,8 +341,20 @@ def rt_inner(parent, env, **overrides):
                 view = observation
         action = parent(view, configuration)
         try:
+            owe, st["owe"] = st.get("owe"), None
+            if owe and owe[0] == step:
+                action = _cut_wheat_sale(action, owe[1])
+                report["rt_trap_cut"] += owe[1]
+            trap = (cfg["trap_guard"] and window > 0 and step % 4 == 0
+                    and st["flow"].get(step - 1, 0) <= -cfg["trap_guard"])
             if pending > 0:
                 action = sell_order(action, pending)
+            elif trap:
+                report["rt_trap_skips"] += 1
+                action, stripped = _strip_wheat_buys(action, cfg["trap_min_order"])
+                if stripped:
+                    st["owe"] = (step + 1, stripped)
+                    report["rt_trap_stripped"] += stripped
             elif cfg["first_step"] <= step <= cfg["last_step"] and step % 4 == 0:
                 action, q = buy_order(observation, action, step,
                                       st["windows"][-window:] if window > 0 else (),

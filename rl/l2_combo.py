@@ -498,3 +498,14 @@ def n3q():
                  rt_opts={"flow_window": 8, "flow_stat": "median", "q_quiet": 90},
                  msell_opts={"after_beaten": True, "beaten_any": True},
                  gate=None, parent_file=str(ROOT_DIR / MASTER_2965))
+
+
+def n3t():
+    """N3 + the pre-draw trap guard on the wheat round trip."""
+    from rl.l2_shadow import SH_LIBRARY
+    lib = tuple(SH_LIBRARY) + NEW_LIBRARY + M_LIBRARY_EXTRA + tuple(N3_EXTRA)
+    return combo(*SHIP, "msell", shadow_programs=lib,
+                 shadow_opts={"early_when_agree": True, "early_now": True},
+                 rt_opts={"flow_window": 8, "flow_stat": "median", "trap_guard": 20},
+                 msell_opts={"after_beaten": True, "beaten_any": True},
+                 gate=None, parent_file=str(ROOT_DIR / MASTER_2965))
