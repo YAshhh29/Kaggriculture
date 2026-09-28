@@ -612,3 +612,9 @@ def n3twfa():
 def n3ta_gated():
     """N3t + the gated tomato annex (5 tiles)."""
     return _n3t_with(("annex",), annex_opts=dict(ANNEX_GATE))
+
+
+def n3twfa10():
+    """N3twf + the gated tomato annex on 10 tiles (SE rows 7-8)."""
+    return _n3t_with(("annex",), parent_patches=WOOL_FIRST, mf_opts=MF_FERT,
+                     annex_opts=dict(ANNEX_GATE, rows=(7, 8)))
