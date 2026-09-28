@@ -25,13 +25,13 @@ from rl.candidate_l import l_stack
 ROOT_DIR = Path(__file__).resolve().parents[1]
 
 ALL = ("fert", "feed", "crop", "rt", "lot", "dump", "labour", "shadow", "msell", "race", "annex",
-       "dlast", "safety")
+       "runner", "dlast", "safety")
 
 
 def combo(*names, shadow_mode="both", shadow_programs=("A",), lot_opts=None,
           shadow_opts=None, gate=120, rt_opts=None, race_opts=None, msell_opts=None,
           crop_opts=None, parent_file=None, env_patch=None, parent_patches=None,
-          annex_opts=None, mf_opts=None, dlast_opts=None):
+          annex_opts=None, mf_opts=None, dlast_opts=None, runner_opts=None):
     names = set(names)
     unknown = names - set(ALL)
     if unknown:
@@ -79,6 +79,9 @@ def combo(*names, shadow_mode="both", shadow_programs=("A",), lot_opts=None,
         if "annex" in names:
             from rl.tomato_annex import ta_wrap
             agent = ta_wrap(agent, **(annex_opts or {}))
+        if "runner" in names:
+            from rl.fert_runner import fr_wrap
+            agent = fr_wrap(agent, **(runner_opts or {}))
         if "dlast" in names:
             from rl.draw_last import dl_wrap
             agent = dl_wrap(agent, **(dlast_opts or {}))
@@ -672,3 +675,83 @@ def n4r():
 def n4rL():
     """n4r + lockstep trip sizing against honest same-step round-trippers."""
     return _n4(dlast={"pad": True, "detect": True}, lockstep=1)
+
+
+def _n4x(dlast=None, env_patch=None, extra=(), annex=None, runner=None, **rt_extra):
+    """N4 (N3 + adaptive draw_last) with optional extra layers / parent constants."""
+    rt = {"flow_window": 8, "flow_stat": "median", "trap_guard": 20}
+    rt.update(rt_extra)
+    from rl.l2_shadow import SH_LIBRARY
+    lib = tuple(SH_LIBRARY) + NEW_LIBRARY + M_LIBRARY_EXTRA + tuple(N3_EXTRA)
+    return combo(*SHIP, "msell", "annex", "dlast", *extra, shadow_programs=lib,
+                 shadow_opts={"early_when_agree": True, "early_now": True},
+                 rt_opts=rt, msell_opts={"after_beaten": True, "beaten_any": True},
+                 gate=None, parent_file=str(ROOT_DIR / MASTER_2965), parent_patches=WOOL_FIRST,
+                 mf_opts=MF_FERT, annex_opts=dict(annex or ANNEX_GATE),
+                 dlast_opts=dict(dlast or {"pad": True, "detect": True}), env_patch=env_patch,
+                 runner_opts=runner)
+
+
+def n4f():
+    """N4 + the parent's carried-fertilizer wheat layer from day 10 (V9_FERT_FIRST_DAY)."""
+    return _n4x(env_patch={"V9_FERT_FIRST_DAY": 10})
+
+
+def n4():
+    """Agent N4 as packaged (submissions/candidate-n4): N3 + adaptive draw_last."""
+    return _n4x()
+
+
+
+def n4fr():
+    """N4 + the fertilizer runner (rl/fert_runner.py)."""
+    return _n4x(extra=("runner",))
+
+
+def n4hl():
+    """N4 on harvest-ledger's farm plan (N2's base) instead of the 2965 master's."""
+    rt = {"flow_window": 8, "flow_stat": "median", "trap_guard": 20}
+    from rl.l2_shadow import SH_LIBRARY
+    lib = tuple(SH_LIBRARY) + NEW_LIBRARY + M_LIBRARY_EXTRA + tuple(N3_EXTRA)
+    return combo(*SHIP, "msell", "annex", "dlast", shadow_programs=lib,
+                 shadow_opts={"early_when_agree": True, "early_now": True},
+                 rt_opts=rt, msell_opts={"after_beaten": True, "beaten_any": True},
+                 gate=None, parent_file=str(ROOT_DIR / HARVEST_LEDGER), parent_patches=WOOL_FIRST,
+                 mf_opts=MF_FERT, annex_opts=dict(ANNEX_GATE),
+                 dlast_opts={"pad": True, "detect": True})
+
+
+# The 3000-rated teams keep 7-11 geese; against the top 500 our lost games are
+# -6.5k on eggs a game (3.4k to 10.0k), while milk and wool are even. The egg
+# book barely falls with supply (base 50, log above target) where milk and wool
+# crash when both farms sell them. The plan converts the tape's geese into
+# sheep or cows in yarn / milk towns (v9 HERD) and by expected value (HERD2).
+KEEP_GEESE = {"V9_HERD_MIN_WOOL": 10 ** 9, "V9_HERD_MIN_MILK": 10 ** 9, "_HD2_MIN_GAIN": 10 ** 12}
+
+
+def n4g1():
+    """N4 keeping the tape's geese (v9 HERD and HERD2 swaps off)."""
+    return _n4x(env_patch=dict(KEEP_GEESE))
+
+
+def n4g2():
+    """N4g1 + COWSWAP turning cows into geese whenever geese are worth as much."""
+    return _n4x(env_patch=dict(KEEP_GEESE, _CS_RATIO=1.0, _CS_MIN_GAIN=0.0))
+
+
+# 2026-09-29 library refresh: 11 new public programs; only this one played one of
+# N/N2's 194 recent opponents for a whole game.
+N5_EXTRA = ("nb_hosen42_v11_hc1_vs_h5_validation",)
+
+
+def n5():
+    """N4 + the 9-29 library addition (N5_EXTRA) in the opponent shadow."""
+    rt = {"flow_window": 8, "flow_stat": "median", "trap_guard": 20}
+    from rl.l2_shadow import SH_LIBRARY
+    lib = tuple(SH_LIBRARY) + NEW_LIBRARY + M_LIBRARY_EXTRA + tuple(N3_EXTRA) + N5_EXTRA
+    return combo(*SHIP, "msell", "annex", "dlast", shadow_programs=lib,
+                 shadow_opts={"early_when_agree": True, "early_now": True},
+                 rt_opts=rt, msell_opts={"after_beaten": True, "beaten_any": True},
+                 gate=None, parent_file=str(ROOT_DIR / MASTER_2965), parent_patches=WOOL_FIRST,
+                 mf_opts=MF_FERT, annex_opts=dict(ANNEX_GATE),
+                 dlast_opts={"pad": True, "detect": True})
