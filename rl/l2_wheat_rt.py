@@ -63,7 +63,18 @@ DEFAULTS = {
     # at least `trap_guard` units: skip our trip, strip the parent's draw-step
     # wheat purchases of at least `trap_min_order`, and cut its next sale by as much.
     "trap_guard": 0,
-    "trap_min_order": 10,  # or "median": ignore one-off sales (a harvest sold once)
+    "trap_min_order": 10,
+    # N4: a rival running its own round trip at the same draw step. The engine
+    # settles the two purchases unit by unit, so the smaller trip takes the
+    # cheap end of both curves and our units beyond the rival's size buy at the
+    # top and sell at the bottom (Ilya & Yurnero, 45 a trip to our 60: -3.3k
+    # on wheat). The rival's draw-step purchase is exact from public data; the
+    # trip is sized on the median of its last `lock_windows` purchases, unit by
+    # unit (`_lock_profit`). lock_after: our purchase settles after theirs
+    # (rl/draw_last.py pads it to the last slot).
+    "lockstep": 0,
+    "lock_windows": 8,
+    "lock_after": False,  # or "median": ignore one-off sales (a harvest sold once)
 }
 
 
@@ -191,6 +202,25 @@ def _flow_gain(base: int, q: int, d: int, windows, stat: str = "mean") -> float:
     return sum(trip_profit(base, q, d - max(0, w)) for w in windows) / len(windows)
 
 
+def _lock_profit(inventory: int, q: int, d: int, k: int, after: bool = False) -> float:
+    """Exact coins from our q-unit trip when a rival buys k at the draw step and
+    sells k at the next, both settled unit by unit with ours (lockstep); with
+    after, our purchase settles once the rival's k are bought."""
+    cost = 0.0
+    for j in range(1, q + 1):
+        if after or j > k:
+            before = inventory - k - (j - 1)
+        else:
+            before = inventory - 2 * (j - 1)
+        cost += _mf_price("WHEAT", before - 1)
+    low = inventory - q - k - d
+    rev = 0.0
+    for j in range(1, q + 1):
+        before = low + 2 * (j - 1) if j <= k else low + k + (j - 1)
+        rev += _mf_price("WHEAT", before)
+    return rev - cost
+
+
 def _strip_wheat_buys(action, min_order: int):
     """Drop the queue's wheat purchases of at least min_order units; (action, units)."""
     market, stripped = [], 0
@@ -257,7 +287,7 @@ def rt_inner(parent, env, **overrides):
         report.update({"rt_skip_flow": 0, "rt_windows": [], "rt_flow_errors": 0,
                        "rt_trap_skips": 0, "rt_trap_stripped": 0, "rt_trap_cut": 0})
 
-    def buy_order(obs, action, step, windows=(), gross=()):
+    def buy_order(obs, action, step, windows=(), gross=(), kbuys=()):
         market = [list(o) for o in action.get("market") or []]
         if len(market) >= MAX_ORDERS:
             report["rt_skip_slots"] += 1
@@ -291,6 +321,20 @@ def rt_inner(parent, env, **overrides):
             report["rt_skip_room"] += 1
             return action, 0
         gain = trip_profit(base, q, d)
+        if cfg["lockstep"] and len(kbuys) >= 3:
+            k = sorted(kbuys)[len(kbuys) // 2]
+            if k >= 5:
+                best_q, best = 0, None
+                for cand in sorted(set(list(range(int(cfg["q_min"]), q + 1, 5)) + [q])):
+                    g = _lock_profit(base, cand, d, k, cfg["lock_after"])
+                    if g >= max(cfg["min_profit"], cfg["min_per_unit"] * cand) and (best is None or g > best):
+                        best_q, best = cand, g
+                if not best_q:
+                    report["rt_skip_lock"] = report.get("rt_skip_lock", 0) + 1
+                    return action, 0
+                if best_q != q:
+                    report["rt_lock_resized"] = report.get("rt_lock_resized", 0) + 1
+                q, gain = best_q, trip_profit(base, best_q, d)
         if gain < max(cfg["min_profit"], cfg["min_per_unit"] * q):
             report["rt_skip_profit"] += 1
             return action, 0
@@ -326,7 +370,7 @@ def rt_inner(parent, env, **overrides):
         st = states.get(player)
         if st is None or step <= st["step"]:
             st = states[player] = {"step": -1, "pending": 0, "pend_step": -1,
-                                   "prev": None, "flow": {}, "windows": [], "gross": []}
+                                   "prev": None, "flow": {}, "windows": [], "gross": [], "kbuys": []}
         st["step"] = step
         if window > 0:
             watch(observation, st, step)
@@ -358,7 +402,8 @@ def rt_inner(parent, env, **overrides):
             elif cfg["first_step"] <= step <= cfg["last_step"] and step % 4 == 0:
                 action, q = buy_order(observation, action, step,
                                       st["windows"][-window:] if window > 0 else (),
-                                      st["gross"][-window:] if window > 0 else ())
+                                      st["gross"][-window:] if window > 0 else (),
+                                      st["kbuys"][-int(cfg["lock_windows"]):] if window > 0 else ())
                 if q:
                     st["pending"], st["pend_step"] = q, step
         except Exception:
@@ -391,6 +436,7 @@ def rt_inner(parent, env, **overrides):
             w = a + b
             st["windows"].append(w)
             st["gross"].append(abs(a) + abs(b))
+            st["kbuys"].append(max(0, -a))      # the rival's own draw-step purchase
             report["rt_windows"].append((s, w))
         st["flow"] = {k: v for k, v in st["flow"].items() if k >= step - 2}
 

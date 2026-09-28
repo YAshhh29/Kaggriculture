@@ -25,13 +25,13 @@ from rl.candidate_l import l_stack
 ROOT_DIR = Path(__file__).resolve().parents[1]
 
 ALL = ("fert", "feed", "crop", "rt", "lot", "dump", "labour", "shadow", "msell", "race", "annex",
-       "safety")
+       "dlast", "safety")
 
 
 def combo(*names, shadow_mode="both", shadow_programs=("A",), lot_opts=None,
           shadow_opts=None, gate=120, rt_opts=None, race_opts=None, msell_opts=None,
           crop_opts=None, parent_file=None, env_patch=None, parent_patches=None,
-          annex_opts=None, mf_opts=None):
+          annex_opts=None, mf_opts=None, dlast_opts=None):
     names = set(names)
     unknown = names - set(ALL)
     if unknown:
@@ -79,6 +79,9 @@ def combo(*names, shadow_mode="both", shadow_programs=("A",), lot_opts=None,
         if "annex" in names:
             from rl.tomato_annex import ta_wrap
             agent = ta_wrap(agent, **(annex_opts or {}))
+        if "dlast" in names:
+            from rl.draw_last import dl_wrap
+            agent = dl_wrap(agent, **(dlast_opts or {}))
         if "safety" in names:
             from rl.safety import sf_wrap
             agent = sf_wrap(agent, name="L2")
@@ -618,3 +621,54 @@ def n3twfa10():
     """N3twf + the gated tomato annex on 10 tiles (SE rows 7-8)."""
     return _n3t_with(("annex",), parent_patches=WOOL_FIRST, mf_opts=MF_FERT,
                      annex_opts=dict(ANNEX_GATE, rows=(7, 8)))
+
+
+
+def n4d(**dl):
+    """N3 + our draw-step wheat purchases settled last (rl/draw_last.py)."""
+    return _n3t_with(("annex", "dlast"), parent_patches=WOOL_FIRST, mf_opts=MF_FERT,
+                     annex_opts=dict(ANNEX_GATE), dlast_opts=dl)
+
+
+def n4d9():
+    """draw_last with padding: the purchase settles in slot 9."""
+    return n4d(pad=True)
+
+
+def n4d1():
+    """draw_last without padding: last in our own queue."""
+    return n4d(pad=False)
+
+
+def _n4(dlast=None, **rt_extra):
+    """N3 + optional draw_last + round-trip options (N4 candidates)."""
+    rt = {"flow_window": 8, "flow_stat": "median", "trap_guard": 20}
+    rt.update(rt_extra)
+    extra = ("annex", "dlast") if dlast is not None else ("annex",)
+    from rl.l2_shadow import SH_LIBRARY
+    lib = tuple(SH_LIBRARY) + NEW_LIBRARY + M_LIBRARY_EXTRA + tuple(N3_EXTRA)
+    return combo(*SHIP, "msell", *extra, shadow_programs=lib,
+                 shadow_opts={"early_when_agree": True, "early_now": True},
+                 rt_opts=rt, msell_opts={"after_beaten": True, "beaten_any": True},
+                 gate=None, parent_file=str(ROOT_DIR / MASTER_2965), parent_patches=WOOL_FIRST,
+                 mf_opts=MF_FERT, annex_opts=dict(ANNEX_GATE), dlast_opts=dlast)
+
+
+def n4L():
+    """N3 + lockstep trip sizing (purchases interleaved with the rival's)."""
+    return _n4(lockstep=1)
+
+
+def n4dL():
+    """N3 + draw_last (slot 9) + lockstep sizing with our purchase after theirs."""
+    return _n4(dlast={"pad": True}, lockstep=1, lock_after=True)
+
+
+def n4r():
+    """N3 + draw_last only against a detected rider (exact cost reconciliation)."""
+    return _n4(dlast={"pad": True, "detect": True})
+
+
+def n4rL():
+    """n4r + lockstep trip sizing against honest same-step round-trippers."""
+    return _n4(dlast={"pad": True, "detect": True}, lockstep=1)
