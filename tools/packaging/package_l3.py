@@ -95,7 +95,7 @@ _L3_FACTORIES = {{name: _l3_factory(name) for name in _L3_LIBRARY}}
 _L2_ENV = globals()
 _L2 = {{}}
 {loads}
-_l2_agent = kaggle_agent                  # Agent A's entry point (ig_agent), gate 120
+_l2_agent = {parent_entry}                  # the parent's entry point (Kaggle's last callable)
 _l2_agent = _L2["animals"]["an_wrap"](_l2_agent, _L2_ENV, {{}})
 _l2_agent = _L2["wheat_rt"]["rt_inner"](_l2_agent, _L2_ENV{rt})
 {lot_line}_l2_agent = _L2["market_front"]["mf_wrap"](_l2_agent)
@@ -111,11 +111,28 @@ def _blob(text: str) -> str:
     return base64.b64encode(zlib.compress(text.encode("utf-8"), 9)).decode()
 
 
+def parent_source(path: Path) -> str:
+    """The parent's main.py: an extracted public program's text between its
+    BEGIN/END markers, or a plain main.py as is."""
+    text = path.read_text(encoding="utf-8")
+    begin, end = "# ---- BEGIN main.py ----\n", "# ---- END main.py ----"
+    if begin in text and end in text:
+        return text.split(begin, 1)[1].split(end, 1)[0]
+    return text
+
+
+def entry_name(text: str) -> str:
+    env: dict = {}
+    exec(compile(text, "parent", "exec"), env)
+    return [k for k, v in env.items() if callable(v)][-1]
+
+
 def build(deficit: int, library=SH_LIBRARY, name="L3", lot=True, agree=False,
-          rt=None, msell=None, early_now=False) -> str:
+          rt=None, msell=None, early_now=False, parent_path=None, gate=True) -> str:
     """rt: keyword settings for the round trip (e.g. flow_window=8, flow_stat="median")."""
-    src = PARENT_FILE.read_text(encoding="utf-8")
-    assert src.count(_SHOPS3) == 1, "V219 gate text changed or repeated"
+    src = parent_source(Path(parent_path)) if parent_path else PARENT_FILE.read_text(encoding="utf-8")
+    parent_entry = entry_name(src)
+    assert not gate or src.count(_SHOPS3) == 1, "V219 gate text changed or repeated"
     relaxed = (
         "    # Agent L: also two tomato shops once the town is short enough.\n"
         "    _shops = sum(s in ('PIZZA_SHOP','FARMERS_MARKET') for s in "
@@ -123,7 +140,7 @@ def build(deficit: int, library=SH_LIBRARY, name="L3", lot=True, agree=False,
         "    _short = 10000 - obs['market']['inventory']['TOMATO']\n"
         f"    if _shops < 2 or (_shops < 3 and _short < {deficit}):\n"
         "        return False\n")
-    parent = src.replace(_SHOPS3, relaxed)
+    parent = src.replace(_SHOPS3, relaxed) if gate else src
     table, loads = {}, []
     layers = list(LAYERS)
     if msell is not None:     # Agent M: the in-game opponent-clock seller, outside the shadow
@@ -147,16 +164,22 @@ def build(deficit: int, library=SH_LIBRARY, name="L3", lot=True, agree=False,
         print(f"  library {lib_name}: {len(text):,} bytes of source")
     src_table = "{\n" + "".join(f'    "{k}": "{v}",\n' for k, v in table.items()) + "}"
     lib_table = "{\n" + "".join(f'    "{k}": "{v}",\n' for k, v in lib.items()) + "}"
+    if parent_path:
+        base = (f"# Base: {Path(parent_path).stem} (a public Kaggle notebook built from\n"
+                "# Apache-2.0 code), its main.py verbatim below with its licence notices.\n")
+    else:
+        base = ("# Base: tetsutani's public build (Apache-2.0), verbatim below with its\n"
+                "# licence notices, except one condition in _v219_qualifies (marked\n"
+                "# \"Agent L\").\n")
     header = (f"# Agent {name} (Kaggriculture), Yash Jain, {time.strftime('%Y-%m-%d')}.\n"
-              "# Base: tetsutani's public build (Apache-2.0), verbatim below with its\n"
-              "# licence notices, except one condition in _v219_qualifies (marked\n"
-              "# \"Agent L\"). Our layers are embedded at the end, each run in its own\n"
-              "# namespace. The opponent shadow's library -- verbatim copies of public\n"
-              "# Apache-2.0 programs, notices retained inside each -- is embedded too.\n")
+              + base +
+              "# Our layers are embedded at the end, each run in its own namespace. The\n"
+              "# opponent shadow's library -- verbatim copies of public Apache-2.0\n"
+              "# programs, notices retained inside each -- is embedded too.\n")
     lot_line = ('_l2_agent = _L2["outfarm"]["lot_wrap"](_l2_agent, _L2_ENV)\n'
                 if lot else '')
     return header + parent + ENTRY.format(src_table=src_table, library=tuple(library),
-                                          lot_line=lot_line, agent_name=name,
+                                          lot_line=lot_line, agent_name=name, parent_entry=parent_entry,
                                           agree=(', early_when_agree=True' if agree else '')
                                                 + (', early_now=True' if early_now else ''),
                                           rt="".join(f", {k}={v!r}" for k, v in (rt or {}).items()),
@@ -179,6 +202,10 @@ def main() -> None:
     ap.add_argument("--agree", action="store_true",
                     help="early sales also while several in-sync programs agree (L4b)")
     ap.add_argument("--name", default="L3")
+    ap.add_argument("--parent", default=None,
+                    help="parent program (rl/public/nb_*.py or a main.py); default Agent A")
+    ap.add_argument("--no-gate", action="store_true",
+                    help="keep the parent's own tomato gate (N)")
     ap.add_argument("--early-now", action="store_true",
                     help="the shadow also races the opponent's current-turn sale (M2)")
     ap.add_argument("--msell", nargs="*", default=None, metavar="KEY=VALUE",
@@ -202,7 +229,8 @@ def main() -> None:
             key, _, raw = item.partition("=")
             msell[key] = {"True": True, "False": False}.get(raw, int(raw) if raw.lstrip("-").isdigit() else raw)
     out.write_text(build(args.deficit, tuple(args.library), args.name, lot=not args.no_lot,
-                         agree=args.agree, rt=rt, msell=msell, early_now=args.early_now),
+                         agree=args.agree, rt=rt, msell=msell, early_now=args.early_now,
+                         parent_path=args.parent, gate=not args.no_gate),
                    encoding="utf-8")
     data = out.read_bytes()
     print(f"wrote {out} ({len(data):,} bytes, sha256 {hashlib.sha256(data).hexdigest()[:12]}) "
