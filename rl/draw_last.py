@@ -21,7 +21,12 @@
 # a rival that stays out leaves our cost exact. After `min_events` rider steps
 # our draw-step wheat purchases go to the end of the queue, with the free slots
 # before them filled with zero-quantity orders (they parse to nothing but keep
-# their slot), so they settle after the rider's buy and sale.
+# their slot), so they settle after the rider's buy and sale. Some riders sell
+# in slot 9 themselves (Sho Saga): then our last-slot purchase pairs with their
+# sale unit by unit at the top of their curve, and the same reconciliation
+# shows it; after `min_events` such steps the draw-step wheat purchases are
+# dropped instead (skip mode) and the next step's wheat sale is cut to match,
+# so the ride has nothing to ride.
 #
 # Outermost (just inside the safety guard), so no layer appends after it. The
 # opening (before step 96) is left alone. Any error returns the action as is.
@@ -58,9 +63,23 @@ def _dl_draw(shops, step):
     return sum(1 for s in shops if s in _DL_WHEAT_SHOPS) + (1 if step % 24 == 0 else 0)
 
 
-def dl_wrap(parent, pad=True, from_step=96, detect=True, min_events=2, min_excess=4):
+def _dl_cut_sale(action, n):
+    """Reduce the queue's wheat sales by n units (largest first)."""
+    market = [list(o) if isinstance(o, list) else o for o in action.get('market') or []]
+    for o in sorted([o for o in market if isinstance(o, list) and len(o) >= 3
+                     and o[0] == 'SELL' and o[1] == 'WHEAT'], key=lambda o: -int(o[2])):
+        take = min(n, int(o[2]))
+        o[2] = int(o[2]) - take
+        n -= take
+        if n <= 0:
+            break
+    return dict(action, market=market)
+
+
+def dl_wrap(parent, pad=True, from_step=96, detect=True, min_events=2, min_excess=4, skip=True):
     report = {'moved': 0, 'padded': 0, 'clean_steps': 0, 'rider_steps': 0,
-              'rider_mode_step': None, 'errors': 0}
+              'rider_mode_step': None, 'skip_mode_step': None, 'skipped_units': 0,
+              'cut_units': 0, 'errors': 0}
     states = {}
 
     def expected_cost(obs, market):
@@ -104,7 +123,8 @@ def dl_wrap(parent, pad=True, from_step=96, detect=True, min_events=2, min_exces
             player = int(observation['player'])
             st = states.get(player)
             if st is None or step <= st['step']:
-                st = states[player] = {'step': -1, 'prev': None, 'events': 0, 'rider': not detect}
+                st = states[player] = {'step': -1, 'prev': None, 'events': 0, 'rider': not detect,
+                                       'last_bad': 0, 'skip': False, 'owe': None}
             st['step'] = step
             farm = observation['farms'][player]
             inv = int(observation['market']['inventory']['WHEAT'])
@@ -114,11 +134,21 @@ def dl_wrap(parent, pad=True, from_step=96, detect=True, min_events=2, min_exces
                 their_net = inv - prev['inv'] + prev['units'] + prev['draw']   # their net sold
                 report['clean_steps'] += 1
                 if paid - prev['cost'] >= min_excess and abs(their_net) <= 2:
-                    st['events'] += 1
-                    report['rider_steps'] += 1
-                    if st['events'] >= min_events and not st['rider']:
-                        st['rider'] = True
-                        report['rider_mode_step'] = step
+                    if st['rider']:
+                        st['last_bad'] += 1
+                        if st['last_bad'] >= min_events and not st['skip'] and skip:
+                            st['skip'] = True
+                            report['skip_mode_step'] = step
+                    else:
+                        st['events'] += 1
+                        report['rider_steps'] += 1
+                        if st['events'] >= min_events:
+                            st['rider'] = True
+                            report['rider_mode_step'] = step
+            owe, st['owe'] = st['owe'], None
+            if owe and owe[0] == step and isinstance(action, dict):
+                action = _dl_cut_sale(action, owe[1])
+                report['cut_units'] += owe[1]
             if not isinstance(action, dict) or step < from_step or step % 4 != 0:
                 return action
             market = list(action.get('market') or [])
@@ -126,13 +156,24 @@ def dl_wrap(parent, pad=True, from_step=96, detect=True, min_events=2, min_exces
                     and o[0] == 'BUY_PRODUCT' and o[1] == 'WHEAT' and int(o[2]) > 0]
             if not buys:
                 return action
-            if detect and not st['rider']:
-                exp = expected_cost(observation, market)
+            if st['skip']:
+                kept = [o for o in market if not (isinstance(o, list) and len(o) >= 3 and o[0] == 'BUY_PRODUCT'
+                                                   and o[1] == 'WHEAT' and int(o[2]) >= 10)]
+                cut = sum(int(o[2]) for o in market if o not in kept and isinstance(o, list))
+                if cut:
+                    st['owe'] = (step + 1, cut)
+                    report['skipped_units'] += cut
+                    action = dict(action, market=kept)
+                return action
+            if detect:
+                exp = expected_cost(observation, [o for o in market if not (isinstance(o, list) and len(o) >= 3
+                                                                            and int(o[2]) == 0)])
                 if exp is not None:
                     st['prev'] = {'step': step, 'money': float(farm['money']), 'cost': exp[0],
                                   'units': exp[1], 'inv': inv,
                                   'draw': _dl_draw(observation['town']['unlocked_shops'], step)}
-                return action
+                if not st['rider']:
+                    return action
             rest = [o for o in market if not any(o is b for b in buys)]
             if pad:
                 free = _DL_MAX_ORDERS - len(rest) - len(buys)

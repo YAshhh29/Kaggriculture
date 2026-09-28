@@ -104,7 +104,7 @@ _l2_agent = _L2["labour"]["lb_wrap"](_l2_agent)
 _l2_agent = _L2["shadow"]["shadow_wrap"](_l2_agent, programs=_L3_LIBRARY,
                                          reorder=True, early=True,
                                          factories=_L3_FACTORIES{agree})
-{msell_line}{annex_line}agent_l3 = _L2["safety"]["sf_wrap"](_l2_agent, name="{agent_name}")
+{msell_line}{annex_line}{dlast_line}agent_l3 = _L2["safety"]["sf_wrap"](_l2_agent, name="{agent_name}")
 '''
 
 
@@ -130,7 +130,7 @@ def entry_name(text: str) -> str:
 
 def build(deficit: int, library=SH_LIBRARY, name="L3", lot=True, agree=False,
           rt=None, msell=None, early_now=False, parent_path=None, gate=True, annex=None,
-          parent_patches=(), sell_first=()) -> str:
+          parent_patches=(), sell_first=(), dlast=None) -> str:
     """rt: keyword settings for the round trip (e.g. flow_window=8, flow_stat="median");
     annex: settings for the tomato annex (N3ta), None to leave it out."""
     src = parent_source(Path(parent_path)) if parent_path else PARENT_FILE.read_text(encoding="utf-8")
@@ -152,6 +152,9 @@ def build(deficit: int, library=SH_LIBRARY, name="L3", lot=True, agree=False,
     if msell is not None:     # Agent M: the in-game opponent-clock seller, outside the shadow
         layers.insert(layers.index(next(x for x in layers if x[0] == "safety")),
                       ("m_sell", "rl/m_sell.py", []))
+    if dlast is not None:     # N4: rider-aware draw-step purchase order, outermost
+        layers.insert(layers.index(next(x for x in layers if x[0] == "safety")),
+                      ("draw_last", "rl/draw_last.py", []))
     if annex is not None:     # N3ta: the tomato annex, outermost inside the safety guard
         layers.insert(layers.index(next(x for x in layers if x[0] == "safety")),
                       ("tomato_annex", "rl/tomato_annex.py", []))
@@ -200,6 +203,10 @@ def build(deficit: int, library=SH_LIBRARY, name="L3", lot=True, agree=False,
                                                       '_l2_agent = _L2["tomato_annex"]["ta_wrap"](_l2_agent'
                                                       + "".join(f", {k}={v!r}" for k, v in annex.items())
                                                       + ")" + chr(10)),
+                                          dlast_line=("" if dlast is None else
+                                                      '_l2_agent = _L2["draw_last"]["dl_wrap"](_l2_agent'
+                                                      + "".join(f", {k}={v!r}" for k, v in dlast.items())
+                                                      + ")" + chr(10)),
                                           mf_args=(f", sell_first={tuple(sell_first)!r}" if sell_first else ""),
                                           lib_table=lib_table, loads="\n".join(loads))
 
@@ -226,6 +233,8 @@ def main() -> None:
                     help="add Agent M's seller, e.g. --msell value_check=True (M2)")
     ap.add_argument("--rt", nargs="*", default=[], metavar="KEY=VALUE",
                     help="round-trip settings, e.g. flow_window=8 flow_stat=median (L4e)")
+    ap.add_argument("--dlast", nargs="*", default=None, metavar="KEY=VALUE",
+                    help="add the rider-aware draw_last layer, e.g. --dlast pad=True detect=True (N4)")
     ap.add_argument("--wool-first", action="store_true",
                     help="patch the parent's V233 crew to deliver wool first (rl.l2_combo.WOOL_FIRST)")
     ap.add_argument("--sell-first", nargs="*", default=[],
@@ -259,7 +268,10 @@ def main() -> None:
                          agree=args.agree, rt=rt, msell=msell, early_now=args.early_now,
                          parent_path=args.parent, gate=not args.no_gate, annex=annex,
                          parent_patches=(WOOL_FIRST if args.wool_first else ()),
-                         sell_first=tuple(args.sell_first)),
+                         sell_first=tuple(args.sell_first),
+                         dlast=(None if args.dlast is None else
+                                {k: {"True": True, "False": False}.get(v, int(v) if v.isdigit() else v)
+                                 for k, _, v in (x.partition("=") for x in args.dlast)})),
                    encoding="utf-8")
     data = out.read_bytes()
     print(f"wrote {out} ({len(data):,} bytes, sha256 {hashlib.sha256(data).hexdigest()[:12]}) "
