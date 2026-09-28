@@ -18,14 +18,18 @@ commands; order-size layers come after them; labour and the shadow wrap the
 finished L like they did when tested alone.
 """
 
+from pathlib import Path
+
 from rl.candidate_l import l_stack
+
+ROOT_DIR = Path(__file__).resolve().parents[1]
 
 ALL = ("fert", "feed", "crop", "rt", "lot", "dump", "labour", "shadow", "msell", "race", "safety")
 
 
 def combo(*names, shadow_mode="both", shadow_programs=("A",), lot_opts=None,
           shadow_opts=None, gate=120, rt_opts=None, race_opts=None, msell_opts=None,
-          crop_opts=None):
+          crop_opts=None, parent_file=None):
     names = set(names)
     unknown = names - set(ALL)
     if unknown:
@@ -73,7 +77,7 @@ def combo(*names, shadow_mode="both", shadow_programs=("A",), lot_opts=None,
             agent = sf_wrap(agent, name="L2")
         return agent
 
-    return l_stack(inner=inner, outer=outer, gate=gate)
+    return l_stack(inner=inner, outer=outer, gate=gate, parent_file=parent_file)
 
 
 def lot_dump():
@@ -352,3 +356,43 @@ def m11():
                  shadow_opts={"early_when_agree": True, "early_now": True},
                  rt_opts={"flow_window": 8, "flow_stat": "median"},
                  msell_opts={"after_beaten": True, "beaten_any": True})
+
+
+# ---- Agent N: our whole decision stack on the strongest public farm plan -----
+# 2026-09-28: every public program was screened against A (2 seeds x 2 seats);
+# only tetsutani's new version (= harvest-ledger) and haideptry's 2965 master
+# hybrid beat it (3/4, +924 and +978 a game). Our agents all farm with A (the
+# old version), and the 2300-2400 band upgraded to the new one on 9-27: L3 won
+# 86% there on 9-27, L5 49% and M 58% on 9-28. Both new programs keep A's
+# chassis (_IMPL, FarmView, projected_shed, future_sells), so every layer fits.
+HARVEST_LEDGER = "rl/public/nb_haodou092_harvest_ledger.py"
+MASTER_2965 = "rl/public/nb_haideptry_the_2965_master_hybrid_engine.py"
+
+
+def _n(parent, **extra):
+    from rl.l2_shadow import SH_LIBRARY
+    return combo(*SHIP, "msell", shadow_programs=tuple(SH_LIBRARY) + NEW_LIBRARY + M_LIBRARY_EXTRA,
+                 shadow_opts={"early_when_agree": True, "early_now": True},
+                 rt_opts={"flow_window": 8, "flow_stat": "median"},
+                 msell_opts={"after_beaten": True, "beaten_any": True},
+                 gate=None, parent_file=str(ROOT_DIR / parent), **extra)
+
+
+def n2():
+    """N = M2's decision stack on harvest-ledger's farm plan (its own tomato gate)."""
+    return _n(HARVEST_LEDGER)
+
+
+def n2m():
+    """N on the 2965 master hybrid's farm plan."""
+    return _n(MASTER_2965)
+
+
+def hl_plain():
+    """harvest-ledger with only the queue-order layer (L's first layer), for reference."""
+    return l_stack_on(HARVEST_LEDGER)
+
+
+def l_stack_on(parent):
+    from rl.candidate_l import l_stack
+    return l_stack(gate=None, parent_file=str(ROOT_DIR / parent))

@@ -17,11 +17,13 @@ ROOT = Path(__file__).resolve().parents[1]
 PARENT_FILE = ROOT / "submissions" / "agent-a" / "main.py"
 
 
-def parent_namespace() -> tuple[dict, object]:
-    """Exec Agent A exactly as Kaggle does; return (namespace, entry point)."""
-    raw = PARENT_FILE.read_text(encoding="utf-8")
+def parent_namespace(parent_file: Path | None = None) -> tuple[dict, object]:
+    """Exec the parent (Agent A unless given) exactly as Kaggle does; return
+    (namespace, entry point)."""
+    path = Path(parent_file) if parent_file else PARENT_FILE
+    raw = path.read_text(encoding="utf-8")
     env: dict = {}
-    exec(compile(raw, str(PARENT_FILE), "exec"), env)
+    exec(compile(raw, str(path), "exec"), env)
     return env, [v for v in env.values() if callable(v)][-1]
 
 
@@ -57,7 +59,7 @@ def _v219_gate(env, deficit=140):
     exec(body.replace(_SHOPS3, relaxed), env)
 
 
-def l_stack(inner=None, outer=None, gate=120):
+def l_stack(inner=None, outer=None, gate=120, parent_file=None):
     """Agent L exactly as submitted, optionally with one more layer.
 
     inner(agent, env) wraps the parent before L's queue-order layer (so the
@@ -66,8 +68,8 @@ def l_stack(inner=None, outer=None, gate=120):
     the live L (submissions/candidate-l/main.py plays identically).
     """
     from rl.market_front import mf_wrap
-    env, entry = parent_namespace()
-    if gate is not None:          # None keeps A's original three-shop V219 gate
+    env, entry = parent_namespace(parent_file)
+    if gate is not None:          # None keeps the parent's own V219 gate
         _v219_gate(env, gate)
     agent = entry
     if inner is not None:
