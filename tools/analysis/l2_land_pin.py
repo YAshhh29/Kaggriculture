@@ -143,7 +143,8 @@ def telemetry(agent) -> dict:
             continue
         seen.add(id(f))
         tel = getattr(f, "telemetry", None)
-        if isinstance(tel, dict) and getattr(f, "_l2_land", False):
+        if isinstance(tel, dict) and (getattr(f, "_l2_land", False)
+                                      or getattr(f, "__name__", "") == "ta_agent"):
             for k, v in tel.items():
                 if isinstance(v, (int, float)) and not isinstance(v, bool):
                     out[k] = v

@@ -24,12 +24,14 @@ from rl.candidate_l import l_stack
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
 
-ALL = ("fert", "feed", "crop", "rt", "lot", "dump", "labour", "shadow", "msell", "race", "safety")
+ALL = ("fert", "feed", "crop", "rt", "lot", "dump", "labour", "shadow", "msell", "race", "annex",
+       "safety")
 
 
 def combo(*names, shadow_mode="both", shadow_programs=("A",), lot_opts=None,
           shadow_opts=None, gate=120, rt_opts=None, race_opts=None, msell_opts=None,
-          crop_opts=None, parent_file=None, env_patch=None, parent_patches=None):
+          crop_opts=None, parent_file=None, env_patch=None, parent_patches=None,
+          annex_opts=None, mf_opts=None):
     names = set(names)
     unknown = names - set(ALL)
     if unknown:
@@ -74,13 +76,16 @@ def combo(*names, shadow_mode="both", shadow_programs=("A",), lot_opts=None,
         if "race" in names:
             from rl.l2_race import race_wrap
             agent = race_wrap(agent, **(race_opts or {}))
+        if "annex" in names:
+            from rl.tomato_annex import ta_wrap
+            agent = ta_wrap(agent, **(annex_opts or {}))
         if "safety" in names:
             from rl.safety import sf_wrap
             agent = sf_wrap(agent, name="L2")
         return agent
 
     return l_stack(inner=inner, outer=outer, gate=gate, parent_file=parent_file,
-                   parent_patches=parent_patches)
+                   parent_patches=parent_patches, mf_opts=mf_opts)
 
 
 def lot_dump():
@@ -543,3 +548,67 @@ def n3tr():
                  rt_opts={"flow_window": 8, "flow_stat": "median", "trap_guard": 20},
                  msell_opts={"after_beaten": True, "beaten_any": True},
                  gate=None, parent_file=str(ROOT_DIR / MASTER_2965), parent_patches=R51_LOOSE)
+
+
+
+def _n3t_with(extra=(), **kw):
+    """N3t (the trap guard) plus extra layers / options."""
+    from rl.l2_shadow import SH_LIBRARY
+    lib = tuple(SH_LIBRARY) + NEW_LIBRARY + M_LIBRARY_EXTRA + tuple(N3_EXTRA)
+    return combo(*SHIP, "msell", *extra, shadow_programs=lib,
+                 shadow_opts={"early_when_agree": True, "early_now": True},
+                 rt_opts={"flow_window": 8, "flow_stat": "median", "trap_guard": 20},
+                 msell_opts={"after_beaten": True, "beaten_any": True},
+                 gate=None, parent_file=str(ROOT_DIR / MASTER_2965), **kw)
+
+
+def n3ta():
+    """N3t + the tomato annex: 5 more tomato tiles (SE row 7) beside the parent's
+    day-18 project, on the annex's own hands (rl/tomato_annex.py)."""
+    return _n3t_with(("annex",))
+
+
+def n3ta10():
+    """N3t + a 10-tile tomato annex (SE rows 7-8)."""
+    return _n3t_with(("annex",), annex_opts={"rows": (7, 8)})
+
+
+
+# The plan's V233 six-sheep crew collects fertilizer on every tile before it
+# carries the wool home, so its wool sells 3 turns after a mirror rival's
+# (rhythm master: 6,018 coins on one game). Collect fertilizer only once no
+# wool is carried and no target still holds yield. Measured by the body-knobs
+# study on the 8 V233 games of N and N2: +11,994 (2 losses flipped) and +12,541.
+WOOL_FIRST = [(
+    "            elif tile['fertilizer_available']:command=['COLLECT_FERTILIZER']\n"
+    "        if command:tasks.append((abs(pos[0]-x)+abs(pos[1]-y),targets.index(target),target,command))",
+    "            elif tile['fertilizer_available'] and not inv.get('WOOL',0) and not any(isinstance(farm['tiles'][_ty][_tx],dict) and farm['tiles'][_ty][_tx].get('yield_units') for _tx,_ty in targets):command=['COLLECT_FERTILIZER']\n"
+    "        if command:tasks.append((abs(pos[0]-x)+abs(pos[1]-y),targets.index(target),target,command))")]
+
+# market_front may move the parent's fertilizer purchase ahead of its sale; with
+# the shed near full the purchase fills short and a tomato tile goes unfertilized
+# on day 27 (78 tomatoes to the mirror's 80 in 16 of 20 games). +4,064 over 24.
+MF_FERT = {"sell_first": ("FERTILIZER",)}
+
+
+def n3tw():
+    """N3t + the V233 wool-first crew."""
+    return _n3t_with(parent_patches=WOOL_FIRST)
+
+
+def n3twf():
+    """N3t + wool-first + fertilizer SELL before BUY in market_front."""
+    return _n3t_with(parent_patches=WOOL_FIRST, mf_opts=MF_FERT)
+
+
+ANNEX_GATE = {"min_tomato_shops": 3, "min_shortage": 140}
+
+
+def n3twfa():
+    """N3twf + the gated tomato annex (5 tiles)."""
+    return _n3t_with(("annex",), parent_patches=WOOL_FIRST, mf_opts=MF_FERT, annex_opts=dict(ANNEX_GATE))
+
+
+def n3ta_gated():
+    """N3t + the gated tomato annex (5 tiles)."""
+    return _n3t_with(("annex",), annex_opts=dict(ANNEX_GATE))
