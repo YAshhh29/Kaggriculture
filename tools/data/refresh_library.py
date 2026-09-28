@@ -103,8 +103,19 @@ def main() -> None:
             print(run(["tools.data.extract_live_tapes", "--submission", str(sub)])[-200:])
     refs = new_notebooks(token, args.min_votes) + list(args.refetch_notebooks)
     print(f"{len(refs)} public notebooks with >= {args.min_votes} votes not held yet")
-    if refs:
-        print(run(["tools.data.fetch_public_notebook", *refs, "--pause", "1.0"]))
+    # Since 2026-09-28 the pull endpoint answers 403 to bursts; one at a time
+    # with a pause (and one retry) gets through.
+    import time
+    for ref in refs:
+        for attempt in (1, 2):
+            out = run(["tools.data.fetch_public_notebook", ref, "--pause", "0"])
+            if "->" in out:
+                print(out)
+                break
+            time.sleep(10)
+        else:
+            print(f"  {ref}: not pulled ({out.strip()[-80:]})")
+        time.sleep(4)
     before = {p.stem for p in (ROOT / "rl" / "public").glob("nb_*.py")}
     stems = [r.replace("/", "__") for r in refs]
     if stems:
