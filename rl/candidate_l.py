@@ -17,11 +17,19 @@ ROOT = Path(__file__).resolve().parents[1]
 PARENT_FILE = ROOT / "submissions" / "agent-a" / "main.py"
 
 
-def parent_namespace(parent_file: Path | None = None) -> tuple[dict, object]:
-    """Exec the parent (Agent A unless given) exactly as Kaggle does; return
-    (namespace, entry point)."""
+def apply_patches(raw: str, patches) -> str:
+    """Exact text replacements [(old, new), ...]; each old text must occur once."""
+    for old, new in patches or ():
+        assert raw.count(old) == 1, f"patch target not unique: {old[:60]!r}"
+        raw = raw.replace(old, new)
+    return raw
+
+
+def parent_namespace(parent_file: Path | None = None, patches=None) -> tuple[dict, object]:
+    """Exec the parent (Agent A unless given) exactly as Kaggle does, after the
+    given exact text patches; return (namespace, entry point)."""
     path = Path(parent_file) if parent_file else PARENT_FILE
-    raw = path.read_text(encoding="utf-8")
+    raw = apply_patches(path.read_text(encoding="utf-8"), patches)
     env: dict = {}
     exec(compile(raw, str(path), "exec"), env)
     return env, [v for v in env.values() if callable(v)][-1]
@@ -59,7 +67,7 @@ def _v219_gate(env, deficit=140):
     exec(body.replace(_SHOPS3, relaxed), env)
 
 
-def l_stack(inner=None, outer=None, gate=120, parent_file=None):
+def l_stack(inner=None, outer=None, gate=120, parent_file=None, parent_patches=None):
     """Agent L exactly as submitted, optionally with one more layer.
 
     inner(agent, env) wraps the parent before L's queue-order layer (so the
@@ -68,7 +76,7 @@ def l_stack(inner=None, outer=None, gate=120, parent_file=None):
     the live L (submissions/candidate-l/main.py plays identically).
     """
     from rl.market_front import mf_wrap
-    env, entry = parent_namespace(parent_file)
+    env, entry = parent_namespace(parent_file, parent_patches)
     if gate is not None:          # None keeps the parent's own V219 gate
         _v219_gate(env, gate)
     agent = entry

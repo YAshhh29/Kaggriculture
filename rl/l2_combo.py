@@ -29,7 +29,7 @@ ALL = ("fert", "feed", "crop", "rt", "lot", "dump", "labour", "shadow", "msell",
 
 def combo(*names, shadow_mode="both", shadow_programs=("A",), lot_opts=None,
           shadow_opts=None, gate=120, rt_opts=None, race_opts=None, msell_opts=None,
-          crop_opts=None, parent_file=None, env_patch=None):
+          crop_opts=None, parent_file=None, env_patch=None, parent_patches=None):
     names = set(names)
     unknown = names - set(ALL)
     if unknown:
@@ -79,7 +79,8 @@ def combo(*names, shadow_mode="both", shadow_programs=("A",), lot_opts=None,
             agent = sf_wrap(agent, name="L2")
         return agent
 
-    return l_stack(inner=inner, outer=outer, gate=gate, parent_file=parent_file)
+    return l_stack(inner=inner, outer=outer, gate=gate, parent_file=parent_file,
+                   parent_patches=parent_patches)
 
 
 def lot_dump():
@@ -509,3 +510,36 @@ def n3t():
                  rt_opts={"flow_window": 8, "flow_stat": "median", "trap_guard": 20},
                  msell_opts={"after_beaten": True, "beaten_any": True},
                  gate=None, parent_file=str(ROOT_DIR / MASTER_2965))
+
+
+def n3tf():
+    """N3t + the parent's wheat fertilizing from day 10 (V9_FERT_FIRST_DAY, 14 in the
+    plan): N waters age-1 wheat, which yields nothing, in 82% of its day 9-11 lives;
+    V9_FERT swaps that watering for a fertilize when the unit carries fertilizer."""
+    from rl.l2_shadow import SH_LIBRARY
+    lib = tuple(SH_LIBRARY) + NEW_LIBRARY + M_LIBRARY_EXTRA + tuple(N3_EXTRA)
+    return combo(*SHIP, "msell", shadow_programs=lib,
+                 shadow_opts={"early_when_agree": True, "early_now": True},
+                 rt_opts={"flow_window": 8, "flow_stat": "median", "trap_guard": 20},
+                 msell_opts={"after_beaten": True, "beaten_any": True},
+                 gate=None, parent_file=str(ROOT_DIR / MASTER_2965),
+                 env_patch={"V9_FERT_FIRST_DAY": 10})
+
+
+
+# N3: the plan's fertilizer couriers (R51) hire only when the extra crop value is
+# at least 1.5 x (fertilizer bought + the day's hire) + 50; N fertilizes 22% of its
+# wheat lives against the top teams' 59-74% (5.4 units a fertilized life vs 2.7).
+R51_LOOSE = [("if value<1.5*cost+50 or farm['money']<total_cost+cost+3000:break",
+              "if value<1.15*cost+20 or farm['money']<total_cost+cost+3000:break")]
+
+
+def n3tr():
+    """N3t with the fertilizer couriers' bar lowered to 1.15 x cost + 20."""
+    from rl.l2_shadow import SH_LIBRARY
+    lib = tuple(SH_LIBRARY) + NEW_LIBRARY + M_LIBRARY_EXTRA + tuple(N3_EXTRA)
+    return combo(*SHIP, "msell", shadow_programs=lib,
+                 shadow_opts={"early_when_agree": True, "early_now": True},
+                 rt_opts={"flow_window": 8, "flow_stat": "median", "trap_guard": 20},
+                 msell_opts={"after_beaten": True, "beaten_any": True},
+                 gate=None, parent_file=str(ROOT_DIR / MASTER_2965), parent_patches=R51_LOOSE)
