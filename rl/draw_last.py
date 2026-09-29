@@ -28,6 +28,11 @@
 # dropped instead (skip mode) and the next step's wheat sale is cut to match,
 # so the ride has nothing to ride.
 #
+# A rider of k units raises our 60-unit purchase by about 0.03 x (k^2/2 + k(60-k))
+# coins (~46 at k = 40); a rival buying 2-3 wheat for feed in the same step adds
+# ~5, so a step counts only from `min_excess` = 12 coins (N3's live games: two
+# false alarms at 4, Victor's Team and Les 2 oies).
+#
 # Outermost (just inside the safety guard), so no layer appends after it. The
 # opening (before step 96) is left alone. Any error returns the action as is.
 
@@ -76,7 +81,7 @@ def _dl_cut_sale(action, n):
     return dict(action, market=market)
 
 
-def dl_wrap(parent, pad=True, from_step=96, detect=True, min_events=2, min_excess=4, skip=True):
+def dl_wrap(parent, pad=True, from_step=96, detect=True, min_events=2, min_excess=12, skip=True):
     report = {'moved': 0, 'padded': 0, 'clean_steps': 0, 'rider_steps': 0,
               'rider_mode_step': None, 'skip_mode_step': None, 'skipped_units': 0,
               'cut_units': 0, 'errors': 0}
