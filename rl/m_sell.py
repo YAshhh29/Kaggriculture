@@ -66,7 +66,27 @@ DEFAULTS = {
                                # price up; dumping the lot first crashes it)
     "recent_days": 3,
     "items": ITEMS,
+    "drop_aware": False,  # N8: count what our workers DROP this step (units act before the
+                          # market): a harvest dropped at the rival's selling hour is raced
+                          # in that step, not the next (Mike Mordetsky: 20 strawberries sold
+                          # at h0 by them, h1 by us, 125 against 96)
 }
+
+
+def dropped(obs, action, item: str) -> int:
+    """Units of `item` our workers put in the shed this step, before the market."""
+    invs = obs["private"].get("inventories") or []
+    commands = [action.get("farmer")] + list(action.get("hands") or [])
+    n = 0
+    for i, c in enumerate(commands):
+        if not (isinstance(c, list) and c) or i >= len(invs):
+            continue
+        carried = int((invs[i] or {}).get(item, 0))
+        if c[0] == "DROP":
+            n += carried
+        elif c[0] == "PLACE" and len(c) >= 2 and c[1] == item:
+            n += min(carried, int(c[2]) if len(c) >= 3 else 1)
+    return n
 
 
 def eaten(shops, step: int, item: str) -> int:
@@ -154,6 +174,8 @@ def m_sell_wrap(agent, **overrides):
         market = [list(o) for o in action.get("market") or []]
         for item in items:
             stock = int(shed.get(item, 0))
+            if cfg["drop_aware"]:
+                stock += dropped(obs, action, item)
             if stock < cfg["min_stock"]:
                 continue
             lots = st["lots"].get(item, [])

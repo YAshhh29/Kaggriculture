@@ -19,6 +19,14 @@
 # A sale moved earlier can only get more money for later purchases in the
 # same turn, so reordering never makes a purchase fail that would have
 # succeeded.
+#
+# `wheat_weight` (N8) scales the damage of wheat orders. The copy-of-us rival
+# assumes the rival places our wheat orders too, but those are mostly our own
+# round trip's (60-unit draw-step buys, the sale a step later), which the
+# master-plan mirrors do not make: at those steps a mirror sells milk,
+# strawberry or wool in its first slots while ours sit behind the trip. On
+# 316 live N2/N3 games, equal-quantity same-step sales cost us 298 a game when
+# behind, 125 of it with a wheat order ahead of the contested sale.
 
 import itertools as _mf_it
 import math as _mf_math
@@ -100,7 +108,7 @@ def _mf_keep_sell_first(orders, new, items, report=None):
     return new
 
 
-def mf_reorder(market, inventory, report=None, sell_first=()):
+def mf_reorder(market, inventory, report=None, sell_first=(), wheat_weight=1.0):
     orders = list(market or [])
     priced = [(i, o) for i, o in enumerate(orders)
               if isinstance(o, list) and len(o) >= 3 and o[0] in _MF_PRICED]
@@ -108,7 +116,7 @@ def mf_reorder(market, inventory, report=None, sell_first=()):
                                               and o[0] in _MF_PRICED)]
     if not priced:
         return orders
-    weights = [_mf_damage(o, inventory) for _, o in priced]
+    weights = [_mf_damage(o, inventory) * (wheat_weight if o[1] == "WHEAT" else 1.0) for _, o in priced]
     slots = [i for i, _ in priced]
     n = len(priced)
     if n <= 7:
@@ -182,8 +190,42 @@ def _mf_cap_counters(observation, market, report=None):
     return out
 
 
-def mf_wrap(parent, sell_first=(), cap_counters=False):
+def mf_wrap(parent, sell_first=(), cap_counters=False, wheat_weight=1.0, wheat_adapt=False,
+            adapt_units=25, adapt_events=2):
     report = {"reordered_turns": 0, "errors": 0}
+    states = {}
+
+    def wheat_trader(observation, action):
+        """With `wheat_adapt`: has the rival been selling wheat of its own on the
+        step after the draw (a round trip like ours: Fritz Cremer, RngRng, Hamam
+        Ahmed buy ~70 at the draw and sell them next step)? The market inventory
+        change over that step, less our own sale, is its net sale; `adapt_events`
+        sales of `adapt_units` or more mark it for the rest of the game."""
+        step = int(observation["step"])
+        player = int(observation["player"])
+        st = states.get(player)
+        if st is None or step <= st["step"]:
+            st = states[player] = {"step": -1, "prev": None, "events": 0, "trader": False}
+        st["step"] = step
+        inv = int(observation["market"]["inventory"]["WHEAT"])
+        prev, st["prev"] = st["prev"], None
+        if prev is not None and prev[0] == step - 1 and inv - prev[1] - prev[2] >= adapt_units:
+            st["events"] += 1
+            if st["events"] >= adapt_events and not st["trader"]:
+                st["trader"] = True
+                report["wheat_trader_step"] = step
+        if step % 4 == 1 and isinstance(action, dict):
+            net = 0
+            for o in action.get("market") or []:
+                if isinstance(o, list) and len(o) >= 3 and o[1] == "WHEAT":
+                    if o[0] == "SELL":
+                        net += int(o[2])
+                    elif o[0] == "BUY_PRODUCT":
+                        net -= int(o[2])
+            if net > 0:
+                net = min(net, _mf_stock(observation, action, "WHEAT"))
+            st["prev"] = (step, inv, net)
+        return st["trader"]
 
     def front_agent(observation, configuration=None):
         action = parent(observation, configuration)
@@ -197,10 +239,18 @@ def mf_wrap(parent, sell_first=(), cap_counters=False):
                     action = dict(action, market=capped)
         except Exception:
             report["errors"] += 1
+        weight = wheat_weight
+        if wheat_adapt and wheat_weight != 1.0:
+            try:
+                if wheat_trader(observation, action):
+                    weight = 1.0
+            except Exception:
+                report["errors"] += 1
+                weight = 1.0
         try:
             if isinstance(action, dict) and action.get("market"):
                 inventory = observation["market"]["inventory"]
-                new = mf_reorder(action["market"], inventory, report, sell_first)
+                new = mf_reorder(action["market"], inventory, report, sell_first, weight)
                 if new != action["market"]:
                     action = dict(action, market=new)
         except Exception:

@@ -130,7 +130,8 @@ def entry_name(text: str) -> str:
 
 def build(deficit: int, library=SH_LIBRARY, name="L3", lot=True, agree=False,
           rt=None, msell=None, early_now=False, parent_path=None, gate=True, annex=None,
-          parent_patches=(), sell_first=(), dlast=None, cap_counters=False, place_guard=False) -> str:
+          parent_patches=(), sell_first=(), dlast=None, cap_counters=False, place_guard=False,
+          wheat_weight=1.0, wheat_adapt=False) -> str:
     """rt: keyword settings for the round trip (e.g. flow_window=8, flow_stat="median");
     annex: settings for the tomato annex (N3ta), None to leave it out."""
     src = parent_source(Path(parent_path)) if parent_path else PARENT_FILE.read_text(encoding="utf-8")
@@ -213,7 +214,9 @@ def build(deficit: int, library=SH_LIBRARY, name="L3", lot=True, agree=False,
                                                       + "".join(f", {k}={v!r}" for k, v in dlast.items())
                                                       + ")" + chr(10)),
                                           mf_args=(f", sell_first={tuple(sell_first)!r}" if sell_first else "")
-                                                  + (", cap_counters=True" if cap_counters else ""),
+                                                  + (", cap_counters=True" if cap_counters else "")
+                                                  + (f", wheat_weight={float(wheat_weight)!r}" if wheat_weight != 1.0 else "")
+                                                  + (", wheat_adapt=True" if wheat_adapt else ""),
                                           lib_table=lib_table, loads="\n".join(loads))
 
 
@@ -245,6 +248,10 @@ def main() -> None:
                     help="build the missing structure under an animal being placed (N7)")
     ap.add_argument("--cap-counters", action="store_true",
                     help="market_front caps a same-step sell/rebuy pair at the stock (N6)")
+    ap.add_argument("--wheat-weight", type=float, default=1.0,
+                    help="market_front scales wheat orders' damage weight (N8: goods sales ahead of the trip)")
+    ap.add_argument("--wheat-adapt", action="store_true",
+                    help="market_front restores full wheat weight once the rival round-trips wheat (N8)")
     ap.add_argument("--wool-first", action="store_true",
                     help="patch the parent's V233 crew to deliver wool first (rl.l2_combo.WOOL_FIRST)")
     ap.add_argument("--sell-first", nargs="*", default=[],
@@ -279,7 +286,8 @@ def main() -> None:
                          parent_path=args.parent, gate=not args.no_gate, annex=annex,
                          parent_patches=(WOOL_FIRST if args.wool_first else ()),
                          sell_first=tuple(args.sell_first), cap_counters=args.cap_counters,
-                         place_guard=args.place_guard,
+                         place_guard=args.place_guard, wheat_weight=args.wheat_weight,
+                         wheat_adapt=args.wheat_adapt,
                          dlast=(None if args.dlast is None else
                                 {k: {"True": True, "False": False}.get(v, int(v) if v.isdigit() else v)
                                  for k, _, v in (x.partition("=") for x in args.dlast)})),

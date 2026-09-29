@@ -858,3 +858,44 @@ def n7a():
                  gate=None, parent_file=str(ROOT_DIR / MASTER_2965), parent_patches=WOOL_FIRST,
                  mf_opts=MF_N6, annex_opts=dict(ANNEX_GATE),
                  dlast_opts={"pad": True, "detect": True})
+
+
+def _n8(wheat_weight, adapt=False, drop_aware=False):
+    """N7 with the market-front wheat weight scaled (goods sales ahead of our wheat trip);
+    with `adapt`, full weight again once the rival is seen round-tripping wheat; with
+    `drop_aware`, the seller races goods our workers drop this step."""
+    rt = {"flow_window": 8, "flow_stat": "median", "trap_guard": 20, "sandwich": True}
+    from rl.l2_shadow import SH_LIBRARY
+    lib = tuple(SH_LIBRARY) + NEW_LIBRARY + M_LIBRARY_EXTRA + tuple(N3_EXTRA) + N5_EXTRA
+    return combo(*SHIP, "msell", "annex", "dlast", "place", shadow_programs=lib,
+                 shadow_opts={"early_when_agree": True, "early_now": True},
+                 rt_opts=rt, msell_opts={"after_beaten": True, "beaten_any": True, "drop_aware": drop_aware},
+                 gate=None, parent_file=str(ROOT_DIR / MASTER_2965), parent_patches=WOOL_FIRST,
+                 mf_opts=dict(MF_N6, wheat_weight=wheat_weight, wheat_adapt=adapt),
+                 annex_opts=dict(ANNEX_GATE),
+                 dlast_opts={"pad": True, "detect": True, "implied": True})
+
+
+def n8w0():
+    return _n8(0.0)
+
+
+def n8w25():
+    return _n8(0.25)
+
+
+def n8a0():
+    return _n8(0.0, adapt=True)
+
+
+def n8a25():
+    return _n8(0.25, adapt=True)
+
+
+def n8d():
+    """N7 + the drop-aware seller only (wheat weight 1)."""
+    return _n8(1.0, drop_aware=True)
+
+
+def n8a25d():
+    return _n8(0.25, adapt=True, drop_aware=True)
