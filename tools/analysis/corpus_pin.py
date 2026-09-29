@@ -158,6 +158,9 @@ def run(args) -> None:
             if float(r.get("team_score") or 0) >= args.min_rating:
                 keep.append(p)
         paths = keep
+    if args.episodes:
+        want = {str(e) for e in args.episodes}
+        paths = [p for p in paths if p.stem[2:] in want]
     i, n = (int(x) for x in args.chunk.split("/"))
     paths = paths[i - 1::n]
     if args.limit:
@@ -205,6 +208,7 @@ def main() -> None:
                    help="play the top team's opponent (default) or the top team itself")
     r.add_argument("--min-rating", type=float, default=0.0)
     r.add_argument("--limit", type=int, default=0)
+    r.add_argument("--episodes", nargs="*", default=[], help="only these episode ids")
     args = ap.parse_args()
     if args.cmd == "run":
         run(args)
