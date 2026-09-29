@@ -84,7 +84,36 @@ def _dl_cut_sale(action, n):
     return dict(action, market=market)
 
 
-def dl_wrap(parent, pad=True, from_step=96, detect=True, min_events=2, min_excess=12, skip=True):
+def _dl_lock_cost(inventory, q, k):
+    """Cost of our q-unit purchase settled unit by unit with a rival buying k in
+    the same slot."""
+    cost = 0.0
+    for j in range(1, q + 1):
+        before = inventory - 2 * (j - 1) if j <= k else inventory - k - (j - 1)
+        cost += _dl_price(before - 1)
+    return cost
+
+
+def _dl_implied_sale(prev, paid, their_net):
+    """Units the rival sold within the step, implied by what our purchase cost.
+
+    Our q units cost more than alone only if the rival bought alongside them:
+    the smallest k whose lockstep cost reaches what we paid is its purchase in
+    our slot; less its net purchase for the step (-their_net) is what it sold
+    again in the same step (a rider buying 75 and selling 60 nets -15)."""
+    q = int(prev.get('units') or 0)
+    if q <= 0:
+        return 0
+    paid_wheat = paid - float(prev.get('fixed') or 0.0)
+    inv = int(prev['inv'])
+    k = 0
+    while k < 150 and _dl_lock_cost(inv, q, k) < paid_wheat - 0.5:
+        k += 5
+    return k + their_net
+
+
+def dl_wrap(parent, pad=True, from_step=96, detect=True, min_events=2, min_excess=12, skip=True,
+            implied=False, implied_min=20):
     report = {'moved': 0, 'padded': 0, 'clean_steps': 0, 'rider_steps': 0,
               'rider_mode_step': None, 'skip_mode_step': None, 'reverted_step': None, 'skipped_units': 0,
               'cut_units': 0, 'errors': 0}
@@ -97,13 +126,14 @@ def dl_wrap(parent, pad=True, from_step=96, detect=True, min_events=2, min_exces
         inv = int(obs['market']['inventory']['WHEAT'])
         hires = int(farm.get('hires_today', 0))
         shed = sum(int(v) for v in (obs['private'].get('shed') or {}).values())
-        cost, units = 0.0, 0
+        cost, units, fixed = 0.0, 0, 0.0
         for o in market:
             if not (isinstance(o, list) and o):
                 continue
             op = o[0]
             if op == 'HIRE':
                 cost += _dl_fib(hires)
+                fixed += _dl_fib(hires)
                 hires += 1
                 continue
             if len(o) < 3:
@@ -113,6 +143,7 @@ def dl_wrap(parent, pad=True, from_step=96, detect=True, min_events=2, min_exces
                 continue
             if op == 'BUY_SEED' and o[1] in _DL_SEED:
                 cost += n * _DL_SEED[o[1]]
+                fixed += n * _DL_SEED[o[1]]
             elif op == 'BUY_PRODUCT' and o[1] == 'WHEAT':
                 for _ in range(n):
                     cost += _dl_price(inv - 1)
@@ -122,7 +153,7 @@ def dl_wrap(parent, pad=True, from_step=96, detect=True, min_events=2, min_exces
                 return None
         if cost > float(farm['money']) or shed + units > 100:
             return None                      # a fill could fail: not an exact step
-        return cost, units
+        return cost, units, fixed
 
     def dl_agent(observation, configuration=None):
         action = parent(observation, configuration)
@@ -141,7 +172,8 @@ def dl_wrap(parent, pad=True, from_step=96, detect=True, min_events=2, min_exces
                 paid = prev['money'] - float(farm['money'])
                 their_net = inv - prev['inv'] + prev['units'] + prev['draw']   # their net sold
                 report['clean_steps'] += 1
-                if st['rider'] and not st['skip'] and paid - prev['cost'] >= min_excess and their_net < -2:
+                if (st['rider'] and not st['skip'] and paid - prev['cost'] >= min_excess and their_net < -2
+                        and st.get('kind') != 'implied'):
                     # still overpaying in the last slot while the rival buys: an honest
                     # same-step round trip settles before ours (RngRng's 9-29 version);
                     # the last slot pays the top of its curve, so play normally again
@@ -150,7 +182,9 @@ def dl_wrap(parent, pad=True, from_step=96, detect=True, min_events=2, min_exces
                         st['rider'] = False
                         st['events'] = -10 ** 9
                         report['reverted_step'] = step
-                elif paid - prev['cost'] >= min_excess and abs(their_net) <= 2:
+                elif paid - prev['cost'] >= min_excess and (
+                        abs(their_net) <= 2 or (st['rider'] and st.get('kind') == 'implied')
+                        or (implied and _dl_implied_sale(prev, paid, their_net) >= implied_min)):
                     if st['rider']:
                         st['last_bad'] += 1
                         if st['last_bad'] >= min_events and not st['skip'] and skip:
@@ -159,9 +193,16 @@ def dl_wrap(parent, pad=True, from_step=96, detect=True, min_events=2, min_exces
                     else:
                         st['events'] += 1
                         report['rider_steps'] += 1
+                        if abs(their_net) > 2:
+                            st['implied_events'] = st.get('implied_events', 0) + 1
                         if st['events'] >= min_events:
                             st['rider'] = True
+                            # a rider seen buying more than it resells (Rio) keeps a net
+                            # purchase ahead of our last-slot buy: overpaying there means
+                            # skip, not a return to normal play
+                            st['kind'] = 'implied' if st.get('implied_events', 0) else 'net0'
                             report['rider_mode_step'] = step
+                            report['rider_kind'] = st['kind']
             owe, st['owe'] = st['owe'], None
             if owe and owe[0] == step and isinstance(action, dict):
                 action = _dl_cut_sale(action, owe[1])
@@ -187,7 +228,7 @@ def dl_wrap(parent, pad=True, from_step=96, detect=True, min_events=2, min_exces
                                                                             and int(o[2]) == 0)])
                 if exp is not None:
                     st['prev'] = {'step': step, 'money': float(farm['money']), 'cost': exp[0],
-                                  'units': exp[1], 'inv': inv,
+                                  'units': exp[1], 'inv': inv, 'fixed': exp[2],
                                   'draw': _dl_draw(observation['town']['unlocked_shops'], step)}
                 if not st['rider']:
                     return action

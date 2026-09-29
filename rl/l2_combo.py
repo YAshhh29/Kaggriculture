@@ -25,7 +25,7 @@ from rl.candidate_l import l_stack
 ROOT_DIR = Path(__file__).resolve().parents[1]
 
 ALL = ("fert", "feed", "crop", "rt", "lot", "dump", "labour", "shadow", "msell", "race", "annex",
-       "runner", "dlast", "safety")
+       "runner", "dlast", "place", "safety")
 
 
 def combo(*names, shadow_mode="both", shadow_programs=("A",), lot_opts=None,
@@ -85,6 +85,9 @@ def combo(*names, shadow_mode="both", shadow_programs=("A",), lot_opts=None,
         if "dlast" in names:
             from rl.draw_last import dl_wrap
             agent = dl_wrap(agent, **(dlast_opts or {}))
+        if "place" in names:
+            from rl.place_guard import pg_wrap
+            agent = pg_wrap(agent)
         if "safety" in names:
             from rl.safety import sf_wrap
             agent = sf_wrap(agent, name="L2")
@@ -774,3 +777,43 @@ def n6():
                  gate=None, parent_file=str(ROOT_DIR / MASTER_2965), parent_patches=WOOL_FIRST,
                  mf_opts=MF_N6, annex_opts=dict(ANNEX_GATE),
                  dlast_opts={"pad": True, "detect": True})
+
+
+def n7s():
+    """N6 + the round trip's sandwich accounting (rival sells at the draw, buys back next step)."""
+    rt = {"flow_window": 8, "flow_stat": "median", "trap_guard": 20, "sandwich": True}
+    from rl.l2_shadow import SH_LIBRARY
+    lib = tuple(SH_LIBRARY) + NEW_LIBRARY + M_LIBRARY_EXTRA + tuple(N3_EXTRA) + N5_EXTRA
+    return combo(*SHIP, "msell", "annex", "dlast", shadow_programs=lib,
+                 shadow_opts={"early_when_agree": True, "early_now": True},
+                 rt_opts=rt, msell_opts={"after_beaten": True, "beaten_any": True},
+                 gate=None, parent_file=str(ROOT_DIR / MASTER_2965), parent_patches=WOOL_FIRST,
+                 mf_opts=MF_N6, annex_opts=dict(ANNEX_GATE),
+                 dlast_opts={"pad": True, "detect": True})
+
+
+def n7r():
+    """N7s + rider detection from the implied same-step sale (riders that buy more than they sell: Rio)."""
+    rt = {"flow_window": 8, "flow_stat": "median", "trap_guard": 20, "sandwich": True}
+    from rl.l2_shadow import SH_LIBRARY
+    lib = tuple(SH_LIBRARY) + NEW_LIBRARY + M_LIBRARY_EXTRA + tuple(N3_EXTRA) + N5_EXTRA
+    return combo(*SHIP, "msell", "annex", "dlast", shadow_programs=lib,
+                 shadow_opts={"early_when_agree": True, "early_now": True},
+                 rt_opts=rt, msell_opts={"after_beaten": True, "beaten_any": True},
+                 gate=None, parent_file=str(ROOT_DIR / MASTER_2965), parent_patches=WOOL_FIRST,
+                 mf_opts=MF_N6, annex_opts=dict(ANNEX_GATE),
+                 dlast_opts={"pad": True, "detect": True, "implied": True})
+
+
+
+def n7():
+    """Agent N7: N6 + sandwich accounting + implied-sale riders + the placement guard."""
+    rt = {"flow_window": 8, "flow_stat": "median", "trap_guard": 20, "sandwich": True}
+    from rl.l2_shadow import SH_LIBRARY
+    lib = tuple(SH_LIBRARY) + NEW_LIBRARY + M_LIBRARY_EXTRA + tuple(N3_EXTRA) + N5_EXTRA
+    return combo(*SHIP, "msell", "annex", "dlast", "place", shadow_programs=lib,
+                 shadow_opts={"early_when_agree": True, "early_now": True},
+                 rt_opts=rt, msell_opts={"after_beaten": True, "beaten_any": True},
+                 gate=None, parent_file=str(ROOT_DIR / MASTER_2965), parent_patches=WOOL_FIRST,
+                 mf_opts=MF_N6, annex_opts=dict(ANNEX_GATE),
+                 dlast_opts={"pad": True, "detect": True, "implied": True})

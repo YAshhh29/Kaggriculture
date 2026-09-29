@@ -216,6 +216,10 @@ def run(args) -> None:
     if args.limit:
         paths = paths[:args.limit]
     dest = OUT / f"{args.label}.json"
+    import os
+    pids = ROOT / "rl" / "data" / "l2" / "eval" / "pids"
+    pids.mkdir(parents=True, exist_ok=True)
+    (pids / f"{args.label}.pid").write_text(str(os.getpid()), encoding="utf-8")
     rows = json.loads(dest.read_text(encoding="utf-8")) if dest.exists() and args.resume else []
     done = {r["episode_id"] for r in rows}
     t0 = time.time()

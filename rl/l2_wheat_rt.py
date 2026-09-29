@@ -74,7 +74,15 @@ DEFAULTS = {
     # (rl/draw_last.py pads it to the last slot).
     "lockstep": 0,
     "lock_windows": 8,
-    "lock_after": False,  # or "median": ignore one-off sales (a harvest sold once)
+    "lock_after": False,
+    # N7: a sandwicher sells into the draw step right after our purchase (its
+    # slot 2) and buys back the next step right after our sale (slot 9), then
+    # repeats: it trades against our trip's own price impact ("42", live 9-29:
+    # -5.9k on wheat with identical farms). Netting its draw-step sale against
+    # its next-step purchase hides it (the window looks flat), but only the sale
+    # lands between our buy and our sale. With sandwich on, a window where the
+    # rival net-sold at the draw and net-bought the next step counts the sale.
+    "sandwich": False,  # or "median": ignore one-off sales (a harvest sold once)
 }
 
 
@@ -434,6 +442,9 @@ def rt_inner(parent, env, **overrides):
         if s % 4 == 0 and s in st["flow"] and s + 1 in st["flow"]:
             a, b = st["flow"].pop(s), st["flow"].pop(s + 1)
             w = a + b
+            if cfg["sandwich"] and a > 0 and b < 0:
+                w = a
+                report["rt_sandwich_windows"] = report.get("rt_sandwich_windows", 0) + 1
             st["windows"].append(w)
             st["gross"].append(abs(a) + abs(b))
             st["kbuys"].append(max(0, -a))      # the rival's own draw-step purchase

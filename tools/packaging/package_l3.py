@@ -104,7 +104,7 @@ _l2_agent = _L2["labour"]["lb_wrap"](_l2_agent)
 _l2_agent = _L2["shadow"]["shadow_wrap"](_l2_agent, programs=_L3_LIBRARY,
                                          reorder=True, early=True,
                                          factories=_L3_FACTORIES{agree})
-{msell_line}{annex_line}{dlast_line}agent_l3 = _L2["safety"]["sf_wrap"](_l2_agent, name="{agent_name}")
+{msell_line}{annex_line}{dlast_line}{place_line}agent_l3 = _L2["safety"]["sf_wrap"](_l2_agent, name="{agent_name}")
 '''
 
 
@@ -130,7 +130,7 @@ def entry_name(text: str) -> str:
 
 def build(deficit: int, library=SH_LIBRARY, name="L3", lot=True, agree=False,
           rt=None, msell=None, early_now=False, parent_path=None, gate=True, annex=None,
-          parent_patches=(), sell_first=(), dlast=None, cap_counters=False) -> str:
+          parent_patches=(), sell_first=(), dlast=None, cap_counters=False, place_guard=False) -> str:
     """rt: keyword settings for the round trip (e.g. flow_window=8, flow_stat="median");
     annex: settings for the tomato annex (N3ta), None to leave it out."""
     src = parent_source(Path(parent_path)) if parent_path else PARENT_FILE.read_text(encoding="utf-8")
@@ -152,6 +152,9 @@ def build(deficit: int, library=SH_LIBRARY, name="L3", lot=True, agree=False,
     if msell is not None:     # Agent M: the in-game opponent-clock seller, outside the shadow
         layers.insert(layers.index(next(x for x in layers if x[0] == "safety")),
                       ("m_sell", "rl/m_sell.py", []))
+    if place_guard:           # N7: build the missing pasture/coop under an animal being placed
+        layers.insert(layers.index(next(x for x in layers if x[0] == "safety")),
+                      ("place_guard", "rl/place_guard.py", []))
     if dlast is not None:     # N4: rider-aware draw-step purchase order, outermost
         layers.insert(layers.index(next(x for x in layers if x[0] == "safety")),
                       ("draw_last", "rl/draw_last.py", []))
@@ -203,6 +206,8 @@ def build(deficit: int, library=SH_LIBRARY, name="L3", lot=True, agree=False,
                                                       '_l2_agent = _L2["tomato_annex"]["ta_wrap"](_l2_agent'
                                                       + "".join(f", {k}={v!r}" for k, v in annex.items())
                                                       + ")" + chr(10)),
+                                          place_line=('_l2_agent = _L2["place_guard"]["pg_wrap"](_l2_agent)' + chr(10)
+                                                      if place_guard else ""),
                                           dlast_line=("" if dlast is None else
                                                       '_l2_agent = _L2["draw_last"]["dl_wrap"](_l2_agent'
                                                       + "".join(f", {k}={v!r}" for k, v in dlast.items())
@@ -236,6 +241,8 @@ def main() -> None:
                     help="round-trip settings, e.g. flow_window=8 flow_stat=median (L4e)")
     ap.add_argument("--dlast", nargs="*", default=None, metavar="KEY=VALUE",
                     help="add the rider-aware draw_last layer, e.g. --dlast pad=True detect=True (N4)")
+    ap.add_argument("--place-guard", action="store_true",
+                    help="build the missing structure under an animal being placed (N7)")
     ap.add_argument("--cap-counters", action="store_true",
                     help="market_front caps a same-step sell/rebuy pair at the stock (N6)")
     ap.add_argument("--wool-first", action="store_true",
@@ -253,7 +260,7 @@ def main() -> None:
     rt = {}
     for item in args.rt:
         key, _, raw = item.partition("=")
-        rt[key] = int(raw) if raw.lstrip("-").isdigit() else raw
+        rt[key] = {"True": True, "False": False}.get(raw, int(raw) if raw.lstrip("-").isdigit() else raw)
     msell = None
     if args.msell is not None:
         msell = {}
@@ -272,6 +279,7 @@ def main() -> None:
                          parent_path=args.parent, gate=not args.no_gate, annex=annex,
                          parent_patches=(WOOL_FIRST if args.wool_first else ()),
                          sell_first=tuple(args.sell_first), cap_counters=args.cap_counters,
+                         place_guard=args.place_guard,
                          dlast=(None if args.dlast is None else
                                 {k: {"True": True, "False": False}.get(v, int(v) if v.isdigit() else v)
                                  for k, _, v in (x.partition("=") for x in args.dlast)})),
