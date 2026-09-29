@@ -36,6 +36,16 @@
 # ~5, so a step counts only from `min_excess` = 12 coins (N3's live games: two
 # false alarms at 4, Victor's Team and Les 2 oies).
 #
+# Trip governor (N7): a round trip is worth doing only while it pays. With
+# `governor`, the realized margin of each trip is read exactly -- the purchase
+# from the draw step's money (as above), the sale from the next step's money
+# when every other order is fixed-price and the sale is the trip alone -- and
+# when the last `gov_window` trips average under `gov_margin` coins a unit the
+# draw-step purchases are dropped for `gov_pause` steps (as in skip mode), then
+# tried again. It needs no model of the rival: in N7's close mirror losses the
+# trips earned nothing (bought and sold at 41.92) while the rival traded
+# around them.
+#
 # Outermost (just inside the safety guard), so no layer appends after it. The
 # opening (before step 96) is left alone. Any error returns the action as is.
 
@@ -84,6 +94,55 @@ def _dl_cut_sale(action, n):
     return dict(action, market=market)
 
 
+def _dl_wheat_stock(obs, action):
+    """Wheat the shed will hold when this step's market runs (units act first)."""
+    stock = int((obs['private'].get('shed') or {}).get('WHEAT', 0))
+    invs = obs['private'].get('inventories') or []
+    for i, c in enumerate([action.get('farmer')] + list(action.get('hands') or [])):
+        if not (isinstance(c, list) and c) or i >= len(invs):
+            continue
+        carried = int((invs[i] or {}).get('WHEAT', 0))
+        if c[0] == 'DROP':
+            stock += carried
+        elif c[0] == 'PLACE' and len(c) >= 2 and c[1] == 'WHEAT':
+            stock += min(carried, int(c[2]) if len(c) >= 3 else 1)
+        elif c[0] == 'PICKUP' and len(c) >= 2 and c[1] == 'WHEAT':
+            stock -= int(c[2]) if len(c) >= 3 else 1
+    return max(0, stock)
+
+
+def _dl_sale_record(obs, action, trip):
+    """The step after a trip's purchase: what our wheat sale fetches can be read
+    from our money next step when every other order is fixed-price and the sale
+    is the trip alone (no farm wheat mixed in)."""
+    farm = obs['farms'][int(obs['player'])]
+    hires = int(farm.get('hires_today', 0))
+    fixed, sells = 0.0, 0
+    for o in action.get('market') or []:
+        if not (isinstance(o, list) and o):
+            continue
+        if o[0] == 'HIRE':
+            fixed += _dl_fib(hires)
+            hires += 1
+            continue
+        if len(o) < 3:
+            return None
+        n = int(o[2])
+        if n <= 0:
+            continue
+        if o[0] == 'BUY_SEED' and o[1] in _DL_SEED:
+            fixed += n * _DL_SEED[o[1]]
+        elif o[0] == 'SELL' and o[1] == 'WHEAT':
+            sells += n
+        else:
+            return None
+    units = min(sells, _dl_wheat_stock(obs, action))
+    if units <= 0 or sells > trip['units'] + 5:
+        return None
+    return {'step': int(obs['step']), 'money': float(farm['money']), 'fixed': fixed,
+            'units': units, 'avg_buy': trip['avg_buy']}
+
+
 def _dl_lock_cost(inventory, q, k):
     """Cost of our q-unit purchase settled unit by unit with a rival buying k in
     the same slot."""
@@ -113,7 +172,8 @@ def _dl_implied_sale(prev, paid, their_net):
 
 
 def dl_wrap(parent, pad=True, from_step=96, detect=True, min_events=2, min_excess=12, skip=True,
-            implied=False, implied_min=20):
+            implied=False, implied_min=20, governor=False, gov_window=6, gov_min_trips=4,
+            gov_margin=0.3, gov_pause=48):
     report = {'moved': 0, 'padded': 0, 'clean_steps': 0, 'rider_steps': 0,
               'rider_mode_step': None, 'skip_mode_step': None, 'reverted_step': None, 'skipped_units': 0,
               'cut_units': 0, 'errors': 0}
@@ -163,7 +223,8 @@ def dl_wrap(parent, pad=True, from_step=96, detect=True, min_events=2, min_exces
             st = states.get(player)
             if st is None or step <= st['step']:
                 st = states[player] = {'step': -1, 'prev': None, 'events': 0, 'rider': not detect,
-                                       'last_bad': 0, 'skip': False, 'owe': None, 'honest': 0}
+                                       'last_bad': 0, 'skip': False, 'owe': None, 'honest': 0,
+                                       'trip': None, 'sale': None, 'margins': [], 'pause_until': -1}
             st['step'] = step
             farm = observation['farms'][player]
             inv = int(observation['market']['inventory']['WHEAT'])
@@ -172,6 +233,9 @@ def dl_wrap(parent, pad=True, from_step=96, detect=True, min_events=2, min_exces
                 paid = prev['money'] - float(farm['money'])
                 their_net = inv - prev['inv'] + prev['units'] + prev['draw']   # their net sold
                 report['clean_steps'] += 1
+                if governor and prev['units'] >= 10:
+                    st['trip'] = {'step': prev['step'], 'units': prev['units'],
+                                  'avg_buy': (paid - prev['fixed']) / prev['units']}
                 if (st['rider'] and not st['skip'] and paid - prev['cost'] >= min_excess and their_net < -2
                         and st.get('kind') != 'implied'):
                     # still overpaying in the last slot while the rival buys: an honest
@@ -203,10 +267,27 @@ def dl_wrap(parent, pad=True, from_step=96, detect=True, min_events=2, min_exces
                             st['kind'] = 'implied' if st.get('implied_events', 0) else 'net0'
                             report['rider_mode_step'] = step
                             report['rider_kind'] = st['kind']
+            sale, st['sale'] = st['sale'], None
+            if governor and sale is not None and sale['step'] == step - 1:
+                revenue = float(farm['money']) - sale['money'] + sale['fixed']
+                margin = revenue / sale['units'] - sale['avg_buy']
+                st['margins'] = (st['margins'] + [margin])[-gov_window:]
+                report['gov_trips'] = report.get('gov_trips', 0) + 1
+                if (len(st['margins']) >= gov_min_trips
+                        and sum(st['margins']) / len(st['margins']) < gov_margin):
+                    st['pause_until'] = step + gov_pause
+                    st['margins'] = []
+                    report['gov_pauses'] = report.get('gov_pauses', 0) + 1
             owe, st['owe'] = st['owe'], None
             if owe and owe[0] == step and isinstance(action, dict):
                 action = _dl_cut_sale(action, owe[1])
                 report['cut_units'] += owe[1]
+            trip = st['trip']
+            if governor and trip is not None and trip['step'] == step - 1 and isinstance(action, dict):
+                st['trip'] = None
+                rec = _dl_sale_record(observation, action, trip)
+                if rec is not None:
+                    st['sale'] = rec
             if not isinstance(action, dict) or step < from_step or step % 4 != 0:
                 return action
             market = list(action.get('market') or [])
@@ -214,7 +295,9 @@ def dl_wrap(parent, pad=True, from_step=96, detect=True, min_events=2, min_exces
                     and o[0] == 'BUY_PRODUCT' and o[1] == 'WHEAT' and int(o[2]) > 0]
             if not buys:
                 return action
-            if st['skip']:
+            if st['skip'] or step < st['pause_until']:
+                if not st['skip']:
+                    report['gov_paused_steps'] = report.get('gov_paused_steps', 0) + 1
                 kept = [o for o in market if not (isinstance(o, list) and len(o) >= 3 and o[0] == 'BUY_PRODUCT'
                                                    and o[1] == 'WHEAT' and int(o[2]) >= 10)]
                 cut = sum(int(o[2]) for o in market if o not in kept and isinstance(o, list))
