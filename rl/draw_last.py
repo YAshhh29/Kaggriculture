@@ -165,9 +165,15 @@ def _dl_implied_sale(prev, paid, their_net):
         return 0
     paid_wheat = paid - float(prev.get('fixed') or 0.0)
     inv = int(prev['inv'])
+    # A rival buying more than our q interleaves with all of our units and costs
+    # us no more than one buying exactly q (Otter Vibe's honest 70-unit trips
+    # next to our 40 read as a 150-unit purchase before this cap). A cost above
+    # full interleaving is not explained by a purchase in our slot: no inference.
+    if paid_wheat > _dl_lock_cost(inv, q, q) + 1:
+        return 0
     k = 0
-    while k < 150 and _dl_lock_cost(inv, q, k) < paid_wheat - 0.5:
-        k += 5
+    while k < q and _dl_lock_cost(inv, q, k) < paid_wheat - 0.5:
+        k += 1
     return k + their_net
 
 
