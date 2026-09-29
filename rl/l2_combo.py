@@ -755,3 +755,22 @@ def n5():
                  gate=None, parent_file=str(ROOT_DIR / MASTER_2965), parent_patches=WOOL_FIRST,
                  mf_opts=MF_FERT, annex_opts=dict(ANNEX_GATE),
                  dlast_opts={"pad": True, "detect": True})
+
+
+# The base plan's step-3 counter pair (SELL 20 / BUY 20 wheat) assumes 20 wheat
+# in stock; with 5 it buys 15 outright and the opening tape runs out of cash
+# (3 live games lost by 15-20k). market_front caps such a buy-back at the stock.
+MF_N6 = dict(MF_FERT, cap_counters=True)
+
+
+def n6():
+    """N5 + the counter-pair cap in market_front."""
+    rt = {"flow_window": 8, "flow_stat": "median", "trap_guard": 20}
+    from rl.l2_shadow import SH_LIBRARY
+    lib = tuple(SH_LIBRARY) + NEW_LIBRARY + M_LIBRARY_EXTRA + tuple(N3_EXTRA) + N5_EXTRA
+    return combo(*SHIP, "msell", "annex", "dlast", shadow_programs=lib,
+                 shadow_opts={"early_when_agree": True, "early_now": True},
+                 rt_opts=rt, msell_opts={"after_beaten": True, "beaten_any": True},
+                 gate=None, parent_file=str(ROOT_DIR / MASTER_2965), parent_patches=WOOL_FIRST,
+                 mf_opts=MF_N6, annex_opts=dict(ANNEX_GATE),
+                 dlast_opts={"pad": True, "detect": True})

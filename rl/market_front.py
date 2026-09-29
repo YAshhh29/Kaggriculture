@@ -131,11 +131,72 @@ def mf_reorder(market, inventory, report=None, sell_first=()):
     return new
 
 
-def mf_wrap(parent, sell_first=()):
+def _mf_stock(observation, action, item):
+    """Units of `item` the shed will hold when this step's market runs: the
+    shed, plus what our units drop or place there this step (units act first)."""
+    player = int(observation["player"])
+    private = observation["private"]
+    stock = int((private.get("shed") or {}).get(item, 0))
+    invs = private.get("inventories") or []
+    commands = [action.get("farmer")] + list(action.get("hands") or [])
+    for i, c in enumerate(commands):
+        if not (isinstance(c, list) and c) or i >= len(invs):
+            continue
+        carried = int((invs[i] or {}).get(item, 0))
+        if c[0] == "DROP" or (c[0] == "PLACE" and len(c) >= 2 and c[1] == item):
+            stock += carried if c[0] == "DROP" else min(carried, int(c[2]) if len(c) >= 3 else 1)
+    return stock
+
+
+def _mf_cap_counters(observation, market, report=None):
+    """A same-step counter pair (SELL x n and BUY_PRODUCT x n) is a round trip
+    that assumes n units in stock. With less, the sale fills short and the
+    purchase buys the difference outright: in three live games the base plan's
+    step-3 pair (SELL 20 / BUY 20 wheat, 5 in stock) spent 432 of a 1,043-coin
+    opening budget, the opening tape ran out of cash and every game was lost by
+    15-20k. Cap the buy-back at what the sale can fill."""
+    out = [list(o) if isinstance(o, list) else o for o in market]
+    sells = {}
+    for o in out:
+        if isinstance(o, list) and len(o) >= 3 and o[0] == "SELL":
+            try:
+                sells[o[1]] = sells.get(o[1], 0) + int(o[2])
+            except (TypeError, ValueError):
+                pass
+    for o in out:
+        if not (isinstance(o, list) and len(o) >= 3 and o[0] == "BUY_PRODUCT"):
+            continue
+        item = o[1]
+        try:
+            n = int(o[2])
+        except (TypeError, ValueError):
+            continue
+        if n <= 0 or sells.get(item, 0) != n:
+            continue
+        stock = observation.get("_mf_stock_" + item)
+        if stock is not None and stock < n:
+            o[2] = max(0, int(stock))
+            if report is not None:
+                report["counter_caps"] = report.get("counter_caps", 0) + 1
+                report["counter_units_saved"] = report.get("counter_units_saved", 0) + n - o[2]
+    return out
+
+
+def mf_wrap(parent, sell_first=(), cap_counters=False):
     report = {"reordered_turns": 0, "errors": 0}
 
     def front_agent(observation, configuration=None):
         action = parent(observation, configuration)
+        try:
+            if cap_counters and isinstance(action, dict) and action.get("market"):
+                market = list(action["market"])
+                items = {o[1] for o in market if isinstance(o, list) and len(o) >= 3 and o[0] == "BUY_PRODUCT"}
+                view = {"_mf_stock_" + it: _mf_stock(observation, action, it) for it in items}
+                capped = _mf_cap_counters(view, market, report)
+                if capped != market:
+                    action = dict(action, market=capped)
+        except Exception:
+            report["errors"] += 1
         try:
             if isinstance(action, dict) and action.get("market"):
                 inventory = observation["market"]["inventory"]

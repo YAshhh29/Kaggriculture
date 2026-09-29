@@ -26,7 +26,10 @@
 # sale unit by unit at the top of their curve, and the same reconciliation
 # shows it; after `min_events` such steps the draw-step wheat purchases are
 # dropped instead (skip mode) and the next step's wheat sale is cut to match,
-# so the ride has nothing to ride.
+# so the ride has nothing to ride. If instead the rival buys wheat outright at
+# the draw and our last-slot purchase still overpays, it is an honest same-step
+# round trip settling ahead of ours (RngRng's 9-29 version): after `min_events`
+# such steps the layer plays normally again for the rest of the game.
 #
 # A rider of k units raises our 60-unit purchase by about 0.03 x (k^2/2 + k(60-k))
 # coins (~46 at k = 40); a rival buying 2-3 wheat for feed in the same step adds
@@ -83,7 +86,7 @@ def _dl_cut_sale(action, n):
 
 def dl_wrap(parent, pad=True, from_step=96, detect=True, min_events=2, min_excess=12, skip=True):
     report = {'moved': 0, 'padded': 0, 'clean_steps': 0, 'rider_steps': 0,
-              'rider_mode_step': None, 'skip_mode_step': None, 'skipped_units': 0,
+              'rider_mode_step': None, 'skip_mode_step': None, 'reverted_step': None, 'skipped_units': 0,
               'cut_units': 0, 'errors': 0}
     states = {}
 
@@ -117,7 +120,7 @@ def dl_wrap(parent, pad=True, from_step=96, detect=True, min_events=2, min_exces
                 units += n
             else:
                 return None
-        if cost > float(farm['money']) or shed + units > 80:
+        if cost > float(farm['money']) or shed + units > 100:
             return None                      # a fill could fail: not an exact step
         return cost, units
 
@@ -129,7 +132,7 @@ def dl_wrap(parent, pad=True, from_step=96, detect=True, min_events=2, min_exces
             st = states.get(player)
             if st is None or step <= st['step']:
                 st = states[player] = {'step': -1, 'prev': None, 'events': 0, 'rider': not detect,
-                                       'last_bad': 0, 'skip': False, 'owe': None}
+                                       'last_bad': 0, 'skip': False, 'owe': None, 'honest': 0}
             st['step'] = step
             farm = observation['farms'][player]
             inv = int(observation['market']['inventory']['WHEAT'])
@@ -138,7 +141,16 @@ def dl_wrap(parent, pad=True, from_step=96, detect=True, min_events=2, min_exces
                 paid = prev['money'] - float(farm['money'])
                 their_net = inv - prev['inv'] + prev['units'] + prev['draw']   # their net sold
                 report['clean_steps'] += 1
-                if paid - prev['cost'] >= min_excess and abs(their_net) <= 2:
+                if st['rider'] and not st['skip'] and paid - prev['cost'] >= min_excess and their_net < -2:
+                    # still overpaying in the last slot while the rival buys: an honest
+                    # same-step round trip settles before ours (RngRng's 9-29 version);
+                    # the last slot pays the top of its curve, so play normally again
+                    st['honest'] += 1
+                    if st['honest'] >= min_events:
+                        st['rider'] = False
+                        st['events'] = -10 ** 9
+                        report['reverted_step'] = step
+                elif paid - prev['cost'] >= min_excess and abs(their_net) <= 2:
                     if st['rider']:
                         st['last_bad'] += 1
                         if st['last_bad'] >= min_events and not st['skip'] and skip:
