@@ -25,7 +25,7 @@ from rl.candidate_l import l_stack
 ROOT_DIR = Path(__file__).resolve().parents[1]
 
 ALL = ("fert", "feed", "crop", "rt", "lot", "dump", "labour", "shadow", "msell", "race", "annex",
-       "runner", "dlast", "place", "safety")
+       "runner", "dlast", "place", "safety", "shed")
 
 
 def combo(*names, shadow_mode="both", shadow_programs=("A",), lot_opts=None,
@@ -88,6 +88,9 @@ def combo(*names, shadow_mode="both", shadow_programs=("A",), lot_opts=None,
         if "place" in names:
             from rl.place_guard import pg_wrap
             agent = pg_wrap(agent)
+        if "shed" in names:
+            from rl.shed_guard import sg_wrap
+            agent = sg_wrap(agent)
         if "safety" in names:
             from rl.safety import sf_wrap
             agent = sf_wrap(agent, name="L2")
@@ -1127,3 +1130,60 @@ def n9hl():
                  mf_opts=dict(MF_N6, wheat_weight=0.25, wheat_adapt=True),
                  annex_opts=dict(ANNEX_GATE),
                  dlast_opts={"pad": True, "detect": True, "implied": True})
+
+
+_GUARD_BASE = ("_SETTINGS={'hand_align': True, 'weed_repair': True, 'sell_lead': True, 'budget_guard': False, "
+               "'room_guard': False, 'clamp_sells': False, 'dead_stock': False, 'terminal_liquidation': False, "
+               "'front_run': False}")
+
+
+def _n9_guards(*on):
+    """N9 with some of the 2965 chassis's disabled guards switched on."""
+    new = _GUARD_BASE
+    for g in on:
+        new = new.replace(f"'{g}': False", f"'{g}': True")
+    return _n9_patched([(_GUARD_BASE, new)])
+
+
+def g_room():
+    return _n9_guards("room_guard")
+
+
+def g_budget():
+    return _n9_guards("budget_guard")
+
+
+def g_dead():
+    return _n9_guards("dead_stock")
+
+
+def g_term():
+    return _n9_guards("terminal_liquidation")
+
+
+def g_clamp():
+    return _n9_guards("clamp_sells")
+
+
+def g_all():
+    return _n9_guards("room_guard", "budget_guard", "dead_stock", "terminal_liquidation", "clamp_sells")
+
+
+
+def n10s():
+    """N9 + rl/shed_guard.py (sell the day-end shed overflow instead of losing it)."""
+    rt = {"flow_window": 8, "flow_stat": "median", "trap_guard": 20, "sandwich": True}
+    from rl.l2_shadow import SH_LIBRARY
+    lib = tuple(SH_LIBRARY) + NEW_LIBRARY + M_LIBRARY_EXTRA + tuple(N3_EXTRA) + N5_EXTRA + N9_EXTRA
+    return combo(*SHIP, "msell", "annex", "dlast", "place", "shed", shadow_programs=lib,
+                 shadow_opts={"early_when_agree": True, "early_now": True},
+                 rt_opts=rt, msell_opts={"after_beaten": True, "beaten_any": True},
+                 gate=None, parent_file=str(ROOT_DIR / MASTER_2965), parent_patches=WOOL_FIRST,
+                 mf_opts=dict(MF_N6, wheat_weight=0.25, wheat_adapt=True),
+                 annex_opts=dict(ANNEX_GATE),
+                 dlast_opts={"pad": True, "detect": True, "implied": True})
+
+
+def n10():
+    """Agent N10 = N9 + rl/shed_guard.py (the day-end drop destroys nothing)."""
+    return n10s()
