@@ -1110,3 +1110,20 @@ def n14d14():
 
 def n14d16():
     return _n9_project_day(16)
+
+
+HARVEST_LEDGER_0930 = "rl/public/nb_haodou092_harvest_ledger_r0930.py"
+
+
+def n9hl():
+    """N9's whole stack on harvest-ledger's 9-30 farm plan (same engine family as the 2965 master)."""
+    rt = {"flow_window": 8, "flow_stat": "median", "trap_guard": 20, "sandwich": True}
+    from rl.l2_shadow import SH_LIBRARY
+    lib = tuple(SH_LIBRARY) + NEW_LIBRARY + M_LIBRARY_EXTRA + tuple(N3_EXTRA) + N5_EXTRA + N9_EXTRA
+    return combo(*SHIP, "msell", "annex", "dlast", "place", shadow_programs=lib,
+                 shadow_opts={"early_when_agree": True, "early_now": True},
+                 rt_opts=rt, msell_opts={"after_beaten": True, "beaten_any": True},
+                 gate=None, parent_file=str(ROOT_DIR / HARVEST_LEDGER_0930), parent_patches=WOOL_FIRST,
+                 mf_opts=dict(MF_N6, wheat_weight=0.25, wheat_adapt=True),
+                 annex_opts=dict(ANNEX_GATE),
+                 dlast_opts={"pad": True, "detect": True, "implied": True})
