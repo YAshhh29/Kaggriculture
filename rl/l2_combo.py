@@ -899,3 +899,40 @@ def n8d():
 
 def n8a25d():
     return _n8(0.25, adapt=True, drop_aware=True)
+
+
+def n3w():
+    """N3 + N8's adaptive wheat weight only (no N4-N7 layers): the hedge for the final pair."""
+    return _n3t_with(("annex",), parent_patches=WOOL_FIRST,
+                     mf_opts=dict(MF_FERT, wheat_weight=0.25, wheat_adapt=True),
+                     annex_opts=dict(ANNEX_GATE))
+
+
+N9_EXTRA = ("nb_haodou092_harvest_ledger_r0930",)
+
+
+def n9():
+    """N8 + harvest-ledger's 9-30 version in the shadow library (18 programs)."""
+    rt = {"flow_window": 8, "flow_stat": "median", "trap_guard": 20, "sandwich": True}
+    from rl.l2_shadow import SH_LIBRARY
+    lib = tuple(SH_LIBRARY) + NEW_LIBRARY + M_LIBRARY_EXTRA + tuple(N3_EXTRA) + N5_EXTRA + N9_EXTRA
+    return combo(*SHIP, "msell", "annex", "dlast", "place", shadow_programs=lib,
+                 shadow_opts={"early_when_agree": True, "early_now": True},
+                 rt_opts=rt, msell_opts={"after_beaten": True, "beaten_any": True},
+                 gate=None, parent_file=str(ROOT_DIR / MASTER_2965), parent_patches=WOOL_FIRST,
+                 mf_opts=dict(MF_N6, wheat_weight=0.25, wheat_adapt=True),
+                 annex_opts=dict(ANNEX_GATE),
+                 dlast_opts={"pad": True, "detect": True, "implied": True})
+
+
+def n3w9():
+    """N3w + harvest-ledger's 9-30 version in the shadow library (17 programs)."""
+    from rl.l2_shadow import SH_LIBRARY
+    lib = tuple(SH_LIBRARY) + NEW_LIBRARY + M_LIBRARY_EXTRA + tuple(N3_EXTRA) + N9_EXTRA
+    return combo(*SHIP, "msell", "annex", shadow_programs=lib,
+                 shadow_opts={"early_when_agree": True, "early_now": True},
+                 rt_opts={"flow_window": 8, "flow_stat": "median", "trap_guard": 20},
+                 msell_opts={"after_beaten": True, "beaten_any": True},
+                 gate=None, parent_file=str(ROOT_DIR / MASTER_2965), parent_patches=WOOL_FIRST,
+                 mf_opts=dict(MF_FERT, wheat_weight=0.25, wheat_adapt=True),
+                 annex_opts=dict(ANNEX_GATE))

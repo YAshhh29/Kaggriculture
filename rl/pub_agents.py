@@ -37,3 +37,8 @@ def _make(program):
 
 for _alias, _program in PUBLIC.items():
     globals()[_alias] = _make(_program)
+
+PUBLIC["p_flex0930"] = "nb_flexonafft_multi_route_farming_agent_r0930"
+p_flex0930 = _make(PUBLIC["p_flex0930"])
+PUBLIC["p_hl0930"] = "nb_haodou092_harvest_ledger_r0930"
+p_hl0930 = _make(PUBLIC["p_hl0930"])
