@@ -52,3 +52,27 @@ for _alias, _program in (("p_aurax7v7", "nb_aurax7_shop_router_reactive_v7"),
                          ("p_v43", "nb_arsgorynich_v43_local_confirmed")):
     PUBLIC[_alias] = _program
     globals()[_alias] = _make(_program)
+
+
+# Our own older packaged agents, loaded exactly as Kaggle loads a submission
+# (compiled and exec'd into a fresh namespace; the entry point is the last callable).
+def _package(rel):
+    def factory():
+        from pathlib import Path
+        from rl.candidate_l import parent_namespace
+        _, entry = parent_namespace(Path(__file__).resolve().parents[1] / rel)
+        import inspect
+        try:
+            takes = len(inspect.signature(entry).parameters)
+        except (TypeError, ValueError):
+            takes = 2
+        if takes == 1:           # Kaggle calls one-argument agents with the observation alone
+            one = entry
+            return lambda observation, configuration=None: one(observation)
+        return entry
+    factory.__name__ = rel
+    return factory
+
+
+pkg_h2 = _package("submissions/candidate-h2/main.py")
+pkg_c2 = _package("submissions/candidate-c2/main.py")
