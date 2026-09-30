@@ -44,3 +44,5 @@ arena/index.html
 # Extracted public notebook agents: other people's code, kept for local
 # evaluation only and re-extractable from kaggle_cache/notebooks.
 rl/public/nb_*.py
+# Dated local backups of that folder (byte-identical copies of the above).
+rl/public_bak*/
