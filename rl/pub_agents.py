@@ -44,3 +44,11 @@ PUBLIC["p_hl0930"] = "nb_haodou092_harvest_ledger_r0930"
 p_hl0930 = _make(PUBLIC["p_hl0930"])
 PUBLIC["p_shep"] = "nb_haideptry_the_shepherds_ledger_herd_safe_sovereign"
 p_shep = _make(PUBLIC["p_shep"])
+for _alias, _program in (("p_aurax7v7", "nb_aurax7_shop_router_reactive_v7"),
+                         ("p_pipe8", "nb_nathanjacob_pipe_8_clean_opening"),
+                         ("p_lavesh", "nb_laveshjadon_kagriculture_winning_notebook"),
+                         ("p_guru_gt", "nb_guruprasaath_game_theoretic_master_discrete_optimizat"),
+                         ("p_v53", "nb_ahmedberatoz_v53_opening_signature"),
+                         ("p_v43", "nb_arsgorynich_v43_local_confirmed")):
+    PUBLIC[_alias] = _program
+    globals()[_alias] = _make(_program)
