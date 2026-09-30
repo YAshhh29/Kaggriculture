@@ -25,19 +25,25 @@ from rl.candidate_l import l_stack
 ROOT_DIR = Path(__file__).resolve().parents[1]
 
 ALL = ("fert", "feed", "crop", "rt", "lot", "dump", "labour", "shadow", "msell", "race", "annex",
-       "runner", "dlast", "place", "safety", "shed")
+       "runner", "dlast", "place", "safety", "shed", "book")
 
 
 def combo(*names, shadow_mode="both", shadow_programs=("A",), lot_opts=None,
           shadow_opts=None, gate=120, rt_opts=None, race_opts=None, msell_opts=None,
           crop_opts=None, parent_file=None, env_patch=None, parent_patches=None,
-          annex_opts=None, mf_opts=None, dlast_opts=None, runner_opts=None):
+          annex_opts=None, mf_opts=None, dlast_opts=None, runner_opts=None, book_opts=None):
     names = set(names)
     unknown = names - set(ALL)
     if unknown:
         raise ValueError(f"unknown layers {unknown}")
 
+    book = {}
+
     def inner(agent, env):
+        if "book" in names:           # N11: remember the parent's own sales (innermost)
+            from rl.own_book import ob_record
+            agent = book["rec"] = ob_record(agent)
+            book["env"] = env
         if env_patch:                 # constants of the parent read at call time (N3)
             env.update(env_patch)
         if "fert" in names:
@@ -91,6 +97,9 @@ def combo(*names, shadow_mode="both", shadow_programs=("A",), lot_opts=None,
         if "shed" in names:
             from rl.shed_guard import sg_wrap
             agent = sg_wrap(agent)
+        if "book" in names:
+            from rl.own_book import ob_wrap
+            agent = ob_wrap(agent, book["env"], book["rec"], **(book_opts or {}))
         if "safety" in names:
             from rl.safety import sf_wrap
             agent = sf_wrap(agent, name="L2")
@@ -1187,3 +1196,31 @@ def n10s():
 def n10():
     """Agent N10 = N9 + rl/shed_guard.py (the day-end drop destroys nothing)."""
     return n10s()
+
+
+def n11():
+    """N10 + rl/own_book.py (the parent's rival-sale trackers see what we really sold)."""
+    rt = {"flow_window": 8, "flow_stat": "median", "trap_guard": 20, "sandwich": True}
+    from rl.l2_shadow import SH_LIBRARY
+    lib = tuple(SH_LIBRARY) + NEW_LIBRARY + M_LIBRARY_EXTRA + tuple(N3_EXTRA) + N5_EXTRA + N9_EXTRA
+    return combo(*SHIP, "msell", "annex", "dlast", "place", "shed", "book", shadow_programs=lib,
+                 shadow_opts={"early_when_agree": True, "early_now": True},
+                 rt_opts=rt, msell_opts={"after_beaten": True, "beaten_any": True},
+                 gate=None, parent_file=str(ROOT_DIR / MASTER_2965), parent_patches=WOOL_FIRST,
+                 mf_opts=dict(MF_N6, wheat_weight=0.25, wheat_adapt=True),
+                 annex_opts=dict(ANNEX_GATE),
+                 dlast_opts={"pad": True, "detect": True, "implied": True})
+
+
+def n11b():
+    """N11 with the race/PREDICT snapshot rebuilt wholly from the final action (V53's way)."""
+    rt = {"flow_window": 8, "flow_stat": "median", "trap_guard": 20, "sandwich": True}
+    from rl.l2_shadow import SH_LIBRARY
+    lib = tuple(SH_LIBRARY) + NEW_LIBRARY + M_LIBRARY_EXTRA + tuple(N3_EXTRA) + N5_EXTRA + N9_EXTRA
+    return combo(*SHIP, "msell", "annex", "dlast", "place", "shed", "book", shadow_programs=lib,
+                 shadow_opts={"early_when_agree": True, "early_now": True},
+                 rt_opts=rt, msell_opts={"after_beaten": True, "beaten_any": True},
+                 gate=None, parent_file=str(ROOT_DIR / MASTER_2965), parent_patches=WOOL_FIRST,
+                 mf_opts=dict(MF_N6, wheat_weight=0.25, wheat_adapt=True),
+                 annex_opts=dict(ANNEX_GATE), book_opts={"race_final": True},
+                 dlast_opts={"pad": True, "detect": True, "implied": True})

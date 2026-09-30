@@ -97,14 +97,14 @@ _L2_ENV = globals()
 _L2 = {{}}
 {loads}
 _l2_agent = {parent_entry}                  # the parent's entry point (Kaggle's last callable)
-_l2_agent = _L2["animals"]["an_wrap"](_l2_agent, _L2_ENV, {{}})
+{book_rec_line}_l2_agent = _L2["animals"]["an_wrap"](_l2_agent, _L2_ENV, {{}})
 _l2_agent = _L2["wheat_rt"]["rt_inner"](_l2_agent, _L2_ENV{rt})
 {lot_line}_l2_agent = _L2["market_front"]["mf_wrap"](_l2_agent{mf_args})
 _l2_agent = _L2["labour"]["lb_wrap"](_l2_agent)
 _l2_agent = _L2["shadow"]["shadow_wrap"](_l2_agent, programs=_L3_LIBRARY,
                                          reorder=True, early=True,
                                          factories=_L3_FACTORIES{agree})
-{msell_line}{annex_line}{dlast_line}{place_line}{shed_line}agent_l3 = _L2["safety"]["sf_wrap"](_l2_agent, name="{agent_name}")
+{msell_line}{annex_line}{dlast_line}{place_line}{shed_line}{book_line}agent_l3 = _L2["safety"]["sf_wrap"](_l2_agent, name="{agent_name}")
 '''
 
 
@@ -131,7 +131,7 @@ def entry_name(text: str) -> str:
 def build(deficit: int, library=SH_LIBRARY, name="L3", lot=True, agree=False,
           rt=None, msell=None, early_now=False, parent_path=None, gate=True, annex=None,
           parent_patches=(), sell_first=(), dlast=None, cap_counters=False, place_guard=False,
-          wheat_weight=1.0, wheat_adapt=False, shed_guard=False) -> str:
+          wheat_weight=1.0, wheat_adapt=False, shed_guard=False, own_book=False) -> str:
     """rt: keyword settings for the round trip (e.g. flow_window=8, flow_stat="median");
     annex: settings for the tomato annex (N3ta), None to leave it out."""
     src = parent_source(Path(parent_path)) if parent_path else PARENT_FILE.read_text(encoding="utf-8")
@@ -153,6 +153,9 @@ def build(deficit: int, library=SH_LIBRARY, name="L3", lot=True, agree=False,
     if msell is not None:     # Agent M: the in-game opponent-clock seller, outside the shadow
         layers.insert(layers.index(next(x for x in layers if x[0] == "safety")),
                       ("m_sell", "rl/m_sell.py", []))
+    if own_book:              # N11: the parent's rival-sale trackers see what we really sold
+        layers.insert(layers.index(next(x for x in layers if x[0] == "safety")),
+                      ("own_book", "rl/own_book.py", []))
     if shed_guard:            # N10: sell/cut purchases so the day-end drop destroys nothing
         layers.insert(layers.index(next(x for x in layers if x[0] == "safety")),
                       ("shed_guard", "rl/shed_guard.py", []))
@@ -214,6 +217,10 @@ def build(deficit: int, library=SH_LIBRARY, name="L3", lot=True, agree=False,
                                                       if place_guard else ""),
                                           shed_line=('_l2_agent = _L2["shed_guard"]["sg_wrap"](_l2_agent)' + chr(10)
                                                      if shed_guard else ""),
+                                          book_rec_line=('_l2_agent = _OB_REC = _L2["own_book"]["ob_record"](_l2_agent)' + chr(10)
+                                                         if own_book else ""),
+                                          book_line=('_l2_agent = _L2["own_book"]["ob_wrap"](_l2_agent, _L2_ENV, _OB_REC)' + chr(10)
+                                                     if own_book else ""),
                                           dlast_line=("" if dlast is None else
                                                       '_l2_agent = _L2["draw_last"]["dl_wrap"](_l2_agent'
                                                       + "".join(f", {k}={v!r}" for k, v in dlast.items())
@@ -257,6 +264,8 @@ def main() -> None:
                     help="market_front scales wheat orders' damage weight (N8: goods sales ahead of the trip)")
     ap.add_argument("--shed-guard", action="store_true",
                     help="never let the day-end drop overflow the shed (N10)")
+    ap.add_argument("--own-book", action="store_true",
+                    help="N11: correct the parent's records of our own sales after our layers (rl/own_book.py)")
     ap.add_argument("--wheat-adapt", action="store_true",
                     help="market_front restores full wheat weight once the rival round-trips wheat (N8)")
     ap.add_argument("--terminal-step", type=int, default=648,
@@ -299,7 +308,7 @@ def main() -> None:
                                             if args.terminal_step != 648 else ())),
                          sell_first=tuple(args.sell_first), cap_counters=args.cap_counters,
                          place_guard=args.place_guard, wheat_weight=args.wheat_weight,
-                         wheat_adapt=args.wheat_adapt, shed_guard=args.shed_guard,
+                         wheat_adapt=args.wheat_adapt, shed_guard=args.shed_guard, own_book=args.own_book,
                          dlast=(None if args.dlast is None else
                                 {k: {"True": True, "False": False}.get(v, int(v) if v.isdigit() else v)
                                  for k, _, v in (x.partition("=") for x in args.dlast)})),
