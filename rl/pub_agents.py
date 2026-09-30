@@ -42,3 +42,5 @@ PUBLIC["p_flex0930"] = "nb_flexonafft_multi_route_farming_agent_r0930"
 p_flex0930 = _make(PUBLIC["p_flex0930"])
 PUBLIC["p_hl0930"] = "nb_haodou092_harvest_ledger_r0930"
 p_hl0930 = _make(PUBLIC["p_hl0930"])
+PUBLIC["p_shep"] = "nb_haideptry_the_shepherds_ledger_herd_safe_sovereign"
+p_shep = _make(PUBLIC["p_shep"])

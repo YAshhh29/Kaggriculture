@@ -936,3 +936,177 @@ def n3w9():
                  gate=None, parent_file=str(ROOT_DIR / MASTER_2965), parent_patches=WOOL_FIRST,
                  mf_opts=dict(MF_FERT, wheat_weight=0.25, wheat_adapt=True),
                  annex_opts=dict(ANNEX_GATE))
+
+
+def _n9_annex(**annex):
+    """N9 with a different tomato-annex gate/size (top-bracket experiments)."""
+    rt = {"flow_window": 8, "flow_stat": "median", "trap_guard": 20, "sandwich": True}
+    from rl.l2_shadow import SH_LIBRARY
+    lib = tuple(SH_LIBRARY) + NEW_LIBRARY + M_LIBRARY_EXTRA + tuple(N3_EXTRA) + N5_EXTRA + N9_EXTRA
+    return combo(*SHIP, "msell", "annex", "dlast", "place", shadow_programs=lib,
+                 shadow_opts={"early_when_agree": True, "early_now": True},
+                 rt_opts=rt, msell_opts={"after_beaten": True, "beaten_any": True},
+                 gate=None, parent_file=str(ROOT_DIR / MASTER_2965), parent_patches=WOOL_FIRST,
+                 mf_opts=dict(MF_N6, wheat_weight=0.25, wheat_adapt=True),
+                 annex_opts=annex,
+                 dlast_opts={"pad": True, "detect": True, "implied": True})
+
+
+def n10a():
+    """N9, annex gate loosened: 2 tomato shops, shortage 100."""
+    return _n9_annex(min_tomato_shops=2, min_shortage=100)
+
+
+def n10b():
+    """N9, annex gate off (fires whenever the parent's project conditions allow)."""
+    return _n9_annex()
+
+
+def n10c():
+    """N9, 10-tile annex (SE rows 7-8) behind the standard gate."""
+    return _n9_annex(min_tomato_shops=3, min_shortage=140, rows=(7, 8))
+
+
+def _imit_patch(route_file, terminal=True):
+    """Parent patch: add routes from `route_file` ({"routes": {id: tape}, "table": {"S1|S2": id}})
+    and switch to the table's route at step 144 when the first two shops match."""
+    return [(
+        "_IMPL=make_agent(_ROUTES,router=_router,**_SETTINGS)",
+        "import json as _imj\n"
+        f"_IMD=_imj.load(open(r'{route_file}',encoding='utf-8'))\n"
+        "for _imk,_imv in _IMD['routes'].items():\n"
+        "    _ROUTES[int(_imk)]=_imv\n"
+        "_IMT={tuple(k.split('|')):int(v) for k,v in _IMD['table'].items()}\n"
+        f"_IM_TERMINAL={bool(terminal)}\n"
+        "_router_base=_router\n"
+        "def _router(observation,step,state):\n"
+        "    r=_router_base(observation,step,state)\n"
+        "    if step>=144:\n"
+        "        if 'im_route' not in state:\n"
+        "            shops=tuple((_get(_get(observation,'town',{}),'unlocked_shops',[]) or [])[:2])\n"
+        "            state['im_route']=_IMT.get(shops)\n"
+        "        if state['im_route'] is not None and not (_IM_TERMINAL and step>=648):\n"
+        "            return state['im_route']\n"
+        "    return r\n"
+        "_IMPL=make_agent(_ROUTES,router=_router,**_SETTINGS)")]
+
+
+def _imit(route_file, terminal=True):
+    rt = {"flow_window": 8, "flow_stat": "median", "trap_guard": 20, "sandwich": True}
+    from rl.l2_shadow import SH_LIBRARY
+    lib = tuple(SH_LIBRARY) + NEW_LIBRARY + M_LIBRARY_EXTRA + tuple(N3_EXTRA) + N5_EXTRA + N9_EXTRA
+    return combo(*SHIP, "msell", "annex", "dlast", "place", shadow_programs=lib,
+                 shadow_opts={"early_when_agree": True, "early_now": True},
+                 rt_opts=rt, msell_opts={"after_beaten": True, "beaten_any": True},
+                 gate=None, parent_file=str(ROOT_DIR / MASTER_2965),
+                 parent_patches=list(WOOL_FIRST) + _imit_patch(route_file, terminal),
+                 mf_opts=dict(MF_N6, wheat_weight=0.25, wheat_adapt=True),
+                 annex_opts=dict(ANNEX_GATE),
+                 dlast_opts={"pad": True, "detect": True, "implied": True})
+
+
+IMIT_DIR = ROOT_DIR / "rl" / "data" / "imit"
+
+
+def imit_a():
+    """Top-team routes mined from corpus half A (even episode ids)."""
+    return _imit(str(IMIT_DIR / "routes_a.json"))
+
+
+def imit_b():
+    """Top-team routes mined from corpus half B (odd episode ids)."""
+    return _imit(str(IMIT_DIR / "routes_b.json"))
+
+
+def _n9_terminal(step):
+    """N9 with the parent's terminal liquidation route starting at `step` instead of 648."""
+    rt = {"flow_window": 8, "flow_stat": "median", "trap_guard": 20, "sandwich": True}
+    from rl.l2_shadow import SH_LIBRARY
+    lib = tuple(SH_LIBRARY) + NEW_LIBRARY + M_LIBRARY_EXTRA + tuple(N3_EXTRA) + N5_EXTRA + N9_EXTRA
+    patch = [("if step>=648 and not state.get('day27'):", f"if step>={int(step)} and not state.get('day27'):")]
+    return combo(*SHIP, "msell", "annex", "dlast", "place", shadow_programs=lib,
+                 shadow_opts={"early_when_agree": True, "early_now": True},
+                 rt_opts=rt, msell_opts={"after_beaten": True, "beaten_any": True},
+                 gate=None, parent_file=str(ROOT_DIR / MASTER_2965),
+                 parent_patches=list(WOOL_FIRST) + patch,
+                 mf_opts=dict(MF_N6, wheat_weight=0.25, wheat_adapt=True),
+                 annex_opts=dict(ANNEX_GATE),
+                 dlast_opts={"pad": True, "detect": True, "implied": True})
+
+
+def n11t624():
+    return _n9_terminal(624)
+
+
+def n11t640():
+    return _n9_terminal(640)
+
+
+def n11t660():
+    return _n9_terminal(660)
+
+
+def _n9_patched(extra):
+    """N9 with extra exact-text patches to the 2965 parent."""
+    rt = {"flow_window": 8, "flow_stat": "median", "trap_guard": 20, "sandwich": True}
+    from rl.l2_shadow import SH_LIBRARY
+    lib = tuple(SH_LIBRARY) + NEW_LIBRARY + M_LIBRARY_EXTRA + tuple(N3_EXTRA) + N5_EXTRA + N9_EXTRA
+    return combo(*SHIP, "msell", "annex", "dlast", "place", shadow_programs=lib,
+                 shadow_opts={"early_when_agree": True, "early_now": True},
+                 rt_opts=rt, msell_opts={"after_beaten": True, "beaten_any": True},
+                 gate=None, parent_file=str(ROOT_DIR / MASTER_2965),
+                 parent_patches=list(WOOL_FIRST) + list(extra),
+                 mf_opts=dict(MF_N6, wheat_weight=0.25, wheat_adapt=True),
+                 annex_opts=dict(ANNEX_GATE),
+                 dlast_opts={"pad": True, "detect": True, "implied": True})
+
+
+def n12early():
+    """N9 with the parent's EarlyCycle opening."""
+    return _n9_patched([("_ALT_MODE = 'HybridOpening'", "_ALT_MODE = 'EarlyCycle'")])
+
+
+def n12tomato():
+    """N9 with the parent's TomatoInsteadOfCow opening."""
+    return _n9_patched([("_ALT_MODE = 'HybridOpening'", "_ALT_MODE = 'TomatoInsteadOfCow'")])
+
+
+def n11t600():
+    return _n9_terminal(600)
+
+
+def n11t672():
+    return _n9_terminal(672)
+
+
+def n13gen():
+    """N9 on the generic route 0 all game (no shop-specific route at step 144); terminal at 648."""
+    return _n9_patched([("    if step>=144 and not state.get('day6'):", "    if False and step>=144 and not state.get('day6'):")])
+
+
+def n13gen624():
+    """n13gen with the terminal route from step 624."""
+    return _n9_patched([("    if step>=144 and not state.get('day6'):", "    if False and step>=144 and not state.get('day6'):"),
+                        ("if step>=648 and not state.get('day27'):", "if step>=624 and not state.get('day27'):")])
+
+
+def n10():
+    """Agent N10 = N9 + the 2965 parent's terminal route from step 624 (day 26) instead of 648."""
+    return _n9_terminal(624)
+
+
+def _n9_project_day(day):
+    """N9 with the parent's V219 tomato project starting on `day` instead of 18."""
+    return _n9_patched([
+        ("    if step==432:state['eligible']=_v219_qualifies(observation,native)",
+         f"    if step=={24 * int(day)}:state['eligible']=_v219_qualifies(observation,native)"),
+        ("    if not state.get('eligible') or day<18:return action",
+         f"    if not state.get('eligible') or day<{int(day)}:return action")])
+
+
+def n14d14():
+    return _n9_project_day(14)
+
+
+def n14d16():
+    return _n9_project_day(16)

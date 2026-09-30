@@ -252,6 +252,8 @@ def main() -> None:
                     help="market_front scales wheat orders' damage weight (N8: goods sales ahead of the trip)")
     ap.add_argument("--wheat-adapt", action="store_true",
                     help="market_front restores full wheat weight once the rival round-trips wheat (N8)")
+    ap.add_argument("--terminal-step", type=int, default=648,
+                    help="step at which the 2965 parent switches to its terminal route (N10: 624)")
     ap.add_argument("--wool-first", action="store_true",
                     help="patch the parent's V233 crew to deliver wool first (rl.l2_combo.WOOL_FIRST)")
     ap.add_argument("--sell-first", nargs="*", default=[],
@@ -284,7 +286,10 @@ def main() -> None:
     out.write_text(build(args.deficit, tuple(args.library), args.name, lot=not args.no_lot,
                          agree=args.agree, rt=rt, msell=msell, early_now=args.early_now,
                          parent_path=args.parent, gate=not args.no_gate, annex=annex,
-                         parent_patches=(WOOL_FIRST if args.wool_first else ()),
+                         parent_patches=(tuple(WOOL_FIRST if args.wool_first else ())
+                                         + ((("if step>=648 and not state.get('day27'):",
+                                              f"if step>={args.terminal_step} and not state.get('day27'):"),)
+                                            if args.terminal_step != 648 else ())),
                          sell_first=tuple(args.sell_first), cap_counters=args.cap_counters,
                          place_guard=args.place_guard, wheat_weight=args.wheat_weight,
                          wheat_adapt=args.wheat_adapt,
