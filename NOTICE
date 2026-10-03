@@ -1,0 +1,8 @@
+Kaggriculture agents
+Copyright 2026 Yash Jain
+
+This project is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+Some files in submissions/ embed programs from public Kaggle notebooks that
+were shared under the Apache License, Version 2.0. Each embedded program keeps
+its original copyright and licence notices.

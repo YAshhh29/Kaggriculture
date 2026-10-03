@@ -1,24 +1,13 @@
 """Agent N, part 1: grow what the town will pay for (three quadrants, A's crew).
 
-A's route plants wheat on the same tiles cycle after cycle and, in towns where
-strawberries still sell high late in the game, digs its (spent) strawberries
-out to make room for more wheat. ShunkiKyoya (-22.5k against L2) kept a
-second strawberry batch alive and sold 102 strawberries from day 26 to our 44.
-
-A strawberry plant produces 4 times, every 2 days from 10 days after planting
-(+2 a time when fertilized and watered), and dies only after two days unwatered.
-A's route keeps visiting a wheat tile every day or two to water it, harvests it
-every few days, and re-plants it -- a PLANT on an occupied tile is a no-op
-that costs no seed. So when the route plants wheat between `first_day` and
-`last_day`, N plants a strawberry instead; the route's own visits then water
-and harvest it, and its harvests land on days 21-29. N buys the seeds, stops
-any DIG of a converted tile, and sells the strawberries the route never
-planned to sell as they reach the shed (V9-herd style).
-
-The gate is strict (towns where the day-11 strawberry quote is at least
-`min_price` and enough shops eat strawberries): in most towns both mirror
-farms flood the same strawberry batch and the late price collapses (day-24
-median 7-12 when the day-11 quote is below 180).
+In towns where strawberries still sell high late in the game, A's route keeps
+re-planting wheat. When the route plants wheat between `first_day` and
+`last_day`, this layer plants a strawberry instead; the route's own visits then
+water and harvest it (a PLANT on an occupied tile is a free no-op), with
+harvests on days 21-29. It buys the seeds, blocks any DIG of a converted tile
+and sells the extra strawberries as they reach the shed. The gate is strict
+(day-11 strawberry quote at least `min_price`, enough strawberry shops): in
+most towns both mirror farms flood the same batch and the late price collapses.
 """
 
 from __future__ import annotations

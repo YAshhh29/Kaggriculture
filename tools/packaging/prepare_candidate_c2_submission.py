@@ -1,4 +1,4 @@
-"""Prepare Candidate C2 (the Candidate C stack over the Giulio clone)."""
+"""Prepare Candidate C2 (the Candidate C stack over a second distilled elite route)."""
 
 from __future__ import annotations
 

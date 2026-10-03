@@ -16,8 +16,8 @@ this project has been guessing at:
 * **selling behaviour** -- and specifically how sale volume is *spread*.
   Whether the leaders dump or pace decides the market demand engine
   argument on evidence instead of on theory: pacing measured negative on
-  our own high-volume clones (10.8l), and the open question was whether
-  that is a fact about the game or a fact about those clones.
+  our own high-volume route-following agents (10.8l), and the open
+  question was whether that is a fact about the game or about those agents.
 * **idleness** -- the fraction of worker turns spent on PASS or on moving,
   which is the cost side of hiring another hand.
 

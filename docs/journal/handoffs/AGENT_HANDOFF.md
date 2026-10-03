@@ -24,7 +24,7 @@ Non-negotiables, from the user:
 - **API tokens are session-only.** Pass inline on one command
   (`KAGGLE_API_TOKEN=... python -m ...`). **Never write a token into any
   file** — not `.env`, not a script, not a note.
-- **Agent H is not to be described as a clone.** It is a public Apache-2.0
+- **Agent H is not to be described as someone else's agent.** It is a public Apache-2.0
   base with our own demand layer on top, and the licence notices must stay.
 - **Do not compare their agents to other people's agents** ("D" or previous
   assistants' work) unless they ask.
@@ -382,7 +382,7 @@ Interpreter `./.conda/python.exe`, always `PYTHONIOENCODING=utf-8`.
 | refresh the ladder snapshot | `KAGGLE_API_TOKEN=... python -m tools.data.fetch_leaderboard_records` then `python -m tools.data.prune_stale_tapes --apply` |
 
 **`inspect_g`** plays G against many replays per opponent and judges *every
-move both farms make* by running the engine's own action code on a copy of
+move both farms make* by running the engine's own action code on a snapshot of
 the state — so "that move did nothing" is the engine's verdict. It prices
 losses (rot, escapes, early harvests, overflow, stranded goods, missed care)
 in coins and ranks them. `--against` needs the baseline's label **exactly**;

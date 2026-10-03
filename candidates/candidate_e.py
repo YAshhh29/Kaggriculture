@@ -1,42 +1,14 @@
-"""Candidate E: an agent that decides for itself what this town wants.
+"""Candidate E: an agent that generates its own actions from town demand.
 
-Every earlier candidate replays a recorded game. Section 9v proved that
-architecture cannot be taught to adapt -- a tape's actions are coupled
-through cash, shed space and pickup timing, so even swapping a cow for a
-sheep bankrupts it and strands pastures empty. And section 9v measured
-what that costs: adapting production to the town's demand draw correlates
-+0.672 with buying sheep in a wool town for teams at 2850+, +0.323 in the
-middle band, and **+0.000 below 2400**, where every tape necessarily sits.
+Each turn every worker is scored against every reachable job with
+`candidates.economics`, which prices a job in coins from the simulator's
+constants, and jobs are ranked by coins per turn spent, travel included. The
+herd target and crop choice come from `candidates.demand`, which reads the
+town's unlocked shops and computes what it will still absorb, so E raises sheep
+in a wool town and cows where wool is worthless.
 
-So E generates its own actions. Two ideas drive it.
-
-**Value, not priority.** Each turn every worker is scored against every
-reachable job using `candidates.economics`, which prices a job in coins from the
-simulator's own constants -- a watering is worth the yield unit it adds
-(two if fertilized), feeding a starving animal is worth its whole
-remaining production stream, and a crop that cannot mature before the
-season ends is worth nothing at all. Jobs are then ranked by coins per
-turn spent, travel included, so a worker never idles while paid work
-exists and never walks past a good job to reach a better one further
-away. Section 9q measured our old engine idling 985 turns a game against
-a tape's 322; that is the gap this closes.
-
-**Demand, not habit.** The herd target and the crop choice come from
-`candidates.demand`, which reads `observation["town"]["unlocked_shops"]` and
-computes exactly what the town will still absorb. In a game where
-YARN_STORE was drawn twice, wool ends at 239 a unit and E builds sheep; in
-a game where it never appeared, wool ends at 1 and E builds cows instead.
-That is the behaviour the top of the ladder shows and no clone can.
-
-Deliberately conservative choices, each for a measured reason:
-
-* three quadrants, never four -- section 9i measured 4-quadrant players
-  winning 8.3% against 51.2%, and the top 500 use three essentially
-  always;
-* wheat is grown, not bought, and reserved for feed before sale, because
-  winners sell less wheat and buy less of it (section 9m, p=0.031);
-* melon is capped, because it appears in no shop and the town absorbs
-  only ~30 a game (section 9u) however much is grown.
+Conservative by design: three quadrants, never four; wheat is grown and kept
+for feed before sale; melon is capped because the town absorbs only ~30 a game.
 """
 
 from __future__ import annotations
@@ -348,30 +320,16 @@ def crop_rate_value(
 ) -> float:
     """Coins per tile-day from planting this crop now, priced at the margin.
 
-    This is the calculation Agent E's whole field plan rests on, and it is
-    three things at once that no spot-price ranking can be.
+    The calculation E's field plan rests on. It is marginal: units are
+    valued after everything already growing has been sold into the same
+    market, so the thirteenth melon tile is worth a fraction of the first.
+    It is demand-aware: the town's absorption is subtracted before the price
+    is read, so carrot is worth planting in a PET_CAFE town and worthless in
+    another. And it is per tile-day, so a cheap fast crop is not out-ranked
+    by an expensive slow one.
 
-    It is **marginal**: a crop is valued at what its units will fetch after
-    everything already growing has been sold into the same market, so the
-    thirteenth melon tile is correctly worth a fraction of the first. It is
-    **demand-aware**: the town lifts inventory back out of the market all
-    game, and that absorption is subtracted before the price is read, which
-    is why carrot is worth planting in a PET_CAFE town and worthless in
-    another. And it is **per tile-day**, so a cheap fast crop is not
-    out-ranked by an expensive slow one merely for having a bigger number
-    on the label.
-
-    Measured against an elite route, this is where the money actually is --
-    realised coins per unit sold, not base price:
-
-        melon 180, tomato 111, carrot 70, strawberry 59, wheat 43,
-        wool 11, milk 11
-
-    Wheat holds 43 against a base of 25 all game because five of the eight
-    shops buy it and both players are short of it for feed. Melon pays 180
-    but the market only absorbs about 150 a game between both players.
-    Wool and milk, which every recorded route builds its herd around, are
-    worth eleven coins a unit.
+    Realised coins per unit on an elite route: melon 180, tomato 111,
+    carrot 70, strawberry 59, wheat 43, wool 11, milk 11.
     """
     spec = CROPS.get(crop)
     if spec is None or not crop_can_mature(crop, day, day):

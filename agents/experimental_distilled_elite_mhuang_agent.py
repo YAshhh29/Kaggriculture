@@ -1,40 +1,13 @@
-"""Behavior clone of a route recorded on the *current* ladder, not the
-2026-09-04 cache.
+"""Route-following agent distilled from a recorded top-player game.
 
-Source: episode 106610780, Matthew Huang, live rating 2872.8.
+Most opponents we are drawn against run the public getting-started notebook
+unmodified, so routes chosen from that population could only match the
+field; this route comes from a stronger team on the current ladder that
+plays a different opening. Under the same guard stack it won 92.2% of 64
+games against live ladder opponents it was not selected on.
 
-**Why this route replaced RB25det.** Every route this project had to
-choose from came from `kaggle_cache/`, captured on 2026-09-04, and every
-one was screened against opponents drawn from that same cache. Profiling
-the live corpus by what each agent *buys* showed what that cost us:
-fourteen of the twenty-four teams we are actually drawn against post an
-identical fingerprint -- 5 carrot seeds, 198 wheat, no geese -- which is
-the public getting-started notebook run unmodified. RB25det's own
-fingerprint is 6 carrot, 185 wheat, no geese. It is a member of that
-family, so the search could only ever have found a good member of the
-field we already sit in.
-
-None of the nine teams rated above 2765 runs that opening. Screened under
-the identical A+B guard stack against 32 live ladder opponents the route
-was **not** selected against, both seats, 64 games:
-
-    route                          mean coins   win rate   median margin
-    Candidate D's (Andrey)             64,501     40.6%          -1,085
-    RB25det (Candidate F until now)    67,514     37.5%          -3,786
-    **this one (Matthew Huang)**       78,554   **92.2%**      **+18,030**
-
-**Why this game of his and not another.** Section 9k measured that tape
-quality belongs to the individual game rather than the player, so all
-eight captured games of this submission were screened separately. The four
-recorded during its climb all scored 87.5-93.8%; of the four recorded
-later at 2873 against strong opposition, two scored 25%. A tape recorded
-in a contested market encodes adaptations to scarcity that do not fit when
-replayed into a market that is not contested the same way. This one is his
-validation self-play, and it holds the best margin of the four.
-
-Same open-loop mechanism as the other distilled agents: a per-step lookup
-into the recorded action sequence, indexed `step + 1` because the action
-recorded at replay index k was chosen while observing step k-1.
+Open-loop playback: the action recorded at replay index k was chosen while
+observing step k-1, so `decide` looks up index `step + 1`.
 """
 
 from __future__ import annotations

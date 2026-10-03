@@ -10,7 +10,7 @@ margin 2,889.
 
 This fixes the panel. For each opponent we have actually met on the
 ladder, it lists that submission's episodes, downloads a few, and keeps
-only the opponent's 720-action tape -- the same compact clone format
+only the opponent's 720-action tape -- the same compact tape format
 `kaggle_cache/clones/` already uses. The replays themselves are 30 MB
 apiece and are discarded once the tape is out.
 

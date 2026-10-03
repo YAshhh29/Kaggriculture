@@ -1,12 +1,8 @@
-"""Build a callable agent that replays a fixed, real recorded action tape.
+"""Build an agent that replays a fixed, recorded 720-step action tape.
 
-Same convention as agents/experimental_distilled_elite_pasture_agent.py and
-agents/experimental_distilled_elite_giulio_agent.py, generalized over any
-720-record action list: a pure, open-loop, per-step lookup with no internal
-cursor, so it is legal to hand it observations starting at any step. Used to
-turn kaggle_cache/clones/opp_<episode_id>.json (real opponents' actual
-action sequences, extracted by tools/data/build_opponent_clones.py) into
-local head-to-head opponents for benchmark.run_game.
+A pure, open-loop, per-step lookup with no internal cursor, so it can be
+handed observations starting at any step. Used to turn real opponents'
+recorded games into local head-to-head opponents for `benchmark.run_game`.
 """
 
 from __future__ import annotations

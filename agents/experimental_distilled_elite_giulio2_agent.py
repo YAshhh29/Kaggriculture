@@ -1,25 +1,12 @@
-"""Behavior clone of the strongest tape found by systematic search.
+"""Route-following agent distilled from a recorded top-player game.
 
-Source: episode 105531280, player 1 ("Giulio Ravasio", public leaderboard
-2908.0 at capture), the winning side of a 2026-09-04 top-table game.
+Chosen by the same search as `experimental_distilled_elite_andrey_agent.py`:
+191 candidate recordings from teams rated 2400+, scored on our own final
+reward across fixed seeds with the same guard stack. It is a different game
+from the one behind `experimental_distilled_elite_giulio_agent.py`.
 
-This is *not* the same Giulio game Candidate C2 clones. C2 uses episode
-105144807, captured 2026-09-03. This one was selected by scoring **191
-candidate tapes** -- every side of every cached replay belonging to a team
-rated 2400+ on the game that team won -- on our own final reward across
-fixed seeds with the same guard stack. See docs/research/GOAL.md section 9n.
-
-Why own-reward drove the search rather than win rate: section 9m measured
-that win rate against frozen tapes overstates live strength by roughly
-forty points, while our own coin production is almost entirely
-self-determined (a probe showed byte-identical farm play across seeds,
-with reward moving only through market prices). Coins transfer; tape-panel
-win rate does not.
-
-Same open-loop mechanism as the other distilled agents: a per-step lookup
-into the recorded action sequence, indexed `step + 1` because the action
-recorded at replay index k was the one chosen while observing step k-1
-(verified empirically against the simulator, not assumed).
+Open-loop playback: the action recorded at replay index k was chosen while
+observing step k-1, so `decide` looks up index `step + 1`.
 """
 
 from __future__ import annotations

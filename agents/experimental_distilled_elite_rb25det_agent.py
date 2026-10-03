@@ -1,35 +1,12 @@
-"""Behavior clone of the route that wins most often, not the one that
-scores most.
+"""Route-following agent distilled from a recorded top-player game.
 
-Source: episode 105419382, the "RB25det" side.
+Selected on win rate rather than mean coins, because the ladder rates match
+outcomes, not margins. Against 80 real opponents from the cached corpus
+(160 games, both seats, same guard stack) it won 95% of games, against 85%
+for the highest-scoring route, while scoring about 8,000 fewer coins a game.
 
-**Why this route and not the higher-scoring one.** Kaggle's simulation
-ladder rates on match *outcomes* -- a game won by one coin counts exactly
-as much as a game won by fifty thousand -- but every route this project
-has selected, Candidate D's included, was chosen by ranking candidates on
-mean reward. Screened under the identical A+B guard stack against 80 real
-opponents drawn from the cached corpus, both seats, 160 games each:
-
-    route                     mean coins   win rate
-    Candidate D's (Andrey)       100,815        85%   (136/160)
-    **this one (RB25det)**        92,459    **95%**   (152/160)
-
-It gives up about 8,000 coins a game and wins sixteen more games in a
-hundred and sixty.
-
-**The counter-argument, and why it is answered.** The Andrey agent's own
-docstring explains that it chose own-reward over win rate deliberately,
-because section 9m measured that win rate against *frozen tapes*
-overstates live strength by roughly forty points, while coin production is
-largely self-determined and transfers. That is a fair objection to
-absolute win rates -- but not to a relative ordering measured on an
-identical panel, and the ordering is checked again in 10.8k against the
-forty strongest opponents in the corpus specifically, which is the regime
-where the objection would bite hardest.
-
-Same open-loop mechanism as the other distilled agents: a per-step lookup
-into the recorded action sequence, indexed `step + 1` because the action
-recorded at replay index k was chosen while observing step k-1.
+Open-loop playback: the action recorded at replay index k was chosen while
+observing step k-1, so `decide` looks up index `step + 1`.
 """
 
 from __future__ import annotations

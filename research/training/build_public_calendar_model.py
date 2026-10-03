@@ -1,4 +1,4 @@
-"""Build a compact behavior-cloning calendar from a public replay."""
+"""Build a compact action calendar distilled from a public replay."""
 
 from __future__ import annotations
 

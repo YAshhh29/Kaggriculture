@@ -57,7 +57,7 @@ ALIASES = {
     "I": "candidates.candidate_i:agent",
     "aurax7": "stack.public_agents:aurax7",
     "v34": "stack.public_agents:v34",
-    # Agent A: the exact packaged file (a verbatim public clone). Agent L: that
+    # Agent A: the exact packaged file (a public program, unchanged). Agent L: that
     # file plus our own layers. Agent M: bespoke.
     "A": "file:submissions/agent-a/main.py",
     "L": "stack.candidate_l:front_gate120",       # the live Agent L

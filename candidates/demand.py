@@ -1,27 +1,12 @@
 """Read the town's demand for each product from the live observation.
 
-The simulator's demand engine (`_town_consume` in kaggriculture.py) is
-fully deterministic and fully observable:
-
-* every `townShopSellInterval` (4) steps, each unlocked shop instance
-  removes one unit of each product it sells -- **two** if the shop sells
-  only a single product, which is YARN_STORE (wool) and PET_CAFE (carrot);
-* every `townCenterSellInterval` (24) steps the town centre removes one
-  unit of every product except FERTILIZER;
-* shops unlock roughly every three days, drawn **at random with
-  replacement** from the eight types and capped at eight instances.
-
-Because the draw is random per episode, every game has a different demand
-profile, and because `observation["town"]["unlocked_shops"]` lists the
-instances, that profile can be computed exactly rather than guessed.
-
-Why this matters (docs/research/GOAL.md section 9u and 9v): the resulting price
-swings are enormous -- wool ends a game worth 1 coin or 239 depending on
-whether YARN_STORE was drawn, milk 5 or 110 -- and adaptation to it is
-the single cleanest correlate of leaderboard rank we have measured:
-wool-demand-to-sheep-bought runs +0.672 for teams at 2850+, +0.323 for
-2400-2849 and **+0.000 below 2400**. A frozen tape scores structurally
-zero there, which is where every candidate this project has shipped sits.
+The simulator's demand (`_town_consume`) is deterministic and observable: every
+4 steps each unlocked shop removes one unit of each product it sells (two for
+the single-product YARN_STORE and PET_CAFE), and every 24 steps the town
+centre removes one of every product except FERTILIZER. Shops are drawn at
+random each game, so `observation["town"]["unlocked_shops"]` gives an exact
+per-game demand profile. It matters: wool ends a game worth 1 coin or 239
+depending on whether a YARN_STORE was drawn.
 """
 
 from __future__ import annotations

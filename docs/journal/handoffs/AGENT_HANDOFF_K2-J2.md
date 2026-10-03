@@ -10,7 +10,7 @@ command to reproduce it is given.
 **J** (`rl/candidate_j.py`) is our bespoke, from-scratch agent: a per-turn
 auction that prices every (worker, job) pair on the board in coins per
 turn including the walk, and books the highest-rate pairs first. No
-cloned code anywhere in it.
+third-party code anywhere in it.
 
 **K** (`rl/candidate_k.py`) is H2's recorded opening (days 0–12, the
 public Apache-2.0-derived lineage H2 was always built on, licence notices

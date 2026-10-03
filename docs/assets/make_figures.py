@@ -67,50 +67,76 @@ def text(x, y, s, cls="ink", size=14, weight=400, anchor="start", extra=""):
 # Banner
 # ---------------------------------------------------------------------------
 def banner() -> str:
-    w, h = 1280, 320
+    w, h, horizon = 1280, 380, 262
+    vx, vy = 820.0, 170.0                     # vanishing point of the crop rows
+
+    def at(xb, y):
+        return vx + (xb - vx) * (y - vy) / (h - vy)
     rows = []
-    # field rows on the lower half, drawn in perspective-free stripes
-    for i in range(7):
-        y = 236 + i * 13
-        rows.append(f'  <rect x="0" y="{y}" width="{w}" height="8" fill="#6b8f3a" opacity="{0.55 + i * 0.06:.2f}"/>\n')
-    wheat = []
-    for i in range(26):
-        x = 40 + i * 48
-        if 940 <= x <= 1110:      # leave the barn clear
-            continue
-        wheat.append(f'  <g transform="translate({x},230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round">'
-                     f'<line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/>'
-                     f'<line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/>'
-                     f'<line x1="0" y1="-10" x2="8" y2="-18"/></g>\n')
+    for k in range(-16, 16):                  # field rows fanning out toward the viewer
+        xb0, xb1 = vx + k * 92, vx + (k + 1) * 92
+        y0, y1 = horizon + 6, h
+        pts = f"{at(xb0, y0):.1f},{y0} {at(xb1, y0):.1f},{y0} {at(xb1, y1):.1f},{y1} {at(xb0, y1):.1f},{y1}"
+        rows.append(f'    <polygon points="{pts}" fill="{"#5c8e35" if k % 2 else "#4b7a2a"}"/>\n')
+    trees = "".join(
+        f'    <rect x="{x - 2}" y="{y}" width="4" height="10" fill="#2b3b22"/>'
+        f'<circle cx="{x}" cy="{y - 6}" r="{r}" fill="#24493a"/>\n'
+        for x, y, r in ((26, 238, 10), (1194, 228, 10), (1220, 232, 8)))
+    stars = "".join(f'    <circle cx="{x}" cy="{y}" r="{r}" fill="#ffffff" opacity="{o}"/>\n'
+                    for x, y, r, o in ((760, 40, 1.4, .7), (842, 72, 1.1, .5), (1010, 34, 1.5, .8),
+                                       (1120, 64, 1.2, .6), (1222, 30, 1.0, .5), (690, 92, 1.0, .4),
+                                       (1176, 112, 1.1, .4), (930, 22, 1.0, .5)))
+    chips, cx = [], 64
+    for label in ("Kaggle simulation competition, 2026", "2 players · 1 shared market · 720 turns",
+                  "13-layer final agent"):
+        wdt = int(len(label) * 7.6 + 30)
+        chips.append(f'    <rect x="{cx}" y="176" width="{wdt}" height="32" rx="16" fill="#ffffff" opacity="0.13"/>'
+                     f'<text x="{cx + wdt / 2}" y="197" fill="#ffffff" font-size="14" font-weight="600" '
+                     f'text-anchor="middle" font-family="{FONT}">{escape(label)}</text>\n')
+        cx += wdt + 10
+    hz = horizon
     body = f"""
   <defs>
     <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#16324f"/><stop offset="1" stop-color="#2f6f73"/>
+      <stop offset="0" stop-color="#0b1d36"/><stop offset="0.52" stop-color="#1c4a66"/>
+      <stop offset="0.8" stop-color="#b9805f"/><stop offset="1" stop-color="#f1b37a"/>
     </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffd98c" stop-opacity="0.75"/><stop offset="1" stop-color="#ffd98c" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="haze" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f6d3a3" stop-opacity="0.35"/><stop offset="1" stop-color="#f6d3a3" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="shade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000000" stop-opacity="0"/><stop offset="1" stop-color="#000000" stop-opacity="0.28"/>
+    </linearGradient>
+    <clipPath id="frame"><rect x="0" y="0" width="{w}" height="{h}" rx="14"/></clipPath>
   </defs>
-  <rect x="0" y="0" width="{w}" height="{h}" rx="12" fill="url(#sky)"/>
-  <circle cx="1130" cy="78" r="42" fill="#f4c95d" opacity="0.95"/>
-  <circle cx="1130" cy="78" r="62" fill="#f4c95d" opacity="0.15"/>
-  <g transform="translate(980,134)">
-    <rect x="0" y="34" width="96" height="62" fill="#b5442f"/>
-    <polygon points="-8,36 48,0 104,36" fill="#8f3324"/>
-    <rect x="36" y="58" width="24" height="38" fill="#f1e3c4"/>
-    <line x1="36" y1="58" x2="60" y2="96" stroke="#b5442f" stroke-width="3"/>
-    <line x1="60" y1="58" x2="36" y2="96" stroke="#b5442f" stroke-width="3"/>
-  </g>
-  <rect x="0" y="230" width="{w}" height="{h - 230}" fill="#3f5f24"/>
-{''.join(rows)}{''.join(wheat)}
-  <text x="56" y="96" fill="#ffffff" font-size="58" font-weight="700" font-family="{FONT}">Kaggriculture</text>
-  <text x="58" y="136" fill="#d7e6e4" font-size="22" font-family="{FONT}">An AI that runs a farm, a crew and a market stall for 30 days — and races a rival to the bank</text>
-  <g transform="translate(58,154)">
-    <rect x="0" y="0" width="356" height="34" rx="17" fill="#ffffff" opacity="0.14"/>
-    <circle cx="20" cy="17" r="9" fill="#c9ced6"/><circle cx="20" cy="17" r="5" fill="#9aa3ad"/>
-    <text x="38" y="23" fill="#ffffff" font-size="16" font-weight="600" font-family="{FONT}">Silver medal · 448th of 10,246 teams</text>
-  </g>
+  <g clip-path="url(#frame)">
+    <rect x="0" y="0" width="{w}" height="{h}" fill="url(#sky)"/>
+{stars}    <circle cx="930" cy="{hz - 8}" r="190" fill="url(#glow)"/>
+    <circle cx="930" cy="{hz - 8}" r="58" fill="#ffd27a"/>
+    <path d="M0 {hz - 18} C 160 {hz - 62}, 300 {hz - 48}, 470 {hz - 30} S 760 {hz - 66}, 960 {hz - 40} S 1180 {hz - 58}, 1280 {hz - 34} L1280 {hz + 20} L0 {hz + 20} Z" fill="#2e5a4b"/>
+{trees}    <path d="M0 {hz - 2} C 220 {hz - 30}, 430 {hz - 18}, 650 {hz - 6} S 1010 {hz - 30}, 1280 {hz - 12} L1280 {hz + 30} L0 {hz + 30} Z" fill="#3c6a35"/>
+    <g transform="translate(1012,{hz - 82})">
+      <rect x="104" y="6" width="30" height="76" fill="#c9c2b4"/><path d="M104 6 a15 13 0 0 1 30 0 Z" fill="#9c958a"/>
+      <rect x="110" y="24" width="18" height="3" fill="#a9a294"/><rect x="110" y="44" width="18" height="3" fill="#a9a294"/>
+      <rect x="0" y="30" width="96" height="52" fill="#b5442f"/>
+      <polygon points="-8,32 48,0 104,32" fill="#8c3322"/>
+      <rect x="34" y="50" width="28" height="32" fill="#f1e3c4"/>
+      <path d="M34 50 L62 82 M62 50 L34 82" stroke="#b5442f" stroke-width="3"/>
+      <rect x="40" y="14" width="16" height="12" fill="#f1e3c4"/>
+    </g>
+    <rect x="0" y="{hz + 4}" width="{w}" height="{h - hz}" fill="#4b7a2a"/>
+{''.join(rows)}    <rect x="0" y="{hz + 4}" width="{w}" height="46" fill="url(#haze)"/>
+    <rect x="0" y="{hz + 4}" width="{w}" height="{h - hz}" fill="url(#shade)"/>
+    <text x="62" y="108" fill="#ffffff" font-size="68" font-weight="800" letter-spacing="-1" font-family="{FONT}">Kaggriculture</text>
+    <text x="65" y="148" fill="#dbe9ec" font-size="23" font-family="{FONT}">Agents that farm, hire and trade against a rival for 30 days</text>
+{''.join(chips)}  </g>
 """
     return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" '
             f'role="img" aria-labelledby="t d">\n  <title id="t">Kaggriculture</title>\n'
-            f'  <desc id="d">Project banner: Kaggriculture, silver medal, 448th of 10,246 teams.</desc>\n'
+            f'  <desc id="d">Banner: a farm at sunrise with the title Kaggriculture.</desc>\n'
             f'{body}</svg>\n')
 
 
@@ -121,11 +147,11 @@ PHASES = [
     ("Aug 17 – 30", "Foundations", 1,
      ["Simulator, rulebook, a deterministic", "wheat baseline", "~90 experimental agents and", "learned selectors"]),
     ("Aug 31 – Sep 8", "Candidates A–F", 2,
-     ["Residual-RL contracts", "Clones of elite players' routes,", "route search over 245 tapes", "An economics engine (E)"]),
+     ["Residual-RL contracts", "Route experts from top games,", "route search over 245 tapes", "An economics engine (E)"]),
     ("Sep 9 – 25", "Candidates G–K", 3,
      ["A farm built from the rules (G)", "Market-demand layer (H, H2)", "Coins-per-worker scheduler (J)", "Benchmarks that flattered us, fixed"]),
     ("Sep 26 – 27", "L and M", 4,
-     ["Layer stack on a public clone", "Shadow of 18 public programs", "In-game rival sell clock (M)", "Peak live rating 2,492 (L3)"]),
+     ["Layer stack on an open-source base", "Shadow of 18 public programs", "In-game rival sell clock (M)", "Peak live rating 2,492 (L3)"]),
     ("Sep 28 – 30", "N1 → N12", 1,
      ["Stack moved to the best public plan", "Tomato annex, slot races, guards", "Shed guard: +9 wins, 0 losses (N10)", "Final pair: N11 + N10"]),
 ]
@@ -134,7 +160,7 @@ PHASES = [
 def timeline() -> str:
     w, h = 1280, 330
     cw, gap, x0, y0 = 232, 14, 24, 74
-    body = [text(24, 40, "From a wheat baseline to a silver medal in six weeks", size=20, weight=700),
+    body = [text(24, 40, "From a wheat baseline to the final agent in six weeks", size=20, weight=700),
             text(24, 62, "502 commits, five phases — each card is one phase (cards are not drawn to time scale)",
                  cls="ink2", size=14)]
     for i, (dates, name, slot, bullets) in enumerate(PHASES):
@@ -150,8 +176,7 @@ def timeline() -> str:
             body.append(f'  <path class="arrowhead" d="M{ax} {y0 + 92} l{gap - 3} 8 l-{gap - 3} 8 z"/>\n')
     # finish line
     body.append(f'  <rect class="panel" x="24" y="290" width="{w - 48}" height="28" rx="14"/>\n')
-    body.append(text(w / 2, 309, "Deadline 30 Sep 23:59 UTC  ·  final pair N11 + N10  ·  "
-                     "448th of 10,246 teams  ·  silver medal", cls="ink", size=14, weight=600, anchor="middle"))
+    body.append(text(w / 2, 309, "Deadline 30 Sep 23:59 UTC  ·  final pair N11 + N10", cls="ink", size=14, weight=600, anchor="middle"))
     return svg(w, h, "".join(body), "Project timeline",
                "Five phases from 17 August to 30 September 2026: foundations, candidates A to F, candidates G to K, "
                "agents L and M, and the N series that produced the final pair N11 and N10.")
@@ -163,7 +188,7 @@ def timeline() -> str:
 KIND = {1: "Market", 2: "Guard", 3: "Farm", 4: "Opponent model"}
 LAYERS = [  # (file, introduced in, kind slot, what it does)
     ("safety", "L", 2, "Never crashes: repairs malformed actions and keeps a 60-second time budget"),
-    ("own_book", "N11", 4, "Tells the parent what we really sold, so it stops reading our sales as the rival's"),
+    ("own_book", "N11", 4, "Tells the base engine what we really sold, so it stops reading our sales as the rival's"),
     ("shed_guard", "N10", 2, "Sells or cancels purchases so the day-end shed overflow destroys nothing"),
     ("place_guard", "N7", 2, "Builds the pen first when an animal is about to be placed on bare ground"),
     ("draw_last", "N4", 1, "Orders the town-draw wheat purchase around riders who copy it"),
@@ -186,7 +211,7 @@ def architecture() -> str:
     h = parent_y + 118
     body = [text(24, 40, "How the final agent (N11) decides each turn", size=20, weight=700),
             text(24, 62, "Each layer wraps the one below it: the observation travels down, "
-                         "the parent proposes an action, and every layer may adjust it on the way back up",
+                         "the base proposes an action, and every layer may adjust it on the way back up",
                  cls="ink2", size=14)]
     # legend
     lx = 24
@@ -215,14 +240,13 @@ def architecture() -> str:
     body.append(f'  <rect class="panel" x="{x0}" y="{parent_y}" width="{bw}" height="96" rx="10"/>\n')
     body.append(f'  <rect class="ring" x="{x0 + 0.5}" y="{parent_y + 0.5}" width="{bw - 1}" height="95" rx="10" '
                 f'stroke-dasharray="6 5"/>\n')
-    body.append(text(x0 + 20, parent_y + 32, "Parent: the 2965 Master Hybrid Engine", size=16, weight=700))
-    body.append(text(x0 + 20, parent_y + 56, "A public Kaggle notebook (Apache-2.0). It follows one of 41 recorded "
-                     "30-day routes, chosen on day 6 from the town's first two shops,", cls="ink2", size=14))
-    body.append(text(x0 + 20, parent_y + 78, "and switches to a shared end-game route on day 27. "
-                     "Our 13 layers sit on top; its own code is unchanged except one patch (wool first).",
+    body.append(text(x0 + 20, parent_y + 32, "Base engine: an open-source route follower (Apache-2.0)", size=16, weight=700))
+    body.append(text(x0 + 20, parent_y + 56, "It follows one of 41 recorded 30-day routes, chosen on day 6 from the town's first two shops, "
+                     "and switches to", cls="ink2", size=14))
+    body.append(text(x0 + 20, parent_y + 78, "a shared end-game route on day 27. Every adjustment above this box is one of the thirteen layers.",
                      cls="ink2", size=14))
     return svg(w, h, "".join(body), "Architecture of the final agent",
-               "Thirteen layers wrap a public route-following parent: four guards, four market layers, "
+               "Thirteen layers wrap an open-source route-following base: four guards, four market layers, "
                "three farm layers and three opponent-modelling layers, outermost first.")
 
 

@@ -68,7 +68,7 @@ The target panel must include:
   opponents;
 - both seats and fresh seeds.
 
-Correlated forks count as one family. A 100-0 result against ten copies of the
+Correlated forks count as one family. A 100-0 result against ten opponents running the
 same route is one result, not ten independent results.
 
 ## Promotion Ladder
@@ -116,6 +116,6 @@ Reject or roll back a residual if it:
 ## Relationship To RL
 
 Each deterministic residual becomes a safe executable Option. Offline
-counterfactuals can label when that Option beats `KEEP_CALENDAR`. Behavior
-cloning and residual RL then learn Option selection and persistence, not raw
+counterfactuals can label when that Option beats `KEEP_CALENDAR`. Imitation
+learning and residual RL then learn Option selection and persistence, not raw
 movement or market syntax.

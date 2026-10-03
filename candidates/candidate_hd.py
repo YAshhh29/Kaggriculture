@@ -1,12 +1,9 @@
-"""Candidate H‑D – demand‑timed, denial‑sensitive, adaptive agent.
+"""Candidate H-D: a demand-timed agent, an alternative build of Candidate H.
 
-This agent is the strongest from our analysis of the top 100 Kaggle agents.
-It reads the town's unlocked shops, computes remaining demand and its rate,
-and plans production to maximise revenue while suppressing opponent prices.
-Planting is timed to align with the demand window, ensuring crops enter the
-market when prices are highest.
-
-Author: Auto‑generated for the user.
+It reads the town's unlocked shops, computes the remaining demand for each good
+and its rate, and plans production to maximise revenue while pushing down the
+prices the opponent sells into. Planting is timed so that crops reach the
+market inside the demand window.
 """
 
 from __future__ import annotations
@@ -99,7 +96,7 @@ def _tile_at(farm, pos):
 
 def fertilizer_gain(tile, day):
     """Extra units this tile would yield if manure went on it today.
-    Copied from Candidate G's verified implementation.
+    Adapted from Candidate G's `fertilizer_gain`.
     """
     if tile.get("fertilized_until_day", -1) >= day:
         return 0

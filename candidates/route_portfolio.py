@@ -1,47 +1,15 @@
-"""Run several recorded routes and switch between them at block boundaries.
+"""Play several recorded routes, re-choosing which one to follow every 72-turn block.
 
-Every clone this project has shipped follows one frozen tape for all 720
-turns. Reading the public notebooks at the top of this leaderboard shows
-that is not what the 2450-2611 tier does. The highest-rated public agent is
-a derivative of a notebook whose payload asserts
+A route's action at turn t assumes the farm its own earlier actions built,
+so switching mid-game only works between closely related routes (such as
+several games of one submission) whose crews line up: `farm["hands"]` is
+append-ordered and each hand instruction is addressed by position.
+`roster_gap` scores how far a route's recorded crew, land and herd are from
+the live farm.
 
-    assert len(SCHEDULES) == 5
-    assert all(len(route) == 719 for route in SCHEDULES)
-
--- five recorded schedules -- and whose agent recomputes, once every 72
-turns, which of the five to follow next, from a feature vector of public
-state: market inventory and prices for all nine goods, which shops the town
-has unlocked, both farms' crop and animal populations, both players' money
-and the difference between them, our shed, and how many quadrants we own.
-It carries no refusal guards at all. The lever at that tier is *switching*,
-not guarding.
-
-The obstacle is that a tape is not a policy. Its action at turn t assumes
-the farm its own past actions built, so switching from one recording to
-another mid-game applies route B's plan to route A's farm. Two conditions
-make that survivable and both are worth stating, because they bound where
-this module can be used:
-
-* **routes must be near-relatives.** Several games of one submission are
-  the same code against different draws, so they agree about where the
-  shed is, when the hands get hired, and which quadrant opens first. Routes
-  from different players agree about none of that.
-* **the roster must line up.** `farm["hands"]` is append-ordered and the
-  action carries one instruction per hand by position, so a switch between
-  routes whose crews differ in size lands every instruction on the wrong
-  worker. `roster_gap` is what the choosers weigh for this reason.
-
-`chooser` is deliberately pluggable, and the module ships four so the
-mechanism can be measured before it is trusted:
-
-* `fixed_route` -- never switches. The control.
-* `cycling_route` -- switches every block regardless of state. This one
-  exists to answer "is switching survivable at all", which has to be
-  settled before any clever router is worth writing.
-* `matching_route` -- picks the route whose recorded crew, land and herd at
-  this turn are closest to the farm we actually have.
-* `sticky` -- wraps any chooser with hysteresis, so a route is only
-  abandoned when a rival beats it by a margin.
+Choosers: `fixed_route` (never switches; the control), `cycling_route`
+(switches every block), `matching_route` (smallest `roster_gap`) and
+`sticky` (wraps a chooser so it only switches past a margin).
 """
 
 from __future__ import annotations

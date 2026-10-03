@@ -16,9 +16,9 @@ How to read the numbers:
 ## 1. Every agent
 
 Flag legend. No agent looked malicious, and `exploit_suspected` is false for all 18.
-- **E**: `exec()` of source strings embedded in the file. These are the engine unit/decay model copied from kaggle-environments 1.32.7 and the E182 planner for the last seven turns; V48 adds a resource cache. We decoded and read all of them: stdlib only, no IO.
+- **E**: `exec()` of source strings embedded in the file. These are the engine unit/decay model taken unchanged from kaggle-environments 1.32.7 and the E182 planner for the last seven turns; V48 adds a resource cache. We decoded and read all of them: stdlib only, no IO.
 - **O**: an inert read-only `open()`. It either depends on the env var `V92_SELL_LIB`, which is unset here and on Kaggle, or has `path = None` hard-coded.
-- **F**: opponent fingerprinting or counter-trades built from public state: rival money plus market wheat at step 2, CTRTABLE wheat trades that starve known cash-tight tapes of cash, and clone detection. This is legal play.
+- **F**: opponent fingerprinting or counter-trades built from public state: rival money plus market wheat at step 2, CTRTABLE wheat trades that starve known cash-tight tapes of cash, and mirror detection. This is legal play.
 - **L**: Kaggle runs the *last callable* in main.py, and that is **not** the function named `agent`. Our module points `agent` at the real entry point. See section 4.
 - **S**: module state is global. Use one import (or one process) per seat, and never self-play inside one process.
 - **P**: a small telemetry `print` at step 718.
@@ -30,7 +30,7 @@ Flag legend. No agent looked malicious, and `exploit_suspected` is false for all
 | nb_guru_master_v4 | yes | hybrid | "Top 2" in the title, with no number; 19-1 vs "Guarded Microstructure v47". Claimed, unverified | 128,578-0 (158,146 on a rerun) | W +2,900 (102,830-99,930). Seat 1: W +5,349 (104,048-98,699) | 5.4 / 240 (245) | E O F L (entry `_final_sell_block_reorder_entrypoint`). One notebook cell pipes hidden base64 into `bash`; decoded, it is `rm -f` of LICENSE and NOTICE. That cell is excluded. On the same K game its parent v13 scored 103,534, so the ~877 appended lines added no margin there |
 | nb_guru_master_v3 | yes | hybrid | "Proven 95.1% Win Rate, +17.5M Net Margin"; no rating given. Claimed, unverified | 193,656-0 | W +2,010 (81,004-78,994). 5/5 vs K over seeds 11-14, margins +1.7k to +7.5k | 3.5 / 149 | E F L S (entry `ig_agent`). **Byte-identical to nb_tetsutani_demand** |
 | nb_statma_thomas_2944 | **no** | hybrid splice: 2945 for steps < 336, herd-safe afterwards | None for the splice. "2944" is Tschinkel's claim for one component | not run | not run | not measured | Not extracted. The permission classifier blocked decoding one component ("Untrusted Code Integration"); this is not a fault in the code. The notebook reads `/kaggle/input` and makes directories outside the cwd. Likely bug: it takes `_HERD_NS['agent']`, but in the herd-safe main.py that name is an inner layer; the real entry is `opening_liquidity_agent` (see nb_dmitrii_herdsafe_2700) |
-| nb_flexonafft_multiroute | yes | route replay: 5 + 5 tapes rebuilt from 12 public traces ("Kawashigi"/"MDgogo") | 2743.3, the public score of its v70. Claimed, unverified | 173,196-0 | **L -42,554 (25,824-68,378). 0/3 vs K** (seeds 11-13) | 0.7 / 52 | F (fingerprints for the R5 and MD opponent families; the MD test misfires on K). The docstring says clone preemption is off, but the code has it on |
+| nb_flexonafft_multiroute | yes | route replay: 5 + 5 tapes rebuilt from 12 public traces ("Kawashigi"/"MDgogo") | 2743.3, the public score of its v70. Claimed, unverified | 173,196-0 | **L -42,554 (25,824-68,378). 0/3 vs K** (seeds 11-13) | 0.7 / 52 | F (fingerprints for the R5 and MD opponent families; the MD test misfires on K). The docstring says mirror preemption is off, but the code has it on |
 | nb_tetsutani_demand | yes | hybrid | None | 193,349-0 | W +2,010 (81,004-78,994), identical over 3 runs | 4.0 / 161 | E F L S (entry `ig_agent`). Its own layer (IG) zeroed 14 dead orders vs K and moved none |
 | nb_leoprovorov_forecast | yes | hybrid | None for this build; the parent's "LB 2700" is claimed | 186,596-0 | W +2,422 (81,863-79,441). 3/3 vs K (seed 11 in both seats, seed 12 in seat 1) | 4.7 / 205 (207) | E O F L P S (entry `herdsafe_forecast_agent`). The last notebook cell adds an undocumented route remap (10 shop pairs forced to route 0) whose origin is unclear. It had no effect in any town we tested |
 | nb_boatlee_v16rc5 | yes | route replay: one majority-vote 720-step tape of Nikita Lugovoy's submission 55440039 | No number ("High-Score" in the title) | 147,914-0 | **L -30,700 (85,604-116,304). 0/10 vs K** | 0.4 / 41 | Clean; no exec; 18.9 KB. Cash sits near 0 on days 2-6, so 23 HIREs failed vs K |
@@ -48,11 +48,11 @@ Flag legend. No agent looked malicious, and `exploit_suspected` is false for all
 
 **The vs K column is not a ranking.**
 - Seed 11 produced two different towns. The scores fall into two groups: ~100-104k (2945, nihilistic, godmode, v13, V55, haideptry 2965, guru v4, V48) and ~79-82k (the cha22 pair and the herd-safe family). Two of the reports name their shop pairs: FARMERS_MARKET+BAKERY (V48) and PIZZA_SHOP+BAKERY (leoprovorov). This fits our memory note that the town draw is coupled to both farms' empty tiles. Margins from different rows therefore come from different worlds.
-- K comes from the same tape family: it shares the route blob, in the EXP-173 lineage. The public bases recognise it as a clone of themselves: V48 for 476 turns, ca25 for 368, guru v4 for 312 and haideptry 2965 for 305. A +2k to +4k margin against K measures a market race between near-mirrors, which is about 3% of the bank. It does not measure ladder strength.
+- K comes from the same tape family: it shares the route blob, in the EXP-173 lineage. The public bases recognise it as a mirror of themselves: V48 for 476 turns, ca25 for 368, guru v4 for 312 and haideptry 2965 for 305. A +2k to +4k margin against K measures a market race between near-mirrors, which is about 3% of the bank. It does not measure ladder strength.
 - The two agents from other lineages, boatlee and flexonafft, lose to K by 30k-43k.
 
 **Agents seen but not extracted to `rl/public/`:**
-- raykkretzschmar C92, C94 and C95 are embedded in the "findings" notebook. They are 3-quadrant, 10-cow/4-sheep tapes from the August clone meta. Locally C95 went 0-6 in its games against K and nb_tschinkel_2945 (seeds 5 and 11, both seats), losing by 28.8k-64.4k. C94 beat C95 3-1, by 78-650 coins each. The claimed public scores are 2836.8 for C92 and 3085.4 for the earlier C45; both are unverified.
+- raykkretzschmar C92, C94 and C95 are embedded in the "findings" notebook. They are 3-quadrant, 10-cow/4-sheep tapes from the August route-replay meta. Locally C95 went 0-6 in its games against K and nb_tschinkel_2945 (seeds 5 and 11, both seats), losing by 28.8k-64.4k. C94 beat C95 3-1, by 78-650 coins each. The claimed public scores are 2836.8 for C92 and 3085.4 for the earlier C45; both are unverified.
 - raykkretzschmar's `v38_low_pressure_opening` is embedded in the "rank your agent" notebook and was decoded to the scratchpad only. It claims 630-10 on a holdout; locally it went 0-4 vs nb_tschinkel_2945 and 0-4 vs nb_haideptry_2965 (seeds 1 and 2, both seats).
 
 ## 2. Lineage
@@ -96,7 +96,7 @@ Ahmed Berat Ozer V25..V47, EXP-149..EXP-335
 Independent lineages (no code shared with the tree above):
   Nikita Lugovoy sub 55440039 replays     -> nb_boatlee_v16rc5 (1 tape + weed repair + premium lead)
   "Kawashigi"/"MDgogo" public traces      -> nb_flexonafft_multiroute (12 rebuilt tapes + v17 guards)
-  raykkretzschmar C70..C95                -> August 3-quadrant clone tapes (embedded in an analysis nb)
+  raykkretzschmar C70..C95                -> August 3-quadrant route-replay tapes (embedded in an analysis nb)
 ```
 
 Near-identical clusters:
@@ -133,21 +133,21 @@ Source tags on the measurements: [Rayk-F] is the findings notebook, [Rayk-R] the
 | Mechanism | Used by |
 |---|---|
 | Sell next step's planned lot one step early on turns with no town draw (step % 4 != 0) | whole V39 family (chassis `sell_lead`) |
-| Pull planned sales forward, tracked in a debt ledger (R36), with the horizon fitted to the rival's observed lead (RACE) | whole V39 family. Horizons: V48 2-4, then 9 and 24 against a clone. CHA22 base 2, RACE 44-48. 2945 40-48. V13 40 (v13) / 41 (V55). 2965 41-48. HS 44-48 |
+| Pull planned sales forward, tracked in a debt ledger (R36), with the horizon fitted to the rival's observed lead (RACE) | whole V39 family. Horizons: V48 2-4, then 9 and 24 against a mirror opponent. CHA22 base 2, RACE 44-48. 2945 40-48. V13 40 (v13) / 41 (V55). 2965 41-48. HS 44-48 |
 | Glut gate RACEPX/RACEGATE: pull forward only while the quote is at or above base | 2945, V13, HS, 2965, CHA22 |
 | Library of recorded rival sale streams (PREDICT): sell ahead of predicted premium dumps | 2945 (1,998 streams), V13/HS/2965 (2,398 streams). A precision-gated 4-turn extension (forecast4) is in arsgorynich, leoprovorov_forecast and shepherds |
-| Clone detection with horizon escalation (EXP283: equal positions on 4 of 6 turns and tile similarity >= 0.95) | V48, CHA22, V13, HS, 2965. 2945 has the older R37/R44 mirror test (similarity >= 0.9). FLEX has its own signature-distance test |
+| Mirror detection with horizon escalation (EXP283: equal positions on 4 of 6 turns and tile similarity >= 0.95) | V48, CHA22, V13, HS, 2965. 2945 has the older R37/R44 mirror test (similarity >= 0.9). FLEX has its own signature-distance test |
 | Exact per-slot lockstep simulation for ordering orders | v44y block permutation: V48, CHA22, V13, HS, 2965. CXD best response over every slot (800 evaluations): CHA22, 2965, HS. ORDERPRI2 ordering by rival exposure: 2945, V13, HS, 2965, CHA22. Price-impact ordering: FLEX |
 | Dead-order hole closure (keeps live sales in earlier lockstep slots) | E334/E335: V48, CHA22, HS, 2965. IG: CHA22, 2965, shepherds. VQ: guru_v4. EQ: godmode |
 | Hour 21-23 overflow sales, pre-guard, and COURIER same-evening delivery | whole V39 family (COURIER from v9 on). FLEX has its own room guard and evacuation. BOAT has none |
 | One-turn mirror preemption with a credit ledger (T4) | shepherds |
 | Next-turn price model (MPX/MODELPX) | CHA22, 2965 |
 | Unconditional one-turn lead on premium sales, gated on town demand | BOAT |
-| Front-running two known replay families using embedded copies of their market tapes | FLEX |
+| Front-running two known replay families using their market tapes, embedded unchanged | FLEX |
 | Holding a sale back until just after the next shop drain | godmode |
 
 What was measured:
-- [Rayk-F, author's games] Among near-clones, market play matters more than herd composition. c18 and c16 differ on 20 field turns but 112 market turns, and c18 won 35-5 over 20 seeds and both seats (mean +3,161). c15 (a one-turn premium front-run) beat the raw Senkin tape 14-2 (+2,250).
+- [Rayk-F, author's games] Among near-mirrors, market play matters more than herd composition. c18 and c16 differ on 20 field turns but 112 market turns, and c18 won 35-5 over 20 seeds and both seats (mean +3,161). c15 (a one-turn premium front-run) beat the raw Senkin tape 14-2 (+2,250).
 - [Rayk-F] Ordering premium SELLs by price impact, C71 vs C70: 31-9 (+231), and 83-37 vs 57-63 in a 4-agent round robin. On 88 historical live tapes both went 83-5, so fixed tapes hid the gain.
 - [Rayk-F] A fixed long horizon lost: H25 went 0-6 against C45 and V14 on fresh seeds. Inferring the opponent's horizon during the game (C68) went 342-18 on untouched seeds 900000-900019.
 - [Rayk-F] A debt-conserved one-turn split on wheat and fertilizer flipped 11 near-mirror live losses, each worth 5,300-5,700. On 900 held-out games: fertilizer only 174-6, wheat 10 + fertilizer 5 174-6, aggressive 168-12. A difference of 1 game in 120 is a tie.
@@ -291,7 +291,7 @@ What was measured:
 
 ## 5. Most promising distinct ideas
 
-### (a) Clone-plus: the strongest runnable public base, with our own demand/market layer on top
+### (a) Route follower plus our layers: the strongest runnable public base, with our own demand/market layer on top
 
 The tournament picks the base from the de-duplicated set. All the ideas below apply to any V39-family base, because they share the chassis.
 
@@ -299,12 +299,12 @@ The tournament picks the base from the de-duplicated set. All the ideas below ap
 2. **Infer the pull-forward horizon instead of hard-coding it.** The family has escalated from 40 to 41 (V55) to 44 (HS). Rayk measured a fixed long horizon losing (0-6) and a horizon inferred during the game winning (342-18). Sell at the rival's observed lead + 1, and only while the quote is at or above base.
 3. **Rebuild the PREDICT library from our current corpus.** The shipped libraries (1,998-2,398 streams) are September snapshots of a ladder that has since turned over. Wrap it, and every other action driven by an opponent model, in the forecast4 precision gate: act only after at least 3 hits at 70%+ precision. The gate correctly stayed idle against random (0 extensions, 78 rejected).
 4. **Best response against a predicted rival order list, not a mirror.** The CXD lockstep simulator is exact, but because it assumes the rival submits our own list it found gains on only 2-3 turns against K. Give it the rival list implied by the recovered sales plus PREDICT.
-5. **Plan for the clone war.** These bases flag K as a clone for 305-476 turns and front-run it, and they will do the same to any clone of themselves, including ours. Either break the clone signature on purpose (worker positions, tile similarity) or win the race: T4 one-turn preemption with a credit ledger, and escalation after a lost race.
+5. **Plan for the mirror war.** These bases flag K as a mirror for 305-476 turns and front-run it, and they will do the same to any agent that mirrors them, including ours. Either break the mirror signature on purpose (worker positions, tile similarity) or win the race: T4 one-turn preemption with a credit ledger, and escalation after a lost race.
 6. **Port the cheap, measured fixes the chosen base lacks.** E402 seed cap (about $1.5k a game vs K); E410; hole closure (EQ/IG); a step-0 feed buy in slot 0 (Rayk 173-7); weed-block repair on scheduled PLANT/PLACE/BUILD (Rayk C92 vs C91 +446.6); final DROP/SELL by step 718.
 
 ### (b) Bespoke agent
 
-1. **Compose the plan per game from state, not from a tape.** Per destbreso's rerun, that is what the current top 30 do, and it keeps us out of the family's clone detectors.
+1. **Compose the plan per game from state, not from a tape.** Per destbreso's rerun, that is what the current top 30 do, and it keeps us out of the family's mirror detectors.
 2. **Buy the third quadrant by day 8-9 and budget cash for it.** The day of that purchase correlates -0.70 with rating over 2,202 seats; every public agent buys it on day 10-11. At 2900+, 77% of seats placed 3 or more land orders (Sep 25).
 3. **Money-curve checkpoints**, from 16 seats in 8 games where both seats were 2900+ (re-simulated exactly): under ~1k through day 8, ~10k at day 11, ~50k at day 20.
 4. **Crops.** Shared base: ~155 wheat, ~33 strawberry, 12 melon. Aim for 260+ plantings (66% within-episode win, n=283) and 50-60 carrot (62%, n=220). Tomato is now part of the base at 2800+ (79-93% adoption on Sep 25) but is no edge when both seats are 2800+ (49%, n=68). Time carrot and tomato sales to the hinge curve.

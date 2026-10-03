@@ -1,75 +1,13 @@
-"""Buy a fourth quadrant with the clone's idle cash and farm it ourselves.
+"""Buy the fourth quadrant with a route's idle cash and farm it with new hands.
 
-Eight layers on a frozen route have failed in this project, and 10.8o
-found the reason they all share: **the binding constraint is available
-work, not labour or scheduling.** A route's farm is full from day twelve --
-75 tiles, 58 plants, 17 pens, zero open ground -- so no reordering,
-re-weighting or extra hiring can find anything for a worker to do.
-
-This creates the work instead of competing for it.
-
-Two things the route leaves on the table, both measured on a real game:
-
-* **Idle capital.** It holds 16,483 coins on day 12 and 130,062 by day 28,
-  and buys nothing with them. Reward is final cash, so unspent coins do
-  score -- but a coin spent on day twelve that returns three by day
-  twenty-eight scores more.
-* **The fourth quadrant.** It costs 4,000 and the route never buys it, so
-  25 tiles sit locked all game while the route's own ground is full.
-
-So this buys the fourth quadrant out of surplus, hires hands beyond the
-count the route recorded, and puts those hands to work **only inside the
-new quadrant**. That last restriction is what makes it safe: the route's
-crew never enters ground it does not own, so our workers and its workers
-can never contend for a tile, and its own instructions are untouched.
-
-Section 9i measured four-quadrant players winning 8.3% against 51.2%, and
-every candidate since has stopped at three on that basis. That statistic
-is about agents buying the fourth quadrant **early, out of scarce opening
-capital**, which starves the farm they already have. Buying it on day
-twelve out of a 16,000-coin surplus that is otherwise idle is a different
-decision with different economics, and it deserves its own measurement.
-
-Unlike `candidates/extra_hands.py`, the surplus crew here may PLANT and BUILD --
-they have to, since an empty quadrant is nothing but empty ground. They
-buy their own seed and livestock from surplus too, so they never draw down
-what the route budgeted for itself.
-
-**Measured, and it does not pay. No shipped agent uses this.**
-
-    extra hands   0        1        2        3        4        6
-    reward    148,328  131,934  133,234  116,867   96,860   24,358
-
-The mechanism itself works -- the new quadrant does get farmed, four of
-its tiles were in production by the end -- and three real bugs were found
-and fixed proving it (see below). The economics are what fail.
-
-**Reward is the cash on the books at step 720**, so every coin spent has
-to come back before the whistle. Buying the quadrant on day twelve leaves
-seventeen days, and the route's own crew needed twelve days and twelve
-hands to develop the 75 tiles it already has. Two to four extra hands
-cannot clear, plant, water and harvest 25 more in the time left: they
-managed four tiles, worth perhaps a thousand coins against roughly ten
-thousand spent on land, seed and livestock. Even one extra hand loses
-16,000, and its wages over the whole period are only 3,961 -- so the loss
-is the capital, not the payroll.
-
-Buying the quadrant *early* enough to develop it is the other branch, and
-that is exactly what section 9i measured losing: it starves the farm the
-route is already building.
-
-Three bugs found on the way, all worth knowing if this is ever revisited:
-
-1. Hiring while the route is still filling its own crew inserts workers
-   mid-roster and misaddresses every later instruction.
-2. A roster cap phrased relative to the route's own hand-list length
-   re-arms as that length swings through the day; the crew ran to nineteen
-   hands on a 13,000-coin daily wage.
-3. **Candidates A and B pad the hand list out to the live roster**, so
-   "hands the route does not control" cannot be read off the wrapped
-   action -- it must come from the raw tape -- and surplus instructions
-   must *overwrite* the padded slots rather than being appended, or they
-   fall off the end of the list and are silently discarded.
+A route-following agent fills its ground by about day 12 while its cash sits
+idle. `build_expansion_agent` wraps such a route: it buys the locked fourth
+quadrant from surplus, hires hands beyond the recorded roster, and has them
+plant, build and work only inside the new quadrant with their own seed and
+livestock, so they never contend with the route's crew or budget.
+Measured and not used by any shipped agent: reward is lower with any extra
+hands (148,328 with none, 131,934 with one), because the 25 new tiles cannot
+be developed in the seventeen days left before cash is counted at step 720.
 """
 
 from __future__ import annotations

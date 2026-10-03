@@ -1,4 +1,4 @@
-"""Collect one-step hold-versus-sell counterfactuals by cloning game state."""
+"""Collect one-step hold-versus-sell counterfactuals by forking the game state."""
 
 from __future__ import annotations
 

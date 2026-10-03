@@ -7,11 +7,12 @@ C's selector a documented placeholder that never switches -- yet C1 and C2
 reached 2100-2200 live while D sits at mu 1744 and F at 1691. **Only the
 route differs, and it is worth roughly six hundred points.**
 
-Their provenance differs completely. C1 clones episode 105144807, "fog
-flower" at 2882.6, in a game where they beat the leaderboard's number two.
-F clones episode 106610780, which is Matthew Huang's *validation self-play
-game at rating 600* -- an agent playing itself before it had a rating at
-all. D's route was picked by ranking candidates on their own final reward.
+Their provenance differs completely. C1 follows the route that "fog
+flower" (2882.6) recorded in episode 105144807, a game where they beat the
+leaderboard's number two. F follows the route recorded in episode
+106610780, which is Matthew Huang's *validation self-play game at rating
+600* -- an agent playing itself before it had a rating at all. D's route
+was picked by ranking candidates on their own final reward.
 
 So this selects on the one criterion that has actually produced a good
 route: **a top-rated team beating another strong team, by a wide margin,

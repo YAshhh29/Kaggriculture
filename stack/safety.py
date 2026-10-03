@@ -1,18 +1,12 @@
 # ---- BEGIN safety (Agent L's own layer) ----
-# The outermost guard. On Kaggle a single uncaught exception marks the agent
-# ERROR and forfeits the game; a malformed action marks it INVALID (also a
-# forfeit); turns over actTimeout (1 s) draw on a 60 s reserve for the whole
-# game, and running it dry is a TIMEOUT forfeit (kaggle_environments/core.py).
+# The outermost guard: never forfeit a game.
 #
-# So this layer:
-# * never lets an exception escape: it returns a valid PASS action instead.
-#   It does NOT call the parent a second time for the same step -- the
-#   parent's layers treat a repeated step as a new game and reset;
-# * checks the action's shape and repairs what it can;
-# * keeps a time budget other layers can consult (sf_budget_ok) so optional
-#   work (e.g. an opponent shadow) is skipped when the reserve runs low;
-# * prints one health line at the end of the game, which Kaggle keeps in the
-#   agent's logs (kaggle competitions logs <episode> <index>).
+# On Kaggle an uncaught exception (ERROR), a malformed action (INVALID) or an
+# exhausted 60 s overtime reserve (TIMEOUT) forfeits the game. This layer
+# returns a valid PASS action instead of raising (without calling the parent
+# again for the same step), repairs the action's shape where it can, keeps a
+# time budget other layers can consult (sf_budget_ok), and prints one health
+# line at the end of the game for the agent's logs.
 
 import json as _sf_json
 import time as _sf_time

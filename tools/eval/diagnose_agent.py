@@ -126,7 +126,7 @@ def one(job) -> dict[str, Any]:
     env.run(players)
     # `env.steps` rather than `env.toJSON()`, which deep-copies the whole
     # 720-step replay including every observation. Eleven workers each
-    # holding a copy of that exhausted memory outright; the raw list is
+    # holding a duplicate of that exhausted memory outright; the raw list is
     # the same data and we only read from it.
     steps = env.steps
     final = steps[-1]

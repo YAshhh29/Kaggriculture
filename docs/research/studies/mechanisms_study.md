@@ -1,7 +1,7 @@
 # Mechanisms study: five strong published Kaggriculture agents
 
 What makes these agents strong, stated as decision rules a from-scratch scheduler could execute.
-No code was copied and no recorded action tape was extracted.
+No code was reused and no recorded action tape was extracted.
 
 ## Sources and how they relate
 
@@ -20,7 +20,7 @@ tape is embedded, and (b) the last two or three layers on the stack:
 
 * Pipe-7 = the common base with `_OPEN_UNITS = 5` (one constant).
 * ReadyStock = V46 with `_ADV_LOOK = 6` (one constant, was 3).
-* V46 = the base plus a re-engineered turn-0/turn-1 opening and a clone-gated race detector.
+* V46 = the base plus a re-engineered turn-0/turn-1 opening and a mirror-gated race detector.
 * ShopRouter-V7 / V34 = earlier points on the same line with different route tables and top layers.
 
 That makes the split this study wants unusually clean: **the layers are portable policy, the tape is not.**
@@ -321,26 +321,26 @@ distinct products, which is exactly `len(PRODUCTS)` — but only if you don't wa
 **Tape needed?** No.
 **How to measure.** Value left in the shed at the final step; should be 0.
 
-### 14. Detect a clone and race it
+### 14. Detect a mirror opponent and race it
 **Mechanism.** Two public signals, combined:
 
 * `_r37_similarity`: identical `unlocked_quadrants`, and the fraction of tiles where
   `(crop, animal)` matches between the two farms, over tiles non-empty in either farm, requiring
   `>= 8` such tiles. Empty tiles are deliberately excluded so unrelated layouts can't look alike.
 * `_race_positions_equal`: the rival's `farmer` and `hands` position lists are element-wise equal to
-  yours. Tracked over a 6-turn history; a clone is declared at `>= 4` of the last 6 matching **and**
+  yours. Tracked over a 6-turn history; a mirror is declared at `>= 4` of the last 6 matching **and**
   similarity `>= 0.95`.
 * V46 adds a one-shot gate at step 1: if the rival's cash after turn 0 equals yours to within 0.5,
   they ran your exact opening.
 
-When a clone is detected, the pull-forward horizon for sales goes 2 -> 8 turns; if the rival is
+When a mirror is detected, the pull-forward horizon for sales goes 2 -> 8 turns; if the rival is
 actually observed winning a sale race (#7), it escalates to 24 turns (a full day).
 
 **Why it matters:** in a mirror, both agents want to sell the same product at the same step, and the
-market is shared and lockstep — whoever lists earlier gets the pre-impact quote. Against a clone the
+market is shared and lockstep — whoever lists earlier gets the pre-impact quote. Against a mirror opponent the
 *only* edge available is timing.
 **Tape needed?** The detector is tape-free; the thing it escalates (pull-forward) is the portable #5.
-**How to measure.** Win rate against a copy of yourself with the horizon fixed at 2 vs escalating.
+**How to measure.** Win rate against a mirror of yourself with the horizon fixed at 2 vs escalating.
 
 ### 15. The opening wheat round trip — real, but small and situational
 **Mechanism.** `_commit_unit` quotes a BUY_PRODUCT at `market_price(item, inventory - 1)`, i.e. at
@@ -398,9 +398,9 @@ These only work because the agent is replaying a recorded route, and are set asi
 5. **`_adv_future` / `_r36_reserve` "debts" bookkeeping** — pulling sales forward off the tape while
    tracking which future tape SELL each advanced unit was borrowed from, so the tape's own later SELL
    doesn't double-sell. A live planner mutates its plan instead.
-6. **`front_run(opponent_plan)`** — a hook that reads a *supplied copy of the opponent's tape* and
+6. **`front_run(opponent_plan)`** — a hook that reads *the opponent's tape, supplied in advance,* and
    sells MILK/WOOL/STRAWBERRY/MELON one step before they do. Needs the rival's route. The tape-free
-   substitute is #7 (observe their sales) + #14 (detect a clone) + #5 (advance your own).
+   substitute is #7 (observe their sales) + #14 (detect a mirror) + #5 (advance your own).
 7. **Hard-coded opening pattern matches.** Every opening layer is guarded by an exact equality test
    against the tape's own order list, e.g.
    `action["market"] == [["BUY_PRODUCT","WHEAT",5],["BUY_PRODUCT","WHEAT",10],["SELL","WHEAT",60]]`,
@@ -421,9 +421,9 @@ feed buy at index 0 of turn 0 and a 30-unit quote-lift at index 0 of turn 1 that
 (b) `_ADV_LOOK = 3` sale advance plus `_adv_frontload` order sorting (#3, #5);
 (c) a hardened race detector (`_RACE_HORIZON_MIRROR = 24`) that declares a lost race only when the
 rival sells a held product *further ahead of the common plan than the lineage's own lead window* —
-i.e. it distinguishes "a clone doing what clones do" from "a clone actually beating me", checking
+i.e. it distinguishes "a mirror doing what mirrors do" from "a mirror actually beating me", checking
 that no sale of that item is planned within the next 5 turns but one is within 24. Reported 88.8%
-strict win rate over 1,216 independent games, +24.6 points against the clone family specifically.
+strict win rate over 1,216 independent games, +24.6 points against the mirror family specifically.
 
 **Pipe-7 — "wheat microstructure."** Literally one constant: `_OPEN_UNITS` 70 -> 5. Its notebook is
 the most useful of the five as *methodology*: it documents that enabling `clamp_sells` cost 96% of
@@ -445,9 +445,9 @@ with `budget_guard`, `room_guard`, `clamp_sells`, `dead_stock`, `terminal_liquid
 clean, self-contained `advance_sales` + `frontload` pair with an affordability simulation before it
 accepts a reorder. `OPEN_UNITS = 10`.
 
-**V34 — "observed market timing."** Contributes the exact-pricing layer (#6): a verbatim copy of the
+**V34 — "observed market timing."** Contributes the exact-pricing layer (#6): an unchanged embedding of the
 engine's `market_price`/`_shape`/`MARKET_PARAMS` used to rank same-turn sales by price loss against a
-plausible rival batch, plus the occupied-tile similarity clone detector (#14). Its own notebook is
+plausible rival batch, plus the occupied-tile similarity mirror detector (#14). Its own notebook is
 refreshingly honest: +68.81 mean own cash (95% bootstrap +37.33 to +103.64) but an outcome interval
 of +0.00 to +4.69 points that *includes zero*. Also documents verifying its price function against
 13,158 exact cases from real observations — a good acceptance test to steal.
@@ -527,7 +527,7 @@ Things the code relies on that a plain reading of `kaggriculture.py` does not ma
   ReadyStock differs from V46 by 3 appended lines, Pipe-7 by one constant plus the V46-only opening
   and race refinements.
 
-**Computed by me** (ran the engine's own `market_price` and a 200-seed replica of `_town_consume`):
+**Computed by me** (ran the engine's own `market_price` and a 200-seed reimplementation of `_town_consume`):
 
 * The glut-capacity table in #2 and the town-deficit table in #1. The town simulation replicates
   `_town_consume` + `_end_of_day`'s shop draw but uses `random.Random(seed)` rather than the engine's

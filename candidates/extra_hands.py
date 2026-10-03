@@ -1,52 +1,15 @@
-"""Give a frozen route more workers than it knows about, and drive them.
+"""Hire workers beyond a fixed route's recorded crew and give them service work.
 
-Every previous attempt to improve a clone in this project tried to change
-what the clone already does -- pace its selling, gate it, swap its herd,
-substitute for its refused actions. All of them fight the recording, and
-all of them measured negative (GOAL.md 10.8c, 10.8l, 10.8m).
+A route only instructs the hands it recorded, so extra hands on the farm
+receive no instruction from it. This layer hires them only after the
+route's own hiring for the day is done (the roster is append-ordered, so
+the route's instructions still reach its own workers) and schedules them by
+coins per turn on tiles no route worker occupies: watering, harvesting,
+animal care, feeding, collecting fertilizer and digging weeds.
 
-This adds instead of interfering, and it works because of one detail of
-how the simulator hands out labour: **a route only controls the hands it
-recorded.** Its action carries a fixed list of hand instructions. If the
-farm has more hands than that list is long, the surplus workers receive no
-instruction from the route at all -- they are free labour.
-
-Hiring them is safe for three reasons:
-
-* `farm["hands"]` is append-ordered, so hands 0..n-1 keep their identity
-  and the route's instructions still land on exactly the workers it meant;
-* the extra HIRE orders are appended *after* the route's own market
-  orders, so its hires happen first and its workers spawn where the
-  recording expects;
-* the surplus workers act on tiles the route's workers are not standing
-  on, so they cannot consume the action the route was about to take.
-
-**This measured badly and is not used by any shipped agent. Read the
-result before reusing the idea.**
-
-The premise held: the clone is provably undisturbed. Its own action counts
-come out byte-identical with the surplus attached -- WATER 1229, HARVEST
-450, CARE 413, FEED 384, COLLECT_FERTILIZER 373 -- so the roster ordering
-argument above is sound.
-
-What failed is the assumption that there was work for the extra hands to
-do. There is not. With two surplus hands attached to a strong route the
-reward fell from 148,328 to 101,274, and the surplus spent **2,308 of its
-~2,900 worker-turns on PASS** -- roughly 76% idle -- while its Fibonacci
-wages ran on regardless.
-
-That is the same wall Agent E hit from the other side (10.8e, 10.8f): a
-75-tile farm with about 58 plants and 17 animals generates on the order of
-120 tasks a day, and twelve hands already cover them. **The binding
-constraint in this game is available work, not labour and not
-scheduling.** Every layer this project has tried -- pacing, gating, herd
-steering, dead-turn substitution, and now extra labour -- fails against
-that same fact, and no amount of extra worker-turns can be spent if the
-board has nothing to spend them on.
-
-The only thing that would change it is a bigger farm, which needs capital
-spent earlier, which is precisely the decision a frozen route has already
-made and cannot revisit.
+Measured result: not used by any shipped agent. Two extra hands on a strong
+route cut reward by about 32%, and the extra hands passed on about 76% of
+their turns because the farm had no spare work for them.
 """
 
 from __future__ import annotations

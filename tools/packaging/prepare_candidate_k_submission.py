@@ -42,7 +42,7 @@ H2's file opens with an attribution block -- Apache-2.0, several named
 contributors -- for the public code its opening is built on. Embedding it
 byte-for-byte, licence notices included, is not optional; it is the
 condition the licence is used under, and it is why this script reads the
-file rather than writing a fresh copy of it. The rename changes bound
+file rather than regenerating it. The rename changes bound
 identifiers only -- comments, strings and the licence text are untouched.
 
 Two properties are checked here rather than assumed, same as J's

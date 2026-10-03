@@ -1,25 +1,13 @@
-"""Behavior clone of the leaderboard #2 elite strategy ("Giulio Ravasio").
+"""Route-following agent distilled from a recorded top-player game.
 
-Source: episode 105144807, player 0 ("Giulio Ravasio", public leaderboard
-rank #2 at 2965.4 when captured), pulled from the leaderboard via the
-Kaggle API rather than from this project's own match history -- the
-sourcing distinction that separated the two viable clones from the four
-rejected ones (see docs/research/GOAL.md sections 9b/9c).
+The source game was taken from the public leaderboard rather than from this
+project's own match history, and kept as a second elite route with a
+strategy distinct from `experimental_distilled_elite_pasture_agent.py`.
+Under the same guard stack it beat Candidate B 8-0 on fresh seeds but lost
+2-6 head-to-head to the pasture route.
 
-This is the second elite baseline, kept deliberately distinct from
-`experimental_distilled_elite_pasture_agent.py` ("fog flower", 2882.6) so
-that the two Candidate C variants differ by strategy rather than by a
-hair -- two agents differing by ~1 decision per game would be
-indistinguishable against the leaderboard's measured +/-35 point noise on
-identical bytes.
-
-Measured, wrapped in the same guard and market-timing stack: beats
-Candidate B 8-0 on fresh seeds (970-973, both seats) and loses 2-6
-head-to-head to the fog flower variant. Strong in absolute terms, weaker
-than C1 -- recorded here so nobody has to rediscover it.
-
-Same method as `experimental_distilled_calendar_agent.py`: a fixed,
-open-loop, per-step lookup into the exact recorded action sequence.
+Open-loop playback: a fixed per-step lookup into the recorded action
+sequence, indexed `step + 1`.
 """
 
 from __future__ import annotations

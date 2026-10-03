@@ -1,13 +1,14 @@
-"""Can a program be shadowed and cloned? Exactness checks on real games.
+"""Can a program be shadowed and forked? Exactness checks on real games.
 
-For a live game whose opponent is an exact copy of a program (found by
+For a live game whose opponent runs exactly the same program (found by
 l2_shadow_sync), this replays the game and checks, for that program:
 
   tracked   an in-game OpponentShadow (private state reconstructed, never
             read from the replay) predicts every opponent action exactly;
-  clone     a second instance, cloned from the shadow's state each turn
-            (stack.l2_shadow.sh_clone_into), plays the next turn exactly like
-            the original -- what the one-turn lookahead relies on.
+  fork      a second instance, set each turn to a snapshot of the shadow's
+            state (stack.l2_shadow.sh_clone_into; reported as clone_*), plays
+            the next turn exactly like the original -- what the one-turn
+            lookahead relies on.
 
     python -m tools.analysis.l2_shadow_fidelity --pairs 113722929:nb_haideptry_2965 ...
 """

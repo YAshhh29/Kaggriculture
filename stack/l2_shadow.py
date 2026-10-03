@@ -1,28 +1,14 @@
 # ---- BEGIN l2_shadow (Agent L2 candidate layer: opponent shadow) ----
-# Opponent shadow.
+# Opponent shadow: predict a known opponent program's exact action each turn.
 #
-# Many ladder opponents run a program we have byte for byte (Agent A is a
-# verbatim public build; a large share of the 2000-2130 ladder are exact copies
-# of it). The program is deterministic given its observation stream, so a
-# fresh instance of it, fed each turn the observation the opponent is being
-# given, returns exactly the action the opponent is about to play -- before we
-# commit ours.
-#
-# The opponent's observation is the public state we see (both farms, market,
-# town, clock) plus their private state (shed, seeds, per-unit inventories),
-# which we do not see. It starts empty and is carried forward by simulating
-# each turn with an exact copy of the engine's rules: our own action (known),
-# their predicted action, both farms and the market. Every turn the simulated
-# result is checked against what we then observe (their money, their workers,
-# their tiles, the market inventory); the first mismatch retires the shadow for
-# the rest of the game, and the layer then passes the inner agent's action
-# through untouched.
-#
-# While the shadow is in sync, the layer knows the opponent's exact market
-# queue for the current turn and re-orders our own priced orders (never their
-# quantities) to maximise our revenue minus theirs under the engine's slot-by-
-# slot, unit-by-unit lockstep, instead of assuming the rival uses our parent's
-# slots.
+# Many ladder opponents run a public program we also have (Agent A among them).
+# The program is deterministic given its observations, so a fresh instance fed
+# the opponent's observation returns the action they are about to play. Their
+# hidden state (shed, seeds, inventories) is carried forward by simulating each
+# turn with a re-implementation of the engine's rules, and checked against what
+# we then observe; the first mismatch retires the shadow for the rest of the game.
+# While in sync, the layer knows the opponent's market queue and reorders our
+# priced orders (never their quantities) to maximise our revenue minus theirs.
 
 import copy as _sh_copy
 import itertools as _sh_it
@@ -31,7 +17,7 @@ import math as _sh_math
 import time as _sh_time
 
 # ---------------------------------------------------------------------------
-# Engine replica (kaggle_environments/envs/kaggriculture/kaggriculture.py).
+# Engine re-implementation (kaggle_environments/envs/kaggriculture/kaggriculture.py).
 # ---------------------------------------------------------------------------
 _SH_CROPS = {
     "WHEAT": {"seed": 10, "first_yield_day": 2, "max_yield_day": 4, "interval": 0, "max_yield": 6, "ongoing": False},
@@ -772,10 +758,10 @@ def sh_best_order(ours, theirs, inventory, stock_ours, stock_theirs, max_perm=50
 
 
 # ---------------------------------------------------------------------------
-# Cloning a program instance's state (for one-turn-ahead predictions).
+# Duplicating a program instance's state (for one-turn-ahead predictions).
 # A's mutable state is its module-level containers plus the Chassis object in
 # _IMPL's closure; its route tapes are constant after the first turn and are
-# shared by reference, never copied.
+# shared by reference, never duplicated.
 # ---------------------------------------------------------------------------
 import collections as _sh_coll
 import types as _sh_types
@@ -800,7 +786,7 @@ def _sh_is_stateobj(v):
 
 
 def sh_clone_plan(env):
-    """Which globals hold state (copied by value each clone) and which are
+    """Which globals hold state (duplicated by value on each snapshot) and which are
     constant tables (shared by reference). Computed once per program, on a
     namespace that has already played its first turn."""
     names, shared = [], []
@@ -885,7 +871,7 @@ _SH_PREV_CACHE = {}     # one turn's shared decoded public state (see observe)
 
 
 def _sh_plain_public(obs):
-    """JSON copies of the public parts of this turn's observation, shared by
+    """JSON encodings of the public parts of this turn's observation, shared by
     every shadow (callers must not mutate them)."""
     key = (id(obs), int(obs["step"]), int(obs["player"]))   # seat: two agents in one process
     if _SH_PLAIN_CACHE["key"] != key:
@@ -910,7 +896,7 @@ class OpponentShadow:
     actually return. After observe(), .pred is the opponent's predicted action
     for this turn and .in_sync says whether every past prediction matched.
     lookahead(obs, cfg, our_action) predicts their NEXT action given ours,
-    from a clone of the shadow (the shadow itself is never disturbed).
+    from a duplicate of the shadow (the shadow itself is never disturbed).
     """
 
     def __init__(self, program="A", seat=None, factory=None, lookahead=False):
@@ -975,7 +961,7 @@ class OpponentShadow:
         # move run the identical engine step (in the opening every lineage
         # program does): simulate it once per turn and share the result
         # read-only (sh_transition copies its inputs; the tracked private
-        # state below is copied per shadow).
+        # state below is duplicated per shadow).
         key = (step, me, _sh_json.dumps(opp_priv, sort_keys=True),
                _sh_json.dumps(self.pred or {}, sort_keys=True),
                _sh_json.dumps(self.own_action or {}, sort_keys=True))
@@ -1198,7 +1184,7 @@ _SH_DEFAULTS = {
     "early_when_agree": False,
     # M: also race the opponent's CURRENT-turn sale. The next-turn rule acts one
     # turn before their dump, but A fills all ten order slots at hour 0 (the
-    # day's hires), so against a harvest-ledger copy that dumps its strawberry
+    # day's hires), so against a harvest-ledger opponent that dumps its strawberry
     # lot at hour 1 nothing could be added and we sold at hour 12 into its
     # supply (Farmers From Punjab: 12 -> 1 twice). Their exact queue is known,
     # so our sale can go in an earlier slot this turn. Holding is valued as a
@@ -1483,7 +1469,7 @@ def build_both():
 
 
 def build_library_early():
-    """Agent L plus early sales against any exact copy of a library program."""
+    """Agent L plus early sales against any opponent running a library program."""
     return _l_with(programs=SH_LIBRARY, reorder=False, early=True)
 
 

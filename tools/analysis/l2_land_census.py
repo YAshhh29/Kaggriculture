@@ -7,7 +7,7 @@ this records, for the side under study:
   ('.' empty, '#' locked, 'x' weed, w/c/t/s/m plant by crop, G/M/S goose/
   cow/sheep, O/P empty coop/pasture);
 * every unit's action and whether the engine applied it -- judged by running
-  the engine's own `_apply_unit_action` on a copy of the state, in the
+  the engine's own `_apply_unit_action` on a duplicate of the state, in the
   engine's order and with its atomic-PLANT rule, and comparing the unit's
   position, the tile it stood on, its inventory, the shed and the seeds.
 

@@ -286,19 +286,19 @@ The harvest-age report for episode 99058164 records 33, 33, 32, and 32 player-0 
 | Sparse ongoing-crop water | Base ongoing production does not require daily water. | Same schedules with daily versus survival-minimum water; yields, weeds, freed actions, terminal margin. | Alternation bug causes two missed refreshes or misses fertilizer production days. |
 | Ongoing crop replacement | Harvest does not extend lifetime; early replacements can still pay. | Tile-level lifecycle traces; replacement-day sweep; incremental sold output and congestion. | Four-action replacement chain crowds out higher-value work. |
 | Marginal-value workforce 12-16 | Fibonacci labor stays cheap through 12 and remains testable beyond it. | Per-day hand marginal ablation; useful-action rate; contribution by task class; paired bank delta. | Added hands mostly move/pass or create unsold/overflowing output. |
-| Conditional third/fourth quadrant | Land cost is fixed but payback depends on demand and labor. | Remove each purchase from cloned state; preserve cash; reroute; compare terminal bank and utilization. | Static base-price model ignores shared-market collapse. |
+| Conditional third/fourth quadrant | Land cost is fixed but payback depends on demand and labor. | Remove each purchase from a state snapshot; preserve cash; reroute; compare terminal bank and utilization. | Static base-price model ignores shared-market collapse. |
 | Animal service-state controller | Full CARE, sparse survival, and abandonment have distinct dynamic economics. | Animal-day ledger of quotes, feed, CARE bank, cap loss, fertilizer, products, labor, escape, and terminal sales. | State switching forfeits banked CARE or accidentally escapes valuable animals. |
 | Cap-aware pre-first CARE | Cow first-yield CARE can exceed held cap. | CARE-day sweep from placement by species; first-harvest units; wheat/actions spent; downstream bonus. | Reduced early service changes survival or later production phase unexpectedly. |
 | Demand-instance species/crop mix | Shops persist, duplicate, and produce exact rates. | Condition arms on complete shop multiset; demand/production ratio; quote path; opponent capacity. | Sparse contexts overfit individual shop draws. |
-| Demand-clock market timing | Market precedes town consumption every tick. | Clone state around hours 0/4/8/12/16/20; sell-before versus sell-after; buy-before versus buy-after. | Integer rounding or urgent cash dominates timing gain. |
-| Opponent-aware sale pacing | Both farms share inventory and lockstep quotes. | Direct-opponent cloned replays; simultaneous order-index variants; own/opponent price and bank effects. | Manipulation benefits opponent equally or delays cash too long. |
+| Demand-clock market timing | Market precedes town consumption every tick. | Snapshot state around hours 0/4/8/12/16/20; sell-before versus sell-after; buy-before versus buy-after. | Integer rounding or urgent cash dominates timing gain. |
+| Opponent-aware sale pacing | Both farms share inventory and lockstep quotes. | Direct-opponent replays from state snapshots; simultaneous order-index variants; own/opponent price and bank effects. | Manipulation benefits opponent equally or delays cash too long. |
 | Capacity-aware drop/sell | Same-turn projected deposits are sellable; overflow is destroyed. | Peak shed + carried projection; discarded units by value; order-cap use; terminal residue. | `DROP` destroys a higher-value carried mix when capacity is low. |
 | Explicit terminal liquidation | Unsold stock has zero salvage and floor sales remain bank-positive. | Last 72-turn audit; each tile/shed/carrier unit reconciled to sale or justified abandonment. | Return routes start too late or sale entry is beyond the ten-entry cap. |
 | Utilization-aware sacrifice | Service can be negative-value while sunk assets have no salvage. | Counterfactual continue/sparse/abandon arms from identical state; tile reuse value; action shadow price. | Apparent “rational” loss is actually a scheduler defect. |
 
 ## Recommended validation design
 
-1. Use exact cloned replay states for narrow mechanic hypotheses, especially market timing, CARE caps, and abandonment. Restore the resolved simulator seed in every clone.
+1. Use exact replay state snapshots for narrow mechanic hypotheses, especially market timing, CARE caps, and abandonment. Restore the resolved simulator seed in every snapshot.
 2. Evaluate macro policies on paired seeds, both player positions, and direct shared-market opponents. Starter profit is insufficient.
 3. Record decomposition, not only wins: terminal bank, realized revenue by product, purchases, wages, land spend, sold/overflowed/terminal units, useful versus movement/pass actions, CARE cap loss, escapes, weeds, and market inventory path.
 4. Separate feasibility gates from optimality gates. Same-day water and terminal liquidation are correctness; zero weeds and zero escapes are not universally optimality conditions once rational abandonment is modeled.
@@ -335,4 +335,4 @@ The conservative agents' strongest guarantees remain valuable: same-day planting
 - loss by destroyed future value rather than object survival alone;
 - market actions by demand clock, opponent concurrency, capacity, and final liquidation.
 
-Those policies are hypotheses until they beat the frozen controls on cloned mechanic checks, untouched paired seeds, both positions, and the captured replay league.
+Those policies are hypotheses until they beat the frozen controls on snapshot-based mechanic checks, untouched paired seeds, both positions, and the captured replay league.

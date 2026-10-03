@@ -1,24 +1,15 @@
 # ---- BEGIN own_book (Agent N11's own layer) ----
 # Tell the parent what we really sold.
 #
-# Why: every turn the parent recovers the rival's sales from the public market
-# (inventory change + town draw - OUR sales) and feeds them to its sale races:
-# RACE (lead -> reservation horizon), PREDICT (matches the rival against
-# recorded sale streams and sells our planned milk, wool and strawberry lots up
-# to 48 turns early), ORDERPRI2 (rival stock), MODELPX (rival flow -> lead
-# sales) and the clone race (EXP293 escalation). "Our sales" are recorded from
-# the action the parent returns. The parent's own later layers keep that record
-# current -- each one rewrites _RACE_STATE[player]['prev_action'] -- but our
-# outer layers (shadow early sales, m_sell races, the tomato annex, the shed
-# guard) do not: every unit they sell is booked as a rival sale, and every
-# parent sale they cancel hides a real one.
-#
-# How: record the SELLs of the parent's own action (innermost), and after the
-# whole stack has decided, correct each tracker's record for this step by what
-# the final action sells instead, and hand the clone race the final action.
-# Only the seven raced goods: wheat is left alone, because our wheat round trip
-# also buys, and booking its sales without its purchases would skew the record.
-# Any error leaves the action (and the records) as they are.
+# The parent infers the rival's sales from the public market (inventory change
+# + town draw - our sales) and feeds them to its sale races, taking "our sales"
+# from the action it returned. Our outer layers (shadow early sales, m_sell, the
+# tomato annex, the shed guard) change that action, so every unit they sell is
+# booked as a rival sale. This layer records the parent's own SELLs (innermost)
+# and, once the whole stack has decided, corrects each tracker's record to what
+# the final action sells and hands the final action to the parent's mirror race.
+# Only the seven raced goods are corrected (wheat is left alone); any error
+# leaves the action and the records as they are.
 
 _OB_ITEMS = ('CARROT', 'TOMATO', 'STRAWBERRY', 'MELON', 'EGG', 'MILK', 'WOOL')
 _OB_TRACKERS = {'_V9_RACE': 'V9_RACE_ITEMS', '_OR2_STATE': '_OR2_ITEMS',

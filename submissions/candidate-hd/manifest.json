@@ -22,7 +22,7 @@
       "sha256": "b12209574986568e9d0e40f3d0bc866f2cb952c07c791fef1febb106d561b6e6"
     },
     {
-      "path": "rl/candidateHdeepseek.py",
+      "path": "candidates/candidate_hd.py",
       "sha256": "383879ce576b8cf4adc02e52ae0be4bb11c36f38f0e37f979f89c301cc2904d6"
     }
   ]

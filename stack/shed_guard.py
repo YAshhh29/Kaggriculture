@@ -1,24 +1,14 @@
 # ---- BEGIN shed_guard (Agent N10's own layer) ----
 # Keep the day-end drop from destroying goods.
 #
-# Why: at the end of every day the engine drops every worker's inventory into
-# the shed up to its capacity (100) and DISCARDS the rest
-# (kaggriculture._drop_inventories_to_shed). Our agents lose goods this way in
-# ~90% of ladder games -- ~400 coins a game, mostly on days 23-28 when the shed
-# holds stock waiting for timed sales; in 26 of 414 real games the destroyed
-# value alone exceeded the losing margin. The parent's own room_guard is
-# switched off (and, switched on, catches about half: it runs before our outer
-# layers and can find no free order slot).
-#
-# How: on the last step of a day, project the shed after the drop -- stock now,
-# plus what every worker carries, plus this step's harvests and fertilizer
-# collections, minus what the workers use (feed, fertilize, place), minus the
-# SELLs that will fill, plus purchases. If it exceeds capacity, sell the excess
-# now, cheapest goods first (a unit of wheat sold frees the same room as a
-# strawberry, at a fraction of the value and the price impact), never below a
-# small reserve of feed and fertilizer. The extra units are merged into an
-# existing SELL of the same good when possible, else added in a free slot, else
-# they replace a zero-quantity padding order. Any error returns the action as is.
+# At the end of every day the engine drops every worker's inventory into the
+# shed up to its capacity (100) and discards the rest; our agents lost about 400
+# coins a game this way. On the last step of a day this layer projects the shed
+# after the drop (stock, carried goods, this step's harvests and collections,
+# minus uses and queued SELLs, plus purchases) and sells any excess now,
+# cheapest goods first, keeping a small reserve of feed and fertilizer. Extra
+# units go into an existing SELL, a free slot or a zero-quantity padding order.
+# Any error returns the action as is.
 
 _SG_CAP = 100
 _SG_RESERVE = {'WHEAT': 10, 'CARROT': 4, 'FERTILIZER': 2}

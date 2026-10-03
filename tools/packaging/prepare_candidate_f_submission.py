@@ -58,7 +58,7 @@ def load_verified_model(path: Path = ELITE_MODEL_PATH) -> dict[str, Any]:
 
 # The bundled Candidate B package already contains a distilled calendar
 # agent that defines MODEL_PAYLOAD, CALENDAR_ACTIONS and _load_actions at
-# module level. Appending a second clone verbatim would silently rebind
+# module level. Appending a second route agent unchanged would silently rebind
 # all three, so the bundled calendar's own decide() would start executing
 # this route's tape. Candidate F never selects that route, so the effect
 # is inert here -- but it is exactly the kind of quiet aliasing that
@@ -72,7 +72,7 @@ _ELITE_RENAMES = {
 
 
 class _RenameEliteSymbols(ast.NodeTransformer):
-    """Namespace every module-level name this clone would otherwise share."""
+    """Namespace every module-level name this route agent would otherwise share."""
 
     def visit_FunctionDef(self, node: ast.FunctionDef) -> ast.AST | None:
         if node.name == "agent":

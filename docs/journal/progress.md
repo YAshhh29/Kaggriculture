@@ -228,7 +228,7 @@ submission policies on development seeds 30-39, both positions:
 - 20/20 versus the one-goose policy, averaging 55,996.05 versus 9,362.4.
 
 We added a research-only opponent that replays the captured rank-one action
-sequence. This is a scripted stress test, not an adaptive copy of the leader.
+sequence. This is a scripted stress test, not an adaptive imitation of the leader.
 On the original replay seed, the frozen scale candidate lost 41,702 to 113,032
 from both positions. The result prevents a false claim that 57k against
 `starter` equals leaderboard strength. The remaining strategic gap is larger
@@ -847,7 +847,7 @@ The dataset is
 `artifacts/datasets/v1327-v9-market-decisions-train-seeds30-39.json`.
 It is suitable for validating schemas and analyzing v9, but not yet for
 claiming policy improvement: all outcomes come from one deterministic behavior
-policy. Training now would mostly clone the threshold rule, not learn the value
+policy. Training now would mostly imitate the threshold rule, not learn the value
 of an action v9 did not take.
 
 Observed v9 triggers explain the next research direction. Of 306 sale rows,
@@ -886,13 +886,13 @@ The installed environment exposes `clone()` and `step()`, so we tested whether
 one live decision could branch into matched HOLD and SELL futures. Initial API
 inspection found a serious trap: Kaggle's generic `clone()` copies the episode
 steps but not `env.info`, where Kaggriculture stores its resolved seed. Without
-repair, future weeds and shop unlocks in a clone would silently use seed 0.
+repair, future weeds and shop unlocks in a snapshot would silently use seed 0.
 
-The counterfactual collector therefore deep-copies `env.info` into every clone.
+The counterfactual collector therefore deep-copies `env.info` into every snapshot.
 Tests and runtime probes verified that:
 
 - branch execution does not mutate the source state;
-- identical actions from identical clones produce identical next states;
+- identical actions from identical snapshots produce identical next states;
 - seed metadata is independent and preserved;
 - Kaggriculture's daily randomness is deterministically keyed by seed and day;
 - the built-in `starter` opponent is deterministic; and
@@ -1808,7 +1808,7 @@ displayed at 631.6 but is no longer one of the latest two tracked submissions.
 
 The broader economic contextual portfolio did not beat its fixed controls on
 untouched validation: the tree finished 21-5, KNN 19-7, and fixed wheat and
-fixed melon each 24-2. A daily state-cloned seed-admission collector found
+fixed melon each 24-2. A daily state-snapshot seed-admission collector found
 decisive examples in both directions, including one extra seed flipping a win
 to a loss and another flipping a loss to a win. The first frozen tree lost
 11.547 win-first utility versus baseline on holdout. After augmentation and
@@ -1847,14 +1847,14 @@ was mixed at 9-11 on broader seeds, proving that context mattered.
 
 A real contextual bandit now selects between frozen deadline service and
 co-located pairing. Both arms share the opening through day 0. At day 1, the
-collector clones the exact simulator state and rolls both safe arms to terminal
+collector takes a snapshot of the exact simulator state and rolls both safe arms to terminal
 reward. Opponent identity is not a feature. The frozen depth-2 tree uses public
 position and opponent crop state, locks one arm for the episode, and falls back
 to baseline outside the observed day-1 opponent-bank range.
 
 Promotion evidence:
 
-- training: 80 cloned contexts, 68 wins learned versus 67 for either fixed arm;
+- training: 80 snapshot contexts, 68 wins learned versus 67 for either fixed arm;
 - separate validation: 37-3 learned, 35-5 baseline, 36-4 fixed pairing, and
   37-3 oracle;
 - direct spent-seed league: 37-3 across deadline, compact, adaptive, and scale;
@@ -1913,7 +1913,7 @@ Evidence against exact learned-service package
 - package SHA-256:
   `53cbab96eaf7eba10a55adac2208b273636ba45274b5cac34967bedae335f5ac`.
 
-A three-arm contextual bandit was trained on 80 cloned day-6 contexts and
+A three-arm contextual bandit was trained on 80 day-6 snapshot contexts and
 evaluated on 40 separate contexts. Its validation curve was 35, 34, 35, 33,
 33, and 35 wins as training grew. Fixed cows scored 35 and the oracle 37. The
 tree is rejected; the curve is versioned at

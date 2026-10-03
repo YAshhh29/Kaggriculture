@@ -1,18 +1,11 @@
 # ---- BEGIN fert_worker (Agent L's own layer) ----
 # A hired hand that fertilizes young wheat.
 #
-# Against 2600-2700 teams Agent A plants the same wheat and feeds the same
-# animals, but harvests ~48 fewer wheat a game: 22% of its wheat harvests are
-# fertilized against 29% of theirs, while A sells spare fertilizer for $12-33.
 # Wheat gains 1 unit per watering on days 2-4 after planting, 2 if the tile is
 # fertilized that day, so fertilizer on a 1-day-old plant turns a 3-4 unit
-# harvest into 5-6 (worth ~$80 at ~$40 a unit).
-#
-# The hand is invisible to the parent, exactly as in se_project: the parent
-# sees its own hands only, and a shed without the fertilizer this layer bought
-# for itself. The hand is hired after the parent's own hires, under a cost
-# ceiling (hands are re-hired daily at fib(n)), and only while there is young
-# wheat to treat.
+# harvest into 5-6. As in se_project, the hand and the fertilizer it buys are
+# invisible to the parent. The hand is hired after the parent's own hires,
+# under a cost ceiling, and only while there is young wheat to treat.
 
 _FW_HOME = ((4, 4), (5, 4), (4, 5), (5, 5))
 _FW_DEFAULTS = {

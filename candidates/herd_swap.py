@@ -1,31 +1,12 @@
-"""Steer a frozen route's herd toward the product this town actually wants.
+"""Swap a fixed route's cows for sheep, or sheep for cows, to match town demand.
 
-A tape cannot adapt: its purchases and placements were recorded in a game
-whose shops were drawn differently from ours. Section 9v measured what
-that costs -- adaptation to demand is the cleanest correlate of rank we
-have (wool-demand-to-sheep +0.672 at 2850+, **+0.000 below 2400**), and a
-frozen route scores structurally zero.
-
-This layer buys the tape that ability with a surgical rewrite. COW and
-SHEEP are interchangeable at the level of *actions*: both occupy a
-PASTURE tile, both are placed with PLACE, both accept FEED and CARE, and
-both are collected with HARVEST. Only the product and yield cadence
-differ (milk every 2 days, wool every 3). So rewriting `BUY_ANIMAL COW`
-to `BUY_ANIMAL SHEEP` -- and every matching `PLACE COW` to `PLACE SHEEP`
--- leaves the route's geometry, routing and service schedule completely
-intact while changing what the farm produces.
-
-The swap is deliberately conservative:
-
-* it only ever swaps **between COW and SHEEP**, never touches geese,
-  crops, seeds or land;
-* it requires the preferred product to lead by a margin
-  (`candidates.demand.preferred_animal`), so a near-tie leaves the tape alone;
-* it **latches** once placements begin, because a herd half-bought as
-  cows and half as sheep would leave the tape's PLACE actions holding the
-  wrong animal;
-* it never rewrites a PLACE for an animal the farm actually holds, so it
-  cannot strand a purchased animal in inventory.
+COW and SHEEP use the same actions (PASTURE tile, PLACE, FEED, CARE,
+HARVEST), so rewriting `BUY_ANIMAL`, `PICKUP` and `PLACE` from one to the
+other changes what the farm produces while leaving the route's geometry and
+schedule intact. The swap applies only when the preferred product leads by
+a margin (`candidates.demand.preferred_animal`), latches once placements
+begin, never touches geese, crops or land, buys the dearer animal only with
+a cash buffer, and never rewrites a PLACE for an animal the worker holds.
 """
 
 from __future__ import annotations

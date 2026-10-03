@@ -1,17 +1,12 @@
-"""Behavior clone of an elite cow/sheep-pasture strategy ("fog flower").
+"""Route-following agent distilled from a recorded top-player game.
 
-Source: episode 105144807, player 1 ("fog flower", public leaderboard
-score 2882.6 at capture time), which beat "Giulio Ravasio" (leaderboard
-rank #2, 2965.4) 71471-69193. Unlike the two rejected clones in
-`experimental_distilled_pasture_agent.py` (sourced from this project's own
-match history, where opponents are matched near this project's own rating
-by Kaggle's ladder), this source was pulled directly from the leaderboard
-via the Kaggle API and is a genuinely elite, top-tier result -- a much
-stronger candidate than anything sourced from this project's own games.
-See docs/research/GOAL.md section 9c.
+The route plays a cow/sheep pasture strategy. Its source game was taken
+from the public leaderboard via the Kaggle API, not from this project's
+own match history, where opponents are matched near our own rating. The
+recorded side won the game.
 
-Same method as `experimental_distilled_calendar_agent.py`: a fixed,
-open-loop, per-step lookup into the exact recorded action sequence.
+Open-loop playback: a fixed per-step lookup into the recorded action
+sequence, indexed `step + 1`.
 """
 
 from __future__ import annotations

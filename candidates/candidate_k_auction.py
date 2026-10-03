@@ -1,32 +1,12 @@
-"""Candidate K: Candidate J's prices, worked as a round rather than an auction.
+"""Candidate K, territory variant: J's pricing with optional per-hand zones.
 
-J sells better than the top of the ladder does. On identical seeds it takes
-227 coins a fleece against their 192, 190 a strawberry against their 155, 97
-a milk against their 63 -- ahead on six goods of nine -- because it reads the
-town's appetite and meters each book against its own depth. That part is kept
-here whole.
-
-What J cannot do is grow enough to matter. It works 50.7 tiles of 61 against
-their 57.8, and 37.0% of its worker-turns do a job against their 50.8%. The
-farm is not less efficient per turn -- it earns 34.6 coins on every turn it
-works against their 30.1 -- it is simply less busy, and the missing turns are
-spent walking: 1.46 steps between one job and the next against their 0.86.
-
-That gap is the auction itself. J prices every (worker, job) pair each turn
-and takes the best, which is right for the turn and wrong for the day: a
-strawberry harvest three tiles off at 760 coins beats a 37-coin watering
-underfoot, so the hand walks, and the watering never happens. A routed farm
-does both. The published agent at the top of this ladder is built exactly
-that way -- a chassis replaying a precomputed route, with reactive layers
-that only rewrite market orders.
-
-Five bonus-shaped attempts to bend the auction toward staying put were
-measured in J and every one failed: a standing-job bonus, a stronger walk
-charge, a job radius, swap passes, a cluster bonus. They fail because a bonus
-still re-decides from scratch every turn. The difference between a route and
-an auction is not the weighting, it is that a route commits to a SET of
-cells. So K gives each hand a territory for the day and lets J's own prices
-choose the order of work inside it.
+This module carries its own version of J's plan, job pricing and market
+layers. With ZONED on, each hand gets a compact block of the board for the day
+and J's prices choose the order of work inside it, so a hand commits to a set
+of cells instead of re-deciding every turn.
+Measured and off (ZONED = False), so by default the scheduler is a per-turn
+auction like J's: territories lengthened the walk between jobs (1.50 steps
+against 1.46) and cut the share of turns spent working (34.8% against 37.0%).
 """
 
 from __future__ import annotations

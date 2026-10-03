@@ -2,29 +2,14 @@
 # More tomato tiles beside the parent's day-18 tomato project, worked by the
 # annex's own hands.
 #
-# Why: the parent's V219 project (day 18: buy SE, plant 10 tomatoes on rows
-# 5-6) fires in 36 of N/N2's 169 live games, the rival runs one too in 33 of
-# them, and 27 of the 36 end within 3.2k. The 2400+ forks that beat us there
-# plant 12-20 tiles to our 10. Re-pricing the recorded tomato markets, 5 more
-# fertilized tiles move the margin +4.8k..+9.6k before ~3.5k of costs. A
-# literal extension of V219 lost (its day-27 crew no longer fit the 10-order
-# market), so the annex is a separate project the parent never sees.
-#
-# How (as stack/se_project.py): each turn the parent gets a masked observation --
-# annex tiles shown empty (what it would have seen without the annex), annex
-# hands, seeds, fertilizer and undelivered tomatoes removed -- so none of its
-# layers can react to or disturb the annex. The annex hires after the parent's
-# orders (the parent's hand indices never shift), buys its own seeds and
-# fertilizer, and sells only the tomatoes its hands placed in the shed.
-#
-# Tomato (engine): the first production comes on the night 8 days after
-# planting, then one a night, 4 in all: +1, or +2 when the tile was watered
-# and is fertilized that day; at most 4 held; the plant dies after two nights
-# unwatered, and the planting day counts as unwatered. Planted on day 18 the
-# productions fall on the nights of days 25-28. Schedule: plant and water on
-# day 18; water on 20, 22, 24 to keep it alive; fertilize on 24 (covers 24-26)
-# and 26 (26-28) and water every day 25-28; harvest the 4 held on days 27 and
-# 29; carry the harvest home the same day and sell it as it is placed.
+# Stronger opponents plant 12-20 tomato tiles to the parent's 10; on recorded
+# markets 5 more fertilized tiles were worth +4.8k to +9.6k before about 3.5k
+# of costs. As in stack/se_project.py, the parent never sees the annex: annex
+# tiles show empty and its hands, seeds, fertilizer and undelivered tomatoes are
+# masked out. The annex hires after the parent's orders, buys its own seeds and
+# fertilizer, and sells only the tomatoes its hands placed in the shed. Planted
+# on day 18, the tiles are fertilized on days 24 and 26, watered daily on days
+# 25-28 and harvested on days 27 and 29.
 
 import copy as _ta_copy
 

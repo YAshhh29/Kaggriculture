@@ -1,58 +1,88 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="320" viewBox="0 0 1280 320" role="img" aria-labelledby="t d">
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="380" viewBox="0 0 1280 380" role="img" aria-labelledby="t d">
   <title id="t">Kaggriculture</title>
-  <desc id="d">Project banner: Kaggriculture, silver medal, 448th of 10,246 teams.</desc>
+  <desc id="d">Banner: a farm at sunrise with the title Kaggriculture.</desc>
 
   <defs>
     <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#16324f"/><stop offset="1" stop-color="#2f6f73"/>
+      <stop offset="0" stop-color="#0b1d36"/><stop offset="0.52" stop-color="#1c4a66"/>
+      <stop offset="0.8" stop-color="#b9805f"/><stop offset="1" stop-color="#f1b37a"/>
     </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffd98c" stop-opacity="0.75"/><stop offset="1" stop-color="#ffd98c" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="haze" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f6d3a3" stop-opacity="0.35"/><stop offset="1" stop-color="#f6d3a3" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="shade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#000000" stop-opacity="0"/><stop offset="1" stop-color="#000000" stop-opacity="0.28"/>
+    </linearGradient>
+    <clipPath id="frame"><rect x="0" y="0" width="1280" height="380" rx="14"/></clipPath>
   </defs>
-  <rect x="0" y="0" width="1280" height="320" rx="12" fill="url(#sky)"/>
-  <circle cx="1130" cy="78" r="42" fill="#f4c95d" opacity="0.95"/>
-  <circle cx="1130" cy="78" r="62" fill="#f4c95d" opacity="0.15"/>
-  <g transform="translate(980,134)">
-    <rect x="0" y="34" width="96" height="62" fill="#b5442f"/>
-    <polygon points="-8,36 48,0 104,36" fill="#8f3324"/>
-    <rect x="36" y="58" width="24" height="38" fill="#f1e3c4"/>
-    <line x1="36" y1="58" x2="60" y2="96" stroke="#b5442f" stroke-width="3"/>
-    <line x1="60" y1="58" x2="36" y2="96" stroke="#b5442f" stroke-width="3"/>
-  </g>
-  <rect x="0" y="230" width="1280" height="90" fill="#3f5f24"/>
-  <rect x="0" y="236" width="1280" height="8" fill="#6b8f3a" opacity="0.55"/>
-  <rect x="0" y="249" width="1280" height="8" fill="#6b8f3a" opacity="0.61"/>
-  <rect x="0" y="262" width="1280" height="8" fill="#6b8f3a" opacity="0.67"/>
-  <rect x="0" y="275" width="1280" height="8" fill="#6b8f3a" opacity="0.73"/>
-  <rect x="0" y="288" width="1280" height="8" fill="#6b8f3a" opacity="0.79"/>
-  <rect x="0" y="301" width="1280" height="8" fill="#6b8f3a" opacity="0.85"/>
-  <rect x="0" y="314" width="1280" height="8" fill="#6b8f3a" opacity="0.91"/>
-  <g transform="translate(40,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
-  <g transform="translate(88,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
-  <g transform="translate(136,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
-  <g transform="translate(184,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
-  <g transform="translate(232,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
-  <g transform="translate(280,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
-  <g transform="translate(328,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
-  <g transform="translate(376,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
-  <g transform="translate(424,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
-  <g transform="translate(472,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
-  <g transform="translate(520,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
-  <g transform="translate(568,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
-  <g transform="translate(616,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
-  <g transform="translate(664,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
-  <g transform="translate(712,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
-  <g transform="translate(760,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
-  <g transform="translate(808,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
-  <g transform="translate(856,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
-  <g transform="translate(904,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
-  <g transform="translate(1144,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
-  <g transform="translate(1192,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
-  <g transform="translate(1240,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
-
-  <text x="56" y="96" fill="#ffffff" font-size="58" font-weight="700" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">Kaggriculture</text>
-  <text x="58" y="136" fill="#d7e6e4" font-size="22" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">An AI that runs a farm, a crew and a market stall for 30 days — and races a rival to the bank</text>
-  <g transform="translate(58,154)">
-    <rect x="0" y="0" width="356" height="34" rx="17" fill="#ffffff" opacity="0.14"/>
-    <circle cx="20" cy="17" r="9" fill="#c9ced6"/><circle cx="20" cy="17" r="5" fill="#9aa3ad"/>
-    <text x="38" y="23" fill="#ffffff" font-size="16" font-weight="600" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">Silver medal · 448th of 10,246 teams</text>
+  <g clip-path="url(#frame)">
+    <rect x="0" y="0" width="1280" height="380" fill="url(#sky)"/>
+    <circle cx="760" cy="40" r="1.4" fill="#ffffff" opacity="0.7"/>
+    <circle cx="842" cy="72" r="1.1" fill="#ffffff" opacity="0.5"/>
+    <circle cx="1010" cy="34" r="1.5" fill="#ffffff" opacity="0.8"/>
+    <circle cx="1120" cy="64" r="1.2" fill="#ffffff" opacity="0.6"/>
+    <circle cx="1222" cy="30" r="1.0" fill="#ffffff" opacity="0.5"/>
+    <circle cx="690" cy="92" r="1.0" fill="#ffffff" opacity="0.4"/>
+    <circle cx="1176" cy="112" r="1.1" fill="#ffffff" opacity="0.4"/>
+    <circle cx="930" cy="22" r="1.0" fill="#ffffff" opacity="0.5"/>
+    <circle cx="930" cy="254" r="190" fill="url(#glow)"/>
+    <circle cx="930" cy="254" r="58" fill="#ffd27a"/>
+    <path d="M0 244 C 160 200, 300 214, 470 232 S 760 196, 960 222 S 1180 204, 1280 228 L1280 282 L0 282 Z" fill="#2e5a4b"/>
+    <rect x="24" y="238" width="4" height="10" fill="#2b3b22"/><circle cx="26" cy="232" r="10" fill="#24493a"/>
+    <rect x="1192" y="228" width="4" height="10" fill="#2b3b22"/><circle cx="1194" cy="222" r="10" fill="#24493a"/>
+    <rect x="1218" y="232" width="4" height="10" fill="#2b3b22"/><circle cx="1220" cy="226" r="8" fill="#24493a"/>
+    <path d="M0 260 C 220 232, 430 244, 650 256 S 1010 232, 1280 250 L1280 292 L0 292 Z" fill="#3c6a35"/>
+    <g transform="translate(1012,180)">
+      <rect x="104" y="6" width="30" height="76" fill="#c9c2b4"/><path d="M104 6 a15 13 0 0 1 30 0 Z" fill="#9c958a"/>
+      <rect x="110" y="24" width="18" height="3" fill="#a9a294"/><rect x="110" y="44" width="18" height="3" fill="#a9a294"/>
+      <rect x="0" y="30" width="96" height="52" fill="#b5442f"/>
+      <polygon points="-8,32 48,0 104,32" fill="#8c3322"/>
+      <rect x="34" y="50" width="28" height="32" fill="#f1e3c4"/>
+      <path d="M34 50 L62 82 M62 50 L34 82" stroke="#b5442f" stroke-width="3"/>
+      <rect x="40" y="14" width="16" height="12" fill="#f1e3c4"/>
+    </g>
+    <rect x="0" y="266" width="1280" height="118" fill="#4b7a2a"/>
+    <polygon points="133.1,268 176.0,268 -560.0,380 -652.0,380" fill="#4b7a2a"/>
+    <polygon points="176.0,268 218.9,268 -468.0,380 -560.0,380" fill="#5c8e35"/>
+    <polygon points="218.9,268 261.9,268 -376.0,380 -468.0,380" fill="#4b7a2a"/>
+    <polygon points="261.9,268 304.8,268 -284.0,380 -376.0,380" fill="#5c8e35"/>
+    <polygon points="304.8,268 347.7,268 -192.0,380 -284.0,380" fill="#4b7a2a"/>
+    <polygon points="347.7,268 390.7,268 -100.0,380 -192.0,380" fill="#5c8e35"/>
+    <polygon points="390.7,268 433.6,268 -8.0,380 -100.0,380" fill="#4b7a2a"/>
+    <polygon points="433.6,268 476.5,268 84.0,380 -8.0,380" fill="#5c8e35"/>
+    <polygon points="476.5,268 519.5,268 176.0,380 84.0,380" fill="#4b7a2a"/>
+    <polygon points="519.5,268 562.4,268 268.0,380 176.0,380" fill="#5c8e35"/>
+    <polygon points="562.4,268 605.3,268 360.0,380 268.0,380" fill="#4b7a2a"/>
+    <polygon points="605.3,268 648.3,268 452.0,380 360.0,380" fill="#5c8e35"/>
+    <polygon points="648.3,268 691.2,268 544.0,380 452.0,380" fill="#4b7a2a"/>
+    <polygon points="691.2,268 734.1,268 636.0,380 544.0,380" fill="#5c8e35"/>
+    <polygon points="734.1,268 777.1,268 728.0,380 636.0,380" fill="#4b7a2a"/>
+    <polygon points="777.1,268 820.0,268 820.0,380 728.0,380" fill="#5c8e35"/>
+    <polygon points="820.0,268 862.9,268 912.0,380 820.0,380" fill="#4b7a2a"/>
+    <polygon points="862.9,268 905.9,268 1004.0,380 912.0,380" fill="#5c8e35"/>
+    <polygon points="905.9,268 948.8,268 1096.0,380 1004.0,380" fill="#4b7a2a"/>
+    <polygon points="948.8,268 991.7,268 1188.0,380 1096.0,380" fill="#5c8e35"/>
+    <polygon points="991.7,268 1034.7,268 1280.0,380 1188.0,380" fill="#4b7a2a"/>
+    <polygon points="1034.7,268 1077.6,268 1372.0,380 1280.0,380" fill="#5c8e35"/>
+    <polygon points="1077.6,268 1120.5,268 1464.0,380 1372.0,380" fill="#4b7a2a"/>
+    <polygon points="1120.5,268 1163.5,268 1556.0,380 1464.0,380" fill="#5c8e35"/>
+    <polygon points="1163.5,268 1206.4,268 1648.0,380 1556.0,380" fill="#4b7a2a"/>
+    <polygon points="1206.4,268 1249.3,268 1740.0,380 1648.0,380" fill="#5c8e35"/>
+    <polygon points="1249.3,268 1292.3,268 1832.0,380 1740.0,380" fill="#4b7a2a"/>
+    <polygon points="1292.3,268 1335.2,268 1924.0,380 1832.0,380" fill="#5c8e35"/>
+    <polygon points="1335.2,268 1378.1,268 2016.0,380 1924.0,380" fill="#4b7a2a"/>
+    <polygon points="1378.1,268 1421.1,268 2108.0,380 2016.0,380" fill="#5c8e35"/>
+    <polygon points="1421.1,268 1464.0,268 2200.0,380 2108.0,380" fill="#4b7a2a"/>
+    <polygon points="1464.0,268 1506.9,268 2292.0,380 2200.0,380" fill="#5c8e35"/>
+    <rect x="0" y="266" width="1280" height="46" fill="url(#haze)"/>
+    <rect x="0" y="266" width="1280" height="118" fill="url(#shade)"/>
+    <text x="62" y="108" fill="#ffffff" font-size="68" font-weight="800" letter-spacing="-1" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">Kaggriculture</text>
+    <text x="65" y="148" fill="#dbe9ec" font-size="23" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">Agents that farm, hire and trade against a rival for 30 days</text>
+    <rect x="64" y="176" width="296" height="32" rx="16" fill="#ffffff" opacity="0.13"/><text x="212.0" y="197" fill="#ffffff" font-size="14" font-weight="600" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">Kaggle simulation competition, 2026</text>
+    <rect x="370" y="176" width="326" height="32" rx="16" fill="#ffffff" opacity="0.13"/><text x="533.0" y="197" fill="#ffffff" font-size="14" font-weight="600" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">2 players · 1 shared market · 720 turns</text>
+    <rect x="706" y="176" width="182" height="32" rx="16" fill="#ffffff" opacity="0.13"/><text x="797.0" y="197" fill="#ffffff" font-size="14" font-weight="600" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">13-layer final agent</text>
   </g>
 </svg>

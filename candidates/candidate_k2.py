@@ -1,58 +1,14 @@
-"""Candidate K2 -- the route, overridden only where an override is provable.
+"""Candidate K2: Candidate K plus extra sales the live market proves safe.
 
-K is H2's recorded route and nothing else. Its own metering has been dead
-code for some time, and on the live board it scores 1570.2 against the
-route's own 1576.2: the same agent, six points worse. Every attempt this
-project has made to improve on the route by taking a statistic off
-stronger teams and turning it into a rule has lost, and lost badly:
+K is H2's recorded route; every attempt to improve it by turning a statistic
+from stronger players into a rule has lost. K2 acts only where a check against
+this turn's board shows the action cannot be worse than not taking it: in order
+slots the route left unused, it sells pure outputs while the live price stays
+at or above PREMIUM times base, walking the curve unit by unit (at most
+MAX_TAKE per good). It never moves a hand, never displaces a route order, and
+never sells WHEAT or FERTILIZER, which the route consumes.
 
-    lot cap at six units       35/120 bracket wins   against 58/120
-    shed drained to six         4/120                 against 58/120
-    endgame liquidation spread  worse on own score
-    game handed to J at day 9   0/120 wins on strong opponents
-    game handed to J at day 12  12/120 bracket wins   against 58/120
-
-The pattern is the same every time. The bracket carries six units of shed
-because its timing earns full price; forcing our shed to six means dumping
-into our own books all game. Their numbers are RESULTS of good play, not
-instructions for it.
-
-WHAT THIS FILE DOES DIFFERENTLY
-===============================
-lynnsakurai's notebook frames the only approach that survives that
-pattern: never substitute your judgement for the route's, and never act on
-a statistic. Act only where a CHECK, evaluated against the live board this
-turn, proves the action cannot be worse than not taking it. Where the
-check does not pass, do exactly what the route does.
-
-The route's weakness is not what it does, it is what it leaves on the
-table. It plays a recorded programme, so it cannot notice that this
-particular game has handed it a book paying well above base -- a town
-whose shops happen to drain wool, an opponent who has not sold milk in
-twenty turns. K2 takes only those trades, and only with slots the route
-did not use.
-
-THE INVARIANT
--------------
-A unit is sold only when the book pays at least PREMIUM times base for it.
-That is not a preference, it is a proof: `market_price` depends on
-inventory alone and falls as we sell, so a unit sold at or above base is
-sold at a price the rest of the season will not see again once the glut
-arrives -- and the town keeps draining the book, so refusing the trade
-does not preserve it, it hands it to whoever sells next. The quantity is
-walked unit by unit against the live curve and stops the moment the next
-unit would fall below the bar, so the trade cannot carry itself past its
-own justification.
-
-Three things this never does, each of which broke an earlier attempt:
-  * it never takes a slot the route wanted -- only spare ones, appended,
-    so no route order is shifted into a different index;
-  * it never moves a hand, plants, or touches a tile, so the recorded
-    programme's assumptions about where its workers are stay true;
-  * it never sells below base, so it cannot be the thing that crashes a
-    book the route was counting on.
-
-    PREMIUM = 0.0 disables the override entirely and is K exactly.
+PREMIUM = 0.0 disables the override and is K exactly.
 """
 
 from __future__ import annotations

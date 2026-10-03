@@ -1,30 +1,13 @@
-"""Work for hands a recorded route never planned for.
+"""Actions for hired hands that a recorded route has no instructions for.
 
-An independent study of the top-200 corpus found the clearest unexploited
-lever in the whole dataset, and the reason nobody takes it:
-
-    Nobody hires the 12th hand. It costs 144 coins a day and buys 720
-    worker-turns, 6.0 coins a turn, against a measured 37.3 coins per
-    job-turn. Both cohorts cap at 11 while sitting on 7,600+ coins and
-    leave 22 tiles bare on day 28 -- and it is unexploited *because a
-    precomputed tape cannot add a worker it did not plan for*.
-
-The hire cost is a fibonacci curve on the count already hired today and it
-resets each night, so the n-th hand of a day costs fib(n) outright. The
-twelfth is 144, the thirteenth 233, the fourteenth 377. Against a job-turn
-worth 37 those are cheap; against a hand that stands still they are not,
-which is the whole difficulty: a route agent has no action to give them.
-
-This module supplies that action. It is deliberately simple, because an
-extra hand only has to beat standing still, not out-think the route:
-
-  * do the job under your feet if there is one worth doing,
-  * otherwise take one step toward the nearest tile that has one,
-  * and keep out of the way of the hands the route is already driving.
-
-Jobs are ranked by what the engine actually pays for them, so a ripe melon
-outranks a watering, and the walk is charged against the job's worth so a
-hand does not cross the farm for a carrot.
+A recorded route cannot use workers it did not plan for, yet extra hands are
+cheap: the n-th hire of a day costs fib(n) coins (144 for the twelfth) against
+about 37 coins earned per job-turn. This module gives each such hand a simple
+policy that only has to beat standing still:
+  * do the job under its feet if there is one,
+  * otherwise step toward the tile whose job is worth most after the walk,
+  * and skip tiles the route's own hands are working this turn.
+Jobs are valued at what the engine pays for them.
 """
 
 from __future__ import annotations

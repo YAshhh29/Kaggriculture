@@ -1,33 +1,15 @@
-"""REJECTED clone of a currently-prevalent cow/sheep-pasture strategy.
+"""Rejected route-following agent distilled from a recorded ladder game.
 
-Kept for the record, not used by anything live -- see docs/research/GOAL.md section
-9a. Source: episode 105113156, player 1 ("Mikhail_Komkin"), a live Kaggle
-game against this project's own (older) Candidate A/B, final score
-105007-61586, its largest observed margin against Candidate A/B across 24
-real replays. Chosen because at least 15-18 of those 24 games, across many
-different team names, share this same COW~8/SHEEP~6/3-quadrant signature
--- not one idiosyncratic opponent, but the current dominant meta archetype.
+Kept for reference and not used by any live agent. The source is a live
+game against an older version of this project's agent, chosen because many
+opponents shared its cow/sheep pasture build (COW~8, SHEEP~6, 3 quadrants).
+Raw and with Candidate A's guard layer
+(`build_candidate_a_agent(baseline=...)`), it lost 0-6 to Candidate B on
+fresh seeds. The likely reason is that games near our own rating do not
+supply strong routes; those need a top-leaderboard game.
 
-Tested (both raw and with Candidate A's guard layer applied via
-`build_candidate_a_agent(baseline=...)`) against the *current* Candidate B
-on 3 fresh seeds, both seats (6 games each): lost 0-6 both times, guards
-firing zero times. A second independent episode from the same archetype
-(105061000, "Mwanza Wambua", its own largest margin against Candidate
-A/B) was cloned the same way and tested the same way: also 0-6, both
-raw and guarded. Two independently-sourced episodes of the current
-dominant meta archetype both lose decisively to the current Candidate B
-on seeds neither was recorded on. Likely explanation: Kaggle's ladder
-pairs similarly-rated opponents, so games from this project's own match
-history reflect players near this project's own rating, not top-of-
-leaderboard play the way the original Crop Dusta calendar clone (which
-this project also could not source from its own match history) evidently
-was. A genuinely strong second route probably needs a replay involving a
-top-leaderboard player, not just any recent opponent.
-
-Same method as `experimental_distilled_calendar_agent.py`: a fixed,
-open-loop, per-step lookup into the exact recorded action sequence. No
-adaptation to a different game -- see `candidates/candidate_a.py` for the guard
-layer this was tested with.
+Open-loop playback at index `step + 1`; the guard layer is in
+`candidates/candidate_a.py`.
 """
 
 from __future__ import annotations

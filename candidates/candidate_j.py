@@ -1,80 +1,14 @@
-"""Candidate J -- a farm scheduled by coins per worker-turn.
+"""Candidate J: a reactive farm that spends each worker-turn on the best job.
 
-Nothing here is replayed. Every action is decided from the observation.
-
-WHY THIS AGENT EXISTS
-=====================
-Two of our agents were measured against each other in six live games. They
-work the same board with the same rules, and the difference is not effort:
-
-    G    7,239 worker turns, 3,011 of them real work (41.6%), score  73,286
-    H2   6,745 worker turns, 3,445 of them real work (51.1%), score 121,202
-
-G hires *more* hands and walks 921 turns further; H2 plants more, harvests
-more, places more animals, and earns 65% more money. Per turn of real work,
-G returns 24.3 coins and H2 returns 35.2. The gap is spread across every
-good -- strawberry -17,780, wheat -8,798, milk -6,668, manure -6,702, melon
--4,748 -- and not concentrated in one clever line, which rules out a crop
-trick as the answer.
-
-So the scarce resource is a worker-turn, and the agent that spends each one
-on the most valuable thing available wins. That is the whole design.
-
-THE THREE LAYERS
-----------------
-* **Plan** (once a step, cheap). Prices every crop and every species at the
-  *margin* -- what the next unit fetches once everything already growing has
-  been sold and the town has eaten what it is going to eat -- and converts
-  that into coins per worker-turn. Sets the crew, the herd, the crop mix and
-  the land purchases. No fixed calendar decides what to grow.
-* **Schedule** (the expensive part). Every job on the board is quoted in
-  coins and in the turns it costs *including the walk*, and the best
-  (worker, job) pairs are taken globally. A worker keeps the job it is
-  walking to unless something clearly better appears.
-* **Market** (free money, costs no worker turns). Meters the fragile books,
-  ranks sales by the revenue a rival batch would take from them, keeps the
-  order list inside the ten slots the engine reads, and liquidates at 718.
-
-ENGINE RULES THIS AGENT IS BUILT ON
------------------------------------
-Each was read in `kaggriculture.py`, not assumed.
-
-* `_new_plant` sets `consecutive_unwatered = 1`, and `_daily_refresh_plants`
-  turns a plant to WEED at 2. **A tile sown and not watered the same day is
-  dead by morning.** Planting therefore books its own watering turn.
-* The same threshold means an *established* plant survives one dry day, so
-  ongoing crops are watered every other day, not every day. That is half the
-  watering labour on tomato and strawberry.
-* For non-ongoing crops the yield bonus only lands for
-  `age in [(max_yield_day+1)//2 .. max_yield_day]`, and FERTILIZE doubles it
-  for three days. Wheat goes 4 units -> 6, carrot 3 -> 4.
-* `_daily_refresh_animals` consumes `pending_care_bonus` only on a fed
-  production day and accrues one per cared-and-fed day, so a tended animal
-  yields `1 + interval` units per production event: 2 a day from a goose,
-  3 every two days from a cow, 4 every three from a sheep.
-* An animal escapes at `consecutive_unfed >= 2`, so it may be fed every
-  other day, but it must be fed then.
-* Glut curves differ per good. Units from equilibrium to the price floor:
-  WOOL 59, STRAWBERRY 62, MILK 76, MELON 158, and WHEAT and EGG effectively
-  never, because their curves are logarithmic. Fragile books are metered.
-* `_town_consume` drains each unlocked shop's basket every four steps and
-  the town centre takes one of every non-fertilizer good a day, so the price
-  steps up at `step % 4 == 1` and is flat across the block. Selling at
-  `step % 4 == 0` throws a tick of scarcity away.
-* `_process_market` walks both players' orders by index at the same
-  pre-commit inventory, a failed unit aborts its whole order, and orders past
-  the tenth are dropped. Sales go first, inventory-priced buys next, and
-  fixed-price orders (HIRE, BUY_LAND, BUY_SEED, BUY_ANIMAL) last -- but they
-  must still *fit*, so the plan claims its slots before the sales do.
-* Hiring is a daily rental on a fibonacci curve that resets each night: ten
-  hands cost 143 coins for the day. Hands spawn at the shed, so the roster is
-  built at hour 0 and left alone.
-* FERTILIZER is in no shop basket and is excluded from the town centre's
-  daily consumption, so nothing in the game consumes it and its price only
-  decays, 100 -> 24. Spread on a watered wheat tile inside its window it is
-  worth two extra wheat instead.
-* Step 718 is the last action the interpreter processes and reward is
-  `farm["money"]`, so anything unsold is worth zero.
+Nothing is replayed. Every action comes from the observation, in three layers:
+* Plan (once a step): prices crops and animals at the margin, net of the
+  town's remaining demand, and sets the crew, herd, crop mix and land buys.
+* Schedule: quotes every job in coins and in turns including the walk, and
+  assigns the best (worker, job) pairs across the whole board.
+* Market: meters fragile books, stays within the engine's ten order slots, and
+  liquidates at step 718, the last step the engine processes.
+Key engine rule: a tile sown and not watered the same day is a weed by
+morning, so every planting books its own watering turn.
 """
 
 from __future__ import annotations

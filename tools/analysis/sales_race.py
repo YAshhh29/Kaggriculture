@@ -43,7 +43,7 @@ def race(job) -> dict:
     original_market = engine._process_market
 
     def process_market(state, env_):
-        # The interpreter works on its own copies of the farms; remember the
+        # The interpreter works on its own snapshot of the farms; remember the
         # list the market step is using so each committed unit can be placed.
         now["farms"] = state[0].observation.farms
         return original_market(state, env_)

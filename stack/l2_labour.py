@@ -1,26 +1,12 @@
 # ---- BEGIN l2_labour (in-place labour recycler) ----
-# A unit whose command this turn is PASS, or a command the engine will
-# certainly ignore, is given a useful command ON ITS OWN TILE instead. The
-# unit does not move, so the parent's route (its "tape") is untouched: the
-# next command the parent gives it starts from the same square.
+# Give a unit whose command is PASS (or a sure no-op) useful work on its own tile.
 #
-# It only ever issues:
-#   CARE      an animal already fed today and not yet cared for, whose banked
-#             bonus can still be paid before the season ends and fits under
-#             the holding cap;
-#   WATER     a plant not yet watered today -- unless a fertilizer is being
-#             carried and the plant is in a stage where fertilizing before
-#             watering would earn more (one-time crop in its bonus window,
-#             ongoing crop on a production eve);
-#   HARVEST   a plant that is already decaying (yield can only fall), or an
-#             animal whose output would overflow its holding cap tonight;
-#   COLLECT_FERTILIZER  late in the day only (hour >= 22), when the replays
-#             show the tape never collects it itself;
-#   DIG       a weed under a PASSing unit.
-# It never moves a unit, never PLANTs, FEEDs, FERTILIZEs, PICKUPs, DROPs or
-# PLACEs (so it never spends seeds, wheat or fertilizer the parent needs),
-# never harvests a plant that could still grow, never touches market orders,
-# and never adds to the shed past a safety margin. Any error returns the
+# The unit never moves, so the parent's route is untouched. The layer only
+# issues CARE (a fed animal whose bonus can still be paid), WATER (an unwatered
+# plant, unless fertilizing first would earn more), HARVEST (a decaying plant,
+# or an animal about to overflow its cap), COLLECT_FERTILIZER (hour >= 22) and
+# DIG (a weed). It never spends seeds, wheat or fertilizer, never touches market
+# orders, and never fills the shed past a safety margin. Any error returns the
 # parent's action unchanged.
 
 import time as _lb_time

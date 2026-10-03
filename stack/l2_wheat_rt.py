@@ -1,27 +1,12 @@
 """L2 candidate (wheat economy): the town-draw wheat round trip.
 
-Every 4 steps (step % 4 == 0) the town eats wheat right after that step's
-market: each wheat shop instance (BAKERY, PIZZA_SHOP, BRUNCH_SPOT,
-ICE_CREAM_SHOP, FARMERS_MARKET) removes one unit, and the town centre one
-more at step % 24 == 0. Wheat is priced by market inventory, so after a draw
-of D units every unit is worth about D / (2 sqrt(deficit)) more. Buying q
-wheat at step s (before the draw) and selling the same q at s + 1 (after it)
-earns  sum_j p(I - D - j) - p(I - j)  with nothing else changing: BUY_PRODUCT
-quotes at the post-buy inventory, so a round trip against an unchanged market
-nets exactly zero and the draw is the whole profit.
-
-Measured on the 70 faithful 2600-2700 team games (tools/analysis/l2_wheat_*):
-30 teams do this (61,296 units bought at step % 4 == 0, 57,418 sold one step
-later) and earn $0.19 a unit; Agent A does it only in its opening tapes.
-That is where those teams' "extra" wheat buys and sells come from: their net
-wheat sold is the same as A's.
-
-The parent never sees the round trip: at the sell step it is shown the shed
-without our wheat and the market inventory without our purchase, so its own
-decisions are the ones it makes without this layer. The layer never buys when
-the purchase could starve a parent order (cash), never lets bought wheat push
-a same-turn DROP over the 100-unit shed (a DROP discards overflow), and only
-trades when the exact engine price table says the draw pays.
+Every step % 4 == 0 the town eats wheat right after the market (one unit per
+wheat shop, one more at step % 24 == 0). Wheat is priced by market inventory,
+so q units bought before the draw and sold one step later earn the price rise
+the draw causes; against an unchanged market the trip nets exactly zero. The
+parent never sees the trip (its view of the shed and market excludes our
+wheat). The layer never buys when the purchase could starve a parent order or
+overflow the shed, and trades only when the engine's price table says it pays.
 
     python -m tools.eval.paired stack.l2_wheat_rt:build --label wheat-rt60
 """

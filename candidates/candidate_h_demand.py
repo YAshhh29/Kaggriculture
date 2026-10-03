@@ -1,31 +1,14 @@
-"""Candidate H's market-demand layer.
+"""Candidate H's market-demand layer: re-decides a base policy's SELL orders.
 
-A base farming policy decides what to plant, raise, harvest and when to
-offer goods for sale. This layer sits on the action that policy returns and
-re-decides only its SELL orders, from a model of the market Kaggriculture
-actually runs:
-
-* the town -- every unlocked shop instance takes one of each good it lists
-  every four turns (single-good shops take two), and the town centre takes
-  one of every product except fertilizer once a day. Shops only accumulate,
-  so the next day's appetite for each good is known from the board;
-* the price curve -- each book prices off its inventory against I0 with
-  the per-good shape and target the rules document, so the value of selling
-  a unit now can be set against the value of the same unit after the town
-  has drained the book for a while.
-
-For each good the policy wants to sell, units go now while today's marginal
-price is at least what the same unit would fetch after the expected drain,
-less a tolerance for the other farm selling into the same book. The rest
-wait a turn and are reconsidered, since the base keeps offering them. The
-layer never raises a quantity and never touches hires or land, stands
-aside on the closing turns so final liquidation is untouched, and sells
-everything the policy offers whenever the shed is near its capacity. The
-only buys it can touch are opening seed orders, and only when guard_cash is
-switched on with a feed_reserve.
-
-Pure standard library, and self-contained so it can be appended to a
-submission file.
+It models the town (every unlocked shop takes one of each good it lists every
+four turns; the town centre takes one of each product a day) and each good's
+price curve. A unit sells now only if today's marginal price is at least what
+it would fetch after the expected drain, less a tolerance for the other farm;
+the rest are reconsidered next turn. It never raises a quantity or touches
+hires or land, stands aside on the closing turns, and sells everything offered
+when the shed is nearly full. Opening seed buys are touched only when
+guard_cash is switched on with a feed_reserve. Pure standard library and
+self-contained, so it can be appended to a submission file.
 """
 
 from __future__ import annotations

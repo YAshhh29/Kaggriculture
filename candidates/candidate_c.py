@@ -1,55 +1,14 @@
-"""Candidate C: public-state route portfolio over complete route experts.
+"""Candidate C: a route portfolio that commits to one route per episode.
 
-Status: two validated routes. `elite_pasture` is the new default -- see
-`docs/research/GOAL.md` section 9c for the full account. Four candidates were
-rejected before it by direct measurement: two hand-built strategies
-(`experimental_center_out_agent.py`; the best homegrown lineage,
-`gated-late-strawberry`/`tiered-fertilizer`), and two real-replay clones
-sourced from this project's own Kaggle match history
-(`experimental_distilled_pasture_agent.py`, kept rejected). The pattern
-that broke the streak: Kaggle's ladder pairs similarly-rated opponents, so
-this project's own match history never contained a genuinely elite
-replay to clone -- a real Kaggle API token unblocked pulling one directly
-from the leaderboard instead of from this project's own games.
+Each route is a recorded elite route wrapped in Candidate A's guards and
+Candidate B's market-timing residuals. The default, `elite_pasture`, follows a
+won game by a top-rated player and beat Candidate B 10-0 on seeds it was not
+recorded on; `calendar` (Candidate B) is kept as the fallback.
 
-`elite_pasture` (`experimental_distilled_elite_pasture_agent.py`) clones
-episode 105144807, player "fog flower" (public leaderboard score 2882.6),
-who beat the leaderboard's #2 team (2965.4) in that game. Wrapped in the
-same guard and market-timing layers as Candidate A/B
-(`build_candidate_b_agent(baseline=build_candidate_a_agent(baseline=...))`),
-it beat Candidate B 10-0 and Candidate A 4-0 across fresh seeds neither
-was recorded on, both seats -- the first candidate tested this way to
-win convincingly instead of losing decisively. `calendar` (Candidate B)
-is kept as the second route, both as a documented fallback and because
-nothing yet justifies discarding a submission with its own extensive
-validation history.
-
-This module still cannot legally choose between them: both are
-step-indexed scripted replays with no live-opponent signal available at
-episode start (see the non-reentrant rule below), so `_select_route_name`
-remains a placeholder returning whichever route is listed first --
-currently `elite_pasture`, because it is the better-measured of the two,
-not because a real per-opponent selection rule exists yet. Hard
-invariants, per `docs/research/GOAL.md` section 9 ("Selector"):
-
-  - Only public/legal state is ever read by `_select_route_name` -- it
-    receives nothing but the live `observation` dict, which never contains
-    team name, rank, submission ID, replay ID, or seed (those live only in
-    a replay file's `info` block, never in what an agent is called with).
-    There is no field for those to leak in through even by accident.
-  - A scripted, step-indexed route -- both routes here are, since each
-    wraps a frozen 720-step replay with no awareness of a board state it
-    did not itself create -- can only be entered at episode start. This
-    module enforces that as a hard, checked, one-way transition
-    (`RouteExpert.reentrant = False`), not just a convention a future edit
-    could quietly break.
-  - Hysteresis: once committed, a route is never reconsidered for the rest
-    of the episode. This is the strictest possible reading of "latch with
-    hysteresis; do not oscillate," and is the correct starting point before
-    any evidence exists that switching mid-episode is safe for a given
-    route pair -- switching a *reactive* route out mid-game may be safe
-    (it just looks at the current board), but nothing here has been
-    measured yet, so nothing here claims otherwise.
+`_select_route_name` reads only the public observation and is a placeholder
+that returns the first listed route. Routes are step-indexed, so one can only
+be entered at episode start (`RouteExpert.reentrant = False`), and a committed
+route is never reconsidered.
 """
 
 from __future__ import annotations

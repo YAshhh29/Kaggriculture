@@ -13,7 +13,7 @@ rather than our code against a recording:
   winning margin at 1,151 coins. If the top of the board wins by similar
   slivers, then a few thousand coins is the whole game up there too.
 * **Does anyone at the top lose to weak opposition?** That is the shape of
-  a fragile agent, and it is what we would be buying if we cloned one.
+  a fragile agent, and it is what we would be buying if we followed its route.
 
     python -m tools.data.analyse_top_matches
 """

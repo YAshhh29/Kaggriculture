@@ -1,38 +1,13 @@
-"""Sell at the rate the town actually absorbs, not as fast as we harvest.
+"""Pace sales to the rate the town absorbs, not the rate the farm harvests.
 
-This is the market demand engine applied where it turns out to matter --
-not to what the farm *produces*, which section 10.8c measured as a dead
-end, but to how fast it *sells*.
-
-The mechanism is in the simulator's own step order:
-
-    apply unit actions  ->  _process_market  ->  _town_consume
-
-The town removes a fixed number of units of each product every four
-steps -- one per unlocked shop that sells it, two for a single-product
-shop, plus one of everything but fertilizer from the town centre every
-twenty-four. Prices are a function of the shared market inventory, so
-those removals are the only force pushing a price back up. Sell faster
-than the town absorbs and inventory climbs, the price falls, and the farm
-is competing against its own earlier sales for the rest of the game.
-
-An elite route ignores this completely. It dumps 389 wool and realises 34
-coins a unit; 347 milk at 92; 455 fertilizer at 36. Agent E, which sells
-far less because it produces less, realises 170, 103 and 51 on the same
-three products in the same games. The difference is not skill at pricing,
-it is simply volume per unit of time.
-
-So this paces sales against `candidates.demand.demand_rate` and holds the rest,
-with four guards that override the pace, because a held unit is worthless
-if any of them are true:
-
-* the season is closing -- reward is the money on the books at step 720,
-  so the last day sells everything;
-* the shed is filling toward its 100-unit cap, past which the end-of-day
-  drop discards the overflow;
-* cash is short, since sales fund hiring, seed, feed and livestock;
-* the product has no town demand at all (fertilizer), where holding only
-  delays the inevitable.
+Prices depend on the shared market inventory and only the town's consumption
+brings them back up, so selling faster than `candidates.demand.demand_rate`
+means selling against our own earlier sales. In the same games, a recorded
+elite route that dumps its output realised 34 coins per wool where a
+lower-volume agent realised 170. Sales are paced to demand and the rest is
+held, unless a guard applies: the season is closing (reward is the money at
+step 720), the shed nears its 100-unit cap, cash is short, or the product has
+no town demand (fertilizer).
 """
 
 from __future__ import annotations

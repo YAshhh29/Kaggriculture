@@ -46,7 +46,7 @@ provenance fields before Phase 2 training.
 Exit gate: at least 200 complete episodes, no train/holdout team overlap, and
 reproducible feature statistics.
 
-## Phase 2: Behavior-Cloning Baseline
+## Phase 2: Imitation-Learning Baseline
 
 Start with supervised heads for interpretable macro targets rather than raw
 worker actions. Compare:
@@ -77,7 +77,7 @@ Implement one executor head at a time. Suggested order:
 5. sale pacing;
 6. service mode and abandonment.
 
-At each checkpoint, clone state and run every currently legal residual against
+At each checkpoint, snapshot the state and run every currently legal residual against
 the same opponent continuation. Train on win-first utility differences.
 
 Exit gate: each enabled head independently beats `KEEP_CALENDAR` on untouched

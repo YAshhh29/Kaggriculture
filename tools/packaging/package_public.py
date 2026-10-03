@@ -2,8 +2,8 @@
 
 The extraction step (rl/public/nb_*.py) embeds the author's main.py
 byte-for-byte between "BEGIN main.py (verbatim)" and "END" markers where the
-notebook shipped one. Shipping those exact bytes is the most faithful clone:
-no re-packaging, licence notices kept as the author wrote them.
+notebook shipped one. Those exact bytes ship as the submission: the program is
+embedded unchanged, with its licence notices as the author wrote them.
 
 Verification is the same standard as our own packagers, because a dead upload
 has happened in this project twice:

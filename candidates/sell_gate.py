@@ -1,33 +1,11 @@
-"""Hold back glut-sensitive sales while the shared market is saturated.
+"""Hold back WOOL and MILK sales while the shared market is saturated.
 
-The measured basis (docs/research/GOAL.md sections 9r and 9s):
-
-* Winners and losers sell the *same* volume; winners are simply paid more
-  per unit, concentrated in milk (p=0.0005 over 90 paired games).
-* The mechanism is market saturation at the moment of sale, not timing:
-  winners sell milk at inventory 10,047.6 against losers' 10,050.2
-  (p=0.0004), and milk moves 2.098 coins per unit of deviation, so that
-  2.6-unit gap is worth ~5.5 coins/unit against an observed 5.8.
-* Across rank bands the same skill is the largest single behavioural gap:
-  teams at 2850+ realise 73.1 per wool unit against 26.5 for the
-  2300-2600 band, and 53.5 against 41.9 for milk, selling at wool
-  inventory 10,041.5 against 10,053.9 -- for the same volume sold.
-
-Only WOOL and MILK are gated. Those are the two products whose glut
-response is steep enough for a few units of inventory to matter: wool is
-quadratic (`above_func "sq"`, target 3.20) and milk linear with a large
-coefficient (target 1.60, T 122). Strawberry and melon showed no
-significant effect and are left alone.
-
-**Why the first attempt at this failed.** An earlier version (section 9j)
-used a glut threshold of 10,500. Real inventory only moves in a band of
-roughly 10,040-10,060, so the rule never once fired across 80 games. A
-second version gated on *price* with a hard floor and cost 12-16k coins,
-because withholding sales starved the two things the sales were really
-funding: clearing the 100-unit shed so harvests can be deposited, and
-buying the wheat that feeds the animals. Both failures are guarded here --
-the thresholds are calibrated to the measured band, and cash, shed and
-terminal guards always override the gate.
+Winners and losers sell the same volume, but winners are paid more per unit
+because they sell when market inventory is lower; the effect is strongest
+for wool and milk, whose prices fall steeply in a glut. SELL orders for
+those two are dropped while inventory is above a calibrated threshold
+(`GATED`), for at most `MAX_HOLD_STEPS` turns. Cash, shed-space and
+end-of-game guards always override the gate.
 """
 
 from __future__ import annotations

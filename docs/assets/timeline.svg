@@ -34,7 +34,7 @@
   </style>
   <rect class="surface" x="0" y="0" width="1280" height="330" rx="12"/>
   <rect class="ring" x="0.5" y="0.5" width="1279" height="329" rx="12"/>
-  <text x="24" y="40" class="ink" font-size="20" font-weight="700" text-anchor="start">From a wheat baseline to a silver medal in six weeks</text>
+  <text x="24" y="40" class="ink" font-size="20" font-weight="700" text-anchor="start">From a wheat baseline to the final agent in six weeks</text>
   <text x="24" y="62" class="ink2" font-size="14" font-weight="400" text-anchor="start">502 commits, five phases — each card is one phase (cards are not drawn to time scale)</text>
   <rect class="t1" x="24" y="74" width="232" height="200" rx="10"/>
   <rect class="s1" x="24" y="74" width="232" height="6" rx="3"/>
@@ -50,7 +50,7 @@
   <text x="286" y="106" class="ink2" font-size="13" font-weight="600" text-anchor="start">Aug 31 – Sep 8</text>
   <text x="286" y="132" class="ink" font-size="20" font-weight="700" text-anchor="start">Candidates A–F</text>
   <text x="286" y="164" class="ink2" font-size="13" font-weight="400" text-anchor="start">Residual-RL contracts</text>
-  <text x="286" y="188" class="ink2" font-size="13" font-weight="400" text-anchor="start">Clones of elite players' routes,</text>
+  <text x="286" y="188" class="ink2" font-size="13" font-weight="400" text-anchor="start">Route experts from top games,</text>
   <text x="286" y="212" class="ink2" font-size="13" font-weight="400" text-anchor="start">route search over 245 tapes</text>
   <text x="286" y="236" class="ink2" font-size="13" font-weight="400" text-anchor="start">An economics engine (E)</text>
   <path class="arrowhead" d="M503 166 l11 8 l-11 8 z"/>
@@ -67,7 +67,7 @@
   <rect class="s4" x="762" y="74" width="232" height="6" rx="3"/>
   <text x="778" y="106" class="ink2" font-size="13" font-weight="600" text-anchor="start">Sep 26 – 27</text>
   <text x="778" y="132" class="ink" font-size="20" font-weight="700" text-anchor="start">L and M</text>
-  <text x="778" y="164" class="ink2" font-size="13" font-weight="400" text-anchor="start">Layer stack on a public clone</text>
+  <text x="778" y="164" class="ink2" font-size="13" font-weight="400" text-anchor="start">Layer stack on an open-source base</text>
   <text x="778" y="188" class="ink2" font-size="13" font-weight="400" text-anchor="start">Shadow of 18 public programs</text>
   <text x="778" y="212" class="ink2" font-size="13" font-weight="400" text-anchor="start">In-game rival sell clock (M)</text>
   <text x="778" y="236" class="ink2" font-size="13" font-weight="400" text-anchor="start">Peak live rating 2,492 (L3)</text>
@@ -81,6 +81,6 @@
   <text x="1024" y="212" class="ink2" font-size="13" font-weight="400" text-anchor="start">Shed guard: +9 wins, 0 losses (N10)</text>
   <text x="1024" y="236" class="ink2" font-size="13" font-weight="400" text-anchor="start">Final pair: N11 + N10</text>
   <rect class="panel" x="24" y="290" width="1232" height="28" rx="14"/>
-  <text x="640.0" y="309" class="ink" font-size="14" font-weight="600" text-anchor="middle">Deadline 30 Sep 23:59 UTC  ·  final pair N11 + N10  ·  448th of 10,246 teams  ·  silver medal</text>
+  <text x="640.0" y="309" class="ink" font-size="14" font-weight="600" text-anchor="middle">Deadline 30 Sep 23:59 UTC  ·  final pair N11 + N10</text>
 
 </svg>

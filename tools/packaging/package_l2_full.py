@@ -6,9 +6,10 @@ namespace, so no layer name can overwrite one of the parent's ~2,000 globals
 layers call). Layers receive the parent's namespace explicitly, as they do in
 local testing (stack.candidate_l.l_stack passes it as `env`).
 
-The opponent shadow runs fresh copies of the UNMODIFIED Agent A to predict an
-opponent that is a copy of it, so the verbatim A source is embedded too and
-exec'd by a factory (locally it reads submissions/agent-a/main.py).
+The opponent shadow runs fresh instances of the UNMODIFIED Agent A to predict
+an opponent running the same program, so A's source is embedded too,
+unchanged and with its licence notices, and exec'd by a factory (locally it
+reads submissions/agent-a/main.py).
 
 Composition (innermost first), identical to stack.l2_combo.ship():
     A (gate 120) -> animals -> wheat_rt -> outfarm.lot
@@ -152,10 +153,10 @@ def build(deficit: int) -> str:
     a_verbatim = base64.b64encode(zlib.compress(src.encode("utf-8"), 9)).decode()
     src_table = "{\n" + "".join(f'    "{k}": "{v}",\n' for k, v in table.items()) + "}"
     header = (f"# Agent L2 (Kaggriculture), Yash Jain, {time.strftime('%Y-%m-%d')}.\n"
-              "# Base: tetsutani's public build (Apache-2.0), verbatim below with its\n"
+              "# Base: tetsutani's public build (Apache-2.0), unchanged below with its\n"
               "# licence notices, except one condition in _v219_qualifies (marked\n"
               "# \"Agent L\"). Our layers are embedded at the end of the file, each run\n"
-              "# in its own namespace; a verbatim copy of the base is embedded for the\n"
+              "# in its own namespace; the base is also embedded, unchanged, for the\n"
               "# opponent shadow.\n")
     return header + parent + ENTRY.format(src_table=src_table, a_verbatim=a_verbatim,
                                           loads="\n".join(loads))

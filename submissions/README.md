@@ -15,22 +15,20 @@ Kaggle ranks a team on its two latest submissions.
 | [`candidate-n11/`](candidate-n11/) | **N11** | 56720031 | N10 plus corrected bookkeeping of our own sales (`stack/own_book.py`) |
 | [`candidate-n10/`](candidate-n10/) | **N10** | 56709381 | N9 plus the shed guard (`stack/shed_guard.py`) |
 
-Result: **448th of 10,246 teams, silver medal.**
 Rebuild either with `python -m tools.packaging.build_final N11` (or `N10`).
 
 ## Index
 
 | Folders | Period | Lineage |
 |---|---|---|
-| `candidate-n` … `candidate-n12`, `candidate-n3w`, `candidate-n9h` | 28–30 Sep | The layered stack on the public 2965 Master Hybrid Engine (`stack/`). N3w and N9h are rejected variants; N12 was built but not submitted |
-| `candidate-l` … `candidate-l5`, `candidate-l4e`, `candidate-m`, `candidate-m2`, `agent-a` | 26–28 Sep | The layered stack on a public clone (Agent A); M adds an in-game seller |
+| `candidate-n` … `candidate-n12`, `candidate-n3w`, `candidate-n9h` | 28–30 Sep | The layer stack on the strongest route-following base (`stack/`). N3w and N9h are rejected variants; N12 was built but not submitted |
+| `candidate-l` … `candidate-l5`, `candidate-l4e`, `candidate-m`, `candidate-m2`, `agent-a` | 26–28 Sep | The layer stack on a route-following base (Agent A); M adds an in-game seller |
 | `candidate-g` … `candidate-k`, `candidate-hd` | 9–23 Sep | Candidates G to K (`candidates/`) |
 | `candidate-a` … `candidate-f` | 2–8 Sep | Candidates A to F (`candidates/`) |
 | `deadline`, `learned-service`, `demand-animal`, `future-labor`, `tiered-fertilizer`, `gated-late-strawberry`, `distilled-calendar` | August | The first agents (`agents/`, `policies/`) |
 
-Packages from L onwards embed verbatim copies of public Apache-2.0 programs
-(the parent and the opponent library), with their licence notices retained
-inside each copy.
+Packages from L onwards include public Apache-2.0 programs (the base engine
+and the opponent library) unchanged, each with its original licence notices.
 
 ## Notes on the August and early-September packages
 
@@ -50,7 +48,7 @@ The tracked standalone Kaggle packages are:
   submission `55858409`, recorded at `649.3`.
 - `gated-late-strawberry/` contains the validated live-measurement candidate
   uploaded as submission `55887535`, selected at the current `655.2` snapshot.
-- `distilled-calendar/` contains public-calendar behavior clone submission
+- `distilled-calendar/` contains public-calendar imitation submission
   `55910432`. Its exact package is `72-8` on the 80-game broad gate and is
   frozen after successful validation.
 - `candidate-a/` (Candidate A) contains
@@ -72,10 +70,9 @@ The tracked standalone Kaggle packages are:
   earlier version of this package (sequential affordability only, before
   the land-priority fix below) was previously uploaded and live -- see the
   correction below.
-- `candidate-c/` (public-state route portfolio) contains a real elite
-  player's strategy ("fog flower", public leaderboard score 2882.6,
-  pulled from the Kaggle leaderboard via API, episode 105144807 where
-  they beat the leaderboard's #2 team) wrapped in Candidate A's guards
+- `candidate-c/` (public-state route portfolio) contains a recorded elite
+  route (from a game in which a 2882.6-rated player beat the leaderboard's
+  #2 team) wrapped in Candidate A's guards
   and Candidate B's market-timing residuals, currently the sole
   effectively-selected route (Candidate B is kept as a second, documented
   route; the selector cannot yet legally choose between them -- see

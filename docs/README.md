@@ -4,7 +4,7 @@
 |---|---|
 | [`game/`](game/) | How the game works: the rulebook for simulator 1.32.7 and two verified economics references (prices, demand, town draws, the shed) |
 | [`research/`](research/) | The thinking behind the agents: the research log, strategy audits, studies of the top of the ladder and of public programs, the RL design, and the early experiment write-ups |
-| [`journal/`](journal/) | The dated working journal, kept as it was written: the August progress log, the final sprint log (26–30 September, sections 1–62), handoff notes and the August strategy file |
+| [`journal/`](journal/) | The dated working journal: the August progress log, the final sprint log (26–30 September, sections 1–62), handoff notes and the August strategy file |
 | [`assets/`](assets/) | Figures and images used by the READMEs, and the script that draws the figures |
 | [`REPOSITORY_MAP.md`](REPOSITORY_MAP.md) | Where everything in the repository lives |
 

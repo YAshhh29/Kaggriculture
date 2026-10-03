@@ -1,33 +1,12 @@
-"""Open with the route, finish with the economics.
+"""Play an opening route until a switch day, then hand control to a closed-loop policy.
 
-Two facts measured today point at the same architecture.
+A recorded route assumes the farm its own earlier actions built, so it
+cannot take over a farm built by something else; a policy that reads the
+live board can. The handover therefore only runs route to policy, never the
+reverse.
 
-**Candidate F wins early and caps late.** Its mean coin lead over the
-opponent runs -501 at day 10, +7,019 at day 15, +13,215 at day 20 -- and
-in the games it loses it finishes with fertilizer at +493, which is
-exactly where that good reaches the price floor (10.8y, 10.8v). Its
-revenue is one saturated commodity and it has no second act, so an
-opponent that keeps building past that point wins: F takes the game when
-the rival ends on 11.6 animals and loses when it ends on 15.4, with its
-own herd fixed at 14.0 either way because a recording cannot respond.
-
-**Agent E is the reverse.** It realises 102 coins a unit against F's 66 on
-the same volume and prices every decision from live state (10.8ad), but
-its opening is weak: four cows on day 10 where a competitive route has
-six, and eighteen variants have failed to improve it.
-
-The switch is only safe in one direction, and that is what makes this
-buildable at all. A recording's action at turn t assumes the farm its own
-past actions built, so handing a tape a farm it did not build lands its
-plan on the wrong ground -- `candidates/route_portfolio.py` measured that at 0/16.
-A closed-loop agent has no such assumption: it reads the farm in front of
-it and prices what it finds. **Route to policy is safe; policy to route is
-not.** So the route opens and the policy finishes, never the other way
-round.
-
-`switch_day` is a measured parameter rather than a derived one. Too early
-and the route's opening advantage is thrown away; too late and there is
-not enough season left for the economics to matter.
+`switch_day` (default 15) is a measured parameter: too early wastes the
+route's opening, too late leaves the policy too little of the season.
 """
 
 from __future__ import annotations

@@ -1,25 +1,12 @@
-"""Marginal value of a farm action, in coins.
+"""Marginal value of a farm action, in coins (the core of Agent E).
 
-This is Agent E's core. Every constant here is transcribed from the
-installed simulator (`kaggle_environments/envs/kaggriculture/`), not
-guessed, and the pricing model is the simulator's own -- so an action's
-score is an estimate of the coins it actually produces rather than a
-hand-tuned priority number.
-
-Why value rather than priority: sections 9j-9q measured that our market
-policy and product mix are already fine (the reactive engine realises 88.5
-coins per unit sold against a tape's 91.1) and that the entire gap is
-throughput -- the engine spends 26% of worker-turns on tasks where a good
-route spends 49%, burning the rest walking and idling. A scheduler that
-ranks candidate actions by coins-per-turn attacks that directly: it cannot
-idle while any positive-value task exists, and it prefers near work to far
-work automatically because travel enters the denominator.
-
-It also answers the question a fixed schedule cannot. A strawberry planted
-too late to reach its yield window is worth nothing, so watering it is
-worth nothing; the same tile replanted with wheat may still return several
-cycles. Only a time-aware valuation can tell those apart, and this module
-is where that judgement lives.
+Every constant is transcribed from the installed simulator and prices use the
+simulator's own model, so an action's value estimates the coins it actually
+produces rather than a hand-tuned priority. Ranking actions by coins per
+worker-turn means the scheduler never idles while positive-value work exists
+and prefers nearby work, since travel adds to the turns. Valuation is
+time-aware: a crop that cannot reach its yield window before the season ends
+is worth nothing, and so is watering it.
 """
 
 from __future__ import annotations

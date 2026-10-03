@@ -1,24 +1,13 @@
 # ---- BEGIN se_project (Agent L's own layer) ----
 # A fourth-quadrant production project wrapped around a complete agent.
 #
-# Why: the lineage agents keep three quadrants all game while their cash sits
-# idle (Agent A holds ~12k on day 10, ~31k on day 17, ~60k on day 23). In real
-# ladder games the top-30 teams that beat the lineage buy the fourth quadrant
-# (SE) on day 10 and grow mostly wheat and some carrot on it; both books are
-# short all season (wheat ~$40, carrot $38 -> $52 in the lineage's own games).
-#
-# How: the parent never sees the project. Each turn the parent gets a masked
-# observation -- SE shown LOCKED, the project's hands, seeds and unsold stock
-# removed -- so none of its layers can react to, or disturb, the project. The
-# project hires its own hands after the parent's (so the parent's hand indices
-# never shift), buys its own seeds (the engine cancels every PLANT of a crop
-# when a turn asks for more seeds than exist, so the two must not share), and
-# sells only what its own hands delivered (measured from their cargo).
-#
-# Hands are dismissed every night and re-hired at fib(n) for the n-th hire of
-# the day, so a project hand costs the marginal Fibonacci price above the
-# parent's crew (144 for a 12th hand, 233 for a 13th). A hand is hired only
-# under a cost ceiling.
+# The parent keeps three quadrants all game while its cash sits idle; stronger
+# ladder teams buy the fourth (SE) quadrant around day 10 and grow wheat and
+# carrot on it. The parent never sees the project: its observation shows SE as
+# LOCKED, with the project's hands, seeds and stock removed. The project hires
+# its own hands after the parent's (so hand indices never shift), buys its own
+# seeds, sells only what its hands delivered, and hires only under a cost
+# ceiling (the n-th hire of a day costs fib(n)).
 
 import copy as _se_copy
 

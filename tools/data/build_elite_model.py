@@ -1,4 +1,4 @@
-"""Turn one elite replay side into a verified behaviour-clone model file.
+"""Turn one elite replay side into a verified route model file.
 
 Mirrors the schema already used by
 `models/v1327-public-elite-fogflower-105144807.json` exactly, including the

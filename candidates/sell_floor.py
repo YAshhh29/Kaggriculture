@@ -1,54 +1,13 @@
-"""Hold a unit back while its price is on the floor, and sell it later.
+"""Hold back sales while a good's price is on the floor, and sell after it recovers.
 
-This is the market demand engine aimed at the only thing the live ladder
-actually rewards: **a few thousand coins**.
+SELL orders are trimmed to the units that still fetch at least `floor`
+coins (`candidates.market.headroom`). The hold is lifted on the closing
+day, when the shed nears its 100-unit cap and when cash runs short, and it
+never applies to livestock or to goods the town does not consume.
 
-Measured from 166 real games of our own live submission, the ladder is not
-won by better play in any broad sense. Our mean reward is 85,499 against
-opponents' 82,954 -- we out-produce the field -- and we still win only
-45.2% of games, because the margins are tiny:
-
-    median winning margin    1,151 coins
-    median losing margin     2,889 coins
-    losses inside   500 coins    17  -> flipping them gives 55.4%
-    losses inside 2,500 coins    43  -> 71.1%
-    losses inside 5,000 coins    61  -> 81.9%
-
-So **+2,500 coins a game is worth about 26 points of win rate**, and a
-gain that looked like noise on a panel of weak tapes is decisive here.
-
-The mechanism is the shared market. Price is a function of one inventory
-both players sell into, and the town's consumption is the only force
-pushing it back up. Dumping a unit while its price is already on the floor
-realises almost nothing for it; holding until the town has eaten some of
-the glut realises the recovered price instead.
-
-Four guards make the hold safe, and each one exists because a held unit is
-worthless if it fires:
-
-* the closing day sells everything, because reward is the money on the
-  books at step 720;
-* a shed nearing its 100-unit cap sells, because the end-of-day drop
-  discards the overflow;
-* short cash sells, because the route's own purchases must never fail;
-* a product the town does not consume sells, because its price will not
-  recover -- fertilizer has no shop and no town-centre demand at all.
-
-Unlike `candidates/demand_sales.py`, which caps *how much* may be sold per turn
-against the town's absorption rate, this caps *at what price*.
-
-**Measured on Candidate D and it loses: -7,336 coins over 120 paired
-identical games at a floor of 8, win rate 85.8% down to 65.8%.** So both
-halves of the idea now have the same verdict on a high-volume clone, and
-for the same reason (10.8l): the route sells more than the town can
-absorb, so a unit held back is a unit whose price never recovers, while
-the cash it did not raise is cash the route's own purchases needed.
-
-It remains switched on in Agent E, where it is worth roughly +1,000
-coins, because E sells about a thousand units a game against the roughly
-3,800 the town absorbs -- inside the appetite, where holding genuinely
-lets a price recover. **The dividing line is production volume, not the
-mechanism.**
+Measured result: -7,336 coins a game over 120 paired games on a high-volume
+route-following agent. It pays only for an agent that sells less than the
+town absorbs, where held prices have time to recover.
 """
 
 from __future__ import annotations

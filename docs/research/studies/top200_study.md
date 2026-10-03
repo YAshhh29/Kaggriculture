@@ -39,13 +39,13 @@ design (it shows median final money *higher* in losses).
    an *identical* day-0 basket: 7 WHEAT seed, 12 MELON seed, 2 COW, 2 SHEEP. Four opening
    families cover every team in the corpus: this one (52), bespoke agents (14), the
    top-10 fork (7) and a wheat-heavy fork (5). (69 teams.)
-3. **The most-copied agent is the worst of the four families, and the top-10 runs a
+3. **The most widely run agent is the worst of the four families, and the top-10 runs a
    different one.**
    The "MELON6" family (9-10 wheat seed, 6 melon seed, 2 cow, **3 sheep**; ranks
    1,2,5,6,9,10,19 — only 7 teams) goes **39-31 (56%)** and takes a mean margin of
    **+$3,522** against every family other than itself. The 52-team "MELON12" fork goes
    250-265 (49%) and is **-$2,714** against every family other than itself. The most
-   copied agent on the ladder is the worst of the four. (N=347, both sides.)
+   widely run agent on the ladder is the worst of the four. (N=347, both sides.)
 4. **The clearest single marker of rank is what a team does with animal manure: apply it
    or sell it.** FERTILIZE actions fall monotonically 164 → 159 → 117 → 117 across rank
    bands 1-10 / 11-25 / 26-45 / 46-70, while fertilizer *units sold* rises monotonically
@@ -58,7 +58,7 @@ design (it shows median final money *higher* in losses).
    yield gain for 3 days. (Price trajectory n=24 games; engine `_town_consume`.)
 6. **TOMATO is the sharpest strategic discriminator.** Winners hold more tomato tiles
    **110-56 (p=0.00003)**. Median tomato revenue is $4,103 for ranks 1-10, $3,295 for
-   ranks 11-25 and **exactly $0 for ranks 26-70** — the big clone fork never plants it.
+   ranks 11-25 and **exactly $0 for ranks 26-70** — the big shared fork never plants it.
    Tomato's price *rises* all game ($60 → $74) because only 2 of 8 shop types buy it while
    half the field ignores it. (N=347.)
 7. **WOOL is a trap and low-ranked teams walk into it.** Wool collapses from $206 to
@@ -506,7 +506,7 @@ Where strong teams genuinely differ:
 - The price trajectories and the shop-demand table are derived from the engine source and
   confirmed on 24 replayed games; the wool and fertilizer collapses are not marginal
   effects, they are 40x and 4x price moves.
-- The clone-family classification is mechanical (exact day-0 committed basket) and the
+- The mirror-family classification is mechanical (exact day-0 committed basket) and the
   head-to-head counts are large (107-107 within MELON12 alone).
 
 **Thin.**

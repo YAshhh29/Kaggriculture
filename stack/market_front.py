@@ -1,32 +1,15 @@
 # ---- BEGIN market_front (Agent L's own layer) ----
 # Queue order in a mirror-dominated ladder.
 #
-# The engine settles market orders slot by slot: for slot i it takes both
-# players' i-th orders and trades them one unit at a time at a shared price.
-# So a sale in an earlier slot sells its whole quantity before a rival's sale
-# of the same item in a later slot, at the undamaged price, and the rival
-# sells into the damage. The public lineage -- and exact copies of Agent A,
-# which the ladder is full of -- put their orders in the same slots every
-# time. This layer reorders the parent's own orders (never their quantities)
-# so the orders whose price damage is largest land in the earliest slots:
-#
-# * orders that do not trade against the market (HIRE, BUY_SEED, BUY_ANIMAL,
-#   BUY_LAND) and empty slots move behind every SELL / BUY_PRODUCT;
-# * among SELL / BUY_PRODUCT orders, the permutation is chosen to maximise
-#   the damage we avoid against a copy of ourselves (whose slots are the
-#   parent's slots), breaking ties by putting larger damage earlier.
-#
-# A sale moved earlier can only get more money for later purchases in the
-# same turn, so reordering never makes a purchase fail that would have
-# succeeded.
-#
-# `wheat_weight` (N8) scales the damage of wheat orders. The copy-of-us rival
-# assumes the rival places our wheat orders too, but those are mostly our own
-# round trip's (60-unit draw-step buys, the sale a step later), which the
-# master-plan mirrors do not make: at those steps a mirror sells milk,
-# strawberry or wool in its first slots while ours sit behind the trip. On
-# 316 live N2/N3 games, equal-quantity same-step sales cost us 298 a game when
-# behind, 125 of it with a wheat order ahead of the contested sale.
+# The engine settles market orders slot by slot, one unit at a time at a shared
+# price, so a sale in an earlier slot sells before a rival's sale of the same
+# item in a later slot, and the rival sells into the damage. Many opponents run
+# the same public program and use the same slots every time. This layer reorders
+# the parent's orders (never their quantities): orders that do not trade against
+# the market move behind every SELL / BUY_PRODUCT, and those are permuted to
+# maximise the damage avoided against a mirror opponent using the parent's
+# slots. `wheat_weight` scales the damage of wheat orders, which mirror
+# opponents mostly do not place. Reordering never makes a purchase fail.
 
 import itertools as _mf_it
 import math as _mf_math

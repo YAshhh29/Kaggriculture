@@ -172,11 +172,11 @@
     "preferred_sell": 8,
     "ties": 13,
     "mean_sell_minus_hold_terminal_coins": -2.5357,
-    "method": "clone the exact live state, force one HOLD or SELL WHEAT choice while preserving all other actions, then return both branches to frozen v9",
+    "method": "snapshot the exact live state, force one HOLD or SELL WHEAT choice while preserving all other actions, then return both branches to frozen v9",
     "determinism_checks": [
       "source state remains unchanged by branch execution",
-      "identical cloned branches produce identical next states",
-      "resolved episode seed is explicitly copied into clone info",
+      "identical forked branches produce identical next states",
+      "resolved episode seed is explicitly carried into the snapshot info",
       "starter opponent is deterministic",
       "baseline episode scores reproduce the trajectory dataset"
     ],
@@ -657,7 +657,7 @@
         "losses": 2,
         "candidate_coins": 41702,
         "script_coins": 113032,
-        "interpretation": "scripted shared-market stress test; not an adaptive copy of the live leader",
+        "interpretation": "scripted shared-market stress test; not an adaptive model of the live leader",
         "report": "artifacts/benchmarks/v1327-scale-vs-leader-replay-script-both-positions.json"
       }
     },

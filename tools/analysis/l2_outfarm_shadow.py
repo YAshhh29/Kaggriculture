@@ -1,6 +1,6 @@
 """Out-farm autopsy, part 3: where does the opponent decide differently from A?
 
-Replays a live game exactly (both recorded tapes) while a fresh copy of Agent A
+Replays a live game exactly (both recorded tapes) while a fresh instance of Agent A
 watches a seat: at every step it gets exactly the observation that seat's
 player got and its answer is recorded, never played. In our own seat A played
 live, so the shadow must reproduce our tape action for action (the check that

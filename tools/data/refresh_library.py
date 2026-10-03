@@ -1,8 +1,9 @@
 """Before the final submission: find public programs our opponents now run.
 
-The opponent shadow (stack/l2_shadow.py) wins every game against an exact copy of
-a program in its library, and after the deadline the field is frozen for eight
-days with whatever was copied by then. This finds what is missing:
+The opponent shadow (stack/l2_shadow.py) wins every game against an opponent
+running, unchanged, a program in its library, and after the deadline the field
+is frozen for eight days with whatever programs are in use by then. This finds
+what is missing:
 
 1. lists the competition's public notebooks (newest first) and pulls those with
    at least --min-votes votes that are not in kaggle_cache/notebooks yet;

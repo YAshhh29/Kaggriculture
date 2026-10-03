@@ -122,7 +122,7 @@ Three layers, each measurable on its own.
 
 ### 2.2 Schedule (the expensive part)
 
-Reuse what is *proven* in our own code, not copied from anyone:
+Reuse what is *proven* in our own code, not taken from anyone:
 - global assignment of (worker, job) pairs by value / distance²;
 - **commitment**: a worker keeps the job it is walking to unless something
   clearly better appears (+5,142 measured);

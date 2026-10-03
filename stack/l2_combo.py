@@ -1,21 +1,11 @@
-"""L2 combinations: stack the layers that beat L on their own, and test whether they add up.
+"""L2 combinations: compose the tested layers around the parent and build each candidate.
 
-Order, innermost (closest to the route) first:
-
-    parent (Agent A, gate 120)
-      -> fert   stack/l2_wheat_fert.py   fertilize young wheat with carried fertilizer (priced)
-      -> feed   stack/l2_animals.py      drop FEEDs that provably buy nothing
-      -> rt     stack/l2_wheat_rt.py     wheat round trip around the town's wheat draw (masks the parent)
-      -> lot    stack/l2_outfarm.py      sell a premium lot whole instead of a few units a step
-      -> dump   stack/l2_endgame.py      endgame trickle dump
-      -> market_front (L's queue order)
-      -> labour stack/l2_labour.py       in-place recycler for PASS / no-op turns
-      -> shadow stack/l2_shadow.py       exact opponent shadow for copies of A
-      -> safety stack/safety.py          never forfeit a game
-
-Unit-command layers sit closest to the parent because they read its tape and
-commands; order-size layers come after them; labour and the shadow wrap the
-finished L like they did when tested alone.
+`combo(*names)` wraps the parent (Agent A by default, gate 120) in the named
+layers from `ALL`. Unit-command layers (fert, feed, crop, rt, lot, dump) sit
+closest to the parent because they read its route and commands; L's
+queue-order layer and the outer layers (labour, shadow, msell, race, annex,
+runner, dlast, place, shed, book) wrap the finished stack, and `safety` is
+outermost. Each factory below is one tested configuration.
 """
 
 from pathlib import Path
@@ -176,7 +166,7 @@ def ship_lib4():
     return combo(*SHIP, shadow_programs=tuple(SH_LIBRARY) + NEW_LIBRARY)
 
 
-# L4: no lot layer. With the library shadow locked on an exact copy, the lot
+# L4: no lot layer. With the library shadow in sync with the opponent, the lot
 # layer's whole-lot dumps get in the way of the shadow's own ahead-of-the-rival
 # sales (vs every library program, higher mean and worst game without it), and
 # on real ladder games it is at best neutral (A's 158: 144 wins without vs 142
@@ -191,7 +181,7 @@ def l4():
 
 
 # L4b: L3 as tested (lot layer kept) + the 14-program library + the agree rule.
-# Between near-copies that are not in each other's library the lot layer wins
+# Between close variants that are not in each other's library the lot layer wins
 # the selling race (L3 beat L4-without-lot by 3.6k in a direct game), so it stays.
 def l4b():
     from stack.l2_shadow import SH_LIBRARY
@@ -263,7 +253,7 @@ def l5e():
 
 
 # Public programs posted 2026-09-26/27 that L4e loses to in seat 0 (by ~250):
-# near-copies of the herd-safe lineage. In the library, the shadow models them.
+# close variants of the herd-safe lineage. In the library, the shadow models them.
 NEW_LIBRARY_0927 = ("nb_haodou092_harvest_ledger", "nb_dmitriigluzd_7_turn_rescue_historical_lb_2800",
                     "nb_leoprovorov_lucky_boy_best_version_score_2552_1", "nb_arsgorynich_v40_challenger",
                     "nb_haideptry_2950_peak_farm")

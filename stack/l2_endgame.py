@@ -1,25 +1,11 @@
-"""L2 endgame candidate: Agent L plus one order-rewrite layer on its parent.
+"""L2 endgame candidate: Agent L plus a trickle-dump layer on its parent's SELL orders.
 
-The layer only changes the TIMING and QUANTITY of the parent's SELL orders in
-the final days, never its unit actions, purchases or hires:
-
-* "Trickle dump": when the parent sells only part of the shed stock of a
-  non-input item this step (the route tapes trickle goods out 1-6 units a
-  step), it sells the whole stock now -- unless the town eats that item right
-  after this step's market (then waiting one step is worth the tick's bounce,
-  and the parent's own timing is kept).
-* Inputs (WHEAT, FERTILIZER) are never touched: the parent picks them up as
-  feed / fertilizer and its plan must not be starved.
-* Optional clone gate: fire only while the opponent's farm is identical to
-  ours (an exact copy of our parent), because then the opponent will trickle
-  the same goods on the next steps and selling first takes the better prices.
-
-Evidence (exact replays of our 148 live A/L games, tools/analysis/
-l2_endgame_policies.py, opponents as recorded): ungated +110 margin per game
-(A games +147, L games +26, median about 0, 11 losses flipped to wins, none
-the other way); in the 14 games against exact copies +292 per game. Every
-hold-back rule tested (sell after the town tick, hold the final day to 717,
-hold floor-priced glut goods) lost 60-450 per game.
+In the final days, when the parent sells only part of a good's shed stock in a
+step, the layer sells the whole stock now, unless the town eats that good right
+after this step's market. Inputs (WHEAT, FERTILIZER) and unit actions are never
+touched. Optional gates fire only while the opponent's farm is identical to
+ours, or while it often sells the same good in the same step. On exact replays
+of 148 live games the ungated layer added about +110 a game.
 
     python -m tools.eval.paired stack.l2_endgame:build --label endgame-dump
     python -m tools.eval.paired stack.l2_endgame:build_gated --label endgame-dump-clone

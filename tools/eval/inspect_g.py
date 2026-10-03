@@ -2,7 +2,7 @@
 
 A panel says whether G wins. It cannot say why it loses. This plays G
 against many replays of each strong opponent and judges every move both
-farms make, by running the engine's own action code on a copy of the
+farms make, by running the engine's own action code on a duplicate of the
 state each worker actually stood in -- so "that move did nothing" is the
 engine's verdict, not a guess.
 

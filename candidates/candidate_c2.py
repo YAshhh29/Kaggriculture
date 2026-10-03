@@ -1,29 +1,12 @@
-"""Candidate C2: the same portfolio machinery over a second elite baseline.
+"""Candidate C2: Candidate C's portfolio over a second recorded elite route.
 
-Identical in structure to `candidates/candidate_c.py` -- same executor, same
-one-commitment-per-episode hysteresis, same non-reentrant rule -- and it
-reuses that module's `RouteExpert`/`build_candidate_c_agent` directly
-rather than forking them, so there is exactly one implementation of the
-selector state machine to reason about.
-
-The only difference is the baseline: this variant clones "Giulio Ravasio"
-(public leaderboard rank #2, 2965.4) instead of "fog flower" (2882.6).
-That difference is deliberate. Two Candidate C variants differing only in
-a residual flag would differ by roughly one decision per game, which is far
-below the +/-35 point leaderboard noise measured on byte-identical uploads
-in section 9c -- comparing them would burn a submission slot and settle
-nothing. Two different elite strategies actually diverge (they disagree in
-6 of 8 head-to-head games), so the live comparison can carry information.
-
-Measured before packaging, wrapped in the same Candidate A guard and
-Candidate B market-timing stack as C1:
-
-- vs Candidate B: 8-0 (seeds 970-973, both seats)
-- vs Candidate C1 (fog flower): 2-6 on the same seeds
-
-So C2 is strong in absolute terms and clearly weaker than C1 head-to-head.
-It is shipped as a comparison arm, not as a claimed improvement -- if only
-one C slot is available, section 9's evidence favours C1.
+It reuses `RouteExpert` and `build_candidate_c_agent` from
+`candidates/candidate_c.py` unchanged; only the default route differs, a won
+game recorded from a top-ranked team. Two different elite routes diverge in
+most games, so comparing them on the ladder carries information that a
+residual-flag variant would not. Measured before packaging it went 8-0 against
+Candidate B and 2-6 against C1, so it ships as a comparison arm, not as an
+improvement.
 """
 
 from __future__ import annotations

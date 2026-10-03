@@ -118,7 +118,7 @@ Kaggle's Code tab sorted by Public Score exposed these distinct mechanisms:
 | --- | ---: | --- |
 | [Findings from Zero to Top Meta](https://www.kaggle.com/code/raykkretzschmar/kaggriculture-findings-from-zero-to-top-meta) | Public 2837.0; best 2945.5 | Public-farm similarity, inferred opponent sale horizon, debt-conserved front-running, self-impact sale ordering, protected near-shed liquidity |
 | [V16 Recovery](https://www.kaggle.com/code/boatlee/v16-rc5-r5a-high-score-8c-4s-recovery) | Code-tab 2834.7 | Hand alignment, actor-local weed recovery, cow-placement repair, one-turn premium shift/repay |
-| [V14 Clone Preemption](https://www.kaggle.com/code/boatlee/84-84-base-public-holdout-v14-clone-preemption) | Public/best 2844.1 | Public clone distance, projected shed, nonlinear price impact, conserved premium preemption, live liquidation |
+| [V14 Clone Preemption](https://www.kaggle.com/code/boatlee/84-84-base-public-holdout-v14-clone-preemption) | Public/best 2844.1 | Public mirror distance, projected shed, nonlinear price impact, conserved premium preemption, live liquidation |
 | [Conditional Memory](https://www.kaggle.com/code/kaitofukami/177-180-fresh-top-30-v21-1-conditional-memory) | Public/best 2665.8 | Thirty route medoids and 1-nearest-neighbor public-state matching; only colliding SELL blocks are shifted |
 | [V17 Market & Storage](https://www.kaggle.com/code/boatlee/v17-r1-rc2-high-score-10c-4s-market-storage) | Best 2587.6 | Pickup reservations, late near-shed returns, projected overflow, live liquidation from step 716 |
 | [V13 Order-Safe Premium Control](https://www.kaggle.com/code/boatlee/v13-r3-top-meta-order-safe-premium-control) | Code-tab 2359.8 | Order-safe shift/repay controller and static top-route hazard prior |
@@ -146,7 +146,7 @@ The first four are correctness and recovery residuals. They are the safest
 immediate implementation surface. The next three are market residuals. Route
 selection has the largest upside and the largest overfitting risk.
 
-## RL And Behavior-Cloning Evidence
+## RL And Imitation-Learning Evidence
 
 ### What Has Actually Worked
 
@@ -158,7 +158,7 @@ history features, and future value-horizon features. It reached roughly 80k
 terminal cash, then hit saturated logits and an exploration/collapse wall. That
 author is now testing an intent policy over a deterministic executor.
 
-The detailed behavior-cloning report [If I'm Going to Write Rules Anyway, Why
+The detailed imitation-learning report [If I'm Going to Write Rules Anyway, Why
 Train a Model?](https://www.kaggle.com/competitions/kaggriculture/discussion/738079)
 found:
 
@@ -204,7 +204,7 @@ RL, but no public source or result verifies that claim.
   [submission strategy post](https://www.kaggle.com/competitions/kaggriculture/discussion/736219)
   recommends judging after roughly 60 games, comparing equal-age submissions,
   and optimizing per-opponent win probability.
-- Public agents and the meta are copied and replaced quickly. [Leaderboard is
+- Public agents and the meta are forked and replaced quickly. [Leaderboard is
   by nature obsolete](https://www.kaggle.com/competitions/kaggriculture/discussion/737955)
   warns that a current high score may represent an older strategy and that most
   agents remain static with only marginal reactions.

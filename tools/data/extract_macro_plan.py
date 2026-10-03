@@ -1,6 +1,6 @@
 """Learn the consensus build order from many elite games, not one tape.
 
-Every clone this project has shipped replays a single recording, and the
+Every route-following agent this project shipped replays one recording; the
 live record says why that caps out: Candidate C1, C2, D and F are the same
 architecture -- one frozen route under the same A+B guards, since C's
 selector is a documented placeholder that never switches -- and they came

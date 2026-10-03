@@ -1,41 +1,15 @@
 """L2 animals layer: drop the FEEDs that provably buy nothing.
 
-Measured on exact replays of L's 45 live games (tools/analysis/
-l2_animals_judge.py): L feeds 329 times a game and the herd's feeding is very
-profitable overall, but 7.6 FEEDs a game buy nothing at all -- no CARE that
-can still be paid, no bank to pay out tonight, and the animal is not at risk
-of escaping. They are almost all of two kinds:
+On exact replays of L's live games about 7.6 FEEDs a game buy nothing: no CARE
+that can still be paid, no bank to pay out tonight, and no risk of an escape
+(mostly young cows whose CARE bank already fills the first production, and
+feeds on day 28, whose CARE nothing can pay).
 
-* a young cow whose CARE bank already fills its first production (a cow's
-  first yield is capped at 6 held, so a bank of 5 is full; a goose's at 3);
-* the last refresh (end of day 28): a CARE on day 28 is paid by nothing,
-  so a FEED that day matters only for a bank paid out tonight or for an
-  animal that went unfed yesterday.
-
-A's own feed-skip (EXP216, `_r85_feed`) prices the bonus with the current
-market price and only runs on days 10-28 before hour 22; it charges one
-CARE even when that CARE cannot be paid, and never runs before day 10, which
-is where the young-cow feeds are.
-
-Rule (engine-exact, per unit whose command is FEED on an animal tile):
-
-    keep the FEED if any of
-      * the animal was unfed yesterday (consecutive_unfed >= 1);
-      * tonight's refresh is a production with a bank > 0;
-      * the animal is cared today (already, this turn, or later today on
-        the parent's own route) and that CARE can be paid: a later
-        production refresh on day <= 28 exists and, before the first
-        production, the bank is below max_held - 1;
-      * day <= 27 and the parent's route does not feed this tile tomorrow
-        (A's own `_r86_next_feed`), so skipping would risk an escape.
-    otherwise replace it with COLLECT_FERTILIZER when the tile has one
-    available, else PASS. The unit keeps its wheat, which goes back to the
-    shed at night and cuts the parent's next wheat purchase.
-
-It never touches market orders, hires, CARE, HARVEST, PLACE, or any
-crop tile, and it never skips a FEED on an animal that went unfed
-yesterday, so it cannot cause an escape. Any error returns the parent's
-action unchanged.
+Rule (engine-exact): keep a FEED if the animal was unfed yesterday, tonight's
+refresh pays out a bank, a payable CARE is due today, or the parent's route
+does not feed the tile tomorrow; otherwise replace it with COLLECT_FERTILIZER
+when one is available, else PASS. Market orders and crop tiles are never
+touched, and any error returns the parent's action unchanged.
 """
 
 from __future__ import annotations

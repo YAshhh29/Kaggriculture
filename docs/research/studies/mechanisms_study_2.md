@@ -1,7 +1,7 @@
 # Mechanisms study 2: the V54/V55 generation
 
 Companion to `mechanisms_study.md` (five agents, the V34-V46 generation). Same rules: no code
-copied, no recorded action tape extracted, no embedded stream library extracted.
+reused, no recorded action tape extracted, no embedded stream library extracted.
 
 ## Sources
 
@@ -293,7 +293,7 @@ counts as unwatered"** — and `_daily_refresh_plants` converts the tile to a `W
 `consecutive_unwatered >= 2`. So a plant that receives no WATER on its planting day **is a weed by
 dawn**: the seed, the tile and the turn are all lost, and you inherit a DIG.
 
-At `step % 24 == 23` the layer clones the farm state, applies its own turn's unit actions, and drops
+At `step % 24 == 23` the layer takes a snapshot of the farm state, applies its own turn's unit actions, and drops
 any PLANT whose tile does not end the turn as a `PLANT` of that crop with `planted_day == today` and
 `watered_today == True` (i.e. some *other* unit on that tile watered it in the same turn — the planter
 cannot). It then **re-runs the check**, because removing a rejected request can unblock the engine's

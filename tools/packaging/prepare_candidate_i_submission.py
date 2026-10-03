@@ -1,6 +1,6 @@
-"""Package Candidate I: the frozen top-of-ladder route-replay clone.
+"""Package Candidate I: a frozen route-following agent over top-of-ladder tapes.
 
-Candidate I is a clone by construction. Its portfolio is a set of *recorded
+Candidate I replays recorded routes. Its portfolio is a set of *recorded
 action tapes* that real leaderboard teams produced in real games, captured into
 ``kaggle_cache/top200_tapes/``. This script is where the portfolio is chosen,
 where the shops each tape played under are recovered, and where the whole thing

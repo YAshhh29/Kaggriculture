@@ -3,7 +3,7 @@
 Fetched by user request from seven named URLs: ahmedberatozer's v39 and
 v34, leoprovorov's reverse-engineering writeup, two of dmitriigluzdov's
 agents, shiiin9's order-book notebook, and lynnsakurai's invariant-checked
-wrapper. Read for mechanisms and independent confirmation, not copied --
+wrapper. Read for mechanisms and independent confirmation, not reused --
 none of this is in J or K's source.
 
 > **CORRECTION, 2026-09-23. None of these seven authors is in the target

@@ -1,59 +1,14 @@
-"""Candidate K: H2's farm, sold at J's prices.
+"""Candidate K: H2's recorded route with optional market and crew layers.
 
-The two agents this project has are each missing exactly what the other has.
-
-H2 grows. It works 58.0 of its 60.3 tiles where J works 50.7 of 61, stands
-18.7 strawberry to J's 10.5 and 6.1 cows to J's 3.5, puts 65,630 coins a
-game of inputs through the market to J's 17,620, and turns over 181,907 of
-goods to J's 115,336. On the honest breadth panel it wins 27 of 48 clean
-games where J wins 5 of 47, and head to head it beats J by 67,202 a game.
-
-And then it gives the crop away. Its own audit, per game:
-
-    strawberry   249 units at 109.6 coins, 9% BELOW base, 92 of them
-                 under a quarter of base
-    wool         169 units at 167.0, 16% below base, 38 under a quarter
-    milk         190 units at 131.1, 18% below base, 76 under a quarter
-
-J sells those same goods at 189.7, 227.5 and 96.6 -- strawberry 58% ABOVE
-base, wool 14% above -- because it meters each book against its own depth.
-The books are shallow beyond belief: wool gives up a quarter of its price
-over 51 units and strawberry over 48, while wheat takes two thousand. H2
-sells whatever its route projects, in one lot, into a book sixteen units
-deep.
-
-Strawberry alone is 249 units at 80 coins of difference. So K was built as
-H2 unaltered, with one thing added: before the action leaves, every sale of
-a fragile good is cut back to what the book will pay for. The route, the
-timing layers and the opening are untouched.
-
-**WHAT K ACTUALLY IS TODAY, 2026-09-23.** That added thing is currently
-switched off and this docstring described an agent that no longer exists.
-Walk `meter()` with the constants as they stand -- FLOOR 0.0, LOT 0,
-WHEAT_BUY_CAP 0, FERTILIZER_BUY True -- and every branch falls through to
-`out.append(list(order))`. It rebuilds the order list identically. Both
-the lot cap and the price floor were measured and turned off in earlier
-sessions, for reasons recorded on each constant, and nothing was left
-behind. So K is H2's route plus `extend()`'s extra hires, and the sale
-metering in the title is dead code until LOT or FLOOR is set.
-
-That matters because the defect it was built for is still happening.
-Profiling sixteen games against teams rated 2600-2900
-(tools.analysis.bracket_profile): they issue ZERO dump-all orders a game,
-K issues 77, starting around step 671. When they name a quantity we match
-them exactly -- median lot 4 against 4, p90 13 against 12 -- so the whole
-difference is the endgame, where H2's route sells each good in one
-"SELL <GOOD> 1000" that walks the glut curve down unit by unit.
-
-Two rules from J's measurements come with it, both learned expensively:
-
-* The meter lifts when the shed is tight. Holding stock to protect a price
-  loses -- the hundred-slot shed is what binds late, and a freed slot is
-  worth more than the coins the freeing unit gives up. Measured twice in J,
-  at 78,490 and 80,385 against 80,730.
-* Wheat, egg and carrot are never metered. Their books are bottomless, the
-  town eats some nine hundred wheat a game, and J sells every unit of those
-  three above base already.
+The route (submissions/candidate-h2/main.py) runs every step. Afterwards
+`meter` can cut fragile sales to book depth (FLOOR, LOT, ENDGAME_SPREAD) and
+cap wheat buying (WHEAT_BUY_CAP), `extend` can hire and direct extra hands
+(EXTRA_HANDS, FILL_IDLE), `drain` can sell the shed down (DRAIN_TO), and SPLICE
+can hand the rest of the game to Candidate J. Each layer lost to the plain
+route when measured, so all are off by default and K plays H2's route
+unchanged; the result is noted on each constant. The common lesson: a
+statistic about stronger players is a result of their timing, not a rule.
+Constants can be overridden through the K_SET environment variable (JSON).
 """
 
 from __future__ import annotations
@@ -276,7 +231,7 @@ LAST_ACT_STEP = 718
 # MEASURED AND MUCH WORSE, and the most useful failure of the day. At
 # DRAIN_TO 6 -- the level the bracket actually carries -- K wins 4 of 120
 # bracket games against the baseline's 58, and the median own score falls
-# from 99,667 to 55,783. Copying the number was the error. Their shed is
+# from 99,667 to 55,783. Targeting their number was the error. Their shed is
 # empty as a RESULT of production and sale timing that earns full price;
 # ours emptied by force means dumping into our own books all game and
 # living on the floor of every curve. A statistic about a stronger agent

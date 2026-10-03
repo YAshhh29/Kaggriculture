@@ -1,26 +1,13 @@
 """Agent M, part 1: a seller that learns the opponent's selling clock in-game.
 
-Where L loses close games (2026-09-27, 51 close losses of L2/L3/L4): from day
-24 on, the opponent sold goods we were holding in the shed at better prices
-than we later got, worth +460 a game to them (strawberry +329, milk +122) --
-more than the median losing margin (-581). Against PeterDreamHan (-215) the
-pattern is plain: every other day both farms have a lot of ~21 strawberries in
-the shed from hour 0; they sell theirs at hour 1 (60 down to 22), ours waits
-for the parent's schedule at hour 12 and sells into their supply (36 down to
-1). The same repeats on days 24, 26 and 28.
-
-The opponent's sales of every good are measured exactly each step (inventory
-change + what the town ate - what we sold), so the clock is visible: this
-layer keeps each good's recent "lots" (one-step sales of at least `min_lot`
-units). Both farms run near-identical plans, so when we hold a lot, they hold
-one too; from `lead` steps before the earliest hour at which they sold such a
-lot in the last few days,
-it sells what we hold before they do, at the first step with a free order
-slot (A fills all ten at hour 0 with the day's hires), first in our queue,
-until they sell that day's lot.
-
-It stands down while the opponent shadow is in sync with a known program (the
-shadow's exact early sales know better) and before `first_step`.
+In close late-game losses the opponent often sold goods we were holding at
+better prices than we later got. Their sales are measured exactly each step
+(inventory change + town consumption - our sales), and the layer records their
+recent "lots" (one-step sales of at least `min_lot` units). Both farms run
+near-identical plans, so from `lead` steps before the earliest hour they sold
+such a lot in the last few days, it sells what we hold first in our queue,
+until they sell that day's lot. It stands down before `first_step` and while
+the opponent shadow is in sync with a known program.
 
     python -m tools.eval.live_replay run --agent factory --package stack.l2_combo:m1 ...
 """

@@ -1,33 +1,12 @@
-"""Price a sale by what it costs the opponent, not only by what it pays us.
+"""Price a sale by what it costs the opponent as well as what it pays us.
 
-This exists because of one measurement (GOAL.md 10.8t). The same frozen
-opponent tape, the same seed, only our side changed:
-
-    against Candidate D   the opponent banks   59,943
-    against Agent E       the opponent banks  142,772
-
-The opponent's actions are a recording and its farm is its own. The single
-thing our play changes is **the price it sells at**, because price is a
-function of one market inventory both players share. D dumps about 2,140
-units a game and the price collapses under the opponent; E sells 977,
-realises a far better price per unit, and leaves the market standing for
-the opponent to harvest. E earns the most coins of any agent in this
-project and won 0 of 64 held-out games.
-
-Every value in `rl/economics` prices a job by the coins *we* gain. On a
-shared market half the result is the coins the opponent does not gain, and
-nothing in E can see that term. This module is that term.
-
-**The rival's farm is public.** `observation["farms"][1 - player]` carries
-their tiles, so their crops, their animals and the yield already standing
-on each are all readable. That is enough to estimate what they still have
-to sell, and therefore how much a sale of ours costs them.
-
-Note the asymmetry that makes this worth doing at all: selling a unit into
-a floored price earns us almost nothing, so `candidates/sell_floor.py` held it
-back -- and holding it back was measured to be how an agent hands its
-opponent the game. A unit that earns us 3 coins and costs the opponent 40
-is a good unit to sell. Nothing in the codebase could express that before.
+Both players sell into one shared market inventory, so our sales lower the
+price the opponent gets. Against the same recorded opponent on the same seed,
+the opponent banked 59,943 when we sold heavily and 142,772 when we sold
+sparingly. The rival's farm is public (`observation["farms"][1 - player]`),
+so this module estimates the supply it still has to sell and values the coins
+a sale of ours denies it. A unit that earns us 3 coins and costs the opponent
+40 is worth selling.
 """
 
 from __future__ import annotations

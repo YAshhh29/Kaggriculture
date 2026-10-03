@@ -1,41 +1,13 @@
-"""Follow the build order 204 elite games agree on, not one recording.
+"""Consensus build order from top-rated games, and the farm's shortfall against it.
 
-Candidate C1, C2, D and F are the same architecture -- one frozen route
-under the same A+B guards, since Candidate C's selector is a documented
-placeholder that never switches. They scored 2094, 2023, 1936 and 1375
-live. **Only the route differed**, which is the whole six-hundred-point
-spread, and route choice has now been made twice on local panels that both
-failed validation.
+`tools/data/extract_macro_plan.py` reduces each recorded game to its
+cumulative macro decisions per day (hands, land, pastures, coops, animals,
+crops) and stores the median across the corpus in `rl/data/macro_plan.json`
+(204 games by players rated 2700+). A corpus median averages out the
+accidents of any single recording.
 
-A single recording is one sample of a strategy, complete with whatever
-went wrong that game, and replaying it into a different game applies
-decisions taken for reasons that no longer hold. A corpus does not have
-that problem: across many games by many strong players the accidents
-average out, and what survives is the build order they all agree on.
-
-`tools/data/extract_macro_plan.py` reduces every captured tape to its
-cumulative macro decisions per day and takes the median across the corpus.
-From 204 games by 27 players rated 2700+:
-
-    day             2    4    6    8   10   12   15   18   22   26   29
-    hands           4    5    8    9   11   11   11   12   12   11   11
-    land            0    0    1    1    1    2    2    2    2    2    2
-    pastures        6    6   12   13   14   14   14   14   14   14   14
-    coops           0    0    0    0    3    3    3    3    3    3    3
-    COW             3    4    6    7    8    8    8    8    8    8    8
-    SHEEP           2    2    2    4    5    6    6    6    6    6    6
-    GOOSE           0    0    0    0    2    2    3    3    3    3    3
-
-Six pastures and three cows standing by **day two** is far earlier than
-anything this project builds, and it matches what the live games say
-decides a match: 67 real games showed we win with 17 animals at day 12 and
-lose with 14.6 against an opponent's 16.4, with nothing else separating
-the two (10.8af).
-
-This module answers only "what is the farm short of, against that plan,
-today". It decides nothing about how to get it -- that stays with the
-executor, which reads the board and prices the work. A plan says what to
-own; it cannot say which worker should walk where.
+This module only reports what the farm is short of against that plan on a
+given day; deciding how to close the gap is left to the executor.
 """
 
 from __future__ import annotations

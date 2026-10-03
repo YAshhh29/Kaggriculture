@@ -1,25 +1,26 @@
 # stack/ — the final agent
 
-The agents that finished the competition (N10 and N11) are a **public
-route-following parent with thirteen of our layers wrapped around it**. Every
-layer is a function that takes the parent agent and returns a new agent: it
-sees the observation, lets the agent below it decide, and may adjust the
-action on the way back out.
+The agents that finished the competition (N10 and N11) are a route-following
+base engine with **thirteen layers of my own design** around it. Every layer
+is a function that takes an agent and returns a new one: it sees the
+observation, lets the agent below decide, and may adjust the action on the way
+back out.
 
 ![How the final agent decides each turn](../docs/assets/architecture.svg)
 
-The parent is the public *2965 Master Hybrid Engine* notebook (Apache-2.0).
-It follows one of 41 recorded 30-day routes, picked on day 6 from the town's
-first two shops, and switches to a shared end-game route on day 27. It is not
-in this repository; `tools/data/extract_notebook_agents.py` recovers the exact
-program from the public notebook into `rl/public/`.
+The base engine is *The 2965 Master Hybrid Engine* by haideptry, open-source
+code from the competition's public notebooks (Apache-2.0). It follows one of
+41 recorded 30-day routes, picked on day 6 from the town's first two shops,
+and switches to a shared end-game route on day 27.
+It is not committed here; `tools/data/extract_notebook_agents.py` recovers it
+from its notebook into `rl/public/`.
 
 ## Layers in the final agent (outermost first)
 
 | Layer | Since | Kind | What it does |
 |---|---|---|---|
 | [`safety.py`](safety.py) | L | Guard | Never lets an exception escape, repairs malformed actions, keeps a time budget other layers consult |
-| [`own_book.py`](own_book.py) | N11 | Opponent model | Corrects the parent's record of our own sales, so its rival-sale estimates stop counting our sales as the rival's |
+| [`own_book.py`](own_book.py) | N11 | Opponent model | Corrects the base engine's record of our own sales, so its estimate of the rival's sales is not inflated by ours |
 | [`shed_guard.py`](shed_guard.py) | N10 | Guard | On a day's last hour, cuts purchases and sells the excess so the day-end drop into the 100-unit shed destroys nothing |
 | [`place_guard.py`](place_guard.py) | N7 | Guard | Builds the missing pasture or coop before an animal is placed |
 | [`draw_last.py`](draw_last.py) | N4 | Market | Detects riders around our wheat purchase at the town draw and moves it to the last slot |
@@ -34,21 +35,21 @@ program from the public notebook into `rl/public/`.
 
 The composition for every agent from L to N12 is in
 [`l2_combo.py`](l2_combo.py) (`n10()`, `n11()`, `n12()` …), on top of
-[`candidate_l.py`](candidate_l.py), which loads a parent exactly the way
+[`candidate_l.py`](candidate_l.py), which loads a base program exactly the way
 Kaggle loads a submission. The packager
 ([`tools/packaging/package_l3.py`](../tools/packaging/package_l3.py)) embeds
-each layer's source verbatim into one standard-library-only file.
+each layer's source into one standard-library-only file.
 
 ## Experiments kept for the record
 
-Measured and not shipped (each module's docstring has the numbers):
+Measured and not shipped (each module's docstring has the result):
 `l2_carrot.py`, `l2_fert.py`, `l2_wheat_fert.py`, `l2_endgame.py`,
 `l2_race.py`, `se_project.py`, `fert_runner.py`, `fert_worker.py`,
-`n_crops.py`. Test harness variants: `l2_null.py` (must tie its parent),
-`l2_safe.py`, `l2_ablate.py` (drops one layer at a time).
+`n_crops.py`. Test harness variants: `l2_null.py` (must tie the agent it
+wraps), `l2_safe.py`, `l2_ablate.py` (drops one layer at a time).
 
 [`pub_agents.py`](pub_agents.py) and [`public_agents.py`](public_agents.py)
-load public programs, and our older packages, as opponents for evaluation.
+load public programs, and my older packages, as opponents for evaluation.
 
 ## Rebuild a final package
 

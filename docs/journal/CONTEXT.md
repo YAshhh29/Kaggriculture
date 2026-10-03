@@ -10,7 +10,7 @@ Only the latest two submissions are actively tracked.
 
 The current live leaderboard entry remains gated late strawberry submission
 `55887535`, currently displayed at 655.2. The new challenger is
-`agents/experimental_distilled_calendar_agent.py`, an exact behavior clone of
+`agents/experimental_distilled_calendar_agent.py`, an agent that exactly follows
 Crop Dusta player 0's public action calendar from episode `99058164`.
 
 This is the first local candidate that changes the underlying utilization

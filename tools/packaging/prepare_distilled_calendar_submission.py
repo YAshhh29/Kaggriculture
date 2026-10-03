@@ -1,4 +1,4 @@
-"""Prepare the public-calendar behavior clone for Kaggle."""
+"""Prepare the public-calendar agent, distilled from a top-player replay, for Kaggle."""
 
 from __future__ import annotations
 

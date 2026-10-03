@@ -1,29 +1,16 @@
 # ---- BEGIN fert_runner (Agent N5's own layer) ----
 # A fertilizer runner: one extra hand that fertilizes young wheat and carrot.
 #
-# Why: the 3000-rated teams fertilize 59-74% of their wheat lives (5.3-5.8
-# units a life) against N's 22% (3.7 units), and N dumps ~111 fertilizer a
-# game at 25 coins or less while wheat sells at 40-43 (study top_farms.md,
-# P1). N's route books its wheat waterers solid, so fertilizing inside the
-# route gains little (8 free turns a game); a dedicated hand does not need
-# the route's turns.
+# Top-rated teams fertilize 59-74% of their wheat against the parent's 22%, but
+# the parent's route has almost no free turns for it. A WATER on wheat aged 2-4
+# (carrot 2-3) adds one unit, two while the tile is fertilized, so fertilizing
+# at age 1 lets the route's own waterings collect the extra units.
 #
-# Engine: a WATER on wheat aged 2-4 (carrot 2-3) adds one unit, two while the
-# tile is fertilized (FERTILIZE covers today and the next two days); wheat
-# caps at 6 units (unfertilized lives reach 4), carrot at 4 (3). So wheat
-# fertilized at age 1 gains 2 units from the route's own waterings at ages 2
-# and 3, carrot at age 1 gains 1.
-#
-# How (as stack/tomato_annex.py): the parent never sees the runner. Each turn it
-# gets a masked observation -- the runner's hand, its cargo and the runner's
-# unpicked fertilizer removed. On days first_day..last_day, at the first hour
-# the market has room, the runner prices today's targets (age-1 wheat and
-# carrot not yet fertilized for the coming waterings, on a nearest-first path
-# that fits the day's turns) at the current quotes; it hires one hand and buys
-# the fertilizer only when the targets' value beats fertilizer plus the hire
-# by `min_ratio`. The hand picks the fertilizer up at the shed, walks the
-# path and fertilizes each tile still unfertilized; whatever it does not use
-# drops into the shed at midnight, where the parent sells or uses it.
+# As in stack/tomato_annex.py, the parent never sees the runner: its hand, cargo
+# and fertilizer are masked out of the parent's observation. On days
+# first_day..last_day the runner hires one hand only when the day's targets are
+# worth `min_ratio` times fertilizer plus hire; unused fertilizer drops into the
+# shed at midnight for the parent.
 
 import copy as _fr_copy
 

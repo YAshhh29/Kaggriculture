@@ -1,61 +1,13 @@
-"""Candidate G: a farm built around the two goods whose price never falls.
+"""Candidate G: a farm built from the simulator's rules, centred on geese.
 
-Not a clone. Every agent this project has submitted replays a recorded
-route -- C1, C2, D and F are the same guard stack over four different
-tapes, which is why they span 2094 to 1375 with no logic differing between
-them. Cloning has a ceiling and we are under it.
-
-This is built from the simulator's own constants instead, and it rests on
-one fact the entire leaderboard appears to have missed.
-
-**Nine goods, two of which cannot be flooded.** Price is
-`base -+ amp * f(|inventory - 10000|)`, and `f` differs per good. Counting
-units past equilibrium until the quote reaches the floor of 1:
-
-    WOOL 59, STRAWBERRY 62, MILK 76, MELON 158, FERTILIZER 493,
-    TOMATO 529, CARROT 842 ... and EGG and WHEAT **never**, because
-    their curves are logarithmic.
-
-The thousandth egg still fetches 38. The seventy-seventh unit of milk
-fetches 1.
-
-**So the animal economics are lopsided.** From `ANIMALS` and
-`_daily_refresh_animals`: a bird fed *and* cared yields `base 1 + bonus 1`
-per interval, and the goose interval is 1 against the cow's 2 and the
-sheep's 3, first yield day 4 against 8 and 6, cost 300 against 400 and
-500. Twenty head, tended, to day 29:
-
-    20 GEESE -> 1,000 EGG  -> 39,799 coins   (birds cost 6,000)
-    20 COWS  ->   630 MILK ->  6,735 coins   (birds cost 8,000)
-    20 SHEEP ->   613 WOOL ->  8,482 coins   (birds cost 10,000)
-
-Six to one, for the cheapest animal on the board. The nine top-rated teams
-average **2.1 geese** against 7.9 cows and 7.5 sheep, and Agent E buys 22
-cows and no geese. The whole field crowds the two commodities that
-collapse.
-
-**And every animal drops one fertilizer a day unconditionally** --
-`fertilizer_available = True` on the daily refresh whether or not it was
-fed -- into a book 493 units deep. So a goose pays twice: eggs into a
-market that never saturates, and manure into the deepest book after it.
-
-The design follows from that and from three more rules:
-
-* `BUILD_COOP` costs nothing and only needs an empty tile, so housing is
-  free and the flock is limited by feed and labour, not capital;
-* an animal unfed for two consecutive days **escapes**, so feed is not
-  optional and the wheat area has to track the flock;
-* reward is the money on the books at step 720, so everything sells.
-
-It grows melon, carrot and strawberry on ground the flock does not need
-(`CROP_TILES`), but it does not chase wool or milk. In a contested game
-both collapse: measured across a real D-against-C1 match, milk runs
-160 -> 203 -> 13 and wool 200 -> 217 -> 1, while egg goes 50 -> 92 because
-the town keeps draining a book nobody floods.
-
-Agent E failed twenty-six times because its economics priced every job by
-the coins *it* received and its scheduler could not follow a build order.
-This one has a fixed thesis and a scheduler that serves it.
+G generates its own actions from the engine's constants instead of following a
+recorded route. Its thesis: EGG and WHEAT have logarithmic price curves and
+never reach the floor, while wool and milk collapse once their books are
+flooded. Geese are the cheapest animal and yield every day, so twenty tended
+geese earn about six times what twenty cows do, and every animal drops a
+fertilizer a day. Coops are free, an animal unfed for two days escapes (so the
+wheat area tracks the flock), and everything is sold by the last step. Melon,
+carrot and strawberry fill the ground the flock does not need (`CROP_TILES`).
 """
 
 from __future__ import annotations
@@ -110,7 +62,7 @@ HIRE_UNTIL_DAY = 29          # the crew is wiped nightly; stopping early
                             # starved a 22-bird flock down to five
 # Two fixed purchases behind a reserve. The corpus buys ground the instant
 # it is affordable -- median cash 644 at the moment of purchase -- and
-# copying that measured 11,083 at three quadrants against 22,438 here,
+# following that measured 11,083 at three quadrants against 22,438 here,
 # because G's limit is worker throughput and it already leaves tiles idle.
 # Measured, and it inverts the corpus. Buying ground as soon as affordable
 # -- their behaviour -- gave 11,083 at three quadrants and 19,326 at two,
@@ -242,7 +194,7 @@ WHEAT_PER_BIRD = 0.8
 # the tiles still come out of strawberry. Sixteen stays.
 #
 # Wheat only on ground no crop seed can fill -- the inspector's WHEAT_FILL,
-# tested in its own copy of G -- does not take tiles from strawberry, and
+# tested in its own variant of G -- does not take tiles from strawberry, and
 # still loses. Uncapped, on the v12 field: -594 a game on 66 clean games
 # (better in 33, worse in 33); it sows the new quadrants faster than the
 # day-5 to day-9 crew can water and the seedlings die. Capped to what the
@@ -316,7 +268,7 @@ EARLY_BIRDS = 6
 # The inspector found animals carried all day and tipped back into the shed
 # beside empty pens, because PLACE is discounted by distance like any job.
 # Committing a worker to a reachable PLACE (its PLACE_COMMIT, tested in its
-# own copy of G) loses on its own, -2,029 a game on 66 clean games, by
+# own variant of G) loses on its own, -2,029 a game on 66 clean games, by
 # shrinking the herd, so it was retried with room to grow: PLACE_COMMIT with
 # a herd of 10 on the v12 field is -968 a game on 66 clean games (median
 # -80, better in 32, worse in 34), -1,241 over all 92. Nine stays.
@@ -330,7 +282,7 @@ EARLY_BIRDS = 6
 HERD_TARGET = 9
 # A fixed herd, as {animal: head}, in place of the demand-weighted plan.
 #
-# The engine's own ledger, G against the plan most of the ladder copies,
+# The engine's own ledger, G against the plan most of the ladder follows,
 # both facing the same opponent: the plan's six sheep sell 16,452 of wool
 # against G's one sheep and 2,604, the single largest line in a 29,000
 # gap. G's herd follows `demand x price`, which keeps landing on geese.
@@ -868,7 +820,7 @@ RATION_FLOOR = 60.0
 #
 # Tried again on G's own ladder games together with a smaller wheat patch,
 # because the agents that actually beat G buy 356 units of feed to G's 173
-# and sow 66 wheat tiles to G's 104. Copying that shape is much worse:
+# and sow 66 wheat tiles to G's 104. Adopting that shape is much worse:
 # feed + WHEAT_TILES 8 gives wins 23 -> 17 and own score -7,657 a game, and
 # feed + WHEAT_TILES 6 + strawberry 40 gives 23 -> 18 and -14,822. The
 # ladder study explains it: the top nine teams sow 100-210 wheat tiles a
@@ -1219,7 +1171,7 @@ PICKUP_SHARES_SHED = False
 # 2,787 a game: animals are only bought into a pen already standing empty,
 # so the "extra" coops and pastures were the lead the herd grows into.
 # Reserving pens for walking placers (the inspector's PLACE_COMMIT, tested in
-# its own copy) loses the same way, -2,029. Off.
+# its own variant of G) loses the same way, -2,029. Off.
 BUILD_CLAIM = False
 # Work the shed from all four access tiles, locked or not.
 #
@@ -1251,7 +1203,7 @@ SHED_ALL_ACCESS = True
 # going up at hours 11-13. With this on, while any animal is in the shed or
 # in a worker's hands and house_needed still wants a pen, an empty tile
 # skips the wheat branch and offers the pen. First written and drilled in
-# the inspector's copy of G.
+# the inspector's variant of G.
 #
 # Alone, on the v13 field (83 games): +1,239 a game on 61 clean games
 # (median +926, better in 34, worse in 27), +1,168 over all 83. Escapes fall
@@ -1485,7 +1437,7 @@ BAND_FEED = 10000.0
 # not on how much we hold. But it is a deliberate choice to run this farm
 # 25,000 poorer than it could be, and worth re-examining if the denial
 # ever stops paying -- against a live opponent, or if the field stops
-# being a crowd of copies that cannot react.
+# being a crowd of mirror opponents that cannot react.
 BAND_HARVEST = 6000.0
 BAND_WHEAT = 4000.0
 BAND_PLACE = 3000.0
@@ -2376,48 +2328,17 @@ def herd_plan(observation: dict[str, Any], counts: dict[str, int],
               total: int) -> dict[str, int]:
     """How many of each animal we want standing.
 
-    This replaces picking a single `preferred_bird` and building only for
-    it, which is what froze the farm after day six: once the town's draw
-    moved, the winning animal's pen type was the only one ever considered,
-    the other had no empty pen, and the buy gate refused for the rest of
-    the game.
+    Demand decides which line gets the growth, every line we already own
+    keeps a floor share, and nothing is torn down: a pen and its animal are
+    capital already spent, so falling demand should stop growth rather than
+    abandon production. This replaced building for a single
+    `preferred_bird`, which froze the farm once the town's draw moved.
 
-    It is also the wrong shape economically. A pen and the animal standing
-    in it are capital already spent, and a shift in demand does not refund
-    it -- the right response to falling demand is to stop *growing* that
-    line, not to abandon what it already produces. So demand decides who
-    gets the growth, every line that we already own keeps a floor share,
-    and nothing is ever torn down.
-
-    332 elite tapes buy a median of 3 geese, 8 cows and 6 sheep: a
-    permanently mixed herd of about seventeen, never a single species.
-
-    A known defect, left in place because the fix measured worse. Weighing
-    by `demand x price` favours milk and wool -- bases of 160 and 200
-    against egg's 50 -- and those are exactly the two books that collapse,
-    after 76 and 59 units. A trace shows `want_GOOSE` pinned at 1 for all
-    thirty days, the farm holding one goose and five cows, in an agent
-    whose thesis is the goose.
-
-    Pricing each line by `sale_revenue` instead, so the curve is walked
-    down as units are sold and a sixth cow is valued into the book its
-    five predecessors flooded, gives a more balanced herd -- 2 geese, 4
-    cows, 2 sheep -- and costs 11,087 (55,826 against 66,913). The
-    balanced herd is worth less than the lopsided one, so whatever is
-    wrong here, the animal mix is not it.
-
-    Tested again as an interaction, because a six-animal herd cannot flood
-    any book and the mix ought to matter only at scale -- and a diagnostic
-    had shown that a seventeen-animal herd reaches the corpus's own four
-    hundred animal-days, with nothing escaping, feed and care at one per
-    animal-day and idle turns down to 7.7%, and *still* loses. The obvious
-    reading was that its extra output was going into collapsed books.
-
-    It runs the other way. Pricing by revenue gets steadily worse as the
-    herd grows: 60,571 at six, 49,207 at twelve, 41,290 at seventeen,
-    against 67,325 for the sticker-priced six. Whatever a large herd costs
-    us, it is not the species mix, and the mix is worth less the more
-    animals there are to apply it to.
+    Known defect, kept because the fix measured worse: weighting by
+    `demand x price` favours milk and wool, the two books that collapse.
+    Pricing each line by `sale_revenue` instead gives a more balanced herd
+    but costs 11,087 a game (55,826 against 66,913), and does worse still
+    as the herd grows.
     """
     demand = remaining_demand(observation)
     pull: dict[str, float] = {}

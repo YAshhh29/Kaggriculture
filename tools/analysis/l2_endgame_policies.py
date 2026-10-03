@@ -350,7 +350,7 @@ if __name__ == "__main__":
 # Pre-emption experiments: sell our stock of an item one step BEFORE the
 # opponent's sale of it. "oracle" knows the opponent's executed sales from the
 # baseline replay (an upper bound for any predictor); "mirror" predicts them
-# with our own parent's next-step orders (the ladder is full of copies).
+# with our own parent's next-step orders (many opponents run that program).
 class Preempt:
     def __init__(self, start=600, min_units=3, items=None, predictor=None,
                  exclude=("WHEAT", "FERTILIZER"), tick_guard=True):
@@ -647,7 +647,7 @@ GAME_POLICIES["night_guard_nosell"] = lambda game, base: NightGuard(sell_first=F
 
 # Route-plan trigger: A's chassis replays a route tape chosen by the town's
 # first two shops (route 2 for everyone from step 648). The plan tells when
-# our parent -- and any copy of it -- will sell an item.
+# our parent -- and any opponent running the same program -- will sell an item.
 _PARENT_TABLES = {}
 
 

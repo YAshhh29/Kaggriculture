@@ -595,7 +595,7 @@ route experts to reuse (avoiding exactly the "ten forks of one route"
 trap this section warns about). Finding: only 3 genuinely distinct
 execution mechanisms exist in this repo's history (the parametric wheat
 engine behind `experimental_premium_throughput_agent.py`; the frozen
-elite-replay clone behind Candidate A/B; and the older scale/investment/
+elite-replay route follower behind Candidate A/B; and the older scale/investment/
 zoned/lifecycle/center-out expansion lineage), plus one narrow,
 toy-scale market-timing seed (`experimental_ridge_agent.py`). None of
 the four suggested new families above (cow-heavy, carrot/tomato
@@ -619,15 +619,15 @@ to trust measurements over the plan:
   both seats), by roughly 2x margin every game.
 
 Two independent hand-built strategies losing decisively to the calendar
-clone is now real evidence, not a one-off: the calendar clone (itself a
-behavior-clone of a real elite player, not a hand-built heuristic)
+follower is now real evidence, not a one-off: the calendar follower (itself a
+distillation of a real elite player's replay, not a hand-built heuristic)
 appears to structurally dominate this project's own hand-built
 alternatives. Building a third hand-rolled route from `core/economics.py`
 now, under time pressure and with no iteration budget remotely close to
 what the other lineages received (dozens of ablation files, hundreds of
 benchmark runs each), would very likely repeat this exact failure. The
 user was asked and chose: source new route experts the same way the
-current parent was built -- by behavior-cloning a genuinely different
+current parent was built -- by distilling a genuinely different
 real elite replay -- rather than a third hand-built attempt.
 
 Built in the meantime, so a validated route can be added without a
@@ -644,25 +644,25 @@ behavior-identical to `candidates.candidate_b.agent` (tested directly) and is
 not yet a submission candidate distinct from Candidate B.
 
 Blocked on: a real episode replay of a genuinely different, competitive
-elite strategy to clone (candidate leads from `docs/research/rl-design/PUBLIC_META_AUDIT.md`:
+elite strategy to distill (candidate leads from `docs/research/rl-design/PUBLIC_META_AUDIT.md`:
 teams playing like `tetsutani`/`indarkarhana`'s "Shape the Shop Work the
 Pasture" cow/sheep-pasture family, scored 2371-2689 there). This
 environment has no Kaggle API credentials and cannot browse Kaggle's
 JS-rendered pages for episode data, so this needs either a user-supplied
 replay JSON or a user-supplied Kaggle API token.
 
-### 9b. Two real-replay clone attempts also failed (2026-09-03)
+### 9b. Two real-replay route-following attempts also failed (2026-09-03)
 
 The user supplied 24 real replays from Candidate A/B's own recent match
 history (`failing_replays/`). Surveying them found the same signature
 (COW~8, SHEEP~6, 3 land quadrants) in 15-18 of 24 games across entirely
-different team names -- not 20 independent opponents, one widely-copied
+different team names -- not 20 independent opponents, one widely-used
 public strategy that is the current dominant meta archetype, and it beat
 Candidate A/B in 12 of the 24 games shown. This looked like the strongest
-possible real-replay clone candidate available, so it was tried before
+possible real-replay route-following candidate available, so it was tried before
 concluding anything further about section 9a's hand-built dead end.
 
-Cloned the archetype's two largest observed wins over Candidate A/B
+Built route followers from the archetype's two largest observed wins over Candidate A/B
 (episodes 105113156 "Mikhail_Komkin", 105061000 "Mwanza Wambua") the same
 way the Crop Dusta parent was built --
 `agents/experimental_distilled_pasture_agent.py` plus
@@ -677,7 +677,7 @@ a documented negative result.
 
 That makes four independently-sourced candidates now rejected by direct
 measurement (center_out, the best homegrown lineage, and these two
-real-opponent clones) with the same outcome: everything tested so far
+real-opponent route followers) with the same outcome: everything tested so far
 loses decisively to the current Candidate B. Read together with section
 8c's live-bug fixes, this suggests Candidate B is not obviously weak
 locally -- it beat every one of these four candidates, including two real
@@ -715,11 +715,11 @@ identical bytes, before any A-vs-B comparison is even attempted. A larger
 recent-episode sample (23 games for Candidate A, 35 for Candidate B, both
 pulled live) gave A 65.2% wins vs B's 54.3% -- a real gap, if a smaller
 one than the raw scores suggested. But a *controlled* local test --
-cloning 6 of those exact real opponents (`Kaggler Albafica`, `Cary Jin`,
+replaying 6 of those exact real opponents (`Kaggler Albafica`, `Cary Jin`,
 `The Grower`, `Stanislav Tsepa`, `SGY2512`, `Shangshang Zhang`) and
 running Candidate A and B against each, same seeds, same seats -- found
 the opposite: B 13-11, A 9-15. These two methodologies disagree on
-direction. Likely reason: the clones are frozen replays of what a real
+direction. Likely reason: these opponents are frozen replays of what a real
 opponent did against a *different, older* version of this project's
 agent, so they cannot reproduce how a genuinely reactive live opponent
 would respond differently to A's choices vs B's -- exactly the
@@ -733,8 +733,8 @@ Dusta is still ranked #1 (2979.7) -- direct evidence the original parent
 really was elite-sourced. Rather than guessing at other elite teams,
 pulled leaderboard #2 (`Giulio Ravasio`, 2965.4)'s most recent episode
 (105144807) and found their opponent, `fog flower` (public score 2882.6),
-*won* that game 71471-69193. Cloned `fog flower`'s side of that one
-episode the same way as every other clone this file describes
+*won* that game 71471-69193. Built a route follower from `fog flower`'s side of that one
+episode the same way as every other route follower this file describes
 (`agents/experimental_distilled_elite_pasture_agent.py`,
 `models/v1327-public-elite-fogflower-105144807.json`) and tested it,
 wrapped in Candidate A's guards and Candidate B's market-timing residuals
@@ -749,7 +749,7 @@ Every variant tested (raw, guarded, fully stacked) won every single game.
 This is the first candidate, of five tried across sections 9a/9b/9c, to
 win decisively instead of losing decisively. The distinguishing factor
 was not the strategy family (this is the same cow/sheep-pasture archetype
-as the two rejected clones in 9b) but the source: a genuinely elite
+as the two rejected route followers in 9b) but the source: a genuinely elite
 leaderboard result, pulled from the leaderboard directly, rather than
 from this project's own match history -- confirming the theory in 9b.
 
@@ -785,7 +785,7 @@ promotion evidence.
 
 ### 9d. Broad 56-opponent gate (2026-09-03)
 
-Extracted a clone for every unique real opponent already sitting in the
+Extracted a replay opponent for every unique real opponent already sitting in the
 local replay cache from the A-vs-B investigation in 9c (56 distinct
 teams; no new Kaggle API calls, per the decision to stop using the
 token) and ran Candidate C against all of them: 2 fresh seeds (950, 951)
@@ -905,7 +905,7 @@ the multi-step repair, so it now asserts the property it actually guards
 on schedule after the substitution.
 
 **Candidate C2.** `candidates/candidate_c2.py` is Candidate C's stack over a
-second elite baseline: a clone of "Giulio Ravasio", public leaderboard
+second elite baseline: an agent following the recorded route of "Giulio Ravasio", public leaderboard
 rank #2 (2965.4), from the same episode 105144807 whose other side became
 Candidate C. Measured on fresh seeds 970-973, both seats, before it was
 written to disk: **8-0 against Candidate B, 2-6 against Candidate C1**
@@ -929,7 +929,7 @@ result predates the weed-clear guard.
 The 4-loss gap is *entirely one opponent*. Per-opponent losses are Cary
 Jin 2-2 and SGY2512 0-4 for **both** variants; the only difference is
 Shangshang Zhang, 8-0 for C1 versus 4-4 for C2. 9d already flagged C1's
-Shangshang wins as unreliable -- that clone scored literally 0, a
+Shangshang wins as unreliable -- that replay opponent scored literally 0, a
 breakdown of the frozen opponent script rather than genuine dominance --
 and 9e showed SGY2512's losses are seed-specific (C1 went 6-0 against it
 at seeds 960-962). Discount both and the two variants are close to
@@ -1101,7 +1101,7 @@ Early shop/hire sequence (not land timing) is the more promising signal
 and is unmeasured -- next step, not done here.
 
 This reframes what Candidate D actually is, versus one more Candidate C
-revision: because the elite clones are pure step-indexed lookups
+revision: because the elite route followers are pure step-indexed lookups
 (`actions[step]`, no internal cursor), entering one late at a commit step
 `k > 0` is structurally legal, which a step-0-only selector could never
 use. Candidate D's first Option is therefore: run `calendar` (the only
@@ -1139,7 +1139,7 @@ guess at market mechanics: the market is one pool shared by both players,
 priced by `price(inv) = base +/- amp*f(|inv-I0|)`, `I0=10000`. MELON and
 WOOL use the quadratic `above_func="sq"` with the highest `above_target`
 of any product -- selling into a glut is far more punishing for these two
-than for anything else. Candidate C1's frozen elite-clone baseline has no
+than for anything else. Candidate C1's frozen elite route-following baseline has no
 way to react to this since it just replays fog flower's exact historical
 schedule regardless of what the current shared market looks like.
 
@@ -1277,7 +1277,7 @@ It does cover `opp_105437064`, which both C1 and C2 lose, lifting a
 C1+JB oracle to 79/80 -- but with 10 ways to pick wrong against 3 to pick
 right, the selector arithmetic is worse than C1/C2's, not better.
 
-**What this means for Candidate D.** Frozen-clone route hunting has
+**What this means for Candidate D.** Frozen-route hunting has
 plateaued: two independent searches over twelve candidate tapes, one of
 them drawn from the live top of the leaderboard, produced nothing better
 than a route captured days ago. Residual tweaks over that route are
@@ -1298,7 +1298,7 @@ number in this section should be read as a live-score prediction.
 
 ### 9l. The whole field is farming the wrong products (2026-09-05)
 
-Section 9k exhausted the residual and clone-search surface. This section
+Section 9k exhausted the residual and route-search surface. This section
 stops looking for a better *tape* and asks a different question: what
 does a 2900-3000 economy do that ours does not? The answer is a
 structural market inefficiency the entire field, us included, is sitting
@@ -1399,7 +1399,7 @@ Candidate D re-targets an existing reactive executor or needs a new one.
 
 ### 9l. What actually separates a 3000 economy from ours (2026-09-05)
 
-Section 9k established that clone-hunting and residual tweaks are both
+Section 9k established that route-hunting and residual tweaks are both
 exhausted. This section stops searching over agents and instead asks the
 comparative question directly: pulled 51 fresh replays across the top
 eight teams (about 100 elite player-games), wrote `tools/data/profile_agents.py`
@@ -1453,7 +1453,7 @@ unclaimed, non-degrading revenue** (TOMATO 15.9k, EGG 13.0k, CARROT
 The number one agent runs the inverse of our livestock mix and five times
 our carrots. Note also that the two elite teams with our carrot count (6)
 -- Giulio and Andrey -- are the lower-ranked of the elite group, and
-Giulio is exactly who Candidate C2 clones.
+Giulio is exactly whose route Candidate C2 follows.
 
 **Finding 4: our reward variance is market contention, not execution.**
 The same C1 build earns MILK at 215/unit in one game and 24.3/unit in
@@ -1491,7 +1491,7 @@ the tape's routing, change what it grows. A crop substitution on the tape
 preserves the routing skeleton that makes C1 strong while retargeting its
 output at markets whose price is rising rather than collapsing. That is
 our own portfolio design applied to a proven execution skeleton, not a
-copy of anyone's strategy, and it is the first Candidate D direction that
+reproduction of anyone's strategy, and it is the first Candidate D direction that
 is both grounded in measurement and cheap enough to falsify quickly.
 
 ### 9m. The local benchmark has been lying to us (2026-09-05)
@@ -1530,9 +1530,9 @@ against 2400+.
 
 **What this explains.**
 
-- Why cloning a 2882-rated player produced a 2045-rated agent. The clone
+- Why following a 2882-rated player's recorded route produced a 2045-rated agent. The route follower
   keeps the programme and discards the adaptivity that earned the score.
-  This is the ceiling on the entire clone strategy, and it is now
+  This is the ceiling on the entire route-following strategy, and it is now
   measured rather than suspected.
 - Why all seven interventions in section 9k came back neutral. They were
   tuned against a benchmark that does not predict live results.
@@ -1548,7 +1548,7 @@ against 2400+.
 2. Real validation requires reactive opponents or live ladder games.
    Live episodes for a submission are pullable via the API and are the
    only unambiguous signal available.
-3. Do not spend further effort searching for a better tape to clone.
+3. Do not spend further effort searching for a better tape to follow.
 
 **Live-validated signals.** Paired winner-versus-loser within the same
 live game, 60 games, which controls for seed, market and opponent:
@@ -1603,7 +1603,7 @@ points while our own coin production is nearly self-determined. 191
 candidates -- every side of every cached replay from a team rated 2400+,
 on a game that team won -- ran under the exact Candidate C guard stack on
 fixed seeds. The best five then ran 48 games each across six seeds, both
-seats and four opponents (two mid-field clones, two elite tapes):
+seats and four opponents (two mid-field replay opponents, two elite tapes):
 
 | candidate | wins | mean coins | floor |
 | --- | ---: | ---: | ---: |
@@ -1620,7 +1620,7 @@ and floor simultaneously, and stayed balanced across all four opponents
 (6/12, 12/12, 8/12, 12/12), strongest exactly where C1 is weakest (8/12
 against the Jesse Bullard tape against C1's 4/12).
 
-This is **not** the Giulio game Candidate C2 clones. C2 uses episode
+This is **not** the Giulio game Candidate C2 follows. C2 uses episode
 105144807; this is 105531280, a day newer. Many Giulio games were scored
 and only this one came out on top, which is itself evidence that tape
 quality is a property of the individual game, not of the player.
@@ -1631,7 +1631,7 @@ favours D only against strong opposition.**
 | measurement | Candidate D | Candidate C1 |
 | --- | ---: | ---: |
 | finalist panel, incl. elite tapes (48 games) | **38/48** | 32/48 |
-| broad panel, 40 mid-field clones x 2 seats | 76/80 | 76/80 |
+| broad panel, 40 mid-field replay opponents x 2 seats | 76/80 | 76/80 |
 | broad-panel mean coins | 103,216 | **106,768** |
 | broad-panel floor | **42,426** | 36,326 |
 | finalist-panel floor | **51,094** | 47,364 |
@@ -1667,11 +1667,11 @@ isolates the route. Packaging is
   assertion that the embedded payload is namespaced.
 
 One real packaging defect was caught and fixed while building: appending
-a second distilled clone verbatim rebinds `MODEL_PAYLOAD`,
+a second distilled route follower's module unchanged rebinds `MODEL_PAYLOAD`,
 `CALENDAR_ACTIONS` and `_load_actions`, so the bundled calendar's own
 `decide` would silently execute this route's tape. Inert for D, which
 never selects that route, but the same class of quiet aliasing as 9h, so
-the clone's module-level names are now namespaced.
+the route follower's module-level names are now namespaced.
 
 ### 9o. Candidate D validated against the real top 500 (2026-09-05)
 
@@ -1699,7 +1699,7 @@ The 9n head-to-head loss does not generalise: one frozen tape against
 another is a single matchup, not a ladder.
 
 Note the win rates here (44-59%) sit far closer to our real live 55%
-(section 9m) than the 92-95% the mid-field clone panel produced. A panel
+(section 9m) than the 92-95% the mid-field replay panel produced. A panel
 built from top-500 opponents is the first local benchmark in this project
 whose numbers are in the same range as reality.
 
@@ -1766,7 +1766,7 @@ six requested notebooks:
 | dianatofficial | 2263 | 1311.0 | EDA writeup |
 | mansiaggarwal88 | 7405 | 147.7 | EDA writeup |
 
-**Five of the six rank below our own 677 / 2071.3.** Cloning them would
+**Five of the six rank below our own 677 / 2071.3.** Running them would
 move us down. The most-cited "route portfolio" notebook is itself just an
 embedded tape, exactly like ours. The genuine top (keiz 3021, Crop Dusta
 3011) publish nothing at all -- they expose only replays, which is what
@@ -1789,7 +1789,7 @@ already produces. PPO is not the missing piece here.
 ### 9p. Candidate D's route re-chosen on a proper panel (2026-09-05)
 
 Section 9n picked Candidate D's route with a screen that used **three
-seeds against a single mid-field clone**. That is far too noisy to choose
+seeds against a single mid-field replay opponent**. That is far too noisy to choose
 between tapes whose true win rates sit within a few points of each other,
 and section 9o then showed the choice was not settled: D beat C1 on the
 elite panel but tied it overall (p=0.50) and lost their head-to-head.
@@ -1815,7 +1815,7 @@ identical games for every candidate, 60 paired games each:
 Two structural facts fall out of that table. **Tape quality belongs to
 the game, not the player**: two Andrey tapes recorded the same day score
 70.0% and 40.0%, and two OceanMix tapes score 63.3% and 36.7%. And
-**public agents are copied wholesale**: three tapes credited to two
+**public agents are re-submitted unchanged**: three tapes credited to two
 different teams (Jesse Bullard, Bohannn Wang twice) return byte-identical
 wins, mean and floor, which is what one shared public agent looks like
 from the outside.
@@ -1870,10 +1870,10 @@ full test suite.
 active and does not allow choosing, so the ordering matters: C1 must be
 re-submitted *before* D so that D's upload displaces C2 rather than C1.
 
-### 9q. Why cloning is capped, and what Agent E must actually fix
+### 9q. Why route following is capped, and what Agent E must actually fix
 (2026-09-05)
 
-**The clone ceiling, stated plainly.** We cloned "fog flower" at public
+**The route-following ceiling, stated plainly.** We followed the recorded route of "fog flower" at public
 score 2882 and the resulting agent settled at **2094.7** live. A frozen
 tape discards whatever reactivity earned the source its score, and
 section 9m measured the size of that loss from the other direction: tapes
@@ -1882,15 +1882,15 @@ world #1's tape wins 6 of 24 locally. Every tape-panel number in sections
 9n-9p, including Candidate D's 64.1%, is measured against *tapes* and so
 does **not** establish that D beats live top-500 agents.
 
-The consequence is arithmetic. To reach the top ten by cloning we would
-need a source around 3700, and the ladder's best is 3021. **Cloning cannot
+The consequence is arithmetic. To reach the top ten by route following we would
+need a source around 3700, and the ladder's best is 3021. **Route following cannot
 pass ~2100 for us, which is exactly where C1 and D both sit.** Candidate D
 is a lateral move from C1, not a climb, and this file should not be read
-as claiming otherwise. Cloning is also commodity: anyone can pull the same
+as claiming otherwise. Route following is also commodity: anyone can pull the same
 replays, and three tapes in the 9p re-screen turned out to be one shared
 public agent running under two team names.
 
-**So Agent E must be our own policy.** Not a copy of one player, but a
+**So Agent E must be our own policy.** Not a replay of one player, but a
 strategy specification distilled from what *many* winners do, executed by
 our own agent.
 
@@ -1942,7 +1942,7 @@ single large bet:
 ### 9r. What actually separates winners, learned from 120 paired games
 (2026-09-05)
 
-Agent E needs a real edge, not a copied route. This section looks for one
+Agent E needs a real edge, not a replayed route. This section looks for one
 in the games of the strong players themselves, contrasting winner against
 loser **inside the same game** so seed, market and opponent are held
 fixed. Three findings, one of them the first significant behavioural
@@ -2233,8 +2233,8 @@ theory. Milk demand alone correlates +0.322 with reward.
 project has shipped -- A, B, C1, C2, D -- is a frozen tape or a fixed
 schedule. None of them can read `unlocked_shops`, so none can respond to
 a 10x swing in what their produce is worth. That is not a tuning gap, it
-is a structural one, and it is exactly the kind of edge a clone can never
-capture no matter which replay is cloned.
+is a structural one, and it is exactly the kind of edge a route follower can never
+capture no matter which replay is followed.
 
 **This is Agent E's core mechanism.** Read the unlocked shops, compute
 exact per-product demand, and steer production and sale priority toward
@@ -2314,7 +2314,7 @@ It failed, three times, each for a different structural reason:
 So the tape's actions are coupled through cash, shed capacity and pickup
 timing, not just through tile geometry. Even the most surgical
 substitution available in this game breaks it. **This closes off the
-tempting shortcut of bolting adaptation onto a clone**, and it explains
+tempting shortcut of bolting adaptation onto a route follower**, and it explains
 mechanically why every candidate we have shipped scores +0.000 on the
 adaptation gradient above.
 
@@ -2410,13 +2410,13 @@ market model that reframed the whole strategy.
 
 ### 10.2 Why E exists at all
 
-Cloning is capped, and the cap is measured, not assumed:
+Route following is capped, and the cap is measured, not assumed:
 
-* We cloned "fog flower" at public score 2882 and the resulting agent
+* We followed the recorded route of "fog flower" at public score 2882 and the resulting agent
   settled at **2094.7** live. A frozen tape discards the reactivity that
   earned the source its score (section 9m).
-* Reaching the top ten by cloning would need a source near 3700; the
-  ladder's best is 3021. **Cloning cannot pass ~2100 for us**, which is
+* Reaching the top ten by route following would need a source near 3700; the
+  ladder's best is 3021. **Route following cannot pass ~2100 for us**, which is
   where C1 and D both sit.
 * The behaviour that separates the ladder is adapting production to the
   town's random demand draw. Correlation of demand-to-production, by rank
@@ -2955,7 +2955,7 @@ per-turn auction scores its options.
 Every measurement in 10.5 through 10.8h used the same three elite tapes as
 opponents. That is a hard panel and it was never checked against the field
 E will actually meet. The cached corpus holds **245 real Kaggle opponents**
-as replayable clones (`kaggle_cache/clones/`), spanning the whole ladder --
+as replay opponents (`kaggle_cache/clones/`), spanning the whole ladder --
 their own rewards run from 146,514 down to 2,645, median 74,812.
 
 Forty of them, sampled at random, both seats, 80 games each:
@@ -2963,7 +2963,7 @@ Forty of them, sampled at random, both seats, 80 games each:
 | agent | mean | floor | wins |
 | --- | ---: | ---: | ---: |
 | **D** (live) | **101,535** | 48,455 | **74/80 (92%)** |
-| F (clone + demand pacing) | 97,098 | 48,299 | 70/80 (88%) |
+| F (route follower + demand pacing) | 97,098 | 48,299 | 70/80 (88%) |
 | **E** (bespoke) | 70,930 | 19,482 | **4/80 (5%)** |
 
 **E is not stronger against weaker opponents.** The hope that its price
@@ -3053,7 +3053,7 @@ understands it.
 Two cautions that still stand. These opponents are frozen tapes and
 therefore weaker than the players they were recorded from (9m), so all of
 these win rates are upper bounds on live performance. And a route's own
-recorded reward remains a poor predictor of its strength as a clone: fan
+recorded reward remains a poor predictor of its strength as a followed route: fan
 yanbing scored 137,331 in its own game and screens at 48%.
 
 `tools/data/extract_opening_book.py` reads the same corpus; the screening
@@ -3078,7 +3078,7 @@ opponents (10.8k), matches D's win rate while scoring 10,000 coins more.
 
 Pacing costs F between 2,000 and 4,000 coins and up to 23 points of win
 rate. That is the **fifth** independent confirmation that the demand
-engine cannot lift a high-volume clone -- after the herd swap, the ratio
+engine cannot lift a high-volume route follower -- after the herd swap, the ratio
 tilt, the sell gate and the same pacing on D -- and it is the same
 arithmetic each time: the town absorbs roughly 3,800 units a game across
 both players, these routes sell more than 2,000 of them each, and above
@@ -3182,7 +3182,7 @@ validated properly.** D's own floors -- 47,463 and 48,455 across the two
 panels -- are the best of any route tested, which is a stronger reason to
 keep it than its coin mean ever was.
 
-### 10.8o Why every layer on a clone fails: there is no spare work
+### 10.8o Why every layer on a route follower fails: there is no spare work
 
 Eight distinct mechanisms have now been built and measured on top of a
 frozen route. Every one is negative:
@@ -3199,7 +3199,7 @@ frozen route. Every one is negative:
 | **extra hired hands** | **148,328 -> 101,274** | this section |
 
 The last one is the most informative, because it was designed to *add*
-rather than interfere and it provably did not disturb the clone at all.
+rather than interfere and it provably did not disturb the route follower at all.
 `candidates/extra_hands.py` hires workers beyond the count a route recorded and
 drives them with our own valuation. The route's own action counts come out
 byte-identical with the surplus attached -- WATER 1229, HARVEST 450, CARE
@@ -3227,7 +3227,7 @@ season. That is exactly the decision a frozen route has already made and
 cannot revisit, and it is why the remaining upside is in an agent that
 chooses its own opening, not in another wrapper.
 
-### 10.8p Buying the fourth quadrant with the clone's idle cash
+### 10.8p Buying the fourth quadrant with the route follower's idle cash
 
 The last idea 10.8o pointed at: if the constraint is *available work*, then
 create some. A route holds 16,483 coins on day 12 and 130,062 by day 28
@@ -3271,7 +3271,7 @@ Three bugs were found and fixed proving the mechanism, all worth knowing:
    slots rather than being appended, or they fall off the end and are
    silently discarded.
 
-### 10.8q The ceiling on wrapping a clone, stated plainly
+### 10.8q The ceiling on wrapping a route follower, stated plainly
 
 Ten mechanisms have now been built and measured on top of a frozen route.
 Every one is neutral or negative: herd swap, demand herd ratio, sell gate,
@@ -3289,10 +3289,10 @@ than of any particular layer:
   be bought early enough to pay back -- and a frozen route has already
   spent the early game the way it spent it (10.8p).
 
-A wrapper can change *when* a clone sells and *which* animal it buys. It
-cannot change how much farm the clone built or when it built it, and that
+A wrapper can change *when* a route follower sells and *which* animal it buys. It
+cannot change how much farm the route follower built or when it built it, and that
 is where the remaining value is. **Anyone continuing this work should stop
-wrapping clones.**
+wrapping route followers.**
 
 ### 10.8r THE LOCAL PANEL IS THE PROBLEM (2026-09-08, live data)
 
@@ -3337,7 +3337,7 @@ Three consequences for how this project should measure anything:
    builds a panel from submissions actually on the ladder now, several
    games per player rather than one (9k: tape quality belongs to the
    game, not the player).
-3. **Stop chasing a better clone.** D already out-produces the field on
+3. **Stop chasing a better route to follow.** D already out-produces the field on
    mean reward. The gap is consistency worth a few thousand coins, not a
    fundamentally stronger route.
 
@@ -3564,8 +3564,8 @@ That is not convergence, it is one shared starting notebook --
 
 Two readings follow directly.
 
-**Candidate F clones a member of the baseline family.** Carrot 6, wheat
-185, no geese is the public starter's fingerprint. F is a clone of the
+**Candidate F follows the route of a member of the baseline family.** Carrot 6, wheat
+185, no geese is the public starter's fingerprint. F is a recorded route from the
 field, which is the whole explanation for F landing at the field's rating.
 The route search that produced it ranked 245 cached routes on win rate
 against a panel drawn from that same family, so it could only ever have
@@ -3637,7 +3637,7 @@ than the live ladder and therefore the right place to develop:
 | | coins | wins | median margin |
 | --- | ---: | ---: | ---: |
 | **D** (shipped, live ~1762) | 63,409 | 5/16 (31.2%) | -1,245 |
-| **F** (RB25det clone) | 68,782 | 5/16 (31.2%) | -4,485 |
+| **F** (RB25det route follower) | 68,782 | 5/16 (31.2%) | -4,485 |
 | Matthew Huang tapes | 75,791 | **14/16 (87.5%)** | **+18,152** |
 | Gleb Tumanov tapes | 74,200 | 13/16 (81.2%) | +2,991 |
 | bharat tapes | 62,520 | 8/16 (50.0%) | +1,102 |
@@ -3646,7 +3646,7 @@ than the live ladder and therefore the right place to develop:
 
 The spread across nine teams all rated 2765-2882 is the same lesson as 9k
 in a harsher form: **an elite rating does not make an elite tape.** Seven
-of the nine are unusable as clone material because their recordings do not
+of the nine are unusable as route material because their recordings do not
 survive being replayed against a different opponent. Two are worth far more
 than anything in the 245-route cached corpus.
 
@@ -3693,7 +3693,7 @@ to sell at a bad price was a unit that kept the opponent's price good.**
 This retires the entire premise of the market demand engine as it was
 built. `candidates/demand_sales.py` and `candidates/sell_floor.py` both *hold sales back*.
 On a two-player shared market that is not a small positive lost in the
-noise (10.8c) nor merely negative on high-volume clones (10.8l): holding
+noise (10.8c) nor merely negative on high-volume route followers (10.8l): holding
 back is the mechanism by which an agent hands its opponent the game. The
 right version of a demand engine here sells *earlier and harder* into
 whatever the opponent is about to sell, and its objective is the
@@ -3791,7 +3791,7 @@ The four games from the submission's early climb are all strong; two of
 the four recorded later at 2873 collapse. **A tape recorded in a contested
 market encodes adaptations to scarcity that do not fit when replayed into
 a market contested differently.** The ordering fix in 10.8s therefore
-produced better *panel opponents* and worse *clone material*, and both
+produced better *panel opponents* and worse *route material*, and both
 halves of the corpus are kept for opposite reasons.
 
 Preflight: 6 of 7 gates pass -- byte-identical rebuild, manifest hash,
@@ -4214,7 +4214,7 @@ different game those purchases arrive when the money is not there and the
 placements land on ground that is not clear, and the guard stack spends the
 season recovering.
 
-**So the herd ceiling in 10.8y is structural to cloning, not a property of
+**So the herd ceiling in 10.8y is structural to route following, not a property of
 this tape.** It cannot be fixed by finding a better recording, because the
 recordings that would fix it are exactly the ones that do not transfer. A
 larger herd has to be *decided* during the game, which is what a
@@ -4483,11 +4483,11 @@ is larger than several of the effects being tested, and that no local
 panel can settle what E is worth. The only instrument that can is the
 ladder.
 
-#### What it says about cloning
+#### What it says about route following
 
 The public notebooks running this architecture rate 2450-2611 -- and they
 are five co-designed schedules behind a public-state router, not one
-frozen route. Our single-route clones land at 1762 (D) and are heading
+frozen route. Our single-route followers land at 1762 (D) and are heading
 for roughly 1850 (F). **Harvested replays appear to cap out several
 hundred points below the routed portfolios and a thousand below the
 target**, which is consistent with 10.8aa: the routes that would lift the
@@ -4936,7 +4936,7 @@ routes, ten seeds, both seats:
 Mean and median both up 48%, the worst game of sixty up 115%.
 
 **What did not change.** G still wins none of the sixty. The tapes bank
-about 125,000 against us and about 78,000 against a copy of themselves,
+about 125,000 against us and about 78,000 against a mirror of themselves,
 so most of that margin is the market they get to themselves rather than
 production we cannot match -- the true gap is nearer 1.6x than 3x. But it
 is a production gap and not a selling one: `SELL_PATIENCE` is zero, so G
@@ -5070,7 +5070,7 @@ costs the opponent twenty-five thousand is progress -- and mean, median
 and floor all score it as a regression. Every measurement before this
 point was taken with the wrong instrument.
 
-**Most of the ladder is one copied agent.** Seven differently-named
+**Most of the ladder is one shared agent.** Seven differently-named
 opponents plant 163 wheat, 31 carrot and 33 strawberry, buy 17 animals
 and take land on day 6, with a standard deviation of zero across dozens
 of games whatever town they are drawn into. Himanshu Kumar and pensukesan

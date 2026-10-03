@@ -189,12 +189,12 @@ Use a hierarchical policy instead:
 
 1. Keep deterministic safety and execution below the learning boundary: same-turn plant/water, emergency crop rescue, animal feeding, inventory return, and final liquidation.
 2. Learn one macro decision per day: hand target, land commitment, crop mix/admission, animal species expansion, crop-vs-animal service budget, and sell/hold mode.
-3. Build behavior-cloning labels from several current top-agent public replays. This provides a competent initial policy instead of random exploration.
+3. Build imitation labels from several current top-agent public replays. This provides a competent initial policy instead of random exploration.
 4. Fine-tune the macro policy with self-play against a league: center-out, lifecycle, current adaptive checkpoints, and captured top schedules.
 5. Optimize a win-first reward: win/loss as the dominant term, bounded bank margin as shaping, and hard penalties for crop deaths, escapes, unfinished cycles, and terminal inventory.
 6. Promote only on unseen seeds, both positions, direct opponent pools, and rating simulations. Starter reward remains a safety/throughput check, not the objective.
 
-A practical first learner is a small discrete macro policy trained with behavior cloning followed by cross-entropy policy search. It requires no large ML toolchain and produces interpretable policies. PPO can be considered later after this constrained action interface and opponent league are stable.
+A practical first learner is a small discrete macro policy trained with imitation learning followed by cross-entropy policy search. It requires no large ML toolchain and produces interpretable policies. PPO can be considered later after this constrained action interface and opponent league are stable.
 
 Do not promote from starter mean or from initial 600.0 score behavior alone.
 

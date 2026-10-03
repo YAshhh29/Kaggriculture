@@ -1,7 +1,7 @@
 # Repository Map
 
 ```text
-stack/            the final agent: thirteen layers around a public route follower (agents L to N12)
+stack/            the final agent: thirteen layers around a route-following base (agents L to N12)
 candidates/       agents A to K and the components they were built from
 rl/               the reinforcement-learning contracts: features, action space, rewards, rollout, replay
 agents/           the August agents: a deterministic baseline grown into about 90 experimental policies

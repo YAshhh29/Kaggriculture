@@ -1,7 +1,7 @@
 """Package Agent L3: L2 with the opponent shadow modelling the whole public library.
 
-L2's shadow predicts an opponent that is an exact copy of Agent A. Many ladder
-opponents are exact copies of other public programs we hold (the shadow's
+L2's shadow predicts an opponent running exactly the same program as Agent A.
+Many ladder opponents run other public programs we hold, unchanged (the shadow's
 sync logs on our live games show whole-game syncs with arsgorynich_herdsafe_v3,
 guru_master_v4, haideptry_2965, nihilistic_robust, tschinkel_metav4_v13 and
 ahmed_v55 as well as A). L3 embeds all eight programs; the shadow runs each
@@ -188,16 +188,16 @@ def build(deficit: int, library=SH_LIBRARY, name="L3", lot=True, agree=False,
     lib_table = "{\n" + "".join(f'    "{k}": "{v}",\n' for k, v in lib.items()) + "}"
     if parent_path:
         base = (f"# Base: {Path(parent_path).stem} (a public Kaggle notebook built from\n"
-                "# Apache-2.0 code), its main.py verbatim below with its licence notices.\n")
+                "# Apache-2.0 code), its main.py unchanged below, with its licence notices.\n")
     else:
-        base = ("# Base: tetsutani's public build (Apache-2.0), verbatim below with its\n"
+        base = ("# Base: tetsutani's public build (Apache-2.0), unchanged below with its\n"
                 "# licence notices, except one condition in _v219_qualifies (marked\n"
                 "# \"Agent L\").\n")
     header = (f"# Agent {name} (Kaggriculture), Yash Jain, {time.strftime('%Y-%m-%d')}.\n"
               + base +
               "# Our layers are embedded at the end, each run in its own namespace. The\n"
-              "# opponent shadow's library -- verbatim copies of public Apache-2.0\n"
-              "# programs, notices retained inside each -- is embedded too.\n")
+              "# opponent shadow's library -- public Apache-2.0 programs, unchanged,\n"
+              "# with the notices of each retained -- is embedded too.\n")
     lot_line = ('_l2_agent = _L2["outfarm"]["lot_wrap"](_l2_agent, _L2_ENV)\n'
                 if lot else '')
     return header + parent + ENTRY.format(src_table=src_table, library=tuple(library),

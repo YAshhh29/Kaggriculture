@@ -1,50 +1,14 @@
-"""Candidate J2 -- J, with ground treated as the scarce thing it is.
+"""Candidate J2: Candidate J with the cost of idle ground added to planting.
 
-J is not short of seed, ground, labour or market allowance. Five separate
-interventions proved that, each measured on sixty bracket tapes against
-teams rated 2600-2900:
+J's auction compares job against job and never charges a bare tile for staying
+bare, so watering keeps outbidding sowing and ground sits idle mid-season (J
+holds 45 plants on day 24 where 2600-2900 rated teams hold 58). J2 wraps J's
+`job_offers` and credits each PLANT offer with the tile-days the crop will
+occupy beyond its first batch, up to the close, at the rate that batch earns.
+Sowings too late to mature get no credit, so J's endgame is unchanged, and
+everything else is J's.
 
-    crop cap doubled          12/120 wins   against 16/120 untouched
-    fragile allowance x4,
-      sale floor halved       16/120        no effect whatsoever
-    planting cost halved      12/120
-    cold-start radius         16/120        against 9/120 -- the one gain
-
-And yet the bracket profile says J holds 45 plants at day 24 where those
-teams hold 58, having decayed from 53, while a single-game trace catches
-it sitting on six wheat and six tomato seed on day 21 with twelve tiles
-bare. It has the seed. It has the ground. It does not sow.
-
-WHY, AND WHAT THIS FILE CHANGES
-===============================
-J prices every job in coins per worker-turn and takes the best pairs
-globally. That is the right idea and it is why J exists. But a turn is
-not the only scarce resource on this board -- a TILE-DAY is, and the
-auction cannot see it.
-
-Consider a bare tile on day 15. Sowing it costs a turn now and books a
-watering. Watering an existing crop returns coins sooner, so it wins the
-auction, every turn, and the tile stays bare. Nothing in the rate ever
-accounts for the fact that the bare tile earns nothing for the remaining
-fourteen days while the watered one was going to be watered anyway. The
-comparison is between a job and a job, never between a tile working and a
-tile idle.
-
-That is why every constant failed. PLANT_FUTURE_WEIGHT discounts what a
-planting job is CHARGED; the crop cap changes how many tiles are ALLOWED.
-Neither adds the missing term, which is what the ground gives up by
-staying empty. So J2 adds it directly: a planting job's value carries the
-tile-days it is about to fill, valued at what that crop earns per tile-day,
-for as long as the season has left to run. Early, when a tile has twenty
-days ahead of it, this is large and planting wins. Late, when a crop can
-no longer mature, `crop_units` already returns zero and the term vanishes
-with it, so the endgame is untouched.
-
-Everything else is J. This module imports it, overrides one valuation, and
-leaves the scheduler, the market layer, the plan and every constant alone.
-
-    GROUND_VALUE = 0.0 is J exactly, and is the baseline this is measured
-    against.
+GROUND_VALUE = 0.0 reproduces J exactly and is the baseline.
 """
 
 from __future__ import annotations

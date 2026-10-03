@@ -1,37 +1,14 @@
-"""Put the same units on the market across many more turns.
+"""Split each sale into small lots so the same units reach the market over more turns.
 
-Measured on Candidate E against Candidate F, same opponent tape, same
-seed: E asks for 1,053 units it actually holds and F asks for 1,127 --
-practically the same volume. E puts them through on **88 turns** and F on
-**254**. E earns more for them (107,886 against 74,896) because it sells
-into a market it has not yet spoiled, and loses anyway, because the
-opponent sells *its* milk at an average of 254 coins in E's games against
-72 in F's.
+The price depends on one inventory shared with the opponent. Selling in a
+few large lumps lets the town consume the glut between them and leaves
+prices high for the opponent; spreading the same volume over more turns
+keeps the price down, which cuts the opponent's income and the cash it has
+for buying animals. Each SELL is cut to `per_turn` units and the rest stays
+in the shed for later turns, so nothing is withheld. Limits are lifted in
+the closing days and when the shed nears its 100-unit cap.
 
-Price is a function of one shared inventory and the town eats that
-inventory back down continuously. A glut delivered in eighty-eight lumps
-is a glut the town has time to digest between lumps; the same units spread
-over three times as many turns hold the price down instead of denting it.
-And a held-down price is not only cheaper for the opponent to sell into --
-it starves the cash its own `BUY_ANIMAL` orders are clamped against, which
-is how an agent that leaves prices high ends up funding a bigger rival
-farm (10.8ac).
-
-This is the opposite of `candidates/demand_sales.py`, which caps a turn's sales
-against what the town can absorb and therefore *reduces* both volume and
-occupancy. Here nothing is withheld across the game: every unit still goes
-out, in smaller pieces, on more turns.
-
-Two guards, for the same reasons the closing rules exist elsewhere:
-
-* the closing days sell without limit, because reward is the money on the
-  books at step 720 and a trickle that has not finished is a loss;
-* a shed close to its 100-unit cap sells without limit, because the
-  end-of-day drop discards the overflow.
-
-**Not yet wired into any shipped agent.** Whether spreading pays is a
-separate question from whether the time profile differs, and this project
-has repeatedly answered the first by assuming the second.
+Not used by any shipped agent; whether spreading pays has not been measured.
 """
 
 from __future__ import annotations

@@ -1,17 +1,12 @@
 # ---- BEGIN place_guard (Agent N7's own layer) ----
 # Build the missing pasture or coop under an animal the plan is placing.
 #
-# Why: the plan's weed repair digs a weed out of a tile its tape meant to
-# build on and queues the build, but drops the queue when the hand's next tape
-# step is a move. The pasture is never built; the animal bought for it later is
-# PLACEd on an empty tile, which the engine ignores, and the farm is one animal
-# short all game (Tagir Eminov and mikelou1, both on tile (4, 2): one cow,
-# -6.9k and -11.8k).
-#
-# How: a PLACE of an animal on an empty owned tile that is not beside the shed
-# can never succeed. Replace it with BUILD_PASTURE (cow, sheep) or BUILD_COOP
-# (goose), and on the next step PLACE the animal if the hand still stands on
-# the new structure with the animal in hand. Nothing else is touched; any error
+# The plan's weed repair can drop a queued build, so the animal bought for it is
+# later PLACEd on an empty tile, which the engine ignores, and the farm is one
+# animal short all game. A PLACE of an animal on an empty owned tile away from
+# the shed can never succeed, so this layer replaces it with BUILD_PASTURE (cow,
+# sheep) or BUILD_COOP (goose), and PLACEs the animal on the next step if the
+# hand still stands on the new structure. Nothing else is touched; any error
 # returns the action as is.
 
 _PG_ACCESS = ((4, 4), (5, 4), (4, 5), (5, 5))

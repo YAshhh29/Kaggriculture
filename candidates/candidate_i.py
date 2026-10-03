@@ -1,75 +1,14 @@
-"""Candidate I -- a route-replay clone driven by frozen top-of-ladder tapes.
+"""Candidate I: a route-following agent that replays top-of-ladder games.
 
-WHAT THIS AGENT IS
-==================
-Agent I does not plan. It plays back *recorded action tapes* that real teams
-at the top of the Kaggriculture leaderboard produced in real games, which this
-repository captured into ``kaggle_cache/top200_tapes/``. Every farmer move,
-every hand instruction, every hire, land purchase and market order it issues
-was chosen by somebody else's agent, in somebody else's game. This is a
-deliberate clone, built to sit beside the from-scratch agent and to measure
-how far a pure recording carries on its own.
-
-WHOSE TAPES
------------
-The portfolio is listed, with the reason each tape was taken, in
-``tools/packaging/prepare_candidate_i_submission.py`` (``SELECTION``), and the
-same provenance travels inside the agent as ``ROUTE_META`` -- source team,
-leaderboard rank at capture time, episode id, the recorded final scores, and
-the exact eight shops the town unlocked in that game. Tapes were taken only
-from games the recording team **won**, and were preferred when the team ranked
-high, when the recorded final score was high, and when the winning margin over
-a strong opponent was large. Selection was then confirmed by direct
-measurement: each candidate tape was played, guarded exactly as it ships here,
-against the packaged Candidate H2 on a development seed panel, and the
-portfolio is the top of that measured ordering, not the top of the paper one.
-
-WHY THERE IS MORE THAN ONE TAPE
--------------------------------
-A tape reproduces its own game only on its own seed. Off-seed it drifts,
-because the town unlocks a different set of shops and so a different pattern
-of demand, and because weeds land on different tiles. The engine draws a shop
-every three days from an RNG that weed spawning shares, so the draw is not even
-a pure function of the seed -- it moves with how many tiles both farms leave
-empty.
-
-So Agent I keeps a portfolio and routes by what the town actually did. Days 0
-to 5 run a fixed opening (no shop is unlocked before the end of day 2, so
-there is nothing to route on). At the start of day 6, when exactly two shops
-are known, it reads ``observation["town"]["unlocked_shops"]``, looks the
-ordered pair up in a table built by grouping the tapes on the shops *their*
-games unlocked, and commits to that route for the rest of the game. It commits
-once and never switches again: the tapes come from different teams, so a later
-switch would apply one team's day-20 plan to another team's day-20 farm.
-
-THE GUARDS
-----------
-Invalid actions are silent no-ops in the engine, so a drifting tape degrades
-instead of crashing. Two cheap guards stop the obvious waste, and nothing else
-is reactive:
-
-1. ``dead SELL suppression`` -- a SELL for a good the shed does not hold cannot
-   fill, but it still burns one of the ten market-order slots the engine
-   processes each turn. Agent I projects the shed forward through this turn's
-   own DROP / PLACE / PICKUP instructions and through any earlier BUY_PRODUCT
-   in the same queue, and drops SELL orders that have nothing behind them,
-   which promotes the tape's later real orders into the window. It never lowers
-   a quantity: the engine already stops a SELL when the shed runs dry, so an
-   over-large quantity costs nothing.
-
-2. ``terminal liquidation`` -- the day-29 nightly tip happens after the last
-   market tick, so a good still in the shed when the game ends is worth zero.
-   From ``LIQUIDATE_FROM`` Agent I appends SELL orders for whatever the shed
-   still holds into the slots the tape left unused, and on the final acting
-   step (718) it replaces the market queue outright with a full liquidation,
-   most valuable good first.
-
-Nothing else is re-decided. See ``recorded_fraction()`` for the split between
-recorded and reactive play.
-
-This module imports nothing from this repository: it is the file that gets
-packaged, unchanged apart from a licence header, by
-``tools/packaging/prepare_candidate_i_submission.py``.
+A deliberate baseline that measures how far a recording carries on its own: it
+plays back tapes from games won by top teams (``kaggle_cache/top200_tapes/``,
+provenance in ``ROUTE_META``). Days 0-5 run a fixed opening; at the start of
+day 6, when two shops are known, it commits to the tape matching the
+unlocked-shop pair for the rest of the game. Only two guards react: SELL orders
+with nothing in the shed behind them are dropped, and from ``LIQUIDATE_FROM``
+spare market slots sell what the shed holds (full liquidation on step 718). It
+imports nothing from this repository, so it is packaged unchanged (plus a
+licence header) by ``tools/packaging/prepare_candidate_i_submission.py``.
 """
 
 from __future__ import annotations

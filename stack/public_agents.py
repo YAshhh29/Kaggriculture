@@ -1,12 +1,9 @@
 """Published top-of-ladder agents, loaded for local head-to-head measurement.
 
-Local evaluation only, never packaged and never submitted. These are other
-people's published notebooks (kaggle_cache/notebooks) and they stay that way:
-nothing here is copied into our agents. They are here to answer one question
-honestly -- how strong is ours against the real thing.
-
-The agent source is the notebook's ``%%writefile main.py`` cell. Any
-packaging tail that would write an archive on import is cut first, and both
+These are other competitors' published notebooks (kaggle_cache/notebooks),
+used for local evaluation only: never packaged, never submitted, and not part
+of our agents. The agent source is the notebook's ``%%writefile main.py`` cell;
+any packaging tail that would write an archive on import is cut first, and the
 files were scanned for process, network and filesystem calls beforehand.
 """
 

@@ -3,10 +3,10 @@
     python -m tools.packaging.build_final N11                # -> build/N11/main.py
     python -m tools.packaging.build_final N10 --verify       # + 8 games vs the local factory
 
-Each package is the public 2965 Master Hybrid Engine (rl/public, extracted from
-its Apache-2.0 notebook) with our layers from stack/ embedded, plus the opponent
-library the shadow layer simulates. The public programs are not in this repo:
-extract them first (tools/data/extract_notebook_agents.py).
+Each package is the open-source route-following base engine (rl/public,
+extracted from its Apache-2.0 notebook) with the layers from stack/ embedded,
+plus the opponent library the shadow layer simulates. The public programs are
+not in this repo: extract them first (tools/data/extract_notebook_agents.py).
 
 Rebuilt from this tree, N10 and N12 match submissions/candidate-n10 and
 submissions/candidate-n12 line for line except the dated header and comments

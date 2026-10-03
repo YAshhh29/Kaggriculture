@@ -1,28 +1,13 @@
 """L5 candidate: the endgame selling race.
 
-Money left in the shed at the end is worth nothing, and every good is priced by
-market inventory, which only the town lowers (each shop instance eats one unit
-of each of its goods every 4 steps, two if it sells a single good; the town
-centre one of every good every 24 steps). So the last units sold split one
-ladder of prices between the two farms, and a unit sold at step t is quoted at
-the inventory of that moment.
-
-Holding H units to the final step versus selling k of them now: with E the
-inventory the final dump would start from, R(k+1) - R(k) = p(I_t + k) -
-p(E + k), so one more unit now pays exactly when I_t < E, that is, when the
-opponent will sell more of the good before the end than the town eats. The
-answer is the same for every k: sell all of it now, or hold all of it.
-
-The parent (A) holds its stock for the final dump, which is right when the
-opponent holds too. Close mirror games are lost where it does not: in the
-2026-09-27 L2/L3 losses the gap turns on day 24, and against BorisV
-(-98) the opponent sold its milk as it came while we dumped 16 units on the
-last step (price 53 down to 15), losing 489 on milk alone.
-
-The opponent's sales are measured, not guessed: each step, the change in a
-good's inventory plus what the town ate minus what we sold is what they sold.
-This layer sells a good's whole shed stock when their recent selling rate,
-projected to the end, exceeds the town's remaining consumption of it.
+Goods left in the shed at the end are worth nothing, and every good is priced
+by market inventory, which only the town lowers. Selling a unit now beats
+holding it for the final dump exactly when the opponent will sell more of the
+good before the end than the town eats, and the answer is the same for every
+unit: sell all of it now, or hold all of it. The opponent's sales are measured
+exactly each step (inventory change + town consumption - our sales); the layer
+sells a good's whole shed stock when their recent selling rate, projected to
+the end, exceeds the town's remaining consumption of it.
 
     python -m tools.eval.live_replay run --agent factory --package stack.l2_combo:l5 ...
 """

@@ -1,36 +1,14 @@
-"""What a unit will actually fetch, given everything already sold.
+"""Simulator price curve, and what a batch of sales will actually fetch.
 
-Agent E used to price every decision at the market's spot quote. That is
-wrong in a way that costs whole strategies, because this market is a
-depleting resource shared by both players: the price of an item is a
-function of the market's inventory, and every unit sold pushes that
-inventory up and the price down. Selling one melon at 250 says nothing
-about selling two hundred, which is what the curve below shows -- melon
-pays 26,727 coins for the first 400 units, but the last 200 of them are
-worth one coin each.
-
-The curve is transcribed from `market_price` in the simulator, not
-guessed. `price(inventory) = base -/+ amp * f(|inventory - I0|)` with
+Each good's price depends on one market inventory that both players sell
+into, and the simulator re-quotes after every unit, so a batch is worth the
+sum of the curve rather than the spot price times the count. The curve is
+transcribed from `market_price` in the simulator:
+`price(inventory) = base -/+ amp * f(|inventory - I0|)`, with
 `amp = target * base / f(T)`, floored at 1.
 
-What it reveals, and what Agent E is built on:
-
-| item       | 400 units fetch | price at unit 400 |
-| ---------- | --------------- | ----------------- |
-| FERTILIZER |          24,040 |                20 |
-| EGG        |          16,559 |            **40** |
-| MELON      |          26,727 |                 1 |
-| WHEAT      |           8,313 |                20 |
-| WOOL       |           8,269 |                 1 |
-| MILK       |           6,505 |                 1 |
-| STRAWBERRY |           4,147 |                 1 |
-
-Milk, wool and strawberry are exhausted inside 50 to 90 units. **Egg is
-the only product in the game that never collapses** -- its curve is
-logarithmic with the largest T of any product -- and in real games against
-elite opponents it finishes 150 to 300 units *below* equilibrium at 59 to
-68 coins, above its own base of 50, because nobody keeps geese. That is
-the opening Agent E is built to take.
+Milk, wool and strawberry reach the 1-coin floor within 50 to 90 units of
+oversupply, which is why production should be priced at the margin.
 """
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-"""Collect cloned day-6 outcomes for safe expansion-animal arms."""
+"""Collect day-6 outcomes from forked game states for safe expansion-animal arms."""
 
 from __future__ import annotations
 

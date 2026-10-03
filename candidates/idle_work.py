@@ -1,30 +1,12 @@
-"""Convert a route's idle turns into fertilizing, watering and restocking.
+"""Fill a route's PASS turns with fertilizing, watering and fertilizer pickups.
 
-Every rule here fires **only** where the wrapped route already emitted
-`PASS`, so it cannot displace a scheduled action, cannot move a worker,
-and cannot desynchronise a step-indexed tape. That constraint is what
-makes it safe to layer over a frozen elite route, and it is also what
-bounds the upside: measured on Candidate D, a game leaves ~477 PASS
-turns, ~250 of them standing on a plant.
+Rules fire only where the wrapped route already emitted PASS, so they never
+displace a scheduled action, move a worker or desynchronise a step-indexed
+route. In priority order: fertilize a wheat or carrot plant the worker is
+standing on (when holding fertilizer), water a plant inside its yield
+window, and pick up one fertilizer when idling on a shed tile.
 
-The three rules, in priority order:
-
-1. **Fertilize.** The route collects ~372 fertilizer a game and applies
-   only ~74, selling the rest. In the simulator a fertilized plant gains
-   2 yield units per watering instead of 1 during its yield window, so
-   applying a unit to wheat in-window is worth roughly +3 wheat (~120
-   coins) against a ~45 coin sale.
-2. **Water.** A plant that misses two consecutive days becomes a weed, and
-   watering inside the yield window is what actually creates yield.
-3. **Restock.** Fertilizer only helps if a worker is holding some, and
-   rule 1's binding constraint is inventory, not opportunity: idle turns
-   standing on a plant are plentiful, idle turns standing on a plant
-   *while holding fertilizer* are not. A worker idling on one of the four
-   shed tiles picks a unit up for later.
-
-Crop yield-window constants are transcribed from the simulator's own
-CROPS table; `ongoing` crops accrue in the daily refresh instead of on
-watering, so they are only watered, never counted as fertilizer targets.
+Crop yield-window constants are transcribed from the simulator's CROPS table.
 """
 
 from __future__ import annotations

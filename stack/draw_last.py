@@ -1,53 +1,16 @@
 # ---- BEGIN draw_last (Agent N4's own layer) ----
-# Settle our draw-step wheat purchases last -- only against a rival that rides them.
+# Settle our draw-step wheat purchases last, but only against a rival that rides them.
 #
-# Why: the town removes wheat after the market of every step % 4 == 0, so the
-# lineage (and our round trip) buys wheat at that step and sells it at the
-# next; market_front sorts the big purchase into slot 0. Some private forks
-# ride it: at the draw step they queue BUY_PRODUCT WHEAT k in slot 0 and
-# SELL WHEAT k in slot 1. The engine settles slot 0 unit by unit for both
-# players, so their k units ride up the curve with ours and their slot-1 sale
-# lands at the top of the curve our purchase built (RngRng, 2407, live 9-28:
-# +13.5k on wheat to our +6.6k with identical farms; alone that round trip
-# nets zero). Settling last in every game lost: most rivals run an honest
-# round trip in slot 0, and going after it pays the top of their curve.
-#
-# Detection (exact, public data only): at a draw step whose priced orders are
-# only wheat purchases, seeds and hires, the engine's own price table gives
-# what those orders cost if the rival trades no wheat in that step. At the next
-# step our money shows what they did cost, and the wheat inventory gives the
-# rival's net wheat trade in the step. A rider pays nothing net (bought k, sold
-# k) yet makes our purchase dearer; an honest trader shows a net purchase, and
-# a rival that stays out leaves our cost exact. After `min_events` rider steps
-# our draw-step wheat purchases go to the end of the queue, with the free slots
-# before them filled with zero-quantity orders (they parse to nothing but keep
-# their slot), so they settle after the rider's buy and sale. Some riders sell
-# in slot 9 themselves (Sho Saga): then our last-slot purchase pairs with their
-# sale unit by unit at the top of their curve, and the same reconciliation
-# shows it; after `min_events` such steps the draw-step wheat purchases are
-# dropped instead (skip mode) and the next step's wheat sale is cut to match,
-# so the ride has nothing to ride. If instead the rival buys wheat outright at
-# the draw and our last-slot purchase still overpays, it is an honest same-step
-# round trip settling ahead of ours (RngRng's 9-29 version): after `min_events`
-# such steps the layer plays normally again for the rest of the game.
-#
-# A rider of k units raises our 60-unit purchase by about 0.03 x (k^2/2 + k(60-k))
-# coins (~46 at k = 40); a rival buying 2-3 wheat for feed in the same step adds
-# ~5, so a step counts only from `min_excess` = 12 coins (N3's live games: two
-# false alarms at 4, Victor's Team and Les 2 oies).
-#
-# Trip governor (N7): a round trip is worth doing only while it pays. With
-# `governor`, the realized margin of each trip is read exactly -- the purchase
-# from the draw step's money (as above), the sale from the next step's money
-# when every other order is fixed-price and the sale is the trip alone -- and
-# when the last `gov_window` trips average under `gov_margin` coins a unit the
-# draw-step purchases are dropped for `gov_pause` steps (as in skip mode), then
-# tried again. It needs no model of the rival: in N7's close mirror losses the
-# trips earned nothing (bought and sold at 41.92) while the rival traded
-# around them.
-#
-# Outermost (just inside the safety guard), so no layer appends after it. The
-# opening (before step 96) is left alone. Any error returns the action as is.
+# The town removes wheat after every step % 4 == 0, so our round trip buys wheat
+# at that step and sells it at the next. A "rider" buys in slot 0 and sells in
+# slot 1, so its sale lands at the top of the price curve our purchase built.
+# Detection is exact from public data: the engine's price table gives what our
+# draw-step orders should cost, and the next step's money shows what they did
+# cost. After `min_events` rider steps our purchases move to the last slot (or
+# are dropped, against a rider that also sells last); with `governor`, trips are
+# paused while their recent realised margin is under `gov_margin` a unit.
+# Outermost layer (inside the safety guard), inactive before step 96; any error
+# returns the action as is.
 
 import math as _dl_math
 

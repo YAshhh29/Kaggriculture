@@ -1,4 +1,4 @@
-"""Extract every corpus opponent's real action sequence as a replay clone.
+"""Extract every corpus opponent's real action sequence as an opponent tape.
 
 Reuses the exact convention already established in kaggle_cache/clones/
 (verified against the existing files: clone["actions"][k] ==

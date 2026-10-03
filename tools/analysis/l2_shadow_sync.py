@@ -5,8 +5,9 @@ replayed exactly from both tapes. Before every step, each candidate program
 (a fresh instance: Agent A as Kaggle loads it, Agent L, or an extracted public
 agent) is handed the opponent's EXACT observation (their seat, their private
 shed/seeds/inventories) and its action is compared with what the opponent
-really did (the action stored at t+1). An opponent that is an exact copy of a
-candidate is matched on all 719 turns; a near-copy matches until it diverges.
+really did (the action stored at t+1). An opponent running exactly the same
+program as a candidate is matched on all 719 turns; a modified version
+matches until it diverges.
 
 This is the upper bound for an in-game shadow: in a real game the private
 state has to be reconstructed (stack/l2_shadow.py does that; see --tracked).

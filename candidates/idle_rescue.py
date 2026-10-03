@@ -1,50 +1,14 @@
-"""Turn a frozen route's dead actions into work, without moving anybody.
+"""Replace a fixed route's refused actions with useful work on the worker's own tile.
 
-A tape's action was recorded against a farm state that no longer exists.
-When the state has diverged the simulator silently refuses the action and
-the worker-turn is gone. Measured over three games, Candidate F's route
-loses about 146 worker-turns a game this way and Candidate D's about 284
--- overwhelmingly PLACE on a pen that is already occupied or with no
-animal in hand, plus a scatter of WATER on a tile that is no longer a
-plant.
+When the farm has drifted from the recording, the simulator silently
+refuses some route actions. `would_be_refused` mirrors the simulator's
+guard clauses to detect them; `rescue_action` substitutes in-place work
+(CARE, COLLECT_FERTILIZER, FEED, WATER, DIG, or HARVEST on an animal), so
+no worker moves away from where the route expects it.
 
-Those turns look free -- a refused action produces nothing at all -- but
-**substituting for them measured badly and the layer is switched off in
-Candidate F.** On 80 games against real opponents it took the win rate
-from 90% to 41%, and isolating the substitutions one at a time showed why:
-replacing refused `PLACE` actions costs about four animals a game, because
-the refusal test has a small false-positive rate and a mis-flagged `PLACE`
-is a placement that never happens. `HARVEST`-only substitution measured
-neutral; every set including `COLLECT_FERTILIZER` lost 23,000 coins.
-
-The module is kept because `would_be_refused` is an accurate and useful
-diagnostic on its own -- it is what measured the 146-turn figure above,
-and it is the right starting point if anyone wants to make the
-substitution safe. Making it safe means proving the false positives away,
-most likely by reconciling the action list against `farm["hands"]` when a
-hand is hired mid-turn, which is where the ordering can slip.
-
-**The safety rule is that a substitute must act on the tile the worker is
-already standing on.** A tape's later actions assume its workers are where
-its recording left them, so moving one -- even toward something valuable
--- desynchronises everything that follows. In-place substitution cannot:
-the worker ends the turn exactly where the route expects it.
-
-The substitutes are also restricted to actions that cannot take anything
-the route is relying on:
-
-* CARE and COLLECT_FERTILIZER need no inventory and destroy nothing;
-* HARVEST **only on an animal**, which keeps producing afterwards -- never
-  on a plant, because the simulator destroys a non-ongoing crop when it is
-  picked, so an early harvest would throw away the yield the route was
-  waiting for;
-* WATER on a plant that has not been watered today, which only ever adds
-  yield;
-* DIG on a weed, which clears ground the route may want.
-
-Deliberately excluded: PLANT and PICKUP (would consume seed or shed stock
-the route has budgeted), DROP (changes carried inventory the route depends
-on), and BUILD (changes the shape of the board).
+Measured result: substitution is switched off in Candidate F
+(`IDLE_RESCUE = False`). Over 80 games it cut the win rate from 90% to 41%;
+`would_be_refused` is kept as a diagnostic.
 """
 
 from __future__ import annotations

@@ -1,8 +1,8 @@
 """Pull the source of a public Kaggriculture notebook, for reading.
 
 The competition's strong agents are published as Kaggle notebooks. This
-fetches one's source so its *mechanisms* can be read and understood -- what
-it measures, when it acts -- rather than copied.
+fetches one's source so its *mechanisms* can be read and understood: what
+it measures, and when it acts.
 
     KAGGLE_API_TOKEN=... python -m tools.data.fetch_public_notebook \\
         nathanjacob/kaggriculture-pipe-7-wheat-microstructure ...

@@ -1,104 +1,14 @@
-"""Candidate B: sequential-affordability market residual over Candidate A.
+"""Candidate B: market-order reordering on top of Candidate A.
 
-Hypothesis: in a real batch of market orders for one turn, Candidate A
-sometimes places a SELL after a money- or shed-consuming order
-(BUY_PRODUCT/BUY_SEED/BUY_ANIMAL/HIRE/BUY_LAND) that it funds. Because the
-1.32.7 engine drains each order to completion before starting the next, a
-sell positioned after a purchase cannot fund it -- moving eligible sells
-earlier can only add cash/shed-room before later orders execute, never take
-any away, so it can only keep every previously-successful order successful
-and, sometimes, rescue one that used to fail.
-
-Live replay of Candidate A's real 33-episode captured record found this
-pattern almost entirely in WHEAT/FERTILIZER sells trailing an unrelated
-spend (858 + 825 instances), not in premium sells (0 instances) -- so this
-module moves any SELL, not just the four premium products the original
-design brief singled out. That introduces a same-item overlap with
-BUY_PRODUCT (which only ever targets WHEAT/FERTILIZER) that the premium-only
-scope never had to consider: an exhaustive sweep over quantities and
-inventory levels found no case where every order's fulfilled quantity tied
-but final money still differed -- the engine's "quote a buy at post-buy
-inventory" rule (built to make an unchanged-market buy/sell round-trip net
-zero) appears to make same-item reordering money-neutral whenever nothing's
-fulfillment changes, same as the cross-item case. That is an empirical
-finding, not a proof, so `_is_strict_improvement` keeps a same-cost money
-check as a free safety net rather than assuming the invariant is airtight.
-
-This module only ever moves a SELL, never changes what the baseline chose
-to buy -- but real replay still turned up a purchase type where *rescuing*
-one is dangerous. Rescuing a HIRE is safe: Candidate A's own recovery
-already re-aligns actions to the live hand count (extra/fewer hands is a
-known, handled case). Rescuing a BUY_ANIMAL is not: the fixed calendar
-never schedules care/feed for an animal it didn't plan for, and a rescued
-animal can also fill the one pasture/coop slot the calendar's own later,
-already-planned animal purchase needed. On real replay this cut both ways
-in one batch of games: a rescued HIRE gained +8578 on episode 103977950,
-while a rescued SHEEP purchase cost -37129 on episode 103937628 -- same
-mechanism, opposite outcome, because only one of the two purchase types has
-a downstream consumer of the state it creates. So `_is_rescue_barrier`
-walls off BUY_ANIMAL specifically: a sell may still jump HIRE/BUY_PRODUCT/
-BUY_SEED/BUY_LAND, but never crosses a BUY_ANIMAL order. BUY_SEED/BUY_LAND
-are structurally closer to BUY_PRODUCT (inert until something later
-chooses to use them, no ongoing care requirement, no capacity to block) but
-have not been individually observed rescued in real replay either way.
-
-A prior implementation of this module (order-safe premium re-*sorting* via
-permutation search) was proven mathematically inert -- each product's price
-depends only on that product's own running inventory, so permuting SELLs of
-*already-fixed* quantities can never change total revenue -- and was
-removed after live replay confirmed zero of 264 eligible firings ever
-changed anything.
-
-Second residual, added after two live episodes (105061000, 105062726) showed
-the same calendar turn (record 200: [BUY_PRODUCT WHEAT 16, BUY_LAND]) spend
-its way past the money a same-turn BUY_LAND needed, in both games, at both
-seats. The calendar only ever attempts BUY_LAND twice in the whole 720-step
-script (records 122 and 200); when the second attempt is starved this way it
-is never retried, and every later scripted PLANT/WATER/HARVEST/BUILD_PASTURE
-the calendar sends to that still-unowned quadrant reports the tile as the
-literal string "LOCKED" and executes as a no-op for the rest of the episode
-(471 such no-ops observed in each replay). `_land_priority_ordering` moves a
-starved BUY_LAND ahead of any HIRE/BUY_PRODUCT/BUY_SEED/BUY_ANIMAL that
-precedes it in the same turn, but never crosses a SELL in either direction
-(a SELL only ever adds cash before land is evaluated, same reasoning as the
-affordability pass, so its position is left to that pass entirely) and never
-moves anything if BUY_LAND was not itself starved.
-
-Unlike `_sequential_affordability_ordering`, this is not a strict-dominance
-rule: displacing a HIRE/BUY_PRODUCT/BUY_SEED/BUY_ANIMAL order can and usually
-does lower its fulfilled count, sometimes to zero. That is accepted on
-purpose -- an entire quadrant (LAND_PRICES[1] = 2000, ~500 remaining steps of
-extra planting/harvesting surface) is judged to dominate a partial WHEAT
-restock or an extra hire on the turns actually observed -- rather than
-proven via the same fulfilled-count invariant the sell pass relies on. The
-one thing it does inherit from that pass's hard-won lesson: it only ever
-reorders purchases against each other, never touches when a SELL reaches the
-shared market, so it cannot reproduce the live-opponent price-timing risk
-that walled off BUY_ANIMAL rescues and burned the BUY_SEED live gate above.
-It has been checked against both failing replays and the full offline test
-suite; it has not yet been run through a fresh live-opponent paired gate the
-way the sell pass was, so treat it with the same "verify before fully
-trusting at scale" posture that gate was built to enforce.
-
-**`_land_priority_ordering` is DISABLED by default** (opt in with
-`build_candidate_b_agent(enable_land_priority=True)`). The reason is risk,
-not measured harm, and the distinction matters for anyone reading this later:
-
-- Instrumented measurement over 8 complete games (5752 decisions, 3408
-  non-empty market batches) found `_land_priority_ordering` changed the
-  order 3 times and `_sequential_affordability_ordering` changed it 8
-  times. The entire market layer alters roughly 1.4 decisions per game, so
-  neither rule can account for a large live rating gap in either direction.
-- The seeds 300-309 six-family gate scores 108-12 both with the rule
-  (section 8's original A+B gate) and without it (the later no-land run),
-  against the same 107-13 Candidate A control. That is a null result for
-  this rule, not evidence against it.
-
-So it is switched off because it is the one residual in this module that was
-never justified by the fulfilled-count invariant -- it deliberately sacrifices
-another purchase -- and a rule that fires ~0.4 times per game with no measured
-benefit is not worth an unproven tail risk. Do not describe turning it off as
-"fixing" a live regression: the measurements above cannot support that claim.
+The engine fills each market order before starting the next, so a SELL queued
+after a purchase cannot fund it. `_sequential_affordability_ordering` moves a
+SELL ahead of a HIRE or BUY_PRODUCT, never another spend
+(`_is_rescue_barrier`), and only when a local simulation shows no order fills
+less; an exhaustive sweep found no money change when every fill ties.
+`_land_priority_ordering` moves a cash-starved BUY_LAND ahead of other
+same-turn purchases, giving up their fills for a whole quadrant. It is
+DISABLED by default; enable it with
+`build_candidate_b_agent(enable_land_priority=True)`.
 """
 
 from __future__ import annotations
@@ -116,8 +26,8 @@ MARKET_I0 = 10_000
 PRICE_FLOOR = 1
 HINGE_GAIN = 8.0
 
-# (base, T, below_func, below_target, above_func, above_target) -- exact
-# copy of the 1.32.7 simulator's MARKET_PARAMS for every sellable product,
+# (base, T, below_func, below_target, above_func, above_target) -- the
+# 1.32.7 simulator's MARKET_PARAMS, exactly, for every sellable product,
 # not just the four premium ones, because a faithful affordability check
 # needs the real price of whatever else shares the same order batch.
 MARKET_PARAMS = {

@@ -1,37 +1,12 @@
 """L2 candidate (wheat economy): spend carried fertilizer on young wheat, no hires, no purchases.
 
-What the 2600-2700 teams that out-harvest A do (tools/analysis/l2_wheat_*):
-every hand tends animals first (FEED, CARE, COLLECT_FERTILIZER), so it
-carries 1-3 fertilizer, then works its own field route and, on reaching an
-age-2 wheat plant, spends one turn on FERTILIZE immediately before the WATER.
-Fertilized for ages 2-4, the plant ends at 6 units (5 if pulled at age 3)
-instead of 4 (3). The teams do this 13.1 times a game; A 0.3 times.
-
-A's crew is booked until hour 23, so that extra turn does not exist on A's
-schedule. This layer finds it without new hands and without buying:
-
-R1  A WATER on age-1 wheat adds nothing (wheat grows only on ages 2-4) and
-    is not needed for survival when the plant was watered on day 0. A unit
-    about to spend a turn on it while carrying spare fertilizer fertilizes
-    instead (A's v9_fert does this only from day 14).
-R2  A unit idling (PASS or a sure no-op) on young unfertilized wheat while
-    carrying spare fertilizer fertilizes it.
-R3  The teams' F->W pair. A unit carrying fertilizer whose tape waters an
-    unfertilized age-2 wheat plant later today, and whose current command is
-    skippable (PASS, a sure no-op, or COLLECT_FERTILIZER while it already
-    carries one), skips that command and runs its own tape one step early up
-    to the plant, where the freed turn becomes FERTILIZE; the tape's WATER
-    then lands on its own step and the unit is back in sync. The early
-    segment may only contain moves, WATER, HARVEST, DIG, FEED, CARE,
-    COLLECT_FERTILIZER and FERTILIZE; any command that would be a no-op at
-    the unit's real position, any other unit on those tiles one step either
-    side, or any parent command that departs from the tape ends the run with
-    one PASS, which puts the unit back in sync.
-
-Every use is priced: gain x wheat price must beat the fertilizer's sale
-price (twice that when a COLLECT is skipped) plus a margin, so the layer is
-inert while fertilizer sells for more than the wheat it adds (days 1-13).
-Market orders are never changed.
+Wheat fertilized for ages 2-4 ends at 6 units instead of 4, but Agent A's crew
+is booked all day. For a unit carrying spare fertilizer, three rules find the
+turn without new hands: R1 turns a useless WATER on age-1 wheat into FERTILIZE;
+R2 fertilizes young wheat under an idle unit; R3 skips a skippable command and
+runs the unit's route one step early up to an age-2 plant it waters later
+today, so the freed turn becomes FERTILIZE and the route is back in sync. Every
+use is priced against the fertilizer's sale price; market orders never change.
 
     python -m tools.eval.paired stack.l2_wheat_fert:build --label wheat-fert
 """
