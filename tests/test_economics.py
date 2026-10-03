@@ -1,6 +1,6 @@
 import unittest
 
-from rl.economics import (
+from candidates.economics import (
     BASE_PRICE,
     LAST_DAY,
     care_value,

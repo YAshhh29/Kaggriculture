@@ -7,7 +7,7 @@ same way, so decisions about COLD_START_RADIUS are made against the
 field's actual bar rather than an assumption that 0% is achievable or
 that any nonzero number is a problem.
 
-    python -m tools.analysis.measure_hire_delay rl.j_variant:agent --games 10
+    python -m tools.analysis.measure_hire_delay candidates.j_variant:agent --games 10
 """
 
 from __future__ import annotations

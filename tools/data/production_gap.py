@@ -85,7 +85,7 @@ def harvest_census(actions: list[dict[str, Any]], steps) -> dict[str, Any]:
                             if isinstance(tile, dict):
                                 got = int(tile.get("yield_units", 0) or 0)
                                 if "animal" in tile:
-                                    from rl.economics import ANIMALS
+                                    from candidates.economics import ANIMALS
                                     good = ANIMALS[tile["animal"]]["product"]
                                     harvested[good] += got
                                 elif tile.get("kind") == "PLANT":
@@ -120,7 +120,7 @@ def replay(actions):
 def ours(seed: int):
     from kaggle_environments import make
 
-    import rl.candidate_g as G
+    import candidates.candidate_g as G
 
     captured: list[dict[str, Any]] = []
 

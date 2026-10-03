@@ -15,7 +15,7 @@ candidates on games where every arm stays below a drift bound
 The original game is replayed first from both tapes; a record that does not
 reproduce its real rewards to the coin is skipped.
 
-    python -m tools.analysis.corpus_pin run --factory rl.l2_combo:n4r \\
+    python -m tools.analysis.corpus_pin run --factory stack.l2_combo:n4r \\
         --corpus kaggle_cache/corpus_0929 --label top-n4r --chunk 1/8
     python -m tools.analysis.pin_compare top-n2m top-n4r --max-drift 0.05
 """

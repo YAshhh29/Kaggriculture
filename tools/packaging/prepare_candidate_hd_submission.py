@@ -1,6 +1,6 @@
 """Prepare Candidate H-D (demand-timed, denial-sensitive) for Kaggle.
 
-The agent lives in `rl/candidateHdeepseek.py` and imports from four local
+The agent lives in `candidates/candidateHdeepseek.py` and imports from four local
 modules. Kaggle wants one self-contained `main.py`, so this parses each
 dependency, strips the local imports, and concatenates them in dependency
 order ahead of the agent itself.
@@ -24,10 +24,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 
 ROUTING_PATH = ROOT / "core" / "routing.py"
-MARKET_PATH = ROOT / "rl" / "market.py"
-DEMAND_PATH = ROOT / "rl" / "demand.py"
-ECONOMICS_PATH = ROOT / "rl" / "economics.py"
-AGENT_PATH = ROOT / "rl" / "candidateHdeepseek.py"
+MARKET_PATH = ROOT / "candidates" / "market.py"
+DEMAND_PATH = ROOT / "candidates" / "demand.py"
+ECONOMICS_PATH = ROOT / "candidates" / "economics.py"
+AGENT_PATH = ROOT / "candidates" / "candidateHdeepseek.py"
 
 # Dependency order matters: economics reads marginal_price out of market.
 SOURCE_PATHS = (
@@ -41,7 +41,7 @@ SOURCE_PATHS = (
 OUTPUT = ROOT / "submissions" / "candidate-hd" / "main.py"
 MANIFEST = ROOT / "submissions" / "candidate-hd" / "manifest.json"
 
-LOCAL_PREFIXES = ("core.", "rl.", "agents.", "policies.")
+LOCAL_PREFIXES = ("core.", "rl.", "agents.", "policies.", "stack.", "candidates.")
 
 PREAMBLE = '''"""Candidate H-D, packaged for Kaggle.
 

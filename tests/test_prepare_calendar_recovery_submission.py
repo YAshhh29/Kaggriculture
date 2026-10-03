@@ -18,7 +18,7 @@ class PrepareCalendarRecoverySubmissionTests(unittest.TestCase):
             if isinstance(node, ast.ImportFrom)
             and node.module is not None
             and node.module.startswith(
-                ("agents.", "policies.", "core.", "rl.")
+                ("agents.", "policies.", "core.", "rl.", "stack.", "candidates.")
             )
         ]
         function_names = [
@@ -32,7 +32,7 @@ class PrepareCalendarRecoverySubmissionTests(unittest.TestCase):
         self.assertIn("agent", function_names)
         code = compile(
             source,
-            "submissions/candidate-a(calendar recovery first attempt)"
+            "submissions/candidate-a"
             "/main.py",
             "exec",
         )

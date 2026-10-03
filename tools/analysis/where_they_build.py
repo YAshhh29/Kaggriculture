@@ -17,7 +17,7 @@ reproduces the original result to the coin -- and reads the board at dusk
 each day, counting what stands in each ring around the shed.
 
     python -m tools.analysis.where_they_build --tapes 8
-    python -m tools.analysis.where_they_build --tapes 6 --agent rl.candidate_j:agent
+    python -m tools.analysis.where_they_build --tapes 6 --agent candidates.candidate_j:agent
 """
 
 from __future__ import annotations

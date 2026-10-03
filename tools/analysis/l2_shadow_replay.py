@@ -118,10 +118,10 @@ PUBLIC = sorted(p.stem for p in (ROOT / "rl" / "public").glob("nb_*.py"))
 def fresh_program(name: str):
     """A fresh instance of a program; each call gets its own module state."""
     if name == "A":
-        from rl.candidate_l import parent_namespace
+        from stack.candidate_l import parent_namespace
         return parent_namespace()[1]
     if name == "L":
-        from rl.candidate_l import l_stack
+        from stack.candidate_l import l_stack
         return l_stack()
     if name.startswith("nb_"):
         path = ROOT / "rl" / "public" / f"{name}.py"

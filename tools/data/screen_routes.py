@@ -52,8 +52,8 @@ def corpus() -> list[dict]:
 def _one(job):
     route_path, opponent_path, seed, seat = job
     from kaggle_environments import make
-    from rl.candidate_a import build_candidate_a_agent
-    from rl.candidate_b import build_candidate_b_agent
+    from candidates.candidate_a import build_candidate_a_agent
+    from candidates.candidate_b import build_candidate_b_agent
     from rl.replay_agent import load_replay_agent
 
     route = load_replay_agent(Path(route_path))

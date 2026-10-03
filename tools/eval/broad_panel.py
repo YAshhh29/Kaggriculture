@@ -5,7 +5,7 @@ by replaying the recorded play of many different top-200 teams. The opponent
 is an open-loop recording and cannot react, so a game where it refuses many
 of its own moves has drifted and is reported separately.
 
-    python -m tools.eval.broad_panel rl.candidate_j:agent --tapes 40
+    python -m tools.eval.broad_panel candidates.candidate_j:agent --tapes 40
 """
 
 from __future__ import annotations

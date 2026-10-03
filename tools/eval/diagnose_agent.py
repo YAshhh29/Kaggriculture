@@ -14,7 +14,7 @@ differs.
 Everything here is read from the replay the simulator produces, so it
 costs one extra pass over games that had to be played anyway.
 
-    python -m tools.eval.diagnose_agent rl.candidate_f:agent --limit 16
+    python -m tools.eval.diagnose_agent candidates.candidate_f:agent --limit 16
 """
 
 from __future__ import annotations

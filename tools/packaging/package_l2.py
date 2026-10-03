@@ -1,7 +1,7 @@
 """Package an Agent L2 variant: Agent A's exact file + the gate edit + our layers.
 
 Each layer file must be standard-library only and carry its code between
-"# ---- BEGIN <name>" and "# ---- END <name>" markers (as rl/market_front.py
+"# ---- BEGIN <name>" and "# ---- END <name>" markers (as stack/market_front.py
 does). The entry point is a composition expression over the parent's entry
 (`_L_PARENT`, which is A's `kaggle_agent`) and the parent namespace
 (`globals()`), e.g.
@@ -13,8 +13,8 @@ ours, and the packaged file, loaded exactly as Kaggle loads it, scores exactly
 what the tested factory scores on the same seeds (both seats), with no errors.
 
     python -m tools.packaging.package_l2 --out submissions/candidate-l2/main.py \
-        --layers rl/market_front.py rl/l2_endgame.py \
-        --entry "mf_wrap(ew_wrap(_L_PARENT))" --factory rl.l2_endgame:build
+        --layers stack/market_front.py stack/l2_endgame.py \
+        --entry "mf_wrap(ew_wrap(_L_PARENT))" --factory stack.l2_endgame:build
 """
 
 from __future__ import annotations
@@ -30,7 +30,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from rl.candidate_l import _SHOPS3, PARENT_FILE  # noqa: E402
+from stack.candidate_l import _SHOPS3, PARENT_FILE  # noqa: E402
 from tools.packaging.package_public import stdlib_only  # noqa: E402
 
 BEGIN = re.compile(r"^# ---- BEGIN .*$", re.M)

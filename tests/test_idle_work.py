@@ -1,6 +1,6 @@
 import unittest
 
-from rl.idle_work import build_idle_work_agent
+from candidates.idle_work import build_idle_work_agent
 from tests.test_experimental_scale_agent import scale_observation
 
 

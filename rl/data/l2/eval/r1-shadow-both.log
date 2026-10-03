@@ -1,4 +1,0 @@
-60 games: r1-shadow-both vs L on 30 seeds x 2 seats, 1 workers
-saved rl\data\l2\paired\r1-shadow-both.json
-  r1-shadow-both vs L                         57/60  won (2 tied)  mean       +4  median       +2  worst      -57  errors 0  crashes 0
-  telemetry (mean per game): early_budget_stops 0.0, early_multi_skips 0.0, early_pred_gain 2.3, early_rejected_react 0.0, early_sales 0.3, early_units 0.7, errors 0.0, reordered_turns 71.1, shadow_disagree_turns 0.0, shadow_errors 0.0, shadow_insync_programs 0.0, shadow_lost 1.0, shadow_max_ms 128.4, shadow_ms 4803.5, shadow_reorder_gain 1.4, shadow_reorders 0.7

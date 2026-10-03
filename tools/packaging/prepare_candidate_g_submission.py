@@ -1,6 +1,6 @@
 """Prepare Candidate G for Kaggle.
 
-G lives in `rl/candidate_g.py` and imports from four local modules. Kaggle
+G lives in `candidates/candidate_g.py` and imports from four local modules. Kaggle
 wants one self-contained `main.py`, so this parses each dependency, strips
 the local imports, and concatenates them in dependency order ahead of the
 agent.
@@ -27,10 +27,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 
 ROUTING_PATH = ROOT / "core" / "routing.py"
-MARKET_PATH = ROOT / "rl" / "market.py"
-DEMAND_PATH = ROOT / "rl" / "demand.py"
-ECONOMICS_PATH = ROOT / "rl" / "economics.py"
-AGENT_PATH = ROOT / "rl" / "candidate_g.py"
+MARKET_PATH = ROOT / "candidates" / "market.py"
+DEMAND_PATH = ROOT / "candidates" / "demand.py"
+ECONOMICS_PATH = ROOT / "candidates" / "economics.py"
+AGENT_PATH = ROOT / "candidates" / "candidate_g.py"
 
 # Order matters: economics reads marginal_price out of market.
 SOURCE_PATHS = (
@@ -44,7 +44,7 @@ SOURCE_PATHS = (
 OUTPUT = ROOT / "submissions" / "candidate-g" / "main.py"
 MANIFEST = ROOT / "submissions" / "candidate-g" / "manifest.json"
 
-LOCAL_PREFIXES = ("core.", "rl.", "agents.", "policies.")
+LOCAL_PREFIXES = ("core.", "rl.", "agents.", "policies.", "stack.", "candidates.")
 
 PREAMBLE = '''"""Candidate G, packaged for Kaggle.
 

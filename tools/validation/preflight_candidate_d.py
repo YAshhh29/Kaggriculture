@@ -1,6 +1,6 @@
 """Every gate Candidate D must clear before an upload, in one command.
 
-Written because the last upload failure (rl/GOAL.md section 9h) passed
+Written because the last upload failure (docs/research/GOAL.md section 9h) passed
 every check that existed at the time: the packaging bug lived in a place
 none of them looked. These gates are ordered so the cheapest run first
 and the ones that have actually caught real defects run at all.

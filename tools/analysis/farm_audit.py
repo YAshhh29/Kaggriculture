@@ -31,7 +31,7 @@ left unsold at the final bell, animals walking out at two unfed days, care
 days wiped by an unfed production night, and waterings landing outside any
 yield window, which the engine ignores entirely.
 
-    python -m tools.analysis.farm_audit rl.candidate_j:agent --tapes 4
+    python -m tools.analysis.farm_audit candidates.candidate_j:agent --tapes 4
 """
 
 from __future__ import annotations
@@ -355,7 +355,7 @@ def main() -> None:
 
     from kaggle_environments.envs.kaggriculture.kaggriculture import (
         ANIMALS, CROPS, MARKET_PARAMS)
-    from rl.demand import demand_rate
+    from candidates.demand import demand_rate
 
     tapes = sorted(Path(ROOT, "kaggle_cache", "top200_tapes").glob("ep*.json"))
     ours, theirs = Audit(), Audit()

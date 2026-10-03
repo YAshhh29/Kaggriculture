@@ -1,4 +1,4 @@
-"""Tests for rl/route_portfolio.py."""
+"""Tests for candidates/route_portfolio.py."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ from typing import Any
 
 import pytest
 
-from rl.route_portfolio import (
+from candidates.route_portfolio import (
     BLOCK_TURNS,
     RouteStats,
     build_portfolio_agent,

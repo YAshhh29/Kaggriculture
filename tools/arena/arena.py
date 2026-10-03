@@ -49,60 +49,60 @@ REPLAY_URL = "https://www.kaggleusercontent.com/episodes/{episode}.json"
 CONFIG = {"episodeSteps": 720, "runTimeout": 36000, "actTimeout": 60}
 
 ALIASES = {
-    "K": "rl.candidate_k:agent",
-    "K2": "rl.candidate_k2:agent",
-    "J": "rl.candidate_j:agent",
-    "J2": "rl.candidate_j2:agent",
-    "H2": "rl.candidate_h2_package:agent",
-    "I": "rl.candidate_i:agent",
-    "aurax7": "rl.public_agents:aurax7",
-    "v34": "rl.public_agents:v34",
+    "K": "candidates.candidate_k:agent",
+    "K2": "candidates.candidate_k2:agent",
+    "J": "candidates.candidate_j:agent",
+    "J2": "candidates.candidate_j2:agent",
+    "H2": "candidates.candidate_h2_package:agent",
+    "I": "candidates.candidate_i:agent",
+    "aurax7": "stack.public_agents:aurax7",
+    "v34": "stack.public_agents:v34",
     # Agent A: the exact packaged file (a verbatim public clone). Agent L: that
     # file plus our own layers. Agent M: bespoke.
     "A": "file:submissions/agent-a/main.py",
-    "L": "rl.candidate_l:front_gate120",       # the live Agent L
-    "L2": "rl.l2_combo:ship",                  # submissions/candidate-l2
-    "L3": "rl.l2_combo:ship_lib",              # submissions/candidate-l3
-    "L4": "rl.l2_combo:l4",
-    "L4b": "rl.l2_combo:l4b",
-    "L4c": "rl.l2_combo:l4c",
-    "L4e": "rl.l2_combo:l4e",                # submissions/candidate-l4e
-    "L5": "rl.l2_combo:l5h",                 # submissions/candidate-l5
-    "L5race": "rl.l2_combo:l5e",
-    "L5lib": "rl.l2_combo:l5lib",
-    "M1": "rl.l2_combo:m1",
-    "M2": "rl.l2_combo:m2",
-    "M3": "rl.l2_combo:m3",
-    "M4": "rl.l2_combo:m4",
-    "M5": "rl.l2_combo:m5",
-    "M7": "rl.l2_combo:m7",
-    "M8": "rl.l2_combo:m8",
-    "M": "rl.l2_combo:m8",                   # submissions/candidate-m
-    "M9": "rl.l2_combo:m9",
-    "L6": "rl.l2_combo:l6",
-    "M10": "rl.l2_combo:m10",
-    "N1": "rl.l2_combo:n1",
-    "M11": "rl.l2_combo:m11",
-    "M2": "rl.l2_combo:m11",                 # submissions/candidate-m2
-    "N2": "rl.l2_combo:n2",
-    "N2m": "rl.l2_combo:n2m",
-    "HLq": "rl.l2_combo:hl_plain",
-    "N": "rl.l2_combo:n2m",                   # submissions/candidate-n
-    "N3r7": "rl.l2_combo:n3r7",
-    "N3r5": "rl.l2_combo:n3r5",
-    "L_se": "rl.candidate_l:agent",
-    "A_noV219": "rl.candidate_l:no_v219",
-    "L_gate140": "rl.candidate_l:gate140",
-    "L_gate120": "rl.candidate_l:gate120",
-    "L_front": "rl.candidate_l:front",
-    "L_front_gate": "rl.candidate_l:front_gate",
-    "L_fg140": "rl.candidate_l:front_gate140",
-    "L_fg120": "rl.candidate_l:front_gate120",
-    "L_fg100": "rl.candidate_l:front_gate100",
-    "L_fg0": "rl.candidate_l:front_gate0",
-    "L2_fw150": "rl.candidate_l:fw150",
-    "L2_fw100": "rl.candidate_l:fw100",
-    "L2_fw250": "rl.candidate_l:fw250",
+    "L": "stack.candidate_l:front_gate120",       # the live Agent L
+    "L2": "stack.l2_combo:ship",                  # submissions/candidate-l2
+    "L3": "stack.l2_combo:ship_lib",              # submissions/candidate-l3
+    "L4": "stack.l2_combo:l4",
+    "L4b": "stack.l2_combo:l4b",
+    "L4c": "stack.l2_combo:l4c",
+    "L4e": "stack.l2_combo:l4e",                # submissions/candidate-l4e
+    "L5": "stack.l2_combo:l5h",                 # submissions/candidate-l5
+    "L5race": "stack.l2_combo:l5e",
+    "L5lib": "stack.l2_combo:l5lib",
+    "M1": "stack.l2_combo:m1",
+    "M2": "stack.l2_combo:m2",
+    "M3": "stack.l2_combo:m3",
+    "M4": "stack.l2_combo:m4",
+    "M5": "stack.l2_combo:m5",
+    "M7": "stack.l2_combo:m7",
+    "M8": "stack.l2_combo:m8",
+    "M": "stack.l2_combo:m8",                   # submissions/candidate-m
+    "M9": "stack.l2_combo:m9",
+    "L6": "stack.l2_combo:l6",
+    "M10": "stack.l2_combo:m10",
+    "N1": "stack.l2_combo:n1",
+    "M11": "stack.l2_combo:m11",
+    "M2": "stack.l2_combo:m11",                 # submissions/candidate-m2
+    "N2": "stack.l2_combo:n2",
+    "N2m": "stack.l2_combo:n2m",
+    "HLq": "stack.l2_combo:hl_plain",
+    "N": "stack.l2_combo:n2m",                   # submissions/candidate-n
+    "N3r7": "stack.l2_combo:n3r7",
+    "N3r5": "stack.l2_combo:n3r5",
+    "L_se": "stack.candidate_l:agent",
+    "A_noV219": "stack.candidate_l:no_v219",
+    "L_gate140": "stack.candidate_l:gate140",
+    "L_gate120": "stack.candidate_l:gate120",
+    "L_front": "stack.candidate_l:front",
+    "L_front_gate": "stack.candidate_l:front_gate",
+    "L_fg140": "stack.candidate_l:front_gate140",
+    "L_fg120": "stack.candidate_l:front_gate120",
+    "L_fg100": "stack.candidate_l:front_gate100",
+    "L_fg0": "stack.candidate_l:front_gate0",
+    "L2_fw150": "stack.candidate_l:fw150",
+    "L2_fw100": "stack.candidate_l:fw100",
+    "L2_fw250": "stack.candidate_l:fw250",
 }
 
 
@@ -153,10 +153,10 @@ def load(name: str):
     module_name, attr = spec.rsplit(":", 1)
     import importlib
     target = getattr(importlib.import_module(module_name), attr)
-    # A zero-argument callable is a factory (rl.l2_combo:ship_lib etc.): build
+    # A zero-argument callable is a factory (stack.l2_combo:ship_lib etc.): build
     # the agent. Passing the factory itself as the agent made it raise every
     # turn, the opponent scored 0, and a head-to-head read +164k.
-    # A factory's arguments all have defaults (rl.l2_combo:l4e(window=8)).
+    # A factory's arguments all have defaults (stack.l2_combo:l4e(window=8)).
     code = getattr(target, "__code__", None)
     required = (code.co_argcount - len(target.__defaults__ or ())) if code is not None else None
     if required == 0 and not code.co_flags & 0x04:

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from rl.candidate_b import agent as candidate_b
+from candidates.candidate_b import agent as candidate_b
 
 
 def decide(observation: dict[str, Any]) -> dict[str, Any]:

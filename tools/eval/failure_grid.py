@@ -4,7 +4,7 @@ For each sampled tape this plays the candidate against that team's recorded
 play, and separately replays the tape's own game, so every number is measured
 on the same world: what the top-200 team did, and what we did facing it.
 
-    python -m tools.eval.failure_grid rl.candidate_j:agent --tapes 12
+    python -m tools.eval.failure_grid candidates.candidate_j:agent --tapes 12
 """
 
 from __future__ import annotations

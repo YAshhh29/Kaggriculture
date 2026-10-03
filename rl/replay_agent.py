@@ -36,7 +36,7 @@ def build_replay_agent(actions: tuple[AgentAction, ...] | list[AgentAction]):
     def decide(observation: dict[str, Any]) -> AgentAction:
         # The action recorded at replay index k was chosen while observing
         # step k-1 (empirically confirmed against kaggle_environments, not
-        # assumed -- see rl/GOAL.md; matches the existing
+        # assumed -- see docs/research/GOAL.md; matches the existing
         # experimental_distilled_elite_pasture_agent.py convention).
         next_record = int(observation.get("step", 0)) + 1
         if next_record >= len(actions):

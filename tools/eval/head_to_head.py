@@ -15,8 +15,8 @@ Candidate D is the only agent we have with a settled live rating, so it is
 the reference here: a change that cannot beat D on identical seeds has no
 claim on a submission slot, whatever a panel says.
 
-    python -m tools.eval.head_to_head rl.candidate_e:agent \\
-        --reference rl.candidate_d:agent --seeds 24
+    python -m tools.eval.head_to_head candidates.candidate_e:agent \\
+        --reference candidates.candidate_d:agent --seeds 24
 """
 
 from __future__ import annotations
@@ -70,7 +70,7 @@ def main() -> None:
     seeds = SEEDS[: args.seeds]
     labels = list(args.label or [])
     labels += [s for s in args.specs[len(labels):]]
-    references = args.reference or ["rl.candidate_d:agent"]
+    references = args.reference or ["candidates.candidate_d:agent"]
     print("field: " + ", ".join(references))
     print(f"{len(seeds)} seeds x 2 seats x {len(references)} opponents = "
           f"{len(seeds) * 2 * len(references)} games each\n", flush=True)

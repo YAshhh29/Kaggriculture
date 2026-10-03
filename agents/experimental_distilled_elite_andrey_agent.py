@@ -8,7 +8,7 @@ Selected by scoring **191 candidate tapes** -- every side of every cached
 replay belonging to a team rated 2400+, on the game that team won -- then
 re-screened against real top-500 opponents. It led all three independent
 evaluations: the original search, a 60-game stratified panel (70.0%), and
-a 184-game full panel (64.1%). See rl/GOAL.md sections 9n and 9p.
+a 184-game full panel (64.1%). See docs/research/GOAL.md sections 9n and 9p.
 
 Why own-reward drove the search rather than win rate: section 9m measured
 that win rate against frozen tapes overstates live strength by roughly

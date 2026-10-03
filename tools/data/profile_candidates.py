@@ -13,7 +13,7 @@ carrot, no geese -- while all nine teams above 2765 buy 31-55 carrot and
 more about what to change than any amount of win-rate tuning against the
 field they already beat.
 
-    python -m tools.data.profile_candidates rl.candidate_e:agent
+    python -m tools.data.profile_candidates candidates.candidate_e:agent
 """
 
 from __future__ import annotations

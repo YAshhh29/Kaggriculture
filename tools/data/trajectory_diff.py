@@ -179,7 +179,7 @@ def main() -> None:
     sys.path.insert(0, str(ROOT))
     from kaggle_environments import make
 
-    import rl.candidate_g as G
+    import candidates.candidate_g as G
     from rl.replay_agent import build_replay_agent
     from tools.data.profile_tapes import INDEX, TAPES, load_tape
     from tools.eval.measure_panel import resolve

@@ -1,6 +1,6 @@
 """Play one match and write a watchable HTML replay.
 
-    python tools/viewer/render_match.py --agent rl.candidate_e:agent \
+    python tools/viewer/render_match.py --agent candidates.candidate_e:agent \
         --opponent agents/experimental_distilled_elite_andrey_agent.py \
         --seed 6 --out artifacts/replays/e_vs_andrey_seed6.html
 
@@ -84,7 +84,7 @@ def serve(path: Path, port: int) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--agent", default="rl.candidate_e:agent")
+    parser.add_argument("--agent", default="candidates.candidate_e:agent")
     parser.add_argument(
         "--opponent",
         default="agents/experimental_distilled_elite_andrey_agent.py",

@@ -27,7 +27,7 @@ live_* anchor, module:attr, file:<path>), optionally named as NAME=SPEC. A spec
 without a name takes the name of an arena alias with the same spec, so that
 alias's stored games count; otherwise its package directory
 (file:submissions/candidate-n8/main.py -> candidate-n8) or module and attribute
-(rl.l2_combo:n6 -> l2_combo.n6). Games this tool plays are stamped with a
+(stack.l2_combo:n6 -> l2_combo.n6). Games this tool plays are stamped with a
 fingerprint of each file: agent's code; a stored game whose name now means other
 code (a different spec, or a rebuilt package) is stale: it is left out of the
 score and played again.

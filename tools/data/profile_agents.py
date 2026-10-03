@@ -8,7 +8,7 @@ sale, worker action mix, hiring, land, livestock and crop choices -- so the
 same profile can be computed for an elite player, for a mid-field opponent,
 and for our own submissions, and compared directly.
 
-Used by rl/GOAL.md section 9l.
+Used by docs/research/GOAL.md section 9l.
 """
 
 from __future__ import annotations

@@ -10,7 +10,7 @@ spent passing. A turn spent walking is a turn not spent watering, and a
 hired hand is rented for the whole day whether it works or idles, so a high
 pass share means the farm is paying for labour it has no work for.
 
-    python -m tools.analysis.turn_budget rl.candidate_j:agent --tapes 3
+    python -m tools.analysis.turn_budget candidates.candidate_j:agent --tapes 3
 """
 
 from __future__ import annotations

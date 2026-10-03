@@ -6,14 +6,14 @@ Apache-2.0, notices kept) with two of our changes:
 * the V219 tomato gate also accepts two tomato shops when the town's tomato
   shortfall at step 432 is at least --deficit (edited in place, the one
   condition only);
-* the market_front layer (rl/market_front.py) appended, wrapping the parent's
+* the market_front layer (stack/market_front.py) appended, wrapping the parent's
   entry point so its orders are reordered, never resized.
 
 Verification, because a dead upload has happened in this project before:
 standard-library imports only; the callable Kaggle will pick is ours; the file
 loaded exactly the way Kaggle loads it plays full games against Agent A with
 no errors, inside the time budget, and scores exactly what the tested local
-variant (rl.candidate_l) scores on the same seeds.
+variant (stack.candidate_l) scores on the same seeds.
 
     python -m tools.packaging.package_l --deficit 140
 """
@@ -29,11 +29,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from rl.candidate_l import _SHOPS3, PARENT_FILE  # noqa: E402
+from stack.candidate_l import _SHOPS3, PARENT_FILE  # noqa: E402
 from tools.packaging.package_public import stdlib_only  # noqa: E402
 
 OUT = ROOT / "submissions" / "candidate-l" / "main.py"
-FRONT = ROOT / "rl" / "market_front.py"
+FRONT = ROOT / "stack" / "market_front.py"
 
 HEADER = """# Agent L (Kaggriculture), Yash Jain, 2026-09-26.
 # Base: tetsutani's public build (Apache-2.0), verbatim below with its

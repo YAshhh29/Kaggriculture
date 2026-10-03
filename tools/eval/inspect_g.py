@@ -1110,7 +1110,7 @@ def drill(args, overrides) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--spec", default="rl.candidate_g:agent")
+    parser.add_argument("--spec", default="candidates.candidate_g:agent")
     parser.add_argument("--opponents", type=int, default=12)
     parser.add_argument("--tapes", type=int, default=6,
                         help="replays per opponent")

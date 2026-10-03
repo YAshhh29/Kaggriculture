@@ -40,8 +40,8 @@ Both seats, a fixed seed set, and `actTimeout 60` on every game because the
 default silently freezes an agent mid-game under load and the result still
 looks complete.
 
-    python -m tools.eval.strong_panel rl.candidate_j:agent --seeds 6
-    python -m tools.eval.strong_panel rl.candidate_j:agent --against aurax7 h2
+    python -m tools.eval.strong_panel candidates.candidate_j:agent --seeds 6
+    python -m tools.eval.strong_panel candidates.candidate_j:agent --against aurax7 h2
 """
 
 from __future__ import annotations
@@ -59,10 +59,10 @@ sys.path.insert(0, str(ROOT))
 from tools.eval.measure_panel import resolve  # noqa: E402
 
 OPPONENTS = {
-    "aurax7": ("rl.public_agents:aurax7", "published top-200 agent"),
-    "v34": ("rl.public_agents:v34", "published agent, same lineage"),
-    "h2": ("rl.candidate_h2_package:agent", "ours, live rating 2265"),
-    "i": ("rl.candidate_i:agent", "ours, route replay"),
+    "aurax7": ("stack.public_agents:aurax7", "published top-200 agent"),
+    "v34": ("stack.public_agents:v34", "published agent, same lineage"),
+    "h2": ("candidates.candidate_h2_package:agent", "ours, live rating 2265"),
+    "i": ("candidates.candidate_i:agent", "ours, route replay"),
 }
 SEEDS = (11, 29, 53, 97, 131, 173, 211, 257, 307, 353, 401, 449)
 

@@ -1,4 +1,0 @@
-40 games: endgame-dump vs L on 20 seeds x 2 seats, 2 workers
-saved rl\data\l2\paired\endgame-dump.json
-  endgame-dump vs L                         40/40  won (0 tied)  mean     +701  median     +706  worst      +42  errors 0  crashes 0
-  telemetry (mean per game): clone_steps 0.0, dump_errors 0.0, dump_turns 6.2, dump_units 57.0, errors 0.0, reordered_turns 68.2

@@ -15,7 +15,7 @@ and passing them through `schedule_from_actions`, so our own opening can
 be laid against the corpus opening line by line and the gaps read off.
 
     python -m tools.data.milestones --min-rating 2700
-    python -m tools.data.milestones --agent rl.candidate_g:agent
+    python -m tools.data.milestones --agent candidates.candidate_g:agent
 """
 
 from __future__ import annotations

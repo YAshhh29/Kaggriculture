@@ -8,7 +8,7 @@ import importlib
 from pathlib import Path
 from typing import Any
 
-from rl.candidate_c import agent as source_agent
+from candidates.candidate_c import agent as source_agent
 from benchmark import load_agent_callable
 
 

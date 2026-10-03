@@ -1,7 +1,7 @@
 import unittest
 
-from rl.candidate_c import agent as candidate_c1
-from rl.candidate_c2 import (
+from candidates.candidate_c import agent as candidate_c1
+from candidates.candidate_c2 import (
     ELITE_GIULIO,
     ROUTES,
     agent,

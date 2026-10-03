@@ -1,6 +1,6 @@
 """Before the final submission: find public programs our opponents now run.
 
-The opponent shadow (rl/l2_shadow.py) wins every game against an exact copy of
+The opponent shadow (stack/l2_shadow.py) wins every game against an exact copy of
 a program in its library, and after the deadline the field is frozen for eight
 days with whatever was copied by then. This finds what is missing:
 

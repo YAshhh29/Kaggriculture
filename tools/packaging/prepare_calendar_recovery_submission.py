@@ -24,7 +24,7 @@ ACTION_SPACE_PATH = ROOT / "rl" / "action_space.py"
 FEATURES_PATH = ROOT / "rl" / "features.py"
 POLICY_PATH = ROOT / "rl" / "policy.py"
 RUNTIME_PATH = ROOT / "rl" / "runtime.py"
-CANDIDATE_PATH = ROOT / "rl" / "candidate_a.py"
+CANDIDATE_PATH = ROOT / "candidates" / "candidate_a.py"
 RECOVERY_PATH = ROOT / "agents" / "experimental_calendar_recovery_agent.py"
 SOURCE_PATHS = (
     MODEL_PATH,
@@ -38,10 +38,10 @@ SOURCE_PATHS = (
     CANDIDATE_PATH,
     RECOVERY_PATH,
 )
-SUBMISSION_DIR = "candidate-a(calendar recovery first attempt)"
+SUBMISSION_DIR = "candidate-a"
 OUTPUT = ROOT / "submissions" / SUBMISSION_DIR / "main.py"
 MANIFEST = ROOT / "submissions" / SUBMISSION_DIR / "manifest.json"
-STRIPPED_IMPORT_PREFIXES = ("agents.", "policies.", "core.", "rl.")
+STRIPPED_IMPORT_PREFIXES = ("agents.", "policies.", "core.", "rl.", "stack.", "candidates.")
 
 
 class _RenameCalendarSymbols(ast.NodeTransformer):

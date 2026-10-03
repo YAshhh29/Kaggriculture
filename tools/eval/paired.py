@@ -1,14 +1,14 @@
 """Paired test of an L2 candidate against Agent L (or any arena agents).
 
 The candidate is built in each game's own process from a factory,
-"module:function" returning an agent (e.g. rl.l2_endgame:build). Every seed is
+"module:function" returning an agent (e.g. stack.l2_endgame:build). Every seed is
 played in both seats. L against itself is all draws, so against L any change
 in the result is the candidate's own effect.
 
-    python -m tools.eval.paired rl.l2_endgame:build --label endgame-v1
-    python -m tools.eval.paired rl.l2_endgame:build --label endgame-v1 \
+    python -m tools.eval.paired stack.l2_endgame:build --label endgame-v1
+    python -m tools.eval.paired stack.l2_endgame:build --label endgame-v1 \
         --opponents nb_haideptry_shepherds nb_haideptry_2965 live_H2 --seeds 11 29 53 97
-    python -m tools.eval.paired rl.l2_endgame:build --label endgame-v1 --store
+    python -m tools.eval.paired stack.l2_endgame:build --label endgame-v1 --store
 
 --store also writes each game to arena/games (id "<label>__vs__<opp>__s<seed>")
 so it can be rendered: python -m tools.arena.arena render <game_id>

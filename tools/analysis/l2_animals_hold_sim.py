@@ -31,7 +31,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 GAMES = ROOT / "rl" / "data" / "l2" / "animals" / "games"
 
-from rl.market_front import _mf_price as price_of  # noqa: E402  (engine-exact)
+from stack.market_front import _mf_price as price_of  # noqa: E402  (engine-exact)
 
 SHOPS = {
     "BAKERY": ["EGG", "WHEAT"], "PIZZA_SHOP": ["MILK", "TOMATO", "WHEAT"],

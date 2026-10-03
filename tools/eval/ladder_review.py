@@ -33,20 +33,20 @@ TAPES = ROOT / "kaggle_cache" / "top200_tapes"
 # name -> spec. The packaged submissions are loaded as the ladder loads
 # them; J and K are the live source modules under development.
 AGENTS = [
-    ("a", "rl.submitted:a"),
-    ("b", "rl.submitted:b"),
-    ("c", "rl.submitted:c"),
-    ("c2", "rl.submitted:c2"),
-    ("d", "rl.submitted:d"),
-    ("e", "rl.submitted:e"),
-    ("f", "rl.submitted:f"),
-    ("g", "rl.submitted:g"),
-    ("h", "rl.submitted:h"),
-    ("hd", "rl.submitted:hd"),
-    ("h2", "rl.submitted:h2"),
-    ("i", "rl.submitted:i"),
-    ("J", "rl.candidate_j:agent"),
-    ("K", "rl.candidate_k:agent"),
+    ("a", "candidates.submitted:a"),
+    ("b", "candidates.submitted:b"),
+    ("c", "candidates.submitted:c"),
+    ("c2", "candidates.submitted:c2"),
+    ("d", "candidates.submitted:d"),
+    ("e", "candidates.submitted:e"),
+    ("f", "candidates.submitted:f"),
+    ("g", "candidates.submitted:g"),
+    ("h", "candidates.submitted:h"),
+    ("hd", "candidates.submitted:hd"),
+    ("h2", "candidates.submitted:h2"),
+    ("i", "candidates.submitted:i"),
+    ("J", "candidates.candidate_j:agent"),
+    ("K", "candidates.candidate_k:agent"),
 ]
 
 

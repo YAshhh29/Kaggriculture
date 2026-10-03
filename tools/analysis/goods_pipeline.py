@@ -21,7 +21,7 @@ Note the shed holds livestock as well as goods, so a herd of seventeen is
 seventeen fewer slots for produce, and a full shed makes BUY_PRODUCT and
 BUY_ANIMAL fail outright rather than queue.
 
-    python -m tools.analysis.goods_pipeline rl.candidate_j:agent --tapes 3
+    python -m tools.analysis.goods_pipeline candidates.candidate_j:agent --tapes 3
 """
 
 from __future__ import annotations

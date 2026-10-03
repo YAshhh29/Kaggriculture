@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="320" viewBox="0 0 1280 320" role="img" aria-labelledby="t d">
+  <title id="t">Kaggriculture</title>
+  <desc id="d">Project banner: Kaggriculture, silver medal, 448th of 10,246 teams.</desc>
+
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#16324f"/><stop offset="1" stop-color="#2f6f73"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="1280" height="320" rx="12" fill="url(#sky)"/>
+  <circle cx="1130" cy="78" r="42" fill="#f4c95d" opacity="0.95"/>
+  <circle cx="1130" cy="78" r="62" fill="#f4c95d" opacity="0.15"/>
+  <g transform="translate(980,134)">
+    <rect x="0" y="34" width="96" height="62" fill="#b5442f"/>
+    <polygon points="-8,36 48,0 104,36" fill="#8f3324"/>
+    <rect x="36" y="58" width="24" height="38" fill="#f1e3c4"/>
+    <line x1="36" y1="58" x2="60" y2="96" stroke="#b5442f" stroke-width="3"/>
+    <line x1="60" y1="58" x2="36" y2="96" stroke="#b5442f" stroke-width="3"/>
+  </g>
+  <rect x="0" y="230" width="1280" height="90" fill="#3f5f24"/>
+  <rect x="0" y="236" width="1280" height="8" fill="#6b8f3a" opacity="0.55"/>
+  <rect x="0" y="249" width="1280" height="8" fill="#6b8f3a" opacity="0.61"/>
+  <rect x="0" y="262" width="1280" height="8" fill="#6b8f3a" opacity="0.67"/>
+  <rect x="0" y="275" width="1280" height="8" fill="#6b8f3a" opacity="0.73"/>
+  <rect x="0" y="288" width="1280" height="8" fill="#6b8f3a" opacity="0.79"/>
+  <rect x="0" y="301" width="1280" height="8" fill="#6b8f3a" opacity="0.85"/>
+  <rect x="0" y="314" width="1280" height="8" fill="#6b8f3a" opacity="0.91"/>
+  <g transform="translate(40,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
+  <g transform="translate(88,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
+  <g transform="translate(136,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
+  <g transform="translate(184,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
+  <g transform="translate(232,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
+  <g transform="translate(280,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
+  <g transform="translate(328,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
+  <g transform="translate(376,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
+  <g transform="translate(424,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
+  <g transform="translate(472,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
+  <g transform="translate(520,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
+  <g transform="translate(568,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
+  <g transform="translate(616,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
+  <g transform="translate(664,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
+  <g transform="translate(712,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
+  <g transform="translate(760,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
+  <g transform="translate(808,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
+  <g transform="translate(856,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
+  <g transform="translate(904,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
+  <g transform="translate(1144,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
+  <g transform="translate(1192,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
+  <g transform="translate(1240,230)" stroke="#d9b44a" stroke-width="3" stroke-linecap="round"><line x1="0" y1="0" x2="0" y2="-34"/><line x1="0" y1="-20" x2="-8" y2="-28"/><line x1="0" y1="-20" x2="8" y2="-28"/><line x1="0" y1="-10" x2="-8" y2="-18"/><line x1="0" y1="-10" x2="8" y2="-18"/></g>
+
+  <text x="56" y="96" fill="#ffffff" font-size="58" font-weight="700" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">Kaggriculture</text>
+  <text x="58" y="136" fill="#d7e6e4" font-size="22" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">An AI that runs a farm, a crew and a market stall for 30 days — and races a rival to the bank</text>
+  <g transform="translate(58,154)">
+    <rect x="0" y="0" width="356" height="34" rx="17" fill="#ffffff" opacity="0.14"/>
+    <circle cx="20" cy="17" r="9" fill="#c9ced6"/><circle cx="20" cy="17" r="5" fill="#9aa3ad"/>
+    <text x="38" y="23" fill="#ffffff" font-size="16" font-weight="600" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">Silver medal · 448th of 10,246 teams</text>
+  </g>
+</svg>

@@ -116,6 +116,14 @@ def build_source() -> str:
         )
     ]
     base.body.extend(_source_body(ROUTING_PATH))
+    # core.routing renamed its helper `_distance` to `distance` after this
+    # package was frozen; the inlined agents still call the old name.
+    base.body.append(
+        ast.Assign(
+            targets=[ast.Name(id="_distance", ctx=ast.Store())],
+            value=ast.Name(id="distance", ctx=ast.Load()),
+        )
+    )
     base.body.extend(_source_body(LIVE_FEATURES_PATH))
     base.body.extend(_source_body(FERTILIZER_POLICY_PATH))
     base.body.extend(

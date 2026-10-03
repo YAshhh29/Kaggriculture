@@ -25,7 +25,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 from kaggle_environments import make  # noqa: E402
-from rl import candidate_j as j  # noqa: E402
+from candidates import candidate_j as j  # noqa: E402
 
 
 def main() -> None:

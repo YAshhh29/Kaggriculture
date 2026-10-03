@@ -1,8 +1,8 @@
 """Out-farm autopsy, part 6: what the day-18 tomato project (V219) is worth, game by game.
 
 Needs two counterfactual runs of every live game (l2_outfarm_counter):
-    --factory rl.l2_outfarm:v219_on  --label v219on   (fires whenever physically possible)
-    --factory rl.l2_outfarm:v219_off --label v219off  (never fires)
+    --factory stack.l2_outfarm:v219_on  --label v219on   (fires whenever physically possible)
+    --factory stack.l2_outfarm:v219_off --label v219off  (never fires)
 Both are Agent L apart from the decision, so on - off is the value of firing in
 that game, in our own score and in the margin. Features are read at step 432
 (when V219 decides) from the ON run's books: tomato shortfall, tomato-eating

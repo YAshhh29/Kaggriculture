@@ -11,7 +11,7 @@ Checks, in order of what would hurt most:
 1. the built file imports with the repo *off* sys.path, the way Kaggle
    runs it -- a missed local import shows up here and nowhere else;
 2. it exposes `agent`;
-3. it makes byte-identical decisions to `rl/candidate_g.py` across a whole
+3. it makes byte-identical decisions to `candidates/candidate_g.py` across a whole
    game, so the package is the agent we measured and not a variant;
 4. it plays a full game to DONE in seat 0;
 5. and in seat 1, since half our games are played there;
@@ -99,7 +99,7 @@ def main() -> int:
     sys.path.insert(0, str(ROOT))
     from kaggle_environments import make
 
-    import rl.candidate_g as source
+    import candidates.candidate_g as source
     from tools.eval.measure_panel import resolve
 
     from tools.eval.wide_panel import best_tape_per_opponent

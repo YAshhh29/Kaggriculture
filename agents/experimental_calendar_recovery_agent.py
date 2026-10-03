@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from agents.experimental_distilled_calendar_agent import decide as calendar
-from rl.candidate_a import build_candidate_a_agent
+from candidates.candidate_a import build_candidate_a_agent
 
 
 _DECIDE = build_candidate_a_agent(baseline=calendar)

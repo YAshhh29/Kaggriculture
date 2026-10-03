@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from rl.candidate_b import build_candidate_b_agent
+from candidates.candidate_b import build_candidate_b_agent
 
 
 _DECIDE = build_candidate_b_agent(enable_land_priority=False)

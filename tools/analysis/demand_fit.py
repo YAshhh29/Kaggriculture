@@ -5,7 +5,7 @@ a different appetite: a game with two YARN_STOREs eats four wool every
 four steps and a game with none eats one a day from the town centre. Wool
 ends a season worth 239 coins or 1 depending on that draw.
 
-`rl/demand.py` records the measurement that makes this the most important
+`candidates/demand.py` records the measurement that makes this the most important
 number in the project: the correlation between a town's wool demand and
 the sheep a team buys runs +0.672 for teams rated 2850 and above, +0.323
 between 2400 and 2849, and +0.000 below 2400. Agents that ignore the draw
@@ -16,7 +16,7 @@ So this plays a spread of tapes, reads each town's actual shop set, and
 asks whether the herd followed it -- for us and for the top-200 team in
 the other seat, on the same board.
 
-    python -m tools.analysis.demand_fit rl.candidate_j:agent --tapes 12
+    python -m tools.analysis.demand_fit candidates.candidate_j:agent --tapes 12
 """
 
 from __future__ import annotations
@@ -31,7 +31,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from rl.demand import demand_rate  # noqa: E402
+from candidates.demand import demand_rate  # noqa: E402
 from rl.replay_agent import build_replay_agent  # noqa: E402
 from tools.eval.measure_panel import resolve  # noqa: E402
 

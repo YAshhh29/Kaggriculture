@@ -19,7 +19,7 @@ not carried away in time. Three separate ways to work for nothing:
     overflowed  units lost to `max_held` -- the animal was full
     escaped     animals lost outright at two unfed days
 
-    python -m tools.analysis.herd_service rl.candidate_j:agent --tapes 4
+    python -m tools.analysis.herd_service candidates.candidate_j:agent --tapes 4
 """
 
 from __future__ import annotations

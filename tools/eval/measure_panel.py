@@ -30,7 +30,7 @@ Three things this deliberately does that the older harnesses did not:
   market-side improvement is playing for.
 
     python -m tools.eval.measure_panel --panel elite \
-        rl.candidate_d:agent rl.candidate_e:agent rl.candidate_f:agent
+        candidates.candidate_d:agent candidates.candidate_e:agent candidates.candidate_f:agent
 """
 
 from __future__ import annotations
@@ -133,8 +133,8 @@ def resolve(spec: str):
     * `handover:<day>:<open>|<late>`     -- one spec until that day, the
       other after it; the halves are specs, so a pipe separates them
     """
-    from rl.candidate_a import build_candidate_a_agent
-    from rl.candidate_b import build_candidate_b_agent
+    from candidates.candidate_a import build_candidate_a_agent
+    from candidates.candidate_b import build_candidate_b_agent
     from rl.replay_agent import load_clone_actions, load_replay_agent
 
     def guarded(inner):
@@ -147,7 +147,7 @@ def resolve(spec: str):
     if spec.startswith("raw:"):
         return load_replay_agent(Path(spec.split(":", 1)[1]))
     if spec.startswith("portfolio:"):
-        import rl.route_portfolio as portfolio
+        import candidates.route_portfolio as portfolio
 
         parts = spec.split(":")
         team, chooser_name = parts[1], parts[2]
@@ -161,7 +161,7 @@ def resolve(spec: str):
         inner = portfolio.build_portfolio_agent(routes, chooser=chooser)
         return inner if bare else guarded(inner)
     if spec.startswith("handover:"):
-        from rl.handover import build_handover_agent
+        from candidates.handover import build_handover_agent
 
         # The two halves are specs and contain colons themselves, so the
         # switch day comes first and a pipe separates the pair.
@@ -172,7 +172,7 @@ def resolve(spec: str):
             resolve(opening), resolve(endgame), switch_day=int(day)
         )
     if spec.startswith("trickle:"):
-        from rl.trickle import build_trickle_agent
+        from candidates.trickle import build_trickle_agent
 
         _, name, attribute, per_turn = spec.split(":", 3)
         module = importlib.import_module(name)

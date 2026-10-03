@@ -4,7 +4,7 @@ Instrumentation, not intuition. Wraps the engine's own `_apply_unit_action`
 so every unit action is counted at source, then prints a per-day table of
 portfolio, labour and money for both seats.
 
-    python -m tools.analysis.trace_day rl.candidate_j:agent rl.candidate_g:agent --seed 11
+    python -m tools.analysis.trace_day candidates.candidate_j:agent candidates.candidate_g:agent --seed 11
 """
 
 from __future__ import annotations

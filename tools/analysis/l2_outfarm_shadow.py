@@ -99,7 +99,7 @@ def semantic_rows(shadow_log, played) -> list:
 
 def build(agent: str):
     if agent.startswith("L"):
-        from rl.candidate_l import l_stack
+        from stack.candidate_l import l_stack
         return l_stack()
     from tools.arena.arena import load
     return load(agent)

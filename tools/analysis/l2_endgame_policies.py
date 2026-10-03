@@ -6,7 +6,7 @@ changes WHEN and HOW MANY units our SELL orders move. Games are replayed from
 a day-24 snapshot, so one policy over all 148 A/L games takes ~20 s.
 
 On L's games the rewritten orders are passed through L's own queue-order
-layer (rl.market_front.mf_reorder) again, as the L+layer agent would.
+layer (stack.market_front.mf_reorder) again, as the L+layer agent would.
 
     python -m tools.analysis.l2_endgame_policies run shift_d25 final717 ...
     python -m tools.analysis.l2_endgame_policies list
@@ -260,7 +260,7 @@ POLICIES = {
 
 def score(job):
     record, names = job
-    from rl.market_front import mf_reorder
+    from stack.market_front import mf_reorder
     g = Game(record)
     g.run(stop=SNAP, snap_at=(SNAP,))
     state, _ = g.run(start=SNAP)
@@ -415,7 +415,7 @@ GAME_POLICIES = {
 
 def score_game_policies(job):
     record, names = job
-    from rl.market_front import mf_reorder
+    from stack.market_front import mf_reorder
     g = Game(record)
     base_sales = []
     g.run(stop=SNAP, snap_at=(SNAP,))
@@ -653,7 +653,7 @@ _PARENT_TABLES = {}
 
 def _route_tables():
     if not _PARENT_TABLES:
-        from rl.candidate_l import parent_namespace
+        from stack.candidate_l import parent_namespace
         env, _ = parent_namespace()
         _PARENT_TABLES.update(routes=env["_ROUTES"], r108=env["_R108_SHOP_ROUTES"],
                               r110=env["_R110_OLD_SHOPS"], v92=env["_V92_TABLE"])
@@ -767,11 +767,11 @@ for _th in (0.4, 0.5, 0.6, 0.7):
     GAME_POLICIES[f"dump_mirror{int(_th * 100)}_item"] = mirror_gate_factory(_th, per_item=True, min_events=3)
 
 
-# The shipped layer itself (rl/l2_endgame.py), driven by the recorded parent
+# The shipped layer itself (stack/l2_endgame.py), driven by the recorded parent
 # actions, so its own opponent-sales inference and gate are what gets scored.
 def module_factory(**kw):
     def build(game, base_sales):
-        from rl.l2_endgame import trickle_dump
+        from stack.l2_endgame import trickle_dump
         holder = {}
         inner = trickle_dump(lambda obs, cfg=None: holder["a"], **kw)
 

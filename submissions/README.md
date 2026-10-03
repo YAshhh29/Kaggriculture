@@ -1,6 +1,40 @@
-# Submission Packages
+# Submissions
 
-## Active packages
+Every folder holds the exact single-file `main.py` that was uploaded to
+Kaggle (and, for the early packages, a `manifest.json` with its hashes and
+the evidence it was promoted on). These files are never edited after upload:
+the source they were built from is in `stack/`, `candidates/` and `agents/`,
+and the builders are in `tools/packaging/`.
+
+## Final submissions (30 September 2026)
+
+Kaggle ranks a team on its two latest submissions.
+
+| Folder | Agent | Submission | What it is |
+|---|---|---|---|
+| [`candidate-n11/`](candidate-n11/) | **N11** | 56720031 | N10 plus corrected bookkeeping of our own sales (`stack/own_book.py`) |
+| [`candidate-n10/`](candidate-n10/) | **N10** | 56709381 | N9 plus the shed guard (`stack/shed_guard.py`) |
+
+Result: **448th of 10,246 teams, silver medal.**
+Rebuild either with `python -m tools.packaging.build_final N11` (or `N10`).
+
+## Index
+
+| Folders | Period | Lineage |
+|---|---|---|
+| `candidate-n` … `candidate-n12`, `candidate-n3w`, `candidate-n9h` | 28–30 Sep | The layered stack on the public 2965 Master Hybrid Engine (`stack/`). N3w and N9h are rejected variants; N12 was built but not submitted |
+| `candidate-l` … `candidate-l5`, `candidate-l4e`, `candidate-m`, `candidate-m2`, `agent-a` | 26–28 Sep | The layered stack on a public clone (Agent A); M adds an in-game seller |
+| `candidate-g` … `candidate-k`, `candidate-hd` | 9–23 Sep | Candidates G to K (`candidates/`) |
+| `candidate-a` … `candidate-f` | 2–8 Sep | Candidates A to F (`candidates/`) |
+| `deadline`, `learned-service`, `demand-animal`, `future-labor`, `tiered-fertilizer`, `gated-late-strawberry`, `distilled-calendar` | August | The first agents (`agents/`, `policies/`) |
+
+Packages from L onwards embed verbatim copies of public Apache-2.0 programs
+(the parent and the opponent library), with their licence notices retained
+inside each copy.
+
+## Notes on the August and early-September packages
+
+### Packages up to Candidate D
 
 The tracked standalone Kaggle packages are:
 
@@ -19,7 +53,7 @@ The tracked standalone Kaggle packages are:
 - `distilled-calendar/` contains public-calendar behavior clone submission
   `55910432`. Its exact package is `72-8` on the 80-game broad gate and is
   frozen after successful validation.
-- `candidate-a(calendar recovery first attempt)/` (Candidate A) contains
+- `candidate-a/` (Candidate A) contains
   `distilled-calendar` plus guarded weed/setup recovery, live terminal
   liquidation, stranded harvest commitments, and (as of the locked-quadrant
   fix below) a guard against acting on land the calendar assumes is
@@ -45,13 +79,13 @@ The tracked standalone Kaggle packages are:
   and Candidate B's market-timing residuals, currently the sole
   effectively-selected route (Candidate B is kept as a second, documented
   route; the selector cannot yet legally choose between them -- see
-  `rl/GOAL.md` section 9c). Beat Candidate B 20-0 and Candidate A 8-0 on
+  `docs/research/GOAL.md` section 9c). Beat Candidate B 20-0 and Candidate A 8-0 on
   fresh seeds neither was recorded on, both seats -- the first of five
   route candidates tried to win instead of losing. This is a strong
-  initial signal, not the full 1000-game/panel gate `rl/GOAL.md` section
+  initial signal, not the full 1000-game/panel gate `docs/research/GOAL.md` section
   9 specifies for a real promotion decision. Not yet uploaded to Kaggle.
 
-### 2026-09-03: locked-quadrant fix (both packages above)
+#### 2026-09-03: locked-quadrant fix (both packages above)
 
 Two live episodes (105061000, 105062726) showed the same calendar turn
 (record 200, same step in both games, both seats) spend past the money a
@@ -72,13 +106,13 @@ each replay.
 
 Two fixes, at two different layers:
 
-- `rl/candidate_a.py` now guards every tile-task operation (not just the
+- `candidates/candidate_a.py` now guards every tile-task operation (not just the
   existing weed guard's three) against a `"LOCKED"` target tile, substituting
   `PASS`. This benefits both packages, since Candidate B wraps Candidate A.
   Verified against the real captured observation from both episodes: the
   guard swaps exactly the calls that were previously silent no-ops, and
   leaves every other worker's action byte-for-byte unchanged.
-- `rl/candidate_b.py` adds `_land_priority_ordering`, a second market
+- `candidates/candidate_b.py` adds `_land_priority_ordering`, a second market
   residual that moves a starved `BUY_LAND` order ahead of a same-turn
   `HIRE`/`BUY_PRODUCT`/`BUY_SEED`/`BUY_ANIMAL`, but never across a `SELL`
   (a SELL's position stays entirely the existing affordability pass's
@@ -98,7 +132,7 @@ fix's fresh live-opponent gate (120 games, 3 opponent families, seeds
 400-409) came back inconclusive rather than passed: the starvation
 condition it targets never occurred against these opponents/seeds, so it
 neither confirms nor refutes live-opponent risk the way that gate did for
-the existing sell-reordering pass. See `rl/GOAL.md` section 8c for the
+the existing sell-reordering pass. See `docs/research/GOAL.md` section 8c for the
 structural argument for why it should still be safe, and the reasoning
 for trusting the guard fix and the reorder fix at different confidence
 levels in the meantime.

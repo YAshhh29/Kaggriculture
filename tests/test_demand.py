@@ -1,6 +1,6 @@
 import unittest
 
-from rl.demand import (
+from candidates.demand import (
     CENTRE_INTERVAL,
     EPISODE_STEPS,
     SHOP_INTERVAL,

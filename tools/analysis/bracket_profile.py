@@ -9,7 +9,7 @@ unrelated numbers.
 
 Findings belong in docs/, not here; this only produces the evidence.
 
-    python -m tools.analysis.bracket_profile --tapes 20 --spec rl.candidate_k:agent
+    python -m tools.analysis.bracket_profile --tapes 20 --spec candidates.candidate_k:agent
 """
 
 from __future__ import annotations
@@ -147,7 +147,7 @@ def run_tape(path: Path, spec: str) -> tuple[dict, dict, dict, dict, str] | None
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--spec", default="rl.candidate_k:agent")
+    ap.add_argument("--spec", default="candidates.candidate_k:agent")
     ap.add_argument("--tapes", type=int, default=20)
     ap.add_argument("--low", type=float, default=2600.0)
     ap.add_argument("--high", type=float, default=2900.0)

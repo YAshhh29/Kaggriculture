@@ -9,8 +9,8 @@ One tape per opponent, highest-rated first, so the panel is 67 different
 strategies rather than 67 samples of a handful. Both seats, so a seat
 advantage cannot flatter the result.
 
-    python -m tools.eval.wide_panel rl.candidate_g:agent --opponents 40
-    python -m tools.eval.wide_panel rl.candidate_g:agent --set WHEAT_TILES=20
+    python -m tools.eval.wide_panel candidates.candidate_g:agent --opponents 40
+    python -m tools.eval.wide_panel candidates.candidate_g:agent --set WHEAT_TILES=20
 
 Reports the mean, the median, the floor, and the win rate -- the win rate
 being the one number that matters on a ladder and the one a three-tape

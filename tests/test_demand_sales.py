@@ -1,6 +1,6 @@
 import unittest
 
-from rl.demand_sales import paced_orders, sell_allowance
+from candidates.demand_sales import paced_orders, sell_allowance
 
 
 def obs(step=100, money=5000, shed=None, shops=("BAKERY", "PIZZA_SHOP")):

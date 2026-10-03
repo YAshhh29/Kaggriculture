@@ -115,7 +115,7 @@ def main() -> None:
         raise SystemExit("the last callable is a private helper; Kaggle would "
                          "run that and the farm would stand still")
 
-    import rl.candidate_k as K
+    import candidates.candidate_k as K
     checks = [play(out, "random", 5, 0), play(out, "random", 6, 1),
               play(out, K.agent, 11, 0), play(out, K.agent, 29, 1)]
     ok = True

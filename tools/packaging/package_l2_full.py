@@ -4,19 +4,19 @@ Each layer's source is embedded (zlib + base64) and executed in its OWN
 namespace, so no layer name can overwrite one of the parent's ~2,000 globals
 (one candidate layer defined its own `projected_shed`, a name the parent's
 layers call). Layers receive the parent's namespace explicitly, as they do in
-local testing (rl.candidate_l.l_stack passes it as `env`).
+local testing (stack.candidate_l.l_stack passes it as `env`).
 
 The opponent shadow runs fresh copies of the UNMODIFIED Agent A to predict an
 opponent that is a copy of it, so the verbatim A source is embedded too and
 exec'd by a factory (locally it reads submissions/agent-a/main.py).
 
-Composition (innermost first), identical to rl.l2_combo.ship():
+Composition (innermost first), identical to stack.l2_combo.ship():
     A (gate 120) -> animals -> wheat_rt -> outfarm.lot
       -> market_front -> labour -> shadow (reorder + early) -> safety
 
 Verification: stdlib only (the main file and every embedded layer source);
 the callable Kaggle picks is the safety wrapper; the packaged file, loaded the
-way Kaggle loads it, scores exactly what rl.l2_combo:ship scores on the same
+way Kaggle loads it, scores exactly what stack.l2_combo:ship scores on the same
 seeds in both seats, with no errors and a timed slowest turn.
 
     python -m tools.packaging.package_l2_full --out submissions/candidate-l2/main.py
@@ -38,19 +38,22 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from rl.candidate_l import _SHOPS3, PARENT_FILE  # noqa: E402
+from stack.candidate_l import _SHOPS3, PARENT_FILE  # noqa: E402
 from tools.packaging.package_public import stdlib_only  # noqa: E402
 
 LAYERS = [  # name, file, names injected from earlier layers
-    ("market_front", "rl/market_front.py", []),
-    ("animals", "rl/l2_animals.py", []),
-    ("wheat_rt", "rl/l2_wheat_rt.py", [("_mf_price", "market_front")]),
-    ("outfarm", "rl/l2_outfarm.py", []),
-    ("labour", "rl/l2_labour.py", []),
-    ("shadow", "rl/l2_shadow.py", []),
-    ("safety", "rl/safety.py", []),
+    ("market_front", "stack/market_front.py", []),
+    ("animals", "stack/l2_animals.py", []),
+    ("wheat_rt", "stack/l2_wheat_rt.py", [("_mf_price", "market_front")]),
+    ("outfarm", "stack/l2_outfarm.py", []),
+    ("labour", "stack/l2_labour.py", []),
+    ("shadow", "stack/l2_shadow.py", []),
+    ("safety", "stack/safety.py", []),
 ]
-TOP_RL_IMPORT = re.compile(r"^(from rl[.\w]* import .*|import rl[.\w]*.*)$", re.M)
+# Our packages (rl, stack, candidates) are local-only: a layer's top-level
+# imports of them are removed, so the packaged layer runs on the stdlib alone.
+TOP_RL_IMPORT = re.compile(r"^(from (?:rl|stack|candidates)\b[.\w]* import .*|"
+                           r"import (?:rl|stack|candidates)\b[.\w]*.*)$", re.M)
 
 ENTRY = '''
 # ---- Agent L2: our layers, each in its own namespace ----
@@ -105,8 +108,9 @@ def layer_source(path: Path) -> tuple[str, list[str]]:
 
 
 def non_stdlib(text: str) -> list[str]:
-    """Imports that are not standard library, ignoring rl.* imports inside functions
-    (only reached by local test factories, never by the shipped composition)."""
+    """Imports that are not standard library, ignoring imports of our own packages
+    (rl, stack, candidates) inside functions (only reached by local test
+    factories, never by the shipped composition)."""
     bad = []
     tree = ast.parse(text)
     for node in ast.walk(tree):
@@ -117,7 +121,7 @@ def non_stdlib(text: str) -> list[str]:
             mods = [node.module]
         for m in mods:
             top = m.split(".")[0]
-            if top == "__future__" or top in sys.stdlib_module_names or top == "rl":
+            if top == "__future__" or top in sys.stdlib_module_names or top in ("rl", "stack", "candidates"):
                 continue
             bad.append(m)
     return bad
@@ -206,7 +210,7 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--out", default="submissions/candidate-l2/main.py")
-    ap.add_argument("--factory", default="rl.l2_combo:ship")
+    ap.add_argument("--factory", default="stack.l2_combo:ship")
     ap.add_argument("--deficit", type=int, default=120)
     ap.add_argument("--seeds", type=int, nargs="+", default=[11, 105, 134])
     ap.add_argument("--opponent", default="A")

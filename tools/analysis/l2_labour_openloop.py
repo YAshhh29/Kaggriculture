@@ -1,7 +1,7 @@
 """First-order value of the in-place recycler, exactly, on our real games.
 
 Replays each live game (both tapes on the seed) with our recorded commands
-passed through rl.l2_labour.lb_recycle before the engine applies them. The
+passed through stack.l2_labour.lb_recycle before the engine applies them. The
 parent cannot react (it is a tape), so this isolates what the substitutions
 themselves are worth: our money against the exact live money, plus the goods
 the substitutions left unsold at the end (a tape cannot sell what it did not
@@ -22,7 +22,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-from rl.l2_labour import lb_recycle  # noqa: E402
+from stack.l2_labour import lb_recycle  # noqa: E402
 from tools.analysis.l2_labour_replay import records, replay_record  # noqa: E402
 
 OUT = ROOT / "rl" / "data" / "l2" / "labour"

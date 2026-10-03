@@ -29,7 +29,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("name")
     parser.add_argument("values", nargs="+")
-    parser.add_argument("--spec", default="rl.candidate_g:agent")
+    parser.add_argument("--spec", default="candidates.candidate_g:agent")
     parser.add_argument("--opponents", type=int, default=30)
     parser.add_argument("--seeds", type=int, default=1)
     parser.add_argument("--min-rating", type=float, default=2800.0)

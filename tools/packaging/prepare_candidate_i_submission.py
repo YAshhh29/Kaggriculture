@@ -32,7 +32,7 @@ Three things happen here, in order:
    recorded demand profile is closest, with measured strength as the tiebreak,
    so a weak tape never takes a cell from a strong one on a thin similarity.
 
-Then the payload is written into ``rl/candidate_i.py`` and the packaged file is
+Then the payload is written into ``candidates/candidate_i.py`` and the packaged file is
 emitted and checked: it must import with this repository off ``sys.path``, must
 expose ``agent``, and must issue byte-identical actions to the source module
 over a full 720-step game.
@@ -57,7 +57,7 @@ from multiprocessing import Pool
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-SOURCE = ROOT / "rl" / "candidate_i.py"
+SOURCE = ROOT / "candidates" / "candidate_i.py"
 TAPES = ROOT / "kaggle_cache" / "top200_tapes"
 OUT = ROOT / "submissions" / "candidate-i"
 SHOP_CACHE = Path(__file__).resolve().parent / "candidate_i_shops.json"
@@ -86,7 +86,7 @@ PRODUCTS = ("WHEAT", "CARROT", "TOMATO", "STRAWBERRY", "MELON",
             "EGG", "MILK", "WOOL", "FERTILIZER")
 # How much a perfect shop match is allowed to outweigh measured strength when
 # the routing table is filled in. Chosen on the development panel: see
-# `--report` and the notes in rl/candidate_i.py.
+# `--report` and the notes in candidates/candidate_i.py.
 SHOP_WEIGHT = 1.0
 
 NOTICE = """Candidate I
@@ -281,7 +281,7 @@ def write_payload_into_source(blob: str) -> None:
     text = SOURCE.read_text(encoding="utf-8")
     pattern = re.compile(r'^_PAYLOAD_B85 = ".*"$', re.MULTILINE)
     if not pattern.search(text):
-        raise SystemExit("could not find the _PAYLOAD_B85 assignment in rl/candidate_i.py")
+        raise SystemExit("could not find the _PAYLOAD_B85 assignment in candidates/candidate_i.py")
     SOURCE.write_text(pattern.sub(f'_PAYLOAD_B85 = "{blob}"', text, count=1), encoding="utf-8")
 
 
@@ -303,8 +303,9 @@ def package() -> Path:
         stripped = line.strip()
         if stripped.startswith(("import ", "from ")) and (
                 "rl." in stripped or stripped.startswith("from rl")
+                or "stack." in stripped or "candidates." in stripped
                 or "tools." in stripped):
-            raise SystemExit(f"rl/candidate_i.py is not standalone: {stripped!r}")
+            raise SystemExit(f"candidates/candidate_i.py is not standalone: {stripped!r}")
     main = OUT / "main.py"
     main.write_text(HEADER + "\n" + source, encoding="utf-8")
     (OUT / "NOTICE").write_text(NOTICE, encoding="utf-8")
@@ -338,7 +339,7 @@ def verify(path: Path) -> dict:
     from kaggle_environments import make
 
     sys.path.insert(0, str(ROOT))
-    import rl.candidate_i as source  # noqa: E402
+    import candidates.candidate_i as source  # noqa: E402
 
     seen = []
     source_impl = source.build_agent(source._decode_payload(source._PAYLOAD_B85))

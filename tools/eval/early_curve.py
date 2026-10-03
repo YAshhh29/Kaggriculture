@@ -6,7 +6,7 @@ days 9 to 15 is the leading indicator -- every strong agent triples its purse
 in that window, and a candidate that is still poor on day 15 has already lost
 whatever it does afterwards.
 
-    python -m tools.eval.early_curve rl.candidate_j:agent --seeds 4
+    python -m tools.eval.early_curve candidates.candidate_j:agent --seeds 4
 """
 
 from __future__ import annotations
@@ -53,7 +53,7 @@ def play(job):
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("spec")
-    parser.add_argument("--against", default="rl.public_agents:aurax7")
+    parser.add_argument("--against", default="stack.public_agents:aurax7")
     parser.add_argument("--seeds", type=int, default=4)
     parser.add_argument("--workers", type=int, default=4)
     args = parser.parse_args()

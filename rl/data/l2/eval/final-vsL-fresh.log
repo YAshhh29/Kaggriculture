@@ -1,4 +1,0 @@
-60 games: final-vsL-fresh vs L on 30 seeds x 2 seats, 3 workers
-saved rl\data\l2\paired\final-vsL-fresh.json
-  final-vsL-fresh vs L                         60/60  won (0 tied)  mean     +840  median     +906  worst      +15  errors 0  crashes 0
-  telemetry (mean per game): CARE 1.5, COLLECT_FERTILIZER 0.5, WATER 13.3, an_collect_swaps 0.8, an_errors 0.0, an_feed_skips 1.5, an_feed_skips_d28 0.7, an_feed_skips_young 0.8, an_max_ms 1.3, early_budget_stops 0.0, early_multi_skips 0.0, early_pred_gain 0.0, early_rejected_react 0.0, early_sales 0.0, early_units 0.0, errors 0.0

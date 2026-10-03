@@ -18,7 +18,7 @@ the agent's own effects differ.
 The engine is driven directly (tools.analysis.l2_land_fast), the agent gets
 a deep-copied observation each turn, and one process plays games in turn.
 
-    python -m tools.analysis.l2_land_pin run --factory rl.l2_null:build --label L --v219
+    python -m tools.analysis.l2_land_pin run --factory stack.l2_null:build --label L --v219
     python -m tools.analysis.l2_land_pin run --factory rl.l2_land:build --label annex --v219
     python -m tools.analysis.l2_land_pin compare L annex
 """

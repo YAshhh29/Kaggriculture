@@ -1,63 +1,44 @@
 # Repository Map
 
-The repository is organized around the decisions a competition agent makes,
-not around the chronology in which experiments were created.
-
-## Intended Layout
-
 ```text
-agents/                 runnable deterministic and learned agents
-core/                   game mechanics, routing, scheduling, economics
-policies/               small strategy interfaces and learned selectors
-research/
-  analysis/             replay and benchmark analysis
-  collection/           counterfactual and trajectory collection
-  evaluation/           fixed-arm and learned-policy evaluation
-  training/             model fitting and learning-curve generation
-tools/
-  packaging/            standalone Kaggle package builders
-  validation/           loader and source/package equivalence checks
-tests/                  unit and integration tests
-  fixtures/             compact versioned replay/state fixtures only
-models/                 promoted, versioned model files
-submissions/            exact validated standalone submissions and manifests
-docs/
-  experiments/          durable conclusions, not raw generated output
-artifacts/               ignored local benchmark/replay/dataset output
+stack/            the final agent: thirteen layers around a public route follower (agents L to N12)
+candidates/       agents A to K and the components they were built from
+rl/               the reinforcement-learning contracts: features, action space, rewards, rollout, replay
+agents/           the August agents: a deterministic baseline grown into about 90 experimental policies
+policies/         small strategy interfaces and learned selectors used by agents/
+core/             shared game mechanics: routing and economics
+research/         analysis, counterfactual collection, evaluation and training scripts from August
+tools/            everything that measures, packages and validates
+  analysis/         replay analysis: pinned replays of our ladder games, corpus replays, studies
+  arena/            local tournaments (round robin, Bradley-Terry scorecards), live-game health checks
+  data/             Kaggle fetchers: leaderboard, our games, replays, public notebooks and their programs
+  eval/             paired tests, robustness checks, turn budgets
+  packaging/        single-file Kaggle package builders (build_final.py rebuilds N10, N11, N12)
+  validation/       loader and source/package equivalence checks
+  viewer/           replay rendering
+tests/            684 unit and integration tests
+models/           small versioned model files used by agents/ and policies/
+submissions/      the exact files uploaded to Kaggle, one folder per agent
+docs/             rules, research, journal, figures (see docs/README.md)
+main.py           the first baseline agent (a wheat farmer); later agents still import it
+run_match.py      play one local game, optionally saving a replay
+benchmark.py      play many seeds in both seats and write a report
 ```
 
-## Active Modules
+## Not in the repository
 
-| Decision | Owning module today | Planned home |
-| --- | --- | --- |
-| Crop and animal plan | `experimental_premium_throughput_agent.py` | `core/scheduling.py` |
-| Shortest movement step | `core/routing.py` | implemented |
-| Demand and opportunity | `core/economics.py` | implemented |
-| Market affordability | `agents/experimental_throughput_agent.py` | future core extraction |
-| Safe service arms | `service_policy.py` | `policies/service.py` |
-| Learned selection | `experimental_learned_service_agent.py` | `agents/learned_service.py` |
-| Replay measurement | `research/analysis/analyze_public_replay.py`, `benchmark.py` | `research/analysis/` |
+| Path | Why |
+|---|---|
+| `rl/public/nb_*.py` | Other people's public programs, extracted from their notebooks for local evaluation (`tools/data/extract_notebook_agents.py`) |
+| `rl/data/` (except its README and `macro_plan.json`) | Replay-derived datasets and ladder tapes, which can contain Kaggle Competition Data |
+| `kaggle_cache/` | Raw Kaggle downloads |
+| `artifacts/`, `arena/`, `build/` | Generated output: benchmarks, rendered replays, local tournaments, package builds |
 
-## Experiment Contract
+## Experiment contract
 
-Every experiment must state:
-
-1. one behavioral hypothesis;
-2. one incumbent and exact package hash;
-3. development seeds and opponents;
-4. untouched promotion seeds;
-5. both-position wins, losses, errors, and mean margin;
-6. secondary mechanism metrics such as movement, weeds, CARE, and sold units;
-7. decision: reject, research-only, or package candidate.
-
-Activity metrics are diagnostic only. More crops, workers, land, or actions are
-not improvements unless terminal wins generalize.
-
-## Git Policy
-
-- Commit source, tests, promoted models, compact fixtures, manifests, and
-  experiment conclusions.
-- Keep generated datasets, replays, HTML renderings, diagnostics, and broad
-  benchmark matrices under ignored `artifacts/`.
-- Keep each commit independently understandable and testable.
-- Never combine a submitted package hash change with unrelated refactoring.
+Every experiment states one behavioural hypothesis, the incumbent and its exact
+package hash, the games it was developed on and separate games it is confirmed
+on, wins and losses in both seats, errors, mean margin, and a decision: reject,
+research-only, or package candidate. Activity metrics (more crops, workers or
+land) are diagnostic only; an agent improves only when it wins more games it
+was not tuned on.

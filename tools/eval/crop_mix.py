@@ -173,7 +173,7 @@ def main() -> None:
 
     out: dict[str, list] = {}
     for name in names:
-        jobs = [("rl.candidate_g:agent", MIXES[name], tape, seed, seat)
+        jobs = [("candidates.candidate_g:agent", MIXES[name], tape, seed, seat)
                 for _, tape, _ in field
                 for seed in seeds
                 for seat in (0, 1)]

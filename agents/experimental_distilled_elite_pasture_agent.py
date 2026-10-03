@@ -8,7 +8,7 @@ match history, where opponents are matched near this project's own rating
 by Kaggle's ladder), this source was pulled directly from the leaderboard
 via the Kaggle API and is a genuinely elite, top-tier result -- a much
 stronger candidate than anything sourced from this project's own games.
-See rl/GOAL.md section 9c.
+See docs/research/GOAL.md section 9c.
 
 Same method as `experimental_distilled_calendar_agent.py`: a fixed,
 open-loop, per-step lookup into the exact recorded action sequence.

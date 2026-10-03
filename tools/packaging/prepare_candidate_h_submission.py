@@ -99,7 +99,7 @@ def check(out: Path = OUT) -> dict:
     results["exposes_agent"] = True
 
     sys.path.insert(0, str(ROOT))
-    import rl.candidate_g as G
+    import candidates.candidate_g as G
 
     for seat in (0, 1):
         agents = [agent, G.agent] if seat == 0 else [G.agent, agent]

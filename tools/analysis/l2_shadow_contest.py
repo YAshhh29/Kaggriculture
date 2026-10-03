@@ -1,7 +1,7 @@
 """How much market value is contestable in near-mirror games, and who gets it.
 
 Replays L_fg120-vs-A arena games exactly (both tapes, both seats) and, at every
-turn, re-runs the engine's market with an exact replica (rl/l2_shadow.py,
+turn, re-runs the engine's market with an exact replica (stack/l2_shadow.py,
 checked against the engine every turn) to log each committed unit with its
 slot. For every turn and item that BOTH players trade in the same direction
 (both sell, or both buy wheat) it prices, with the engine's price function and
@@ -43,7 +43,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from rl.l2_shadow import (_SH_PARAMS, _SH_SHOPS, sh_best_order,  # noqa: E402
+from stack.l2_shadow import (_SH_PARAMS, _SH_SHOPS, sh_best_order,  # noqa: E402
                           sh_lockstep_margin, sh_market, sh_price, sh_units)
 from tools.analysis.l2_shadow_replay import GAMES, OUT, Replay, load_game  # noqa: E402
 

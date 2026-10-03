@@ -3,7 +3,7 @@
 Mirrors the schema already used by
 `models/v1327-public-elite-fogflower-105144807.json` exactly, including the
 compact-separator `actions_sha256` convention (a spaced-separator hash was a
-real bug once; see rl/GOAL.md section 9c).
+real bug once; see docs/research/GOAL.md section 9c).
 
 Usage:
     python -m tools.data.build_elite_model <replay.json> "<Team Name>" <out.json>

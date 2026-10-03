@@ -15,7 +15,7 @@ from agents.experimental_budgeted_value_fertilizer_agent import (
 )
 from agents.experimental_center_out_agent import agent as center_out
 from agents.experimental_distilled_calendar_agent import decide as calendar
-from rl.candidate_a import build_candidate_a_agent
+from candidates.candidate_a import build_candidate_a_agent
 from agents.experimental_colocated_crop_service_agent import (
     agent as colocated_crop_service,
 )
@@ -66,11 +66,11 @@ from agents.experimental_tiered_late_strawberry_agent import (
     agent as tiered_late_strawberry,
 )
 from benchmark import load_agent_callable, load_simulator
-from rl.candidate_a import (
+from candidates.candidate_a import (
     CandidateATelemetry,
     build_candidate_a_agent,
 )
-from rl.candidate_b import agent as candidate_b
+from candidates.candidate_b import agent as candidate_b
 
 
 ROOT = Path(__file__).resolve().parents[2]

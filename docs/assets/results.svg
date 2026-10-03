@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="440" viewBox="0 0 1280 440" role="img" aria-labelledby="t d" class="viz">
+  <title id="t">Win rate on the last day's real ladder games</title>
+  <desc id="d">N11 64.9% (133 of 205); N12 64.9% (133 of 205); N10 63.9% (131 of 205); N8 60.9% (123 of 202); N9 60.0% (123 of 205); H2 16.8% (32 of 191); C2 5.8% (11 of 191)</desc>
+
+  <style>
+    .viz { font-family: system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; }
+    .surface { fill: #fcfcfb; }
+    .ink { fill: #0b0b0b; }
+    .ink2 { fill: #52514e; }
+    .muted { fill: #898781; }
+    .grid { stroke: #e1e0d9; stroke-width: 1; }
+    .axis { stroke: #c3c2b7; stroke-width: 1; }
+    .ring { stroke: rgba(11,11,11,0.10); stroke-width: 1; fill: none; }
+    .s1 { fill: #2a78d6; } .s2 { fill: #eb6834; } .s3 { fill: #1baf7a; } .s4 { fill: #eda100; }
+    .t1 { fill: #e8f1fc; } .t2 { fill: #fdeee7; } .t3 { fill: #e6f6f0; } .t4 { fill: #fdf3dc; }
+    .ctx { fill: #c3c2b7; }
+    .panel { fill: #f3f2ee; }
+    .arrow { stroke: #898781; stroke-width: 2; fill: none; }
+    .arrowhead { fill: #898781; }
+    .gold { fill: #b07d10; }
+    @media (prefers-color-scheme: dark) {
+      .surface { fill: #1a1a19; }
+      .ink { fill: #ffffff; }
+      .ink2 { fill: #c3c2b7; }
+      .grid { stroke: #2c2c2a; }
+      .axis { stroke: #383835; }
+      .ring { stroke: rgba(255,255,255,0.10); }
+      .s1 { fill: #3987e5; } .s2 { fill: #d95926; } .s3 { fill: #199e70; } .s4 { fill: #c98500; }
+      .t1 { fill: #1c2a3c; } .t2 { fill: #3a241b; } .t3 { fill: #17302a; } .t4 { fill: #352c17; }
+      .ctx { fill: #5d5c58; }
+      .panel { fill: #242423; }
+      .gold { fill: #e0b04a; }
+    }
+  </style>
+  <rect class="surface" x="0" y="0" width="1280" height="440" rx="12"/>
+  <rect class="ring" x="0.5" y="0.5" width="1279" height="439" rx="12"/>
+  <text x="24" y="40" class="ink" font-size="20" font-weight="700" text-anchor="start">Win rate on the last day's real ladder games</text>
+  <text x="24" y="62" class="ink2" font-size="14" font-weight="400" text-anchor="start">Every candidate replayed move for move against the opponents N9 and N10 actually met on 30 September (205 games; same towns, same opponent moves)</text>
+  <rect class="s1" x="24" y="78" width="14" height="14" rx="3"/>
+  <text x="44" y="90" class="ink2" font-size="13" font-weight="400" text-anchor="start">Submitted (final pair)</text>
+  <rect class="ctx" x="214" y="78" width="14" height="14" rx="3"/>
+  <text x="234" y="90" class="ink2" font-size="13" font-weight="400" text-anchor="start">Other candidates</text>
+  <line class="axis" x1="300.0" y1="106" x2="300.0" y2="392"/>
+  <text x="300.0" y="412" class="muted" font-size="12" font-weight="400" text-anchor="middle">0%</text>
+  <line class="grid" x1="495.0" y1="106" x2="495.0" y2="392"/>
+  <text x="495.0" y="412" class="muted" font-size="12" font-weight="400" text-anchor="middle">25%</text>
+  <line class="grid" x1="690.0" y1="106" x2="690.0" y2="392"/>
+  <text x="690.0" y="412" class="muted" font-size="12" font-weight="400" text-anchor="middle">50%</text>
+  <line class="grid" x1="885.0" y1="106" x2="885.0" y2="392"/>
+  <text x="885.0" y="412" class="muted" font-size="12" font-weight="400" text-anchor="middle">75%</text>
+  <line class="grid" x1="1080.0" y1="106" x2="1080.0" y2="392"/>
+  <text x="1080.0" y="412" class="muted" font-size="12" font-weight="400" text-anchor="middle">100%</text>
+  <text x="24" y="137" class="ink" font-size="16" font-weight="700" text-anchor="start">N11</text>
+  <text x="72" y="137" class="ink2" font-size="13" font-weight="400" text-anchor="start">final pair</text>
+  <rect class="s1" x="300" y="120" width="506.0" height="24" rx="4"/>
+  <text x="816.0487804878048" y="138" class="ink" font-size="14" font-weight="700" text-anchor="start">64.9%</text>
+  <text x="868.0487804878048" y="138" class="muted" font-size="13" font-weight="400" text-anchor="start">133 / 205</text>
+  <text x="24" y="177" class="ink" font-size="16" font-weight="700" text-anchor="start">N12</text>
+  <text x="72" y="177" class="ink2" font-size="13" font-weight="400" text-anchor="start">N11 + newest library</text>
+  <rect class="ctx" x="300" y="160" width="506.0" height="24" rx="4"/>
+  <text x="816.0487804878048" y="178" class="ink" font-size="14" font-weight="700" text-anchor="start">64.9%</text>
+  <text x="868.0487804878048" y="178" class="muted" font-size="13" font-weight="400" text-anchor="start">133 / 205</text>
+  <text x="24" y="217" class="ink" font-size="16" font-weight="700" text-anchor="start">N10</text>
+  <text x="72" y="217" class="ink2" font-size="13" font-weight="400" text-anchor="start">final pair</text>
+  <rect class="s1" x="300" y="200" width="498.4" height="24" rx="4"/>
+  <text x="808.439024390244" y="218" class="ink" font-size="14" font-weight="700" text-anchor="start">63.9%</text>
+  <text x="860.439024390244" y="218" class="muted" font-size="13" font-weight="400" text-anchor="start">131 / 205</text>
+  <text x="24" y="257" class="ink" font-size="16" font-weight="700" text-anchor="start">N8</text>
+  <text x="72" y="257" class="ink2" font-size="13" font-weight="400" text-anchor="start">29 Sep</text>
+  <rect class="ctx" x="300" y="240" width="475.0" height="24" rx="4"/>
+  <text x="784.950495049505" y="258" class="ink" font-size="14" font-weight="700" text-anchor="start">60.9%</text>
+  <text x="836.950495049505" y="258" class="muted" font-size="13" font-weight="400" text-anchor="start">123 / 202</text>
+  <text x="24" y="297" class="ink" font-size="16" font-weight="700" text-anchor="start">N9</text>
+  <text x="72" y="297" class="ink2" font-size="13" font-weight="400" text-anchor="start">30 Sep morning</text>
+  <rect class="ctx" x="300" y="280" width="468.0" height="24" rx="4"/>
+  <text x="778.0" y="298" class="ink" font-size="14" font-weight="700" text-anchor="start">60.0%</text>
+  <text x="830.0" y="298" class="muted" font-size="13" font-weight="400" text-anchor="start">123 / 205</text>
+  <text x="24" y="337" class="ink" font-size="16" font-weight="700" text-anchor="start">H2</text>
+  <text x="72" y="337" class="ink2" font-size="13" font-weight="400" text-anchor="start">9 Sep</text>
+  <rect class="ctx" x="300" y="320" width="130.7" height="24" rx="4"/>
+  <text x="440.6806282722513" y="338" class="ink" font-size="14" font-weight="700" text-anchor="start">16.8%</text>
+  <text x="492.6806282722513" y="338" class="muted" font-size="13" font-weight="400" text-anchor="start">32 / 191</text>
+  <text x="24" y="377" class="ink" font-size="16" font-weight="700" text-anchor="start">C2</text>
+  <text x="72" y="377" class="ink2" font-size="13" font-weight="400" text-anchor="start">3 Sep</text>
+  <rect class="ctx" x="300" y="360" width="44.9" height="24" rx="4"/>
+  <text x="354.9214659685864" y="378" class="ink" font-size="14" font-weight="700" text-anchor="start">5.8%</text>
+  <text x="406.9214659685864" y="378" class="muted" font-size="13" font-weight="400" text-anchor="start">11 / 191</text>
+
+</svg>

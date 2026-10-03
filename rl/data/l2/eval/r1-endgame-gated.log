@@ -1,4 +1,0 @@
-60 games: r1-endgame-gated vs L on 30 seeds x 2 seats, 1 workers
-saved rl\data\l2\paired\r1-endgame-gated.json
-  r1-endgame-gated vs L                         48/60  won (12 tied)  mean     +494  median     +519  worst       +0  errors 0  crashes 0
-  telemetry (mean per game): clone_steps 84.7, dump_errors 0.0, dump_turns 4.6, dump_units 41.7, errors 0.0, mirror_rate_x100 0.0, reordered_turns 66.9

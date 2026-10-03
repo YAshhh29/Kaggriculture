@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="330" viewBox="0 0 1280 330" role="img" aria-labelledby="t d" class="viz">
+  <title id="t">Project timeline</title>
+  <desc id="d">Five phases from 17 August to 30 September 2026: foundations, candidates A to F, candidates G to K, agents L and M, and the N series that produced the final pair N11 and N10.</desc>
+
+  <style>
+    .viz { font-family: system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; }
+    .surface { fill: #fcfcfb; }
+    .ink { fill: #0b0b0b; }
+    .ink2 { fill: #52514e; }
+    .muted { fill: #898781; }
+    .grid { stroke: #e1e0d9; stroke-width: 1; }
+    .axis { stroke: #c3c2b7; stroke-width: 1; }
+    .ring { stroke: rgba(11,11,11,0.10); stroke-width: 1; fill: none; }
+    .s1 { fill: #2a78d6; } .s2 { fill: #eb6834; } .s3 { fill: #1baf7a; } .s4 { fill: #eda100; }
+    .t1 { fill: #e8f1fc; } .t2 { fill: #fdeee7; } .t3 { fill: #e6f6f0; } .t4 { fill: #fdf3dc; }
+    .ctx { fill: #c3c2b7; }
+    .panel { fill: #f3f2ee; }
+    .arrow { stroke: #898781; stroke-width: 2; fill: none; }
+    .arrowhead { fill: #898781; }
+    .gold { fill: #b07d10; }
+    @media (prefers-color-scheme: dark) {
+      .surface { fill: #1a1a19; }
+      .ink { fill: #ffffff; }
+      .ink2 { fill: #c3c2b7; }
+      .grid { stroke: #2c2c2a; }
+      .axis { stroke: #383835; }
+      .ring { stroke: rgba(255,255,255,0.10); }
+      .s1 { fill: #3987e5; } .s2 { fill: #d95926; } .s3 { fill: #199e70; } .s4 { fill: #c98500; }
+      .t1 { fill: #1c2a3c; } .t2 { fill: #3a241b; } .t3 { fill: #17302a; } .t4 { fill: #352c17; }
+      .ctx { fill: #5d5c58; }
+      .panel { fill: #242423; }
+      .gold { fill: #e0b04a; }
+    }
+  </style>
+  <rect class="surface" x="0" y="0" width="1280" height="330" rx="12"/>
+  <rect class="ring" x="0.5" y="0.5" width="1279" height="329" rx="12"/>
+  <text x="24" y="40" class="ink" font-size="20" font-weight="700" text-anchor="start">From a wheat baseline to a silver medal in six weeks</text>
+  <text x="24" y="62" class="ink2" font-size="14" font-weight="400" text-anchor="start">502 commits, five phases — each card is one phase (cards are not drawn to time scale)</text>
+  <rect class="t1" x="24" y="74" width="232" height="200" rx="10"/>
+  <rect class="s1" x="24" y="74" width="232" height="6" rx="3"/>
+  <text x="40" y="106" class="ink2" font-size="13" font-weight="600" text-anchor="start">Aug 17 – 30</text>
+  <text x="40" y="132" class="ink" font-size="20" font-weight="700" text-anchor="start">Foundations</text>
+  <text x="40" y="164" class="ink2" font-size="13" font-weight="400" text-anchor="start">Simulator, rulebook, a deterministic</text>
+  <text x="40" y="188" class="ink2" font-size="13" font-weight="400" text-anchor="start">wheat baseline</text>
+  <text x="40" y="212" class="ink2" font-size="13" font-weight="400" text-anchor="start">~90 experimental agents and</text>
+  <text x="40" y="236" class="ink2" font-size="13" font-weight="400" text-anchor="start">learned selectors</text>
+  <path class="arrowhead" d="M257 166 l11 8 l-11 8 z"/>
+  <rect class="t2" x="270" y="74" width="232" height="200" rx="10"/>
+  <rect class="s2" x="270" y="74" width="232" height="6" rx="3"/>
+  <text x="286" y="106" class="ink2" font-size="13" font-weight="600" text-anchor="start">Aug 31 – Sep 8</text>
+  <text x="286" y="132" class="ink" font-size="20" font-weight="700" text-anchor="start">Candidates A–F</text>
+  <text x="286" y="164" class="ink2" font-size="13" font-weight="400" text-anchor="start">Residual-RL contracts</text>
+  <text x="286" y="188" class="ink2" font-size="13" font-weight="400" text-anchor="start">Clones of elite players' routes,</text>
+  <text x="286" y="212" class="ink2" font-size="13" font-weight="400" text-anchor="start">route search over 245 tapes</text>
+  <text x="286" y="236" class="ink2" font-size="13" font-weight="400" text-anchor="start">An economics engine (E)</text>
+  <path class="arrowhead" d="M503 166 l11 8 l-11 8 z"/>
+  <rect class="t3" x="516" y="74" width="232" height="200" rx="10"/>
+  <rect class="s3" x="516" y="74" width="232" height="6" rx="3"/>
+  <text x="532" y="106" class="ink2" font-size="13" font-weight="600" text-anchor="start">Sep 9 – 25</text>
+  <text x="532" y="132" class="ink" font-size="20" font-weight="700" text-anchor="start">Candidates G–K</text>
+  <text x="532" y="164" class="ink2" font-size="13" font-weight="400" text-anchor="start">A farm built from the rules (G)</text>
+  <text x="532" y="188" class="ink2" font-size="13" font-weight="400" text-anchor="start">Market-demand layer (H, H2)</text>
+  <text x="532" y="212" class="ink2" font-size="13" font-weight="400" text-anchor="start">Coins-per-worker scheduler (J)</text>
+  <text x="532" y="236" class="ink2" font-size="13" font-weight="400" text-anchor="start">Benchmarks that flattered us, fixed</text>
+  <path class="arrowhead" d="M749 166 l11 8 l-11 8 z"/>
+  <rect class="t4" x="762" y="74" width="232" height="200" rx="10"/>
+  <rect class="s4" x="762" y="74" width="232" height="6" rx="3"/>
+  <text x="778" y="106" class="ink2" font-size="13" font-weight="600" text-anchor="start">Sep 26 – 27</text>
+  <text x="778" y="132" class="ink" font-size="20" font-weight="700" text-anchor="start">L and M</text>
+  <text x="778" y="164" class="ink2" font-size="13" font-weight="400" text-anchor="start">Layer stack on a public clone</text>
+  <text x="778" y="188" class="ink2" font-size="13" font-weight="400" text-anchor="start">Shadow of 18 public programs</text>
+  <text x="778" y="212" class="ink2" font-size="13" font-weight="400" text-anchor="start">In-game rival sell clock (M)</text>
+  <text x="778" y="236" class="ink2" font-size="13" font-weight="400" text-anchor="start">Peak live rating 2,492 (L3)</text>
+  <path class="arrowhead" d="M995 166 l11 8 l-11 8 z"/>
+  <rect class="t1" x="1008" y="74" width="232" height="200" rx="10"/>
+  <rect class="s1" x="1008" y="74" width="232" height="6" rx="3"/>
+  <text x="1024" y="106" class="ink2" font-size="13" font-weight="600" text-anchor="start">Sep 28 – 30</text>
+  <text x="1024" y="132" class="ink" font-size="20" font-weight="700" text-anchor="start">N1 → N12</text>
+  <text x="1024" y="164" class="ink2" font-size="13" font-weight="400" text-anchor="start">Stack moved to the best public plan</text>
+  <text x="1024" y="188" class="ink2" font-size="13" font-weight="400" text-anchor="start">Tomato annex, slot races, guards</text>
+  <text x="1024" y="212" class="ink2" font-size="13" font-weight="400" text-anchor="start">Shed guard: +9 wins, 0 losses (N10)</text>
+  <text x="1024" y="236" class="ink2" font-size="13" font-weight="400" text-anchor="start">Final pair: N11 + N10</text>
+  <rect class="panel" x="24" y="290" width="1232" height="28" rx="14"/>
+  <text x="640.0" y="309" class="ink" font-size="14" font-weight="600" text-anchor="middle">Deadline 30 Sep 23:59 UTC  ·  final pair N11 + N10  ·  448th of 10,246 teams  ·  silver medal</text>
+
+</svg>

@@ -1,16 +1,16 @@
-"""Tests for rl/denial.py."""
+"""Tests for candidates/denial.py."""
 
 from __future__ import annotations
 
 from typing import Any
 
-from rl.denial import (
+from candidates.denial import (
     contested_items,
     contested_value,
     denial_value,
     rival_supply,
 )
-from rl.market import MARKET_I0, sale_revenue
+from candidates.market import MARKET_I0, sale_revenue
 
 
 def board(tiles: list[Any] | None = None) -> list[list[Any]]:

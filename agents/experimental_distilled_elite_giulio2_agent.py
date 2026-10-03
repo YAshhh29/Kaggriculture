@@ -7,7 +7,7 @@ This is *not* the same Giulio game Candidate C2 clones. C2 uses episode
 105144807, captured 2026-09-03. This one was selected by scoring **191
 candidate tapes** -- every side of every cached replay belonging to a team
 rated 2400+ on the game that team won -- on our own final reward across
-fixed seeds with the same guard stack. See rl/GOAL.md section 9n.
+fixed seeds with the same guard stack. See docs/research/GOAL.md section 9n.
 
 Why own-reward drove the search rather than win rate: section 9m measured
 that win rate against frozen tapes overstates live strength by roughly

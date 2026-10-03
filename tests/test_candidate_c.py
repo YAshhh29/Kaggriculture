@@ -1,6 +1,6 @@
 import unittest
 
-from rl.candidate_c import (
+from candidates.candidate_c import (
     CandidateCExecutor,
     ELITE_PASTURE,
     RouteExpert,
@@ -22,7 +22,7 @@ def stub_route(name: str, *, reentrant: bool) -> RouteExpert:
 class CandidateCTests(unittest.TestCase):
     def test_default_route_is_the_validated_elite_clone(self) -> None:
         # elite_pasture beat Candidate B 20-0 and Candidate A 8-0 across
-        # fresh seeds in local testing (see rl/GOAL.md section 9c); it is
+        # fresh seeds in local testing (see docs/research/GOAL.md section 9c); it is
         # the best-measured route today and must stay the default until
         # a real selector rule exists.
         state = scale_observation(day=0, hour=0)

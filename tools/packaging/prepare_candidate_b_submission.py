@@ -16,11 +16,11 @@ from tools.packaging.prepare_calendar_recovery_submission import (
 
 
 ROOT = Path(__file__).resolve().parents[2]
-CANDIDATE_B_PATH = ROOT / "rl" / "candidate_b.py"
+CANDIDATE_B_PATH = ROOT / "candidates" / "candidate_b.py"
 SOURCE_PATHS = (CANDIDATE_B_PATH,)
 OUTPUT = ROOT / "submissions" / "candidate-b" / "main.py"
 MANIFEST = ROOT / "submissions" / "candidate-b" / "manifest.json"
-STRIPPED_IMPORT_PREFIXES = ("agents.", "policies.", "core.", "rl.")
+STRIPPED_IMPORT_PREFIXES = ("agents.", "policies.", "core.", "rl.", "stack.", "candidates.")
 
 
 def _drop_top_level_agent(body: list[ast.stmt]) -> list[ast.stmt]:
@@ -106,7 +106,7 @@ def main() -> None:
                 "source_files": [
                     f"submissions/{CANDIDATE_A_SUBMISSION_DIR}/main.py"
                     " (parent)",
-                    "rl/candidate_b.py",
+                    "candidates/candidate_b.py",
                 ],
                 "policy": (
                     "Candidate A (guarded calendar recovery, live terminal "

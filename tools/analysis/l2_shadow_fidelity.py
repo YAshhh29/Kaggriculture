@@ -6,7 +6,7 @@ l2_shadow_sync), this replays the game and checks, for that program:
   tracked   an in-game OpponentShadow (private state reconstructed, never
             read from the replay) predicts every opponent action exactly;
   clone     a second instance, cloned from the shadow's state each turn
-            (rl.l2_shadow.sh_clone_into), plays the next turn exactly like
+            (stack.l2_shadow.sh_clone_into), plays the next turn exactly like
             the original -- what the one-turn lookahead relies on.
 
     python -m tools.analysis.l2_shadow_fidelity --pairs 113722929:nb_haideptry_2965 ...
@@ -29,7 +29,7 @@ from tools.analysis.l2_shadow_replay import OUT, TAPES, Replay, load_game, norm 
 
 def factory_for(program):
     if program == "A":
-        from rl.candidate_l import parent_namespace
+        from stack.candidate_l import parent_namespace
         return parent_namespace
     path = ROOT / "rl" / "public" / f"{program}.py"
 
@@ -43,7 +43,7 @@ def factory_for(program):
 def check(job) -> dict:
     episode, program = job
     sys.path.insert(0, str(ROOT))
-    from rl.l2_shadow import OpponentShadow, sh_clone_into, sh_clone_plan
+    from stack.l2_shadow import OpponentShadow, sh_clone_into, sh_clone_plan
     g = load_game(TAPES / f"ep{episode}.json")
     side = g["our_side"]
     opp = 1 - side

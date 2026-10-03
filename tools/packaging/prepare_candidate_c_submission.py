@@ -27,12 +27,12 @@ ELITE_AGENT_PATH = (
 ELITE_MODEL_PATH = (
     ROOT / "models" / "v1327-public-elite-fogflower-105144807.json"
 )
-CANDIDATE_C_PATH = ROOT / "rl" / "candidate_c.py"
+CANDIDATE_C_PATH = ROOT / "candidates" / "candidate_c.py"
 SOURCE_PATHS = (ELITE_AGENT_PATH, ELITE_MODEL_PATH, CANDIDATE_C_PATH)
 OUTPUT = ROOT / "submissions" / "candidate-c" / "main.py"
 MANIFEST = ROOT / "submissions" / "candidate-c" / "manifest.json"
 MODEL_TYPE = "public_calendar_behavior_clone"
-STRIPPED_IMPORT_PREFIXES = ("agents.", "policies.", "core.", "rl.")
+STRIPPED_IMPORT_PREFIXES = ("agents.", "policies.", "core.", "rl.", "stack.", "candidates.")
 
 
 def load_verified_elite_model(path: Path = ELITE_MODEL_PATH) -> dict[str, Any]:
@@ -159,7 +159,7 @@ def build_source() -> str:
             and node.module == elite_import
         )
     ]
-    # rl/candidate_c.py imports elite_pasture_route and calendar_route;
+    # candidates/candidate_c.py imports elite_pasture_route and calendar_route;
     # supply both from the bundled definitions instead of module imports.
     base.body.append(
         ast.Assign(
@@ -215,7 +215,7 @@ def main() -> None:
                     "submissions/candidate-b/main.py (parent)",
                     "agents/experimental_distilled_elite_pasture_agent.py",
                     "models/v1327-public-elite-fogflower-105144807.json",
-                    "rl/candidate_c.py",
+                    "candidates/candidate_c.py",
                 ],
                 "policy": (
                     "Public-state route portfolio (currently a placeholder "
@@ -250,7 +250,7 @@ def main() -> None:
                             "best homegrown lineage, and two clones sourced "
                             "from this project's own Kaggle match history) "
                             "were rejected the same way before this one "
-                            "was tried -- see rl/GOAL.md section 9c."
+                            "was tried -- see docs/research/GOAL.md section 9c."
                         ),
                     },
                     "not_yet_run": (
@@ -261,7 +261,7 @@ def main() -> None:
                 },
                 "status": (
                     "strong initial local validation; upload only after "
-                    "you decide the remaining gates in rl/GOAL.md section 9 "
+                    "you decide the remaining gates in docs/research/GOAL.md section 9 "
                     "are not required first"
                 ),
             },

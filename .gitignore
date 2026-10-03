@@ -1,48 +1,38 @@
+# Python environments and caches
 .venv/
 .venv-*/
 .conda/
 __pycache__/
 *.py[cod]
+.pytest_cache/
 
-# Generated experiment outputs stay local. Curated models and small fixtures
-# belong in models/ and tests/fixtures/ instead.
-artifacts/analysis/
-artifacts/benchmarks/
-artifacts/datasets/
-artifacts/diagnostics/
-artifacts/direct/
-artifacts/live-replays/
-artifacts/models/
-artifacts/top-replays/
-artifacts/ui/
-artifacts/*.json
-artifacts/*.html
+# Generated experiment output: benchmarks, rendered replays, datasets, audits.
+# Everything here is reproducible from the scripts in tools/ and research/.
+artifacts/
 
-# Local RL datasets, model checkpoints, and run outputs can contain Kaggle
-# Competition Data or large generated artifacts.
-rl/data/
+# Local arena: stored games, rendered replays, screenshots and logs.
+arena/
+
+# Replay-derived datasets and ladder game tapes. They can contain Kaggle
+# Competition Data, so only the guide and the one plan an agent reads at
+# runtime are committed (see rl/data/README.md).
+rl/data/*
+!rl/data/README.md
+!rl/data/macro_plan.json
 rl/checkpoints/
 rl/runs/
 
-# Standalone upload outputs are reproducible from packaging scripts. Keep the
-# legacy packages locally without adding every generated bundle.
-submissions/legacy/
-
-# Rendered match replays are ~47MB of embedded replay JSON each.
-artifacts/replays/
-
-# Live opponent tapes fetched from the ladder (large, refetchable).
-kaggle_cache/live_clones/
-
-# Arena output. A rendered replay is ~45 MB; stored games re-render
-# deterministically from their seed and action tapes.
-arena/replays/
-arena/games/
-arena/shots/
-arena/index.html
+# Kaggle downloads: notebooks, corpora, live opponent tapes, rules pages.
+kaggle_cache/
 
 # Extracted public notebook agents: other people's code, kept for local
-# evaluation only and re-extractable from kaggle_cache/notebooks.
+# evaluation only and re-extractable from the public notebooks
+# (tools/data/extract_notebook_agents.py).
 rl/public/nb_*.py
-# Dated local backups of that folder (byte-identical copies of the above).
 rl/public_bak*/
+
+# Packages kept locally without adding every generated bundle.
+submissions/legacy/
+
+# Local package builds (tools/packaging/build_final.py).
+build/

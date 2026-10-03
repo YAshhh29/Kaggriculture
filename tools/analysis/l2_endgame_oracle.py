@@ -75,7 +75,7 @@ def trace(record):
 
 
 def price_table(item, lo, hi):
-    from rl.market_front import _mf_price
+    from stack.market_front import _mf_price
     return np.array([_mf_price(item, x) for x in range(lo, hi)], dtype=float)
 
 

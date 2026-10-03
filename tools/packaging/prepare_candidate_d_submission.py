@@ -27,12 +27,12 @@ ELITE_AGENT_PATH = (
 ELITE_MODEL_PATH = (
     ROOT / "models" / "v1327-public-elite-andrey-105520725.json"
 )
-CANDIDATE_D_PATH = ROOT / "rl" / "candidate_d.py"
+CANDIDATE_D_PATH = ROOT / "candidates" / "candidate_d.py"
 SOURCE_PATHS = (ELITE_AGENT_PATH, ELITE_MODEL_PATH, CANDIDATE_D_PATH)
 OUTPUT = ROOT / "submissions" / "candidate-d" / "main.py"
 MANIFEST = ROOT / "submissions" / "candidate-d" / "manifest.json"
 MODEL_TYPE = "public_calendar_behavior_clone"
-STRIPPED_IMPORT_PREFIXES = ("agents.", "policies.", "core.", "rl.")
+STRIPPED_IMPORT_PREFIXES = ("agents.", "policies.", "core.", "rl.", "stack.", "candidates.")
 
 
 def load_verified_model(path: Path = ELITE_MODEL_PATH) -> dict[str, Any]:
@@ -86,7 +86,7 @@ class _RenameEliteSymbols(ast.NodeTransformer):
 
 
 class _RenameCandidateDSymbols(ast.NodeTransformer):
-    """`decide` in rl/candidate_d.py would shadow the elite route's."""
+    """`decide` in candidates/candidate_d.py would shadow the elite route's."""
 
     def visit_FunctionDef(self, node: ast.FunctionDef) -> ast.AST | None:
         if node.name == "decide":
@@ -141,7 +141,7 @@ def _drop_top_level_agent(body: list[ast.stmt]) -> list[ast.stmt]:
     insertion order, not a name lookup, and reassigning an existing key does
     not move it. A stray earlier `agent = ...` therefore pins the name near
     the top of the file and the loader picks the wrong callable -- the bug
-    that broke Candidate C's first upload (rl/GOAL.md section 9h). Filter
+    that broke Candidate C's first upload (docs/research/GOAL.md section 9h). Filter
     both the FunctionDef and the Assign spelling.
     """
     return [
@@ -210,7 +210,7 @@ def main() -> None:
                     "submissions/candidate-b/main.py (parent)",
                     "agents/experimental_distilled_elite_andrey_agent.py",
                     "models/v1327-public-elite-andrey-105520725.json",
-                    "rl/candidate_d.py",
+                    "candidates/candidate_d.py",
                 ],
                 "policy": (
                     "Candidate A's guarded recovery and live terminal "
@@ -260,7 +260,7 @@ def main() -> None:
                     ),
                     "search": "191 tapes scored on own final reward",
                     "caveat": (
-                        "rl/GOAL.md section 9m: win rate against frozen "
+                        "docs/research/GOAL.md section 9m: win rate against frozen "
                         "tapes overstates live strength by roughly forty "
                         "points. Own-reward improvement (+12% mean, +8% "
                         "floor over C1) is the transferable part of this "

@@ -6,7 +6,7 @@ timeout. This plays full games and reports the slowest turn, the turns over
 1 s, and the bank used (excess over 1 s summed; the first turn, which loads
 the file, is reported separately).
 
-    python -m tools.eval.turn_budget rl.l2_combo:l6 nb_haodou092_harvest_ledger --seeds 11 105
+    python -m tools.eval.turn_budget stack.l2_combo:l6 nb_haodou092_harvest_ledger --seeds 11 105
 """
 
 from __future__ import annotations

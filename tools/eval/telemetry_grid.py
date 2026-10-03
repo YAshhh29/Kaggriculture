@@ -13,7 +13,7 @@ on identical machinery.
 Read the columns as a build order. If the corpus has eleven animals at
 turn 120 and we have four, the fix is at turn 120 and not in the endgame.
 
-    python -m tools.eval.telemetry_grid rl.candidate_g:agent --until 120
+    python -m tools.eval.telemetry_grid candidates.candidate_g:agent --until 120
 """
 
 from __future__ import annotations

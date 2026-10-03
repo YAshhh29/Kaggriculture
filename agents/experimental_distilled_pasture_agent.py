@@ -1,6 +1,6 @@
 """REJECTED clone of a currently-prevalent cow/sheep-pasture strategy.
 
-Kept for the record, not used by anything live -- see rl/GOAL.md section
+Kept for the record, not used by anything live -- see docs/research/GOAL.md section
 9a. Source: episode 105113156, player 1 ("Mikhail_Komkin"), a live Kaggle
 game against this project's own (older) Candidate A/B, final score
 105007-61586, its largest observed margin against Candidate A/B across 24
@@ -26,7 +26,7 @@ top-leaderboard player, not just any recent opponent.
 
 Same method as `experimental_distilled_calendar_agent.py`: a fixed,
 open-loop, per-step lookup into the exact recorded action sequence. No
-adaptation to a different game -- see `rl/candidate_a.py` for the guard
+adaptation to a different game -- see `candidates/candidate_a.py` for the guard
 layer this was tested with.
 """
 

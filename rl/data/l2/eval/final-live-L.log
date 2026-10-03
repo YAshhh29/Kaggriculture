@@ -1,7 +1,0 @@
-saved rl\data\live_replays\l2-final-on-l-live-games.json
-
-L2 final on L live games (factory, settings {}, commit 50162d4): 45 games, 0 errors
-L2 final on L live games against L on L live games, 45 shared games
-  all                               45 games | wins 40 -> 43 | margin change -256 (median +211), better in 26, worse in 19, identical in 0
-                                       own score change -622 (median +338), higher in 34, lower in 11
-  opponent stayed close in both     44 games | wins 39 -> 42 | margin change +160 (median +215), better in 26, worse in 18, identical in 0

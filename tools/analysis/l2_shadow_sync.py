@@ -9,7 +9,7 @@ really did (the action stored at t+1). An opponent that is an exact copy of a
 candidate is matched on all 719 turns; a near-copy matches until it diverges.
 
 This is the upper bound for an in-game shadow: in a real game the private
-state has to be reconstructed (rl/l2_shadow.py does that; see --tracked).
+state has to be reconstructed (stack/l2_shadow.py does that; see --tracked).
 
     python -m tools.analysis.l2_shadow_sync --submission 56571049 --workers 2
     python -m tools.analysis.l2_shadow_sync --submission 56582917 --candidates A L
@@ -57,7 +57,7 @@ def sync_one(job) -> dict:
                        "ms": 0.0, "dropped_at": None, "raised": 0}
     tracker = None
     if tracked:
-        from rl.l2_shadow import OpponentShadow
+        from stack.l2_shadow import OpponentShadow
         tracker = OpponentShadow(program="A", seat=side)
     rp = Replay(g["seed"])
     started = time.time()
@@ -151,7 +151,7 @@ def main() -> None:
     ap.add_argument("--workers", type=int, default=2)
     ap.add_argument("--label", default=None)
     ap.add_argument("--tracked", action="store_true",
-                    help="also run rl.l2_shadow's in-game tracker (reconstructed private)")
+                    help="also run stack.l2_shadow's in-game tracker (reconstructed private)")
     ap.add_argument("--limit", type=int, default=0)
     args = ap.parse_args()
     cands = []

@@ -33,7 +33,7 @@ def make(agent: str | None, factory: str | None):
         module, func = factory.rsplit(":", 1)
         return getattr(importlib.import_module(module), func)()
     if agent == "L":
-        from rl.candidate_l import l_stack
+        from stack.candidate_l import l_stack
         return l_stack()
     from tools.arena.arena import load
     return load(agent)

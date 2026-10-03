@@ -2,7 +2,7 @@
 
 Same contract as the other equivalence checks in this directory: play real
 games with the source agent, then replay each recorded observation through
-both `rl.candidate_e` and the packaged `main.py` and require all three --
+both `candidates.candidate_e` and the packaged `main.py` and require all three --
 source, package, and the action the simulator actually recorded -- to
 agree turn for turn.
 
@@ -23,7 +23,7 @@ from pathlib import Path
 from typing import Any
 
 from benchmark import load_agent_callable
-from rl.candidate_e import agent as source_agent
+from candidates.candidate_e import agent as source_agent
 
 
 def validate(package: Path, seed: int) -> None:

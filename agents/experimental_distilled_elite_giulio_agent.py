@@ -4,7 +4,7 @@ Source: episode 105144807, player 0 ("Giulio Ravasio", public leaderboard
 rank #2 at 2965.4 when captured), pulled from the leaderboard via the
 Kaggle API rather than from this project's own match history -- the
 sourcing distinction that separated the two viable clones from the four
-rejected ones (see rl/GOAL.md sections 9b/9c).
+rejected ones (see docs/research/GOAL.md sections 9b/9c).
 
 This is the second elite baseline, kept deliberately distinct from
 `experimental_distilled_elite_pasture_agent.py` ("fog flower", 2882.6) so

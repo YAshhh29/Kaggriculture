@@ -26,8 +26,8 @@ reports each check as PASS or FAIL:
     its games. Concentrated losses are survivable; an opponent that beats
     us every time is a hole the ladder will find.
 
-    python -m tools.eval.bulletproof rl.candidate_f:agent \\
-        --incumbent rl.candidate_d:agent --seeds 11,29,53,97
+    python -m tools.eval.bulletproof candidates.candidate_f:agent \\
+        --incumbent candidates.candidate_d:agent --seeds 11,29,53,97
 """
 
 from __future__ import annotations
@@ -94,7 +94,7 @@ def line(name: str, ok: bool, detail: str) -> bool:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("spec")
-    parser.add_argument("--incumbent", default="rl.candidate_d:agent")
+    parser.add_argument("--incumbent", default="candidates.candidate_d:agent")
     parser.add_argument("--seeds", default="11,29,53,97")
     parser.add_argument("--limit", type=int, default=16)
     parser.add_argument("--skip", type=int, default=8)

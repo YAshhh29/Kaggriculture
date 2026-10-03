@@ -15,7 +15,7 @@ Caveat (applies to every tape replay): the opponent cannot react, and our own
 parent cannot react to the different shed/cash our layer leaves it with.
 Here that means our parent's later market orders are the recorded ones; the
 layer sees them and can rewrite them. The in-agent test is
-tools.eval.live_replay / tools.eval.paired with rl.l2_endgame.
+tools.eval.live_replay / tools.eval.paired with stack.l2_endgame.
 
     python -m tools.analysis.l2_endgame_bench verify
 """

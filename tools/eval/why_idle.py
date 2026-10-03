@@ -41,7 +41,7 @@ def main() -> None:
     sys.path.insert(0, str(ROOT))
     from kaggle_environments import make
 
-    import rl.candidate_g as G
+    import candidates.candidate_g as G
     from tools.eval.measure_panel import resolve
 
     opponent = resolve("clone:" + ROUTE)

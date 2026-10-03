@@ -1,6 +1,6 @@
 import unittest
 
-from rl.sell_gate import (
+from candidates.sell_gate import (
     CASH_FLOOR,
     GATED,
     MAX_HOLD_STEPS,

@@ -1,6 +1,6 @@
 import unittest
 
-from rl.idle_rescue import (
+from candidates.idle_rescue import (
     build_idle_rescue_agent,
     rescue_action,
     would_be_refused,

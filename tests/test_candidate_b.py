@@ -1,6 +1,6 @@
 import unittest
 
-from rl.candidate_b import (
+from candidates.candidate_b import (
     _land_priority_ordering,
     _sequential_affordability_ordering,
     build_candidate_b_agent,

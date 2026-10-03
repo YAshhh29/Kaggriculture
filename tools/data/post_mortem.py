@@ -58,7 +58,7 @@ def one(job):
     from kaggle_environments import make
 
     from tools.eval.measure_panel import resolve
-    import rl.candidate_g as G
+    import candidates.candidate_g as G
 
     opponent = resolve("clone:" + tape)
     agents = [G.agent, opponent] if seat == 0 else [opponent, G.agent]

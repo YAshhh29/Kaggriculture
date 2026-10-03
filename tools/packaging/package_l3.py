@@ -14,7 +14,7 @@ instantiated once when the file loads, so turn 0 does not pay for eight
 compilations (Kaggle allows 1 s per turn plus a 60 s reserve).
 
 Verification: as for L2 (stdlib only, the safety wrapper is the entry, the
-packaged file plays exactly like rl.l2_combo:ship_lib), against A and against
+packaged file plays exactly like stack.l2_combo:ship_lib), against A and against
 a library opponent so the shadow's sync path is exercised.
 
     python -m tools.packaging.package_l3 --out submissions/candidate-l3/main.py
@@ -33,9 +33,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from rl.candidate_l import _SHOPS3, PARENT_FILE  # noqa: E402
-from rl.l2_combo import WOOL_FIRST  # noqa: E402
-from rl.l2_shadow import SH_LIBRARY  # noqa: E402
+from stack.candidate_l import _SHOPS3, PARENT_FILE  # noqa: E402
+from stack.l2_combo import WOOL_FIRST  # noqa: E402
+from stack.l2_shadow import SH_LIBRARY  # noqa: E402
 from tools.packaging.package_l2_full import (LAYERS, layer_source,  # noqa: E402
                                              non_stdlib, verify)
 
@@ -152,22 +152,22 @@ def build(deficit: int, library=SH_LIBRARY, name="L3", lot=True, agree=False,
     layers = list(LAYERS)
     if msell is not None:     # Agent M: the in-game opponent-clock seller, outside the shadow
         layers.insert(layers.index(next(x for x in layers if x[0] == "safety")),
-                      ("m_sell", "rl/m_sell.py", []))
+                      ("m_sell", "stack/m_sell.py", []))
     if own_book:              # N11: the parent's rival-sale trackers see what we really sold
         layers.insert(layers.index(next(x for x in layers if x[0] == "safety")),
-                      ("own_book", "rl/own_book.py", []))
+                      ("own_book", "stack/own_book.py", []))
     if shed_guard:            # N10: sell/cut purchases so the day-end drop destroys nothing
         layers.insert(layers.index(next(x for x in layers if x[0] == "safety")),
-                      ("shed_guard", "rl/shed_guard.py", []))
+                      ("shed_guard", "stack/shed_guard.py", []))
     if place_guard:           # N7: build the missing pasture/coop under an animal being placed
         layers.insert(layers.index(next(x for x in layers if x[0] == "safety")),
-                      ("place_guard", "rl/place_guard.py", []))
+                      ("place_guard", "stack/place_guard.py", []))
     if dlast is not None:     # N4: rider-aware draw-step purchase order, outermost
         layers.insert(layers.index(next(x for x in layers if x[0] == "safety")),
-                      ("draw_last", "rl/draw_last.py", []))
+                      ("draw_last", "stack/draw_last.py", []))
     if annex is not None:     # N3ta: the tomato annex, outermost inside the safety guard
         layers.insert(layers.index(next(x for x in layers if x[0] == "safety")),
-                      ("tomato_annex", "rl/tomato_annex.py", []))
+                      ("tomato_annex", "stack/tomato_annex.py", []))
     for layer, rel, inject in layers:
         if layer == "outfarm" and not lot:
             continue
@@ -236,7 +236,7 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--out", default="submissions/candidate-l3/main.py")
-    ap.add_argument("--factory", default="rl.l2_combo:ship_lib")
+    ap.add_argument("--factory", default="stack.l2_combo:ship_lib")
     ap.add_argument("--deficit", type=int, default=120)
     ap.add_argument("--seeds", type=int, nargs="+", default=[11, 105])
     ap.add_argument("--opponents", nargs="+", default=["A", "nb_ahmed_v55"])
@@ -265,13 +265,13 @@ def main() -> None:
     ap.add_argument("--shed-guard", action="store_true",
                     help="never let the day-end drop overflow the shed (N10)")
     ap.add_argument("--own-book", action="store_true",
-                    help="N11: correct the parent's records of our own sales after our layers (rl/own_book.py)")
+                    help="N11: correct the parent's records of our own sales after our layers (stack/own_book.py)")
     ap.add_argument("--wheat-adapt", action="store_true",
                     help="market_front restores full wheat weight once the rival round-trips wheat (N8)")
     ap.add_argument("--terminal-step", type=int, default=648,
                     help="step at which the 2965 parent switches to its terminal route (N10: 624)")
     ap.add_argument("--wool-first", action="store_true",
-                    help="patch the parent's V233 crew to deliver wool first (rl.l2_combo.WOOL_FIRST)")
+                    help="patch the parent's V233 crew to deliver wool first (stack.l2_combo.WOOL_FIRST)")
     ap.add_argument("--sell-first", nargs="*", default=[],
                     help="market_front keeps these items' SELL ahead of their BUY (N3: FERTILIZER)")
     ap.add_argument("--annex", nargs="*", default=None, metavar="KEY=VALUE",

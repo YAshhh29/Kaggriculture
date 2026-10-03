@@ -40,7 +40,7 @@ def one(job):
     sys.path.insert(0, str(ROOT))
     from kaggle_environments import make
 
-    from rl.candidate_h_demand import wrap
+    from candidates.candidate_h_demand import wrap
     from tools.eval.fair_town import install
     from tools.eval.measure_panel import resolve
 
@@ -49,7 +49,7 @@ def one(job):
     if variant == "H":
         agent = wrap(agent, settings)
     if versus == "G":
-        import rl.candidate_g as G
+        import candidates.candidate_g as G
         opponent = G.agent
     elif versus == "mirror":
         # The same base without the layer, in the other seat: the farming is

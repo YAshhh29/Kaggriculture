@@ -51,7 +51,7 @@ class PrepareCandidateC2SubmissionTests(unittest.TestCase):
             if isinstance(node, ast.ImportFrom)
             and node.module is not None
             and node.module.startswith(
-                ("agents.", "policies.", "core.", "rl.")
+                ("agents.", "policies.", "core.", "rl.", "stack.", "candidates.")
             )
         ]
         assigned_names = [

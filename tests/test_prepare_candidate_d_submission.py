@@ -11,7 +11,7 @@ from tools.packaging import prepare_candidate_d_submission
 
 class PrepareCandidateDSubmissionTests(unittest.TestCase):
     def test_kaggle_loader_picks_the_real_agent(self) -> None:
-        # Regression cover for rl/GOAL.md section 9h: Kaggle's loader takes
+        # Regression cover for docs/research/GOAL.md section 9h: Kaggle's loader takes
         # the last callable in the exec namespace by insertion order, not
         # `module.agent` by name, so a stray earlier `agent = ...` from the
         # embedded Candidate B bundle can silently outrank this module's.
@@ -48,7 +48,7 @@ class PrepareCandidateDSubmissionTests(unittest.TestCase):
             if isinstance(node, ast.ImportFrom)
             and node.module is not None
             and node.module.startswith(
-                ("agents.", "policies.", "core.", "rl.")
+                ("agents.", "policies.", "core.", "rl.", "stack.", "candidates.")
             )
         ]
         assigned = [

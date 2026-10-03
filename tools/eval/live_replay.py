@@ -59,7 +59,7 @@ def build_agent(kind: str, settings: dict[str, Any],
     """The agent to play in our seat, built inside the worker process."""
     sys.path.insert(0, str(ROOT))
     if kind == "factory":
-        # A candidate built by "module:function" (e.g. rl.l2_endgame:build).
+        # A candidate built by "module:function" (e.g. stack.l2_endgame:build).
         import importlib
         module, func = package.rsplit(":", 1)
         return getattr(importlib.import_module(module), func)()
@@ -68,7 +68,7 @@ def build_agent(kind: str, settings: dict[str, Any],
         from tools.arena.arena import load
         return load(package)
     if kind == "g":
-        import rl.candidate_g as G
+        import candidates.candidate_g as G
         for key, value in settings.items():
             setattr(G, key, value)
         return G.agent
@@ -85,7 +85,7 @@ def build_agent(kind: str, settings: dict[str, Any],
     base = next(cell.cell_contents for cell in (wrapped.__closure__ or ())
                 if callable(cell.cell_contents)
                 and cell.cell_contents is not wrapped)
-    from rl.candidate_h_demand import wrap
+    from candidates.candidate_h_demand import wrap
     merged = dict(getattr(wrapped, "demand_settings", {}) or {})
     merged.update(settings)
     return wrap(base, merged)

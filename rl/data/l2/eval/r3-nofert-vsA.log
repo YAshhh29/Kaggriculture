@@ -1,4 +1,0 @@
-60 games: r3-nofert-vsA vs A on 30 seeds x 2 seats, 1 workers
-saved rl\data\l2\paired\r3-nofert-vsA.json
-  r3-nofert-vsA vs A                         59/60  won (0 tied)  mean   +1,840  median   +1,612  worst     -250  errors 0  crashes 0
-  telemetry (mean per game): CARE 1.5, COLLECT_FERTILIZER 1.1, HARVEST 0.0, WATER 12.5, an_collect_swaps 0.6, an_errors 0.0, an_feed_skips 1.2, an_feed_skips_d28 0.6, an_feed_skips_young 0.6, an_max_ms 0.9, early_budget_stops 3.5, early_multi_skips 0.0, early_pred_gain 399.5, early_rejected_react 6.8, early_sales 5.4, early_units 38.6

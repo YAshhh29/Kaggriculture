@@ -40,7 +40,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 
-from rl import macro_plan  # noqa: E402
+from candidates import macro_plan  # noqa: E402
 from tools.data.extract_macro_plan import schedule  # noqa: E402
 from tools.data.profile_tapes import INDEX, TAPES, load_tape  # noqa: E402
 

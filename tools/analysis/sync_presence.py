@@ -18,8 +18,8 @@ sys.path.insert(0, str(ROOT))
 
 
 def main(labels: list[str]) -> None:
-    from rl.l2_combo import M_LIBRARY_EXTRA, NEW_LIBRARY
-    from rl.l2_shadow import SH_LIBRARY
+    from stack.l2_combo import M_LIBRARY_EXTRA, NEW_LIBRARY
+    from stack.l2_shadow import SH_LIBRARY
     library = set(SH_LIBRARY) | set(NEW_LIBRARY) | set(M_LIBRARY_EXTRA)
     presence = defaultdict(lambda: [0, 0])
     games = 0

@@ -1,578 +1,213 @@
-# Kaggriculture Agent
+<p align="center">
+  <img src="docs/assets/banner.svg" alt="Kaggriculture: silver medal, 448th of 10,246 teams" width="100%">
+</p>
 
-This repository is my competition submission for
-Kaggriculture.
+<p align="center">
+  <a href="https://www.kaggle.com/competitions/kaggriculture"><img alt="Kaggle competition" src="https://img.shields.io/badge/Kaggle-Kaggriculture-20BEFF?logo=kaggle&logoColor=white"></a>
+  <img alt="Silver medal, 448th of 10,246 teams" src="https://img.shields.io/badge/silver%20medal-448th%20of%2010%2C246-A8A9AD">
+  <img alt="Python 3.12" src="https://img.shields.io/badge/python-3.12-3776AB?logo=python&logoColor=white">
+  <img alt="684 tests passing" src="https://img.shields.io/badge/tests-684%20passing-2EA44F">
+</p>
 
-See `progress.md` for the detailed experiment journal, decisions, failures,
-fixes, current work, and next steps.
+# Kaggriculture
 
-`strategy.json` is the machine-readable current policy, verified baseline,
-replay findings, hands and livestock experiments, learning roadmap, and
-promotion guardrails.
+My agent for **[Kaggriculture](https://www.kaggle.com/competitions/kaggriculture)**,
+a Kaggle simulation competition in which two AI farmers share one town for 30
+days. Each turn an agent commands its farmer and hired hands, buys land, seeds and
+animals, and places up to ten orders in a market both players trade in at the
+same time. After 720 turns, whoever has banked more coins wins.
 
-Start with [CONTEXT.md](CONTEXT.md) for the active decision flow and
-[docs/REPOSITORY_MAP.md](docs/REPOSITORY_MAP.md) for the workspace layout.
-Runnable agents are in `agents/`, shared mechanics in `core/`, strategy
-interfaces in `policies/`, experiments in `research/`, tests in `tests/`, and
-exact standalone packages in `submissions/`.
+<table>
+  <tr>
+    <td width="42%" align="center">
+      <img src="docs/assets/silver-medal-448th.png" alt="448th place, silver medalist, Yash Jain" width="100%">
+    </td>
+    <td>
+      <h3>448th of 10,246 teams — silver medal</h3>
+      <ul>
+        <li>Top 4.4% of the final leaderboard</li>
+        <li>Six weeks, 502 commits, more than 100 agents and variants built and measured, 44 of them packaged for Kaggle</li>
+        <li>Final pair: <b>N11</b> and <b>N10</b>, a public route-following engine wrapped in thirteen of my layers</li>
+        <li>On the 205 real ladder games of the last day, N11 wins <b>64.9%</b>; my best agent from three weeks earlier wins 16.8% of the same games</li>
+      </ul>
+    </td>
+  </tr>
+</table>
 
-The isolated reinforcement-learning workspace is in [rl/README.md](rl/README.md).
-It starts with dependency-free state, action, replay, reward, and rollout
-contracts before introducing a neural framework.
+<p align="center">
+  <img src="docs/assets/final-game.png" alt="A game from the final evaluation, day 21 of 30" width="100%">
+  <br><sub>A game from the final evaluation, on day 21 of 30. My agent is on the right; it won.</sub>
+</p>
 
-## What The Competition Is
+## The game in one paragraph
 
-Kaggriculture is a two-player, turn-based resource-management game. The
-environment calls your `agent` function once per turn with an observation of
-the farm and market. Your function returns actions for the farmer, hired hands,
-and market. After 720 turns, the player with more banked coins wins.
+Each player starts with one of four 5×5 land quadrants and 3,000 coins. Crops
+(wheat, carrots, tomatoes, strawberries, melons) need planting, watering and
+harvesting; animals (cows, sheep, geese) need pens, feed and care. Hands are
+hired daily at a rising cost. Prices are set by a shared market inventory, so
+every unit either player sells pushes the price down for both, and the town's
+shops eat a few units of each product every four turns. At the end of each day
+everything the crew carries is dropped into a 100-unit shed, and anything over
+capacity is destroyed. The full rules are in
+[`docs/game/RULEBOOK.md`](docs/game/RULEBOOK.md).
 
-This is an agent-programming competition before it is a machine-learning
-competition. A deterministic policy with good scheduling, accounting, and
-market logic is the best place to learn the environment. We can consider
-search or learning methods only after we have a measured baseline.
+## The final agent
 
-Kaggle labels the displayed submission metric `Score`. It is distinct from
-in-game coins: episode performances are aggregated into this competition Score,
-so it changes as more episodes are played. The frozen scale submission started
-at 600.0 and later moved to 567.0 and 539.3 while its local seed-70 farm score
-remained 55,138 coins. Reliability across many opponents therefore matters more
-than one unusually profitable game against `starter`.
+![How the final agent decides each turn](docs/assets/architecture.svg)
 
-## Current Status
+The parent is a public notebook, the *2965 Master Hybrid Engine* (Apache-2.0).
+It does not plan; it follows one of 41 recorded 30-day routes taken from strong
+games, picked on day 6 from the town's first two shops. Many ladder agents run
+this program or one of its relatives, so it is a strong but common base.
+Everything that made my agent different sits in thirteen layers around it
+([`stack/`](stack/README.md)):
 
-The current promotion candidate is a public-data behavior clone of Crop Dusta
-player 0's complete episode-99058164 action calendar. It addresses the measured
-architecture gap directly: the exact standalone package averages 160.86
-plantings per game on its broad gate, versus 77.46 for tiered fertilizer. It
-finished 72-8 against tiered's 55-25 over 80 games on unseen seeds 225-229,
-both positions and eight opponent families, with zero errors and no
-opponent-family win regression. A harder 60-game elite holdout finished
-41-15-4 versus 10-50-0. The package is locally validated at SHA-256
-`43d24a73c346c7687e574de69b8ffaf0ef959b34649e4e333a70f3f6c44b0976`.
-It was uploaded unchanged as submission `55910432`; validation episode
-`103922332` completed 47,243-44,975 at initial score 600.0.
+- **Market microstructure.** The market settles orders slot by slot, and both
+  players' orders in the same slot trade at a shared price. `market_front`
+  puts the orders whose price damage is largest into the earliest slots;
+  `l2_wheat_rt` buys wheat just before the town eats it and sells the same
+  units a turn later; `draw_last` notices rivals who copy that trade.
+- **Opponent modelling.** `l2_shadow` runs 18 public programs in lockstep with
+  the game. When one reproduces the rival's moves exactly, it knows the
+  rival's sales in advance and sells first. `m_sell` learns the selling hour
+  of rivals it cannot identify.
+- **Guards.** `shed_guard` stops the day-end drop from destroying goods;
+  `place_guard` builds the pen before an animal is placed; `safety` makes sure
+  no exception, malformed action or slow turn can forfeit a game.
+- **Farm.** `l2_labour` gives idle hands useful work on their own tile;
+  `tomato_annex` plants a small tomato field when the town is short;
+  `l2_animals` stops feeds that earn nothing.
 
-This evidence justifies a live challenger, not a guaranteed leaderboard score.
-The policy is open-loop and still went 4-6 against the current rank-one win
-calendar. Public replay provenance, mechanics, rejected hand-tuned experiments,
-and exact gates are documented in
-[docs/RULES_STRATEGY_AUDIT_2026-08-30.md](docs/RULES_STRATEGY_AUDIT_2026-08-30.md).
+## How it got there
 
-The two tracked Kaggle policies are deliberately separate:
+![Project timeline](docs/assets/timeline.svg)
 
-- `submissions/gated-late-strawberry/main.py` is submission `55887535`, the
-  current selected entry at the 655.2 snapshot.
-- `submissions/tiered-fertilizer/main.py` is submission `55858409`, the frozen
-  control at the recorded 649.3 snapshot.
+I started with a deterministic wheat farmer and grew it into about 90
+experimental agents with learned selectors ([`agents/`](agents/), [`policies/`](policies/)).
+In September I tried clones of elite players' recorded routes, a search over
+245 recorded tapes, and three agents that plan from first principles: an
+economics engine (E), a farm built from the rules (G) and a scheduler that
+prices every task in coins per worker-turn (J)
+([`candidates/`](candidates/README.md)). None matched the public route
+followers that dominated the ladder. In the last five days I stopped competing
+with that code and built on top of it: the L series wrapped a public clone in
+my layers, and the N series moved the same stack onto the strongest public
+plan. Every step is recorded in [`docs/`](docs/README.md).
 
-Deadline submission `55795843`, compact submission `55778351`, and adaptive
-submission `55770236` remain immutable historical controls but are no longer
-in the latest-two tracked pair.
+## Results
 
-`experimental_learned_macro_agent.py` remains research-only. Both day-5 and
-day-9 learned selectors failed their untouched promotion gates. The fixed
-compact policy advanced because it won 20-0 against adaptive and 44-6 across a
-fresh five-opponent local suite, not because of starter profit or an initial
-Kaggle rating. It still lost 0-4 against the two recorded top-agent controls.
-The newer deadline policy also loses all four elite replay controls, so a 1000
-rating is a target rather than a demonstrated expectation.
+![Win rate on the last day's real ladder games](docs/assets/results.svg)
 
-The learned service selector is the first later learner to clear promotion. It
-chooses on day 1 between the frozen deadline service order and a zero-travel
-same-transition FEED+CARE optimization, while deterministic safety still owns
-all actions. It trained on 80 cloned contexts, finished 37-3 on 40 separate
-validation contexts versus 35-5 for baseline, went 37-3 in direct spent-seed
-rollouts, and went 23-1 across six policy styles on untouched seeds 184-185.
-Its standalone package is loader-valid and action-equivalent over 1,438
-decisions at SHA-256
-`684693161aebb51bd6293a497033d630218af5eabf92870899efabef69d158b2`.
+<details>
+<summary>Table view</summary>
 
-The demand-animal policy in `agents/experimental_demand_animal_agent.py`
-keeps wheat rotation and deterministic safety, waits for two shop draws, then
-changes at most one expansion sheep per new quadrant when public milk or egg
-demand supports it. It scored 13-7 and 7-3 against the exact submitted package,
-47-3 across five other policy styles, and 23-1 on untouched seeds 186-187. A
-final unseen overnight gate scored 92-8 across 100 games versus 89-11 for the
-exact submitted control, with zero errors and no opponent-level win regression.
-Its exact package is `submissions/demand-animal/main.py`, SHA-256
-`53cbab96eaf7eba10a55adac2208b273636ba45274b5cac34967bedae335f5ac`.
+| Agent | Built | Games won | Win rate |
+|---|---|---:|---:|
+| N11 (submitted) | 30 Sep | 133 of 205 | 64.9% |
+| N12 | 30 Sep | 133 of 205 | 64.9% |
+| N10 (submitted) | 30 Sep | 131 of 205 | 63.9% |
+| N8 | 29 Sep | 123 of 202 | 60.9% |
+| N9 | 30 Sep | 123 of 205 | 60.0% |
+| H2 | 9 Sep | 32 of 191 | 16.8% |
+| C2 | 3 Sep | 11 of 191 | 5.8% |
 
-The current live incumbent is `agents/experimental_future_labor_agent.py`. At
-day 6 it reinvests cheaper
-cow/goose herd capital in one extra hand during days 9-22 only when the
-opponent has more non-wheat crops than wheat crops. Two untouched broad gates
-finished 22-10 versus 19-13 for the exact control, with zero errors and no
-opponent-level win regression. The package is
-`submissions/future-labor/main.py`, SHA-256
-`200fef67c5a8e8b001b4a54986bb853d22b80f869af7460b67ec8eda169c70e3`.
-Before upload, both candidate and control remained 0-8 against the captured
-elite schedules. Full evidence is in
-[docs/experiments/opponent-aware-future-labor.md](docs/experiments/opponent-aware-future-labor.md).
+Each agent was replayed move for move against the opponents N9 and N10 met on
+the ladder on 30 September: same towns, same opponent moves. A submission
+replays its own live games exactly (all 35 of N10's checked games matched
+Kaggle to the coin), so every agent is compared on identical games.
+</details>
 
-That package was submitted unchanged as Kaggle submission `55821334`.
-Validation episode `100974134` completed 52,718-52,990. At 24 live games it is
-13-11 at 674.8, versus demand animal's matched 12-11 at 658.9609 and current
-655.8 display. The activated 13-hand branch went 5-1 in the first 23 games,
-while fallback games went 7-10, so research targets the fallback.
+## What I learned
 
-All 11 live losses are now captured as compact opponent schedules. Five fixed
-macro responses each reduced our own mean reward, and a shallow learned
-selector rejected to always-control under leave-one-episode-out validation.
-A fertilizer-price guard made zero-travel strawberry service monotonic over all
-24 ladder contexts: 15 improved, nine tied, and zero worse. It still added no
-wins on broad seeds 215-216. A contextual carried-fertilizer arm converted one
-captured loss from 91,939-93,752 to 95,691-94,332 and remained monotonic on the
-24 ladder contexts. Untouched seeds 217-218 stayed 22-10 for both candidate and
-control, though candidate margin improved by 226.72. It remains research-only;
-no package or upload was created.
+1. **Measure on the games you actually play.** A local benchmark flattered my
+   agents by about 40 percentage points, and an "elite panel" measured an
+   opponent population my agents never met. The method that worked is the
+   *pinned replay*: download a real ladder game, replay the opponent's
+   recorded moves on the same seed, and swap a candidate into my seat. Live
+   ratings move with the field; paired replays don't.
+2. **Read the engine, not just the rules.** The day-end drop into the shed
+   silently destroyed goods in about 90% of my games, around 400 coins a
+   game, mostly on days 23–28. Fixing it (N10) won 9 more games and lost
+   none across 563 replayed games, the largest single gain of the final week.
+3. **In a shared market, order matters as much as price.** Slot-by-slot
+   settlement means the same sale earns more one slot earlier. Several layers
+   exist only to win these races.
+4. **Public code is everywhere, so model it.** About one in ten of my
+   opponents ran an exact copy of a public program, and many more ran close
+   relatives. Simulating 18 of them in lockstep made those opponents
+   predictable: N10 won 70 of 72 games against six popular public agents, and
+   all 28 against fourteen more public programs found on the final day.
+5. **Pick on one set of games, confirm on another.** A variant that looked
+   +5 wins on 221 games was −6 on the next 98. Every change in the final
+   agent was selected on one set and confirmed on independent ones.
+6. **Where it fell short.** The teams at 2,300–2,900 build bigger farms
+   sooner: three land quadrants by day 10 and far more tomatoes, eggs and
+   strawberries. On the last day, 9 of my 24 losses to teams rated above
+   2,150 were by 10,000–26,000 coins. Layers on a route follower cannot close
+   that gap; a live planner that expands earlier would be the next step.
 
-The replay league has since expanded to 33 verified ladder games: 16 losses and
-17 wins, with day 9-12 workload snapshots and replay-name player validation. A
-late fertilizer policy now estimates marginal premium-crop value, caps the
-episode at four applications, and uses only otherwise-idle carriers after
-productive work is assigned. Above 1.30 normalized strawberry price it permits
-two staging steps; otherwise it requires co-location.
+## Repository
 
-This audited tiered arm converted two captured losses and
-improved/tied/worsened 30/3/0 across all 33 contexts, with +1,220.21 mean own
-reward and every win preserved. The current-source rerun of broad seeds 219-221
-still tied the exact control at 31-17, despite a +768.02 mean-margin delta and
-no opponent regression. It remains research-only. A separate economic
-wheat-to-feed reserve was tested and rejected because it caused large
-own-reward regressions under shared-market feedback.
-
-The related three-arm tree is not promoted. Held-out wins were 35, 34, 35, 33,
-33, and 35 as training grew from 8 to 80 contexts; fixed cows stayed at 35 and
-the oracle reached 37. The learning curve is visible in
-[docs/experiments/demand-animal-learning.md](docs/experiments/demand-animal-learning.md).
-
-Earlier economic and daily seed-admission learners remain rejected. Dynamic
-expansion was neutral, removing lifecycle windows overloaded crop service,
-bounded wheat trading lost 2-8, and broader anticipatory CARE lost 4-6. Future
-labor `55821334` and demand animal `55817911` were an earlier latest-two live
-pair. The shadow tree remains research-only.
-
-Initial 600.0 ratings are not proof of ladder strength. Submitting more agents
-does not directly raise Score: only the latest two are tracked, newer agents
-receive games more frequently, wins raise rating, and losses lower it.
-
-## Submitted Baseline
-
-`main.py` is already in the single-file format Kaggle accepts. It:
-
-- maintains a target of six wheat plots;
-- waters every planted plot each day;
-- waits until wheat's maximum-yield age before harvesting;
-- stops buying and planting after day 24 so late inputs can still return cash;
-- holds wheat below 35 coins unless shed stock reaches 72 units;
-- sells at 35 coins or better and liquidates all remaining wheat from day 25;
-  and
-- uses deterministic shortest-path movement.
-
-It intentionally does not use farm hands, animals, fertilizer, land expansion,
-or a learned policy. Those features remain isolated development experiments so
-the promoted submission control does not move silently.
-
-Kaggle's file loader executes a submission and selects its last callable.
-Therefore, `agent` must remain the final function defined in `main.py`. A unit
-test protects this packaging rule.
-
-## Run The Unit Tests
-
-The decision tests do not need the Kaggle simulator:
-
-```powershell
-./.conda/python.exe -m unittest -v
+```text
+stack/        the final agent: thirteen layers around a public route follower (agents L to N12)
+candidates/   agents A to K and the components they were built from
+rl/           reinforcement-learning contracts: features, action space, rewards, rollout, replay
+agents/       the August agents: a deterministic baseline grown into about 90 experimental policies
+policies/     strategy interfaces and learned selectors used by agents/
+core/         shared mechanics: routing and economics
+research/     August analysis, counterfactual collection, evaluation and training scripts
+tools/        measuring, packaging and validating (pinned replays, arena, Kaggle fetchers, packagers)
+tests/        684 unit and integration tests
+models/       small model files used by agents/ and policies/
+submissions/  the exact files uploaded to Kaggle, one folder per agent
+docs/         rules, research, the working journal and figures
 ```
 
-These tests answer narrow questions such as "does watering take priority over
-harvesting?" They make policy changes faster and safer. The command currently
-runs the agent, benchmark-metric, and episode-audit tests.
+More detail: [`docs/REPOSITORY_MAP.md`](docs/REPOSITORY_MAP.md).
+Replay datasets, downloaded ladder games and other people's extracted programs
+are not committed (they can contain Kaggle Competition Data); the fetchers in
+[`tools/data/`](tools/data/) recreate them.
 
-## Simulator Setup On Windows
+## Quick start
 
-This workspace uses a project-local Conda environment with Python 3.12. The
-official `kaggle-environments` package declares dependencies for every game it
-ships, including an Orbax fixture whose path is too deep for this Windows
-installation. Kaggriculture does not import that stack.
-
-Create the environment:
+The project uses Python 3.12 and the official simulator,
+`kaggle-environments` 1.32.7. Install it without its other games' extras:
 
 ```powershell
 conda create --prefix .conda python=3.12 pip -y
-```
-
-Install the shared runner dependencies and the pinned Kaggle package without
-the unrelated game extras:
-
-```powershell
 ./.conda/python.exe -m pip install -r requirements-simulator.txt
 ./.conda/python.exe -m pip install --no-deps kaggle-environments==1.32.7
+./.conda/python.exe -m pip install pytest
 ```
 
-This exact minimal installation was verified in a fresh environment by running
-a file-based Kaggriculture episode. Messages saying that other environments
-failed to load are expected when their optional packages are absent.
-
-Then run the cheapest integration check:
+Play a game, run the tests, and benchmark an agent:
 
 ```powershell
-./.conda/python.exe run_match.py --steps 48 --opponent pass --seed 7
+./.conda/python.exe run_match.py --steps 720 --opponent starter --seed 7 --html artifacts/seed-7.html
+./.conda/python.exe -m pytest tests rl/tests -q
+./.conda/python.exe benchmark.py --opponent starter --seed-start 0 --seed-count 10 --steps 720 --output artifacts/benchmarks/baseline.json
 ```
 
-For a full repeatable season against the stronger built-in baseline:
+Rebuild a final submission. The parent and the opponent library are other
+people's public programs, so extract them from their notebooks into
+`rl/public/` first (`tools/data/extract_notebook_agents.py`):
 
 ```powershell
-./.conda/python.exe run_match.py --steps 720 --opponent starter --seed 7 `
-  --replay artifacts/starter-seed-7.json `
-  --html artifacts/starter-seed-7.html
+./.conda/python.exe -m tools.packaging.build_final N11            # -> build/N11/main.py
+./.conda/python.exe -m tools.packaging.build_final N10 --verify   # + 8 games vs the local factory
 ```
 
-Open the generated HTML file to inspect the game in Kaggle's official replay
-visualizer. In a notebook, `env.play()` provides the interactive human action
-UI; replay HTML is preferred for repeatable agent comparisons.
-
-Create a concise but complete turn-by-turn audit from a saved replay:
-
-```powershell
-./.conda/python.exe -m research.analysis.audit_episode artifacts/full-replay.json `
-  --player 0 --agent main.py --output artifacts/full-audit.json
-```
-
-The audit preserves all replay records and records actions, positions, task
-validity, board changes, money, inventory, market state, realized sale revenue,
-seed spending, daily summaries, and exact final-score reconciliation.
-
-To watch the promoted seed-11 game with a plain-language explanation of every
-step, serve the repository root and open the captioned wrapper:
-
-```powershell
-./.conda/python.exe -m http.server 8765 --bind 127.0.0.1
-```
-
-Then open `http://127.0.0.1:8765/artifacts/ui/captioned_replay.html?replay=%2Fartifacts%2Fv1327-agent-v9-vs-starter-seed11-720.html&audit=%2Fartifacts%2Fv1327-agent-v9-vs-starter-seed11-720-audit.json`.
-Kaggle's official
-visualizer is followed by a caption panel underneath. The panel tracks its
-slider and reports every farmer/hand action and position, market orders issued,
-observed hires/land/animal changes, bank change, inventory, and board changes
-for the same replay record.
-
-## Run A Multi-Seed Benchmark
-
-One game can be unusually favorable. The benchmark runs the same unchanged
-agent over ten seeds and places it in both player positions, producing 20 full
-seasons:
-
-```powershell
-./.conda/python.exe benchmark.py --opponent starter `
-  --seed-start 0 --seed-count 10 --steps 720 `
-  --output artifacts/benchmarks/baseline-v1-vs-starter-seeds-0-9.json
-```
-
-The report records wins, losses, ties, errors, coins, margins, action counts,
-player-position splits, simulator version, and a hash of the exact agent file.
-Use the same seeds and positions when comparing a candidate policy with the
-baseline. The report is checkpointed after every game; `"complete": true`
-means the entire requested suite finished.
-
-To evaluate a workload without changing the submission default, pass a local
-experiment parameter:
-
-```powershell
-./.conda/python.exe benchmark.py --opponent starter `
-  --seed-start 0 --seed-count 10 --steps 720 `
-  --target-wheat-tiles 6 `
-  --output artifacts/benchmarks/candidate-wheat-6.json
-```
-
-For reproducible paired analysis, use
-`research.evaluation.compare_benchmarks`. Market-learning data are handled
-separately: `research.collection.collect_market_dataset` records compact
-observed trajectories, while `research.collection.collect_market_counterfactuals` clones a live
-state and evaluates one forced HOLD and SELL choice before returning both
-branches to v9. The latter explicitly restores Kaggriculture's resolved seed in
-each clone; the generic environment `clone()` does not preserve that metadata.
-
-## Analyze A Public Leader Replay
-
-Kaggle's Episode Player fetches complete public episode data from:
-
-```text
-https://www.kaggle.com/competitions/episodes/<episode-id>/replay.json
-```
-
-After saving a replay, produce a compact strategy report with:
-
-```powershell
-./.conda/python.exe -m research.analysis.analyze_public_replay `
-  artifacts/top-replays/episode-94173913-replay.json `
-  --output artifacts/top-replays/episode-94173913-strategy.json
-```
-
-The report counts farmer and hand actions, hires by day, maximum workforce,
-land timing, animal purchases and placements, structures, crop transitions,
-product sales, bank trajectory, and terminal inventory for both players.
-
-The captured 111,082-coin rank-one episode used 277 hires, up to 12 simultaneous
-hands, 18 pastures, 6 cows, 12 sheep, and all four quadrants. A captured loss
-kept the same 277-hire backbone but shifted to 10 cows and 4 sheep and bought
-only two extra quadrants. These replays motivate controlled labor and capital
-experiments; they do not make the local opponent representative.
-
-## Current Baseline Results
-
-On simulator 1.32.7, promoted v9 combines the six-plot, day-24 crop policy with
-price-aware selling. It was measured against `starter` over seeds 0-9 in both
-player positions:
-
-| Metric | Result |
-| --- | ---: |
-| Completed games | 20 / 20 |
-| Wins / losses / ties / errors | 20 / 0 / 0 / 0 |
-| Mean coins | 7,849.9 |
-| Minimum coins | 7,150 |
-| Maximum coins | 8,450 |
-| Mean opponent coins | 3,642.9 |
-
-The frozen v5 immediate-sale control averaged 7,501.1 on the identical games,
-so v9 gained 348.8 coins on average without changing production. Route
-instrumentation still found 760 plantings, 740 harvests, and 20 weeds, and all
-2,960 successfully harvested wheat units were sold. Holding increased mean
-harvest-to-sale delay from 10.05 to 63.05 turns by design, while terminal shed,
-carried, and seed inventories remained empty.
-
-A post-promotion file-loaded gate scored 7,992 in both player positions on
-seed 0. The audited seed-11 game scored 8,161 versus 3,677 and reconciled
-exactly: 3,000 starting coins + 5,541 sale revenue - 380 seed spending = 8,161.
-
-V9 also passed a separate generalization comparison on seeds 10-19 in both
-positions. It averaged 7,705.95 versus 7,450.45 for the immediate-sale control,
-improved all 10 independent seeds, preserved every win, and harvested and sold
-the same 2,956 wheat units. The paired report is
-`artifacts/benchmarks/v1327-v9-vs-v5-paired-seeds10-19.json`.
-
-A neighboring threshold of 36 improved the tuning suite but lost by 1-2 coins
-on two independent holdout seeds. It was therefore not promoted; the submitted
-default remains 35. This is intentional conservatism, not an unfinished edit.
-
-## Hands And Plain Cow Results
-
-Two daily hands around the one-goose control raised development performance on
-seeds 30-39, both positions, from 9,884.5 to 12,333.3 mean coins. The paired
-result was 20 improved, 0 tied, and 0 worse games, for a +2,448.8 mean gain.
-
-Adding only one plain cow and a protected pasture raised the same development
-suite to 16,634.3 mean coins. The exact candidate was frozen at SHA-256
-`aec06f1da0dd046a98af9e57d391ec779cb7fd690e0fb8e34d4044f9057cd9b5` before
-using untouched seeds 60-69.
-
-| Metric | Two-hand control | Frozen cow candidate |
-| --- | ---: | ---: |
-| Holdout games won | 20 / 20 | 20 / 20 |
-| Mean coins | 11,768.3 | 16,694.75 |
-| Mean paired gain | - | +4,926.45 |
-| Minimum paired game gain | - | +3,536 |
-| Improved / tied / worse | - | 20 / 0 / 0 |
-
-Every cow game sold exactly 25 eggs, 11 milk, and 56 fertilizer, used no CARE,
-and ended with no sellable shed or carried inventory. The candidate is now the
-frozen local control for the next scale experiment, but its roughly 16.7k score
-is still far below the 78k-111k public replay economies.
-
-## Frozen Scale Candidate
-
-The replay-inspired overnight ladder changed one axis at a time: workforce,
-crop capacity, animal count and mix, CARE, feed cadence, market priority, then
-land. The selected policy uses eight hands, sixteen wheat, four cows, and four
-sheep. It feeds and cares for animals daily, stages purchases over days 0, 3,
-5, and 7, and protects required feed from wheat sales.
-
-The exact source hash is
-`acfc19dd312dcd281428e62ff8d4c2919150b1aed0776d093e14470a0380cfb5`.
-
-| Metric | Plain cow | Frozen scale |
-| --- | ---: | ---: |
-| Development mean, seeds 30-39 | 16,634.3 | 58,853.4 |
-| Development paired result | - | 20 / 0 / 0 |
-| Untouched holdout mean, seeds 70-79 | 17,052.3 | 57,231.45 |
-| Holdout paired gain | - | +40,179.15 |
-| Holdout minimum / maximum | 16,102 / 18,346 | 43,745 / 65,110 |
-| Holdout animal losses | 0 | 0 |
-
-It also won all 40 direct local matches against the two active policies: 20/20
-against v9 and 20/20 against goose, testing both player positions. Against the
-captured rank-one action script on its original seed, however, it lost 41,702
-to 113,032 in both positions. That script is a fixed stress test, not an
-adaptive clone, but it usefully shows that the candidate is a large upgrade,
-not a solved leaderboard strategy.
-
-Build and validate the single-file candidate with:
-
-```powershell
-./.conda/python.exe -m tools.packaging.prepare_scale_submission
-./.conda/python.exe -m tools.validation.validate_submission submissions/legacy/scale/main.py --seed 70
-```
-
-The packaged SHA-256 is
-`a478741d32205b1ec772aced6879796c718249b695b0a8b5d85bb65ad893dac2`.
-Kaggle's file loader completed full self-play with both statuses `DONE`.
-Source and package each score 55,138 against `starter` on seed 70, confirming
-packaging equivalence. This package is now live on Kaggle as the safer control.
-
-A second pressure-aware investment package is also submitted and currently has
-a live Score of 491.3. It uses up to ten hands, twelve wheat, all land, six cows, and twelve
-sheep when opponent market pressure permits; it scales down when the opponent
-already operates many animals. Its untouched seed-80-89 mean is 56,501.8 with
-an 88,136 maximum, and it wins 16/20 direct games against the scale control.
-
-The separate `experimental_zoned_agent.py` fixes confirmed row-major planting
-bias and fresh crops dying before their first watering. It selects center-near
-tiles, assigns persistent near/far planting crews, and spends a seed only when a
-co-located second worker can water it in the same simulator transition. On
-seeds 30-39 in both positions, the no-land policy averages 62,989.8 coins, wins
-20/20, and records zero missed planting-day waterings and animal losses.
-
-`experimental_zoned_expansion_agent.py` is a separate bold variant: one NE
-quadrant, ten hands, sixteen wheat, six cows, and eight sheep. It averages
-64,549.75 against `starter` (25,677-94,567), beats scale 20/20 and pressure-aware
-investment 18/20 in direct development matches, and has zero animal losses and
-missed first waterings. Its lower floor is real: towns without milk/wool demand
-can drive those products near the price floor. An all-land 6-cow/12-sheep gate
-scored only 48,039, so more acreage is rejected until capital allocation and crop
-diversification improve.
-
-The captioned seed-30 expansion replay scored 87,623:
-`http://127.0.0.1:8765/artifacts/ui/captioned_replay.html?replay=%2Fartifacts%2Fv1327-zoned-expansion-vs-starter-seed30-720.html&audit=%2Fartifacts%2Fv1327-zoned-expansion-vs-starter-seed30-720-audit.json`.
-All 64 plant actions were watered in the same turn. Row 0 had five harvested
-crop cycles and three later-lifecycle failures; measured harvest-priority and
-row-reservation alternatives reduced profit and were rejected.
-
-The next research agent, `experimental_lifecycle_compact_agent.py`, replaces
-global crop retargeting with deterministic patch ownership and lifecycle
-deadlines. Ten hands are divided into six animal specialists, two crop pairs,
-and one floater. Age-1 wheat watering is skipped safely; ages 2-4 are watered
-for yield; planting is admitted only within per-pair capacity; idle workers may
-assist animals only within two tiles. On day 29, two low-cost hands join the
-farmer for value-ranked animal collection, return to a shed-access tile by hour
-22, `DROP`, and sell in that same simulator transition.
-
-On fresh seeds 80-89 it averages 70,527.35 versus submitted NE's 70,781.85, but
-records **0 weeds and 0 unfinished cycles versus 301 and 157**, harvests every
-admitted cycle (1,144/1,144) versus 818/1,276, and uses 29% fewer movement
-turns. The final version improves all 20 paired holdout games over its
-farmer-only endgame and wins 19/20 direct games against the submitted NE source
-and 20/20 against investment. It is packaged for review at
-`submissions/legacy/lifecycle/main.py`, SHA-256
-`aeb70a14f97d9c9778a1eadad9f424b97adc333470071432f7ca030b28de85a7`,
-but is not submitted.
-
-Review replay:
-`http://127.0.0.1:8765/artifacts/ui/captioned_replay.html?replay=%2Fartifacts%2Fv1327-lifecycle-compact-vs-starter-seed30-720.html&audit=%2Fartifacts%2Fv1327-lifecycle-compact-vs-starter-seed30-720-audit.json`.
-
-`experimental_center_out_agent.py` is the next separate research challenger.
-It starts with the NW core blocks 34/35/44/45, buys NE and then SW, and repeats
-the central four-animal footprint in each owned quadrant. Each core holds two
-cows and two sheep. Three fixed crop pairs own six center-out blocks per
-quadrant, including carrots, tomatoes, four strawberries, and two melon
-locations across the farm. Strawberry production uses two timed
-`FERTILIZE`+`WATER` windows per plant.
-
-On seeds 30-34 in both positions against `starter`, it wins 10/10, averages
-72,202 coins, has a 60,571-83,355 range, harvests every admitted crop cycle,
-and records zero crop weeds, unfinished cycles, and animal losses. It buys both
-NE and SW in every game. Against lifecycle compact on the same seeds it loses
-0/10 (42,203.5 versus 50,353.2 mean), so it is **research-only and not a
-submission candidate** yet. A standalone review package is available at
-`submissions/legacy/center-out/main.py`; source/package actions match across all 720
-records in both positions. Source SHA-256:
-`fb2d94b2e51ed81afb46d277d7ea8913f51cbf690ab42860591ec8c7decfc546`.
-Package SHA-256:
-`cd3d7e92b114dd1bcdef085a3b9fd36d4c37b36146e3c8bd40b58254efe51284`.
-
-At the user's explicit request, this exact package was uploaded as Kaggle
-submission `55666322`. Kaggle completed validation with an initial public Score
-of 600.0. This is an early score snapshot; the failed 0/10 local direct gate
-remains a warning against assuming leaderboard superiority from one score.
-
-Center-out replay (83,355 versus 3,393):
-`http://127.0.0.1:8765/artifacts/ui/captioned_replay.html?replay=%2Fartifacts%2Fv1327-center-out-diversified-vs-starter-seed30-720.html&audit=%2Fartifacts%2Fv1327-center-out-diversified-vs-starter-seed30-720-audit.json`.
-
-The complete simulator reference is `RULEBOOK.md`, and the interactive block
-map is `artifacts/ui/field_strategy_planner.html`.
-
-At the user's explicit request, the exact validated policy was submitted as
-Kaggle submission `55630744`. Its standalone package is
-`submissions/legacy/zoned-expansion/main.py`, SHA-256
-`3414e23178a61b162fbbc1910b215aac3bee973d8f259216b81fa101fe788283`.
-Kaggle completed validation at an initial Score of 600.0. This is an early Score
-snapshot, not a stable ranking guarantee.
-
-## Historical Baseline Results
-
-The six-plot policy with a day-24 planting cutoff was measured on simulator
-1.32.3 against `starter` over seeds 0-9 in both player positions:
-
-| Metric | Result |
-| --- | ---: |
-| Completed games | 20 / 20 |
-| Wins / losses / ties / errors | 20 / 0 / 0 / 0 |
-| Mean coins | 7,894.1 |
-| Minimum coins | 7,473 |
-| Maximum coins | 8,367 |
-| Mean opponent coins | 3,503.2 |
-
-The previous four-plot policy averaged 6,647.6 coins on the identical suite.
-The six-plot workload contributed a 1,176.5-coin mean improvement, and the
-endgame cutoff added another 70 coins by avoiding seven late seed purchases per
-game. Both changes preserved every win.
-The promoted `main.py` was also loaded by file with no experiment override and
-scored 8,181 in both positions on seed 0. See `progress.md` for the full
-comparison and rejected eight-plot experiment.
-
-These scores are historical because the live competition and this workspace
-now use simulator 1.32.7. Do not compare new candidates with 1.32.3 scores.
-
-## How We Will Improve It
-
-For each version, we will change one strategic idea and compare it over the
-same set of seeds and opponents:
-
-1. Validate that every episode finishes without agent errors.
-2. Record final cash, wins, action counts, idle turns, and lost crops.
-3. Establish crop-profit and labor-cost baselines.
-4. Add hands only when extra revenue exceeds daily hiring cost.
-5. Test fertilizer, livestock, land, and sale timing independently.
-6. Keep a change only when repeated matches beat the prior version.
-
-We are not choosing between heuristics and learning as mutually exclusive
-approaches. V9 remains the deterministic safety and control layer. A
-checkpointed v9 dataset now contains 4,154 hold/sell decisions from seeds 30-39,
-but it records only the action v9 took. Training on it immediately would clone
-v9 rather than prove a better choice. Deterministic state branching has now
-produced 28 true one-step counterfactual labels across prices 34-36: 7 prefer
-HOLD, 8 prefer SELL, and 13 tie. A shallow value tree was evaluated by leaving
-one seed out at a time, but its 91-coin regret was worse than v9's 62, so it was
-not promoted. That led to broader counterfactual coverage and the guarded ridge
-experiment described next. Offline RL or self-play remains later work, after a
-state-dependent value model can pass the full consistency gate.
-
-An earlier research run broadened true counterfactual coverage to 120 states over
-prices 28-40 and produced a guarded ridge policy. It improved every development
-seed by 156.4 coins on average. On fresh seeds 40-49 it preserved all 20 wins,
-all production, and gained 116 coins on average, but seed 48 lost 25 coins.
-Therefore the learned policy remains in `experimental_ridge_agent.py`; the
-submission in `main.py` is still v9. Seeds 20-29, 40-49, 50-59, 60-69, and
-70-79 are spent holdouts.
-
-The next research question is no longer raw labor capacity. Blindly copying the
-leader's 12-hand, 18-animal, all-land topology scored only 52,536.5 because
-service and crop churn prevented most expansion animals from coming online.
-The next candidate should make high-level capital choices adaptively: hire,
-buy land, add a cow or sheep, change crop mix, or hold cash. Selection must use
-head-to-head and replay-script pressure as well as `starter`, with deterministic
-legality, feeding, market-order, and endgame safeguards retained.
-
-Before submitting, accept the competition rules in the browser. API credentials
-are useful later for automation but are not needed to understand or test the
-agent.
+Some packaging tests rebuild the August packages in place; `git restore
+submissions` puts the committed files back.
+
+## Credits
+
+The final agents build on public Kaggle notebooks shared under Apache-2.0, with
+their notices kept inside every package that embeds them. The parent is
+*The 2965 Master Hybrid Engine* (haideptry). The opponent library includes
+programs by haodou092 (harvest-ledger), Ahmed Berat Özer, Thomas Tschinkel,
+statma, arsgorynich, hosen42, Dmitrii Gluzdov, guruprasaath and others, and
+Agent A started from tetsutani's public build. Thank you to everyone who
+published their work.
+
+Built by **Yash Jain** ([@YAshhh29](https://github.com/YAshhh29)).

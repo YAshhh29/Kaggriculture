@@ -1,7 +1,7 @@
 import unittest
 
 from agents.experimental_distilled_calendar_agent import decide as calendar
-from rl.candidate_a import build_candidate_a_agent
+from candidates.candidate_a import build_candidate_a_agent
 from tests.test_experimental_scale_agent import scale_observation
 
 

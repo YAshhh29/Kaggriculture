@@ -8,7 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-import rl.candidate_g as G
+import candidates.candidate_g as G
 from tools.eval import inspect_g
 from tools.data.profile_tapes import TAPES
 
@@ -49,7 +49,7 @@ def agent_wrapper(obs):
 
 G.step_toward, G.agent = step_wrapper, agent_wrapper
 try:
-    env, _ = inspect_g.play("rl.candidate_g:agent", OV,
+    env, _ = inspect_g.play("candidates.candidate_g:agent", OV,
                             str(TAPES / f"live_{ep}.json"), seed, seat)
 finally:
     G.step_toward, G.agent = orig_step, orig_agent

@@ -9,7 +9,7 @@ rl/data/candidate_d_corpus_index.jsonl.
 This is a curation/indexing pass, not a feature-extraction pass: it does not
 call encode_state or build per-step (state, action) examples, because that
 requires a choice of baseline and Option-level label design Candidate D has
-not settled yet (see rl/GOAL.md section 10 and the "Candidate D" plan). What
+not settled yet (see docs/research/GOAL.md section 10 and the "Candidate D" plan). What
 it produces is a queryable manifest -- one row per real game, with opponent
 identity, result, quadrant/hand-count outcomes, and a leakage-free
 train/validation/test split -- that both (a) is the direct prerequisite for

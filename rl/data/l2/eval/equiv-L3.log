@@ -1,4 +1,0 @@
-  imports: stdlib only; entry Kaggle picks: safe_agent
-  seed 11 seat 0: package 82,107 vs nb_ahmed_v55 80,918 | factory 82,107 | identical | slowest turn 817 ms, total 21.1 s | guard errors 0, repaired 0
-  seed 11 seat 1: package 83,000 vs nb_ahmed_v55 80,357 | factory 83,000 | identical | slowest turn 836 ms, total 20.8 s | guard errors 0, repaired 0
-EQUIVALENT

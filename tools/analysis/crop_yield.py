@@ -12,7 +12,7 @@ This hooks `_apply_unit_action` and reads the tile the worker is standing on
 just before the engine clears it, which is the only moment both the crop and
 its accrued units are still on the board.
 
-    python -m tools.analysis.crop_yield rl.candidate_j:agent --tapes 3
+    python -m tools.analysis.crop_yield candidates.candidate_j:agent --tapes 3
 """
 
 from __future__ import annotations

@@ -3,7 +3,7 @@
 Candidate H has two parts. The farming base -- what to plant, raise and
 harvest, day by day -- is a route-replay agent published on Kaggle under the
 Apache License 2.0. On top of it sits Candidate H's own market-demand layer
-(rl/candidate_h_demand.py), which re-decides the base's sale orders from a
+(candidates/candidate_h_demand.py), which re-decides the base's sale orders from a
 model of the town's consumption and the market's price curves.
 
 The build appends the demand layer to the base source, runs it in its own
@@ -32,7 +32,7 @@ sys.path.insert(0, str(ROOT))
 from tools.packaging.prepare_candidate_h_submission import (  # noqa: E402
     OUT, check, sha256)
 
-LAYER = ROOT / "rl" / "candidate_h_demand.py"
+LAYER = ROOT / "candidates" / "candidate_h_demand.py"
 
 NOTICE = """Candidate H
 

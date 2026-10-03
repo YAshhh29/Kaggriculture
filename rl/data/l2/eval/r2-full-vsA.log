@@ -1,4 +1,0 @@
-60 games: r2-full-vsA vs A on 30 seeds x 2 seats, 1 workers
-saved rl\data\l2\paired\r2-full-vsA.json
-  r2-full-vsA vs A                         60/60  won (0 tied)  mean   +2,102  median   +1,846  worst   +1,032  errors 0  crashes 0
-  telemetry (mean per game): CARE 1.5, COLLECT_FERTILIZER 0.5, HARVEST 0.1, WATER 14.4, an_collect_swaps 0.5, an_errors 0.0, an_feed_skips 1.1, an_feed_skips_d28 0.7, an_feed_skips_young 0.5, an_max_ms 0.8, clone_steps 0.0, dump_errors 0.0, dump_turns 0.0, dump_units 0.0, early_budget_stops 3.1, early_multi_skips 0.0

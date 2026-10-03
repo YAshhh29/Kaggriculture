@@ -1,6 +1,6 @@
 import unittest
 
-from rl.market import (
+from candidates.market import (
     MARKET_I0,
     headroom,
     inventory_of,

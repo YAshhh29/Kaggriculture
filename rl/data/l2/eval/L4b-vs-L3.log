@@ -1,4 +1,0 @@
-40 games: L4b-vs-L3 vs L3 on 20 seeds x 2 seats, 2 workers
-saved rl\data\l2\paired\L4b-vs-L3.json
-  L4b-vs-L3 vs L3                         2/40  won (36 tied)  mean       +0  median       +0  worst     -129  errors 0  crashes 0
-  telemetry (mean per game): CARE 1.5, COLLECT_FERTILIZER 1.1, HARVEST 0.1, WATER 12.8, an_collect_swaps 0.6, an_errors 0.0, an_feed_skips 1.6, an_feed_skips_d28 1.0, an_feed_skips_young 0.6, an_max_ms 1.0, early_budget_stops 0.0, early_multi_skips 0.0, early_pred_gain 0.0, early_rejected_react 0.0, early_sales 0.0, early_units 0.0

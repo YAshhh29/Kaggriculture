@@ -27,12 +27,12 @@ GIULIO_AGENT_PATH = (
 GIULIO_MODEL_PATH = (
     ROOT / "models" / "v1327-public-elite-giulio-105144807.json"
 )
-CANDIDATE_C2_PATH = ROOT / "rl" / "candidate_c2.py"
+CANDIDATE_C2_PATH = ROOT / "candidates" / "candidate_c2.py"
 SOURCE_PATHS = (GIULIO_AGENT_PATH, GIULIO_MODEL_PATH, CANDIDATE_C2_PATH)
 OUTPUT = ROOT / "submissions" / "candidate-c2" / "main.py"
 MANIFEST = ROOT / "submissions" / "candidate-c2" / "manifest.json"
 MODEL_TYPE = "public_calendar_behavior_clone"
-STRIPPED_IMPORT_PREFIXES = ("agents.", "policies.", "core.", "rl.")
+STRIPPED_IMPORT_PREFIXES = ("agents.", "policies.", "core.", "rl.", "stack.", "candidates.")
 
 
 def load_verified_giulio_model(
@@ -175,7 +175,7 @@ def main() -> None:
                     "submissions/candidate-c/main.py (parent)",
                     "agents/experimental_distilled_elite_giulio_agent.py",
                     "models/v1327-public-elite-giulio-105144807.json",
-                    "rl/candidate_c2.py",
+                    "candidates/candidate_c2.py",
                 ],
                 "policy": (
                     "Candidate C's stack (Candidate A guards + Candidate B "
