@@ -242,7 +242,7 @@ game is really played and shaped most of my approaches. Thank you in
 particular to:
 
 - [haideptry](https://www.kaggle.com/haideptry), for *The 2965 Master Hybrid
-  Engine*, the open-source base engine of my final agent
+  Engine*, the open-source base engine of my N series agents
 - [haodou092](https://www.kaggle.com/haodou092), for the *Harvest Ledger*
 - [Ahmed Berat Özer](https://www.kaggle.com/ahmedberatozer), for the V-series
   of agents and their detailed write-ups
