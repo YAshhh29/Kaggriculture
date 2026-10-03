@@ -261,9 +261,10 @@ particular to:
   [aurax7](https://www.kaggle.com/aurax7),
   [destbreso](https://www.kaggle.com/destbreso) and everyone else who
   published their work
-
-Code from these notebooks is shared under Apache-2.0. Every file in this
-repository that includes some of it keeps its original licence notices.
+  
+These notebooks are shared under Apache-2.0. Any file here that includes any part
+of their code keeps its original licence notices, and many of my later approaches were
+shaped by ideas I found in them.
 
 ## Licence
 
